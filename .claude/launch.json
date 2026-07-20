@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "exception-static",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "/Users/markamir/Documents/GitHub/Exception - Redesign", "-l", "8900"],
+      "port": 8900
+    }
+  ]
+}

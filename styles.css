@@ -1,0 +1,1984 @@
+/* =====================================================================
+   styles.css — custom (non-utility) styles for the static Kouider build.
+
+   Tailwind utility classes are provided at runtime by the Play CDN
+   (see tw-config.js). This file ports the project's original
+   src/app/globals.css @layer/component rules almost verbatim, wires up
+   the font-family CSS variables the config references, and adds the
+   vanilla-JS carousel / drawer / modal styles that replace Swiper and
+   the various React overlay components.
+   ===================================================================== */
+
+@import url("https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,1..1000&family=DM+Sans:ital,opsz,wght@0,9..40,100..900;1,9..40,100..900&family=Caveat:wght@400;500;600;700&display=swap");
+
+/* Font variables referenced by the Tailwind fontFamily tokens.
+   Primary brand type is "Google Sans Flex"; DM Sans is the loaded fallback
+   in case the Flex family is unavailable from the CDN in a given region. */
+:root {
+  --font-sans: "Google Sans Flex", "DM Sans", sans-serif;
+  --font-dm-sans: "Google Sans Flex", "DM Sans", sans-serif;
+  --font-caveat: "Caveat", cursive;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  color: #182325;
+}
+
+/* --- ported from globals.css @layer utilities ---------------------- */
+
+.container {
+  margin-inline: auto;
+  padding-inline: 1rem;
+  width: 100%;
+  max-width: 1400px;
+}
+@media (min-width: 768px) {
+  .container {
+    padding-inline: 3.5rem;
+  }
+}
+
+.disabled:not(label) {
+  opacity: 0.5;
+  pointer-events: none;
+}
+label.disabled {
+  pointer-events: none;
+}
+
+label,
+.label {
+  display: inline-block;
+  font-weight: 500;
+  color: #182325;
+  font-size: 14px;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+.corporate-container {
+  background: linear-gradient(180deg, #E7FFFC 0%, #fefbfa 30.03%);
+  padding-top: 3.5rem;
+  padding-bottom: 5rem;
+}
+.corporate-container:not(.centered) {
+  padding-top: 2.75rem;
+  padding-bottom: 8rem;
+}
+
+.beforeUnderline {
+  position: relative;
+}
+.beforeUnderline::before {
+  content: "";
+  position: absolute;
+  right: 0;
+  left: 0;
+  bottom: 0.5rem;
+  height: 2px;
+  background-color: #969696;
+  opacity: 0;
+  transition: all 0.2s ease-in-out;
+}
+.beforeUnderline:hover::before {
+  bottom: -0.125rem;
+  opacity: 1;
+}
+
+button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.para-tagline {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 140%;
+}
+.heading4 {
+  font-size: 20px;
+  text-wrap: pretty;
+}
+@media (min-width: 1024px) {
+  .heading4 {
+    font-size: 32px;
+  }
+}
+
+img {
+  max-width: 100%;
+  user-select: none;
+}
+
+input,
+select,
+textarea {
+  outline: none;
+  width: 100%;
+  border-radius: 0.5rem;
+  caret-color: #8CBAB5;
+}
+
+select {
+  border: 1px solid #d5dad1;
+  cursor: pointer;
+}
+
+/* Custom select chevrons (ported) */
+.label-select {
+  background-image: url("data:image/svg+xml,%3Csvg%20width%3D%2224%22%20height%3D%2225%22%20viewBox%3D%220%200%2024%2025%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M19%209.5L12%2016.5L5%209.5%22%20stroke%3D%22%23111827%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: calc(100% - 20px) center;
+  -moz-appearance: none !important;
+  -webkit-appearance: none !important;
+  appearance: none !important;
+}
+.placeholder-select {
+  background:
+    url("data:image/svg+xml,%3Csvg%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M19%209L12%2016L5%209%22%20stroke%3D%22%23969696%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E")
+      no-repeat;
+  background-position: calc(100% - 10px) center !important;
+  appearance: none !important;
+}
+
+.product-card-shadow {
+  box-shadow: 0px 0px 6px 0px #00000026;
+}
+
+.direction-ltr,
+.dir-ltr {
+  direction: ltr !important;
+}
+
+/* Hide scrollbar helpers (ported) */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.styled-scrollbar::-webkit-scrollbar {
+  width: 4px;
+  margin-top: 1rem;
+}
+.styled-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #182325;
+}
+.styled-scrollbar::-webkit-scrollbar-track {
+  background-color: transparent;
+  border-radius: 0.25rem;
+}
+
+/* WYSIWYG content styles (ported, used by policy/blog/product pages) */
+.wysiwyg h3 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.wysiwyg h4 {
+  font-size: 14px;
+  font-weight: 600;
+}
+.wysiwyg p {
+  font-weight: 500;
+}
+.wysiwyg p + p {
+  margin-top: 22px;
+}
+.wysiwyg h3 ~ h3 {
+  margin-top: 44px;
+}
+.wysiwyg ul {
+  margin-top: 12px;
+}
+.wysiwyg li + li {
+  margin-top: 10px;
+}
+.wysiwyg li {
+  display: flex;
+  align-items: center;
+}
+.wysiwyg li::before {
+  content: "";
+  width: 22px;
+  height: 22px;
+  background-image: url("images/icons/check@2x.svg");
+  background-repeat: no-repeat;
+  background-size: 15px;
+  background-position: center;
+  border-radius: 1000px;
+  display: inline-flex;
+  background-color: #8CBAB5;
+  vertical-align: middle;
+  margin-inline-end: 8px;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.wysiwyg-blog h1,
+.wysiwyg-blog h2,
+.wysiwyg-blog h3,
+.wysiwyg-blog h4,
+.wysiwyg-blog h5,
+.wysiwyg-blog h6 {
+  font-family: "DM Sans", sans-serif;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 1.5;
+  color: #182325;
+  margin-bottom: 8px;
+}
+.wysiwyg-blog p {
+  font-family: "DM Sans", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #6F7276;
+  margin-bottom: 32px;
+}
+.wysiwyg-blog img {
+  border-radius: 18px;
+  margin-bottom: 32px;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.wysiwyg-product ul {
+  list-style-type: disc;
+  margin: 0.5rem 0;
+  padding-inline-start: 1.5rem;
+}
+.wysiwyg-product ol {
+  list-style-type: decimal;
+  margin: 0.5rem 0;
+  padding-inline-start: 1.5rem;
+}
+.wysiwyg-product li {
+  margin-bottom: 0.25rem;
+}
+.wysiwyg-product h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 1rem 0 0.5rem;
+  color: #182325;
+}
+.wysiwyg-product p {
+  margin-bottom: 0.5rem;
+  line-height: 1.6;
+}
+
+.have-points li {
+  display: flex;
+  align-items: center;
+}
+.have-points li::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 100%;
+  display: inline-block;
+  background-color: #E7FFFC;
+  vertical-align: middle;
+  margin: 0 8px;
+  flex: none;
+}
+
+/* Slide up / down (ported) */
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+@keyframes slideDownSheet {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(100%);
+  }
+}
+.animate-slide-up {
+  animation: slideUp 0.3s ease-out;
+}
+.animate-slide-down {
+  animation: slideDownSheet 0.3s ease-out;
+}
+
+/* =====================================================================
+   Vanilla carousel — replaces Swiper.
+   Markup: .carousel > .carousel-track > .carousel-slide*, plus optional
+   .carousel-prev / .carousel-next buttons and a .carousel-dots container.
+   Behaviour is driven by scripts.js (scroll-snap + arrow/dot controls).
+   ===================================================================== */
+.carousel {
+  position: relative;
+}
+.carousel-track {
+  display: flex;
+  gap: var(--carousel-gap, 16px);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  padding-bottom: 4px;
+}
+.carousel-track::-webkit-scrollbar {
+  display: none;
+}
+.carousel-slide {
+  scroll-snap-align: start;
+  flex: 0 0 auto;
+}
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 9999px;
+  background: #fff;
+  box-shadow: 0px 2px 3px rgba(24, 35, 37, 0.2);
+  color: #182325;
+  transition:
+    opacity 0.2s ease,
+    background 0.2s ease;
+}
+.carousel-btn:hover {
+  background: #E7FFFC;
+}
+.carousel-btn.is-disabled {
+  opacity: 0.35;
+  cursor: default;
+  pointer-events: none;
+}
+.carousel-prev {
+  inset-inline-start: -10px;
+}
+.carousel-next {
+  inset-inline-end: -10px;
+}
+
+/* Hero slider: arrows sit INSIDE the rounded image (so overflow-hidden
+   can't crop them) with a strong shadow to read over any background. */
+.hero-banners .carousel-prev {
+  inset-inline-start: 16px;
+}
+.hero-banners .carousel-next {
+  inset-inline-end: 16px;
+}
+.hero-banners .carousel-btn {
+  background: rgba(255, 255, 255, 0.95);
+  color: #182325;
+  box-shadow:
+    0 6px 16px rgba(0, 0, 0, 0.28),
+    0 1px 3px rgba(0, 0, 0, 0.2);
+}
+.hero-banners .carousel-btn:hover {
+  background: #ffffff;
+}
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 20px;
+}
+.carousel-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 9999px;
+  background-color: #8CBAB5;
+  opacity: 0.3;
+  transition: opacity 0.2s ease;
+  cursor: pointer;
+}
+.carousel-dot.is-active {
+  opacity: 1;
+}
+[dir="rtl"] .carousel-btn svg {
+  transform: scaleX(-1);
+}
+
+/* =====================================================================
+   Drawers / overlays — cart drawer, mobile menu, bottom sheet, modals.
+   Toggled by adding/removing `.is-open` (see scripts.js).
+   ===================================================================== */
+.overlay-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 0.3s ease,
+    visibility 0.3s ease;
+}
+.overlay-backdrop.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* Side drawer (cart / mobile menu) */
+.side-drawer {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  z-index: 100;
+  width: min(420px, 90vw);
+  max-width: 90vw;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease;
+}
+.side-drawer--right {
+  inset-inline-end: 0;
+  transform: translateX(110%);
+}
+.side-drawer--left {
+  inset-inline-start: 0;
+  width: min(340px, 88vw);
+  transform: translateX(-110%);
+}
+.side-drawer.is-open {
+  transform: translateX(0);
+}
+[dir="rtl"] .side-drawer--right {
+  transform: translateX(-110%);
+}
+[dir="rtl"] .side-drawer--left {
+  transform: translateX(110%);
+}
+[dir="rtl"] .side-drawer.is-open {
+  transform: translateX(0);
+}
+
+/* Bottom sheet (mobile location) */
+.bottom-sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+  background: #fff;
+  border-radius: 22px 22px 0 0;
+  padding: 20px 16px 28px;
+  transform: translateY(110%);
+  transition: transform 0.3s ease;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+.bottom-sheet.is-open {
+  transform: translateY(0);
+}
+/* Desktop: the location sheet becomes a centered popup (not a bottom sheet). */
+@media (min-width: 768px) {
+  .bottom-sheet {
+    top: 50%;
+    left: 50%;
+    right: auto;
+    bottom: auto;
+    width: 400px;
+    max-width: calc(100vw - 32px);
+    border-radius: 16px;
+    padding: 24px;
+    transform: translate(-50%, -50%) scale(0.96);
+    opacity: 0;
+    /* when closed the popup is centered + invisible — it MUST NOT capture
+       clicks (else it silently blocks everything behind it). */
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+      transform 0.25s ease,
+      opacity 0.25s ease,
+      visibility 0.25s ease;
+  }
+  .bottom-sheet.is-open {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+}
+
+/* Centered modal (search / generic) */
+.modal-shell {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 8vh 16px 16px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 0.25s ease,
+    visibility 0.25s ease;
+}
+.modal-shell.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+body.no-scroll {
+  overflow: hidden;
+}
+
+/* Header — small (18px) inline icons + Pages dropdown (Figma Header v2) */
+.hdr-ico {
+  display: inline-grid;
+  place-items: center;
+}
+.hdr-ico svg {
+  width: 18px;
+  height: 18px;
+}
+[data-pagesmenu] .pages-ico-close,
+[data-pagesmenu] .pages-panel {
+  display: none;
+}
+[data-pagesmenu].is-open .pages-ico-menu {
+  display: none;
+}
+[data-pagesmenu].is-open .pages-ico-close {
+  display: inline-grid;
+}
+[data-pagesmenu].is-open .pages-panel {
+  display: block;
+}
+[data-pagesmenu].is-open .pages-toggle {
+  background: #fff;
+  border-color: transparent;
+}
+[data-locmenu] .loc-panel {
+  display: none;
+}
+[data-locmenu].is-open .loc-panel {
+  display: block;
+}
+
+/* Floating cart — hidden until the header scrolls away */
+[data-floating-cart] {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(16px);
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease,
+    visibility 0.25s ease;
+}
+[data-floating-cart].is-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+/* Favorite/wishlist — heart pop + burst ring on activation. Shared by
+   the product-card widget and the single-product page (both use
+   [data-fav] + .fav-btn; the button itself is positioned via its own
+   .absolute/.relative utility, so we do NOT force position here). */
+[data-fav] {
+  overflow: visible;
+  isolation: isolate; /* stacking context so the ::after ripple sits BEHIND the heart */
+}
+[data-fav] svg {
+  transition: transform 0.2s ease;
+}
+[data-fav].is-fav svg {
+  animation: fav-pop 0.45s cubic-bezier(0.2, 0.8, 0.3, 1.4);
+}
+/* Radial ripple: a soft pink circle that scales out from the center. */
+[data-fav]::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(219, 51, 108, 0.5) 0%,
+    rgba(219, 51, 108, 0.22) 45%,
+    rgba(219, 51, 108, 0) 72%
+  );
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+[data-fav].is-fav::after {
+  animation: fav-radial 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+@keyframes fav-pop {
+  0% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(0.8);
+  }
+  65% {
+    transform: scale(1.25);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes fav-radial {
+  0% {
+    transform: translate(-50%, -50%) scale(0.25);
+    opacity: 0.85;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2.6);
+    opacity: 0;
+  }
+}
+
+/* Product-card add widget — the dark-turquoise "+" button elastically
+   expands into the counter (trash / qty / +) when the item is added. The
+   counter grows from the right (where the + button sat) with an elastic
+   overshoot. JS (pwShowCounter) toggles .is-pop to (re)play it. */
+[data-add-widget] [data-counter] {
+  transform-origin: right center;
+}
+[data-add-widget] [data-counter].is-pop {
+  animation: counter-pop 0.45s ease-out;
+}
+@keyframes counter-pop {
+  0% {
+    transform: scale(0.2);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+  80% {
+    transform: scale(0.96);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-add-widget] [data-counter].is-pop {
+    animation: none;
+  }
+}
+
+/* Knockout: punch a transparent hole out of the cart box where the badge
+   sits, so the badge reads as SUBTRACTED from the box (background shows
+   through the ring) instead of sitting on a coloured border. */
+.cart-knockout {
+  -webkit-mask: radial-gradient(
+    circle 13px at calc(100% - 5px) calc(100% - 5px),
+    transparent 0 12.5px,
+    #000 13px
+  );
+  mask: radial-gradient(
+    circle 13px at calc(100% - 5px) calc(100% - 5px),
+    transparent 0 12.5px,
+    #000 13px
+  );
+}
+
+/* Accordion (FAQ) */
+.accordion-item .accordion-panel {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.35s ease;
+}
+.accordion-item.is-open .accordion-panel {
+  max-height: 600px;
+}
+.accordion-item .accordion-chevron {
+  transition: transform 0.3s ease;
+}
+.accordion-item.is-open .accordion-chevron {
+  transform: rotate(180deg);
+}
+
+/* =================================================================
+   PRODUCT REVIEWS — the "Leave a review" CTA is gated on purchase:
+   only shown when the customer bought this product before. In this
+   static build that state comes from <body data-purchased="true">;
+   in production it would be server-set from the user's order history.
+   JS-free gate — flip the body attribute to toggle the button.
+   ================================================================= */
+.review-cta {
+  display: none !important;
+}
+body[data-purchased="true"] .review-cta {
+  display: inline-flex !important;
+}
+/* Hint shown INSTEAD of the button when not eligible (hidden when eligible). */
+body[data-purchased="true"] .review-gate-hint {
+  display: none;
+}
+/* Extra reviews behind "Show more". The cards carry Tailwind's .flex, which
+   beats the UA [hidden]{display:none} (same specificity) — so force it. JS
+   toggles the [hidden] attribute; removing it lets the card flex back in. */
+[data-review-extra][hidden] {
+  display: none !important;
+}
+
+/* Tabs */
+.tab-btn {
+  cursor: pointer;
+}
+.tab-panel[hidden] {
+  display: none;
+}
+
+/* Header sticky-nav animation (ported keyframe usage) */
+@keyframes slideDown {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+.animate-slideDown {
+  animation: slideDown 0.35s ease-out forwards;
+}
+@keyframes customBounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10%);
+  }
+}
+.animate-customBounce {
+  animation: customBounce 3s ease-in-out infinite;
+}
+
+/* Fly-to-cart — a pink liquid dot that arcs from the add button into the
+   cart, then the cart badge bumps. (Replaces the old toast system.) */
+.fly-dot {
+  position: fixed;
+  width: 20px;
+  height: 20px;
+  background: #db336c;
+  border-radius: 50%;
+  z-index: 200;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 4px 12px rgba(219, 51, 108, 0.5);
+}
+.cart-bump {
+  animation: cart-bump 0.4s cubic-bezier(0.2, 0.8, 0.3, 1.4);
+}
+@keyframes cart-bump {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.18);
+  }
+}
+
+/* =================================================================
+   CTA / BUTTON SYSTEM — canonical, from Figma "CTA" (node 17:848).
+   NEVER style buttons off-system. Compose: .btn + a type + a size.
+   Types: --primary | --black | --outline | --secondary
+   Sizes: --sm | --md (default) | --lg
+   Right arrow icon inherits currentColor via stroke.
+   ================================================================= */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: inherit; /* Google Sans Flex (project body font) */
+  font-weight: 500;
+  line-height: 1.3;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    opacity 0.2s ease;
+}
+.btn svg {
+  flex: none;
+}
+
+/* --- Sizes --- */
+.btn--md {
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-size: 16px;
+}
+.btn--lg {
+  padding: 12px 32px;
+  border-radius: 12px;
+  font-size: 16px;
+  min-height: 62px;
+}
+.btn--sm {
+  padding: 6px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  gap: 6px;
+}
+.btn--md svg,
+.btn--lg svg {
+  width: 16px;
+  height: 16px;
+}
+.btn--sm svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* --- Types (Default → :hover) --- */
+.btn--primary {
+  background: #b0ded9;
+  color: #182325;
+}
+.btn--primary:hover {
+  background: #8cbab5;
+  color: #ffffff; /* text + icon (currentColor) go white on hover */
+}
+
+.btn--black {
+  background: #182325;
+  color: #ffffff;
+}
+.btn--black:hover {
+  background: #000000;
+}
+
+.btn--outline {
+  background: transparent;
+  color: #182325;
+  border: 1px solid #182325;
+}
+.btn--outline:hover {
+  background: #182325;
+  color: #ffffff;
+}
+
+.btn--secondary {
+  background: #f3f4f6;
+  color: #6f7276;
+  border: 1px solid transparent;
+}
+.btn--secondary:hover {
+  background: #f9fafb;
+  color: #182325;
+  border-color: #dee2e6;
+}
+
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* =================================================================
+   CHIP — the ONE unified pill used by product tabs, product variation
+   selectors, and filters. Unified look (2026-07-12): 6px radius, NO
+   border, white bg, a smooth small 10%-opacity drop shadow; active
+   state = dark #182325 fill. Toggle state via .is-active. Padding/size
+   stay on the element (utilities); .chip owns the look. Shares its
+   surface language with .segmented below.
+   ================================================================= */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  border-radius: 6px;
+  border: 1px solid #dee2e6; /* gray-3 — resting/unselected outline */
+  background: #ffffff;
+  color: #6f7276; /* secondary text */
+  cursor: pointer;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.12); /* even, low-Y — wraps the whole chip */
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.25s cubic-bezier(0.34, 1.3, 0.5, 1);
+}
+.chip:hover:not(.is-active) {
+  color: #182325;
+  box-shadow: 0 0 16px rgba(0, 0, 0, 0.16);
+  transform: translateY(-1px);
+}
+.chip.is-active {
+  background: #182325; /* primaryDark */
+  color: #ffffff;
+  border-color: #182325; /* seamless on the dark fill */
+}
+
+/* Product variation pills (Size / Weight) — outlined-selected variant of
+   the chip: UNSELECTED = grey fill + dark-grey text (no border/shadow),
+   SELECTED = white fill + black border + black text. Overrides .chip via
+   the extra class (and .is-active adds specificity over .chip.is-active). */
+.chip.variation-pill {
+  background: #f3f4f6; /* grey fill */
+  border-color: transparent;
+  color: #6b7280; /* dark grey text */
+  box-shadow: none;
+  transform: none;
+}
+.chip.variation-pill:hover:not(.is-active) {
+  background: #e9eaec;
+  color: #374151;
+  box-shadow: none;
+  transform: none;
+}
+.chip.variation-pill.is-active {
+  background: #ffffff;
+  border-color: #182325; /* black border */
+  color: #182325; /* black text */
+  box-shadow: none;
+}
+
+/* =================================================================
+   VARIATION TAGS (.vtag) — the read-only echo of a chosen variation
+   on cart / checkout / order line items ("Size: 1 Kg"). Shares the
+   UNSELECTED .chip.variation-pill grey (#F3F4F6) so a tag reads as
+   the same object as the selector it came from — but it is static:
+   no border, no shadow, no hover, no cursor, so it never invites a
+   click. Only render these for VARIABLE products; simple products
+   get no tag row at all. Wrap a set in .vtags for the gap.
+   ================================================================= */
+.vtags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.vtag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: #f3f4f6;
+  font-size: 11px;
+  line-height: 1.45;
+  white-space: nowrap;
+}
+.vtag__k {
+  color: #6b7280; /* label — muted */
+}
+.vtag__v {
+  color: #374151; /* value — carries the weight */
+  font-weight: 500;
+}
+
+/* =================================================================
+   POINTS BADGE (.points-badge) — "Earn 350 Points" loyalty badge.
+   Matched to Figma node 6162-30470: mint #E7FFFC, 2px radius, 3px gap,
+   4px/2px padding, 18px icon, 12px SemiBold #182325 with the VALUE in
+   brand pink #DB336C. Reusable — pair it with any price.
+   ================================================================= */
+.points-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 4px;
+  border-radius: 2px;
+  background: #e7fffc; /* primary-light / extra light turquoise */
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #182325;
+  white-space: nowrap;
+}
+.points-badge img {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+.points-badge__value {
+  color: #db336c; /* brand pink */
+}
+
+/* =================================================================
+   CATEGORY NAV — current-category state. The page declares itself via
+   <body data-path="/shop/cakes">; headerHTML() matches that against
+   CATEGORY_NAV[].url and marks the item .is-current + aria-current.
+   Reads as: soft mint pill + darker/bolder label + a turquoise underline
+   anchored to the bar. Kept light — the icons are already colourful, so a
+   heavy dark fill (like .chip.is-active) would fight them.
+   ================================================================= */
+.catnav-item {
+  position: relative;
+}
+.catnav-item.is-current {
+  background: #e7fffc; /* primary-light */
+}
+.catnav-item.is-current span {
+  font-weight: 600;
+  color: #182325;
+}
+.catnav-item.is-current img {
+  transform: scale(1.06);
+}
+.catnav-item img {
+  transition: transform 0.25s cubic-bezier(0.34, 1.3, 0.5, 1);
+}
+/* Underline indicator — grows out from the centre when it becomes current. */
+.catnav-item.is-current::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -4px;
+  height: 3px;
+  width: 26px;
+  border-radius: 999px;
+  background: #8cbab5; /* dark turquoise */
+  transform: translateX(-50%) scaleX(0);
+  transform-origin: center;
+  animation: catnavUnderline 0.32s cubic-bezier(0.34, 1.3, 0.5, 1) forwards;
+}
+@keyframes catnavUnderline {
+  to {
+    transform: translateX(-50%) scaleX(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .catnav-item.is-current::after {
+    animation: none;
+    transform: translateX(-50%) scaleX(1);
+  }
+  .catnav-item img {
+    transition: none;
+  }
+}
+
+/* =================================================================
+   DELIVERY NOTE (.delivery-note) — THE one delivery/ETA bar for the
+   whole site. Design comes from the single-product page: deliberately
+   subtle (white, low, bordered, 13px) so it NEVER competes with the
+   primary Add-to-cart CTA beside it — see [exception-cta-system] and
+   the "nothing beside the primary CTA shares its turquoise" rule.
+   Replaced the old green-truck + green-text notes on cart/checkout.
+
+   Do NOT hand-roll another delivery bar: render it via [data-delivery-note]
+   (initDeliveryNote in scripts.js) so a change here lands site-wide.
+   ================================================================= */
+.delivery-note {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 14px;
+  background: #ffffff;
+  border: 1px solid #f3f4f6; /* gray-200 */
+  border-radius: 10px;
+}
+.delivery-note__main {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.delivery-note__icon {
+  position: relative;
+  flex: none;
+  width: 28px;
+  height: 28px;
+}
+.delivery-note__icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.delivery-note__text {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 140%;
+  color: #182325; /* textSecondary */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.delivery-note__place {
+  font-weight: 500;
+}
+
+/* =================================================================
+   PDP CALLOUTS (.pdp-callouts) — the three trust badges that sit
+   under the product price on the PDP (Figma 6205:31458), replacing
+   the single .delivery-note bar there. Cart + checkout still use
+   .delivery-note, so that component is untouched.
+   Each badge is one .callout with a colour variant; the tinted halo
+   behind the icon is drawn in CSS because the .webp art ships with a
+   transparent background.
+   ================================================================= */
+.pdp-callouts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 20px;
+  width: 100%;
+  padding-block: 4px;
+}
+/* Borderless variant (Figma 6207:35931): no card, no padding — just the
+   haloed icon + text. The tinted circle behind the icon is the only
+   colour each badge carries.
+   Spacing rhythm matters here: with no boxes to separate them, the gap
+   BETWEEN badges must stay clearly larger than the icon→text gap inside
+   one, or the three read as a single dense strip. */
+.callout {
+  --callout-halo: transparent;
+  display: flex;
+  flex: 1 1 200px;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+/* The PDP info column is only ~390px at 1280 and ~640px at 1512 (the
+   gallery takes 698px), far narrower than the 888px Figma frame — so
+   from lg up, where the two-column layout kicks in, the badges go
+   nowrap and share the row equally at a reduced scale. Below lg the
+   column is full width and they stack. */
+@media (min-width: 1024px) {
+  .pdp-callouts {
+    flex-wrap: nowrap;
+    gap: 18px;
+  }
+  .callout {
+    flex: 1 1 0;
+    gap: 8px;
+  }
+}
+@media (min-width: 1440px) {
+  .pdp-callouts {
+    gap: 26px;
+  }
+  .callout {
+    gap: 10px;
+  }
+}
+.callout__icon {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+}
+@media (min-width: 1024px) {
+  .callout__icon {
+    width: 40px;
+    height: 40px;
+  }
+}
+@media (min-width: 1440px) {
+  .callout__icon {
+    width: 48px;
+    height: 48px;
+  }
+}
+.callout__icon::before {
+  content: "";
+  position: absolute;
+  width: 86%;
+  height: 86%;
+  border-radius: 50%;
+  background: var(--callout-halo);
+}
+.callout__icon img {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.callout__body {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+.callout__title {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #182325; /* Text/Primary Text */
+}
+/* Looser leading on the subtitle: it wraps to two lines in this column,
+   and 1.3 packed the lines too tightly to scan. */
+.callout__sub {
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.45;
+  color: #6f7276; /* Text/Secondary Text */
+}
+.callout__edit {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: 500;
+  line-height: 1.3;
+  color: #db336c; /* Secondary/Pink */
+  text-decoration: underline;
+  cursor: pointer;
+}
+@media (min-width: 1024px) {
+  .callout__title {
+    font-size: 12px;
+  }
+  .callout__sub {
+    font-size: 10px;
+  }
+}
+@media (min-width: 1440px) {
+  .callout__title {
+    font-size: 13px;
+  }
+  .callout__sub {
+    font-size: 11px;
+  }
+}
+.callout--baked {
+  --callout-halo: #f8dfe2; /* Secondary/light pink */
+}
+.callout--delivery {
+  --callout-halo: #eed3b8; /* Secondary/Beige */
+}
+.callout--natural {
+  --callout-halo: #b0ded9; /* Primary/turquoise */
+}
+
+/* =================================================================
+   PROMO CODE (.promo) — matched to the motion reference Mark supplied.
+   Resting = ONE bare field with "Apply" as an inline text LINK (no
+   tinted wrapper, no heading, no pill button). On apply the box flashes
+   brand Success green, a light radial wipe expands from the centre,
+   confetti bursts (JS canvas), and the field is REPLACED in place by a
+   success row: green check + code + discount subtitle + × to remove.
+   Both states share one box, so nothing jumps. Wired by initPromo().
+   ================================================================= */
+.promo {
+  position: relative;
+}
+.promo__form {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 52px;
+  padding-inline: 14px;
+  background: #ffffff;
+  border: 1px solid #dee2e6; /* gray-3 */
+  border-radius: 10px;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.promo__form:focus-within {
+  border-color: #182325;
+  box-shadow: 0 0 0 3px rgba(24, 35, 37, 0.06);
+}
+/* REQUIRED: the UA's [hidden]{display:none} is specificity 0,1,0 and loses
+   to the .promo__form / .promo__success display:flex above, so JS toggling
+   .hidden would show BOTH states at once without these.
+   Same trap for the promo-driven summary Discount row: it carries Tailwind's
+   .flex utility, which also beats [hidden] — without this it rendered
+   "Discount − EGP 0.00" on a cart with no code applied. */
+.promo__form[hidden],
+.promo__success[hidden],
+[data-summary-discount-row][hidden] {
+  display: none;
+}
+.promo__input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font-size: 14px;
+  color: #182325;
+}
+.promo__input::placeholder {
+  color: #a8abaf; /* gray-4 */
+}
+/* The "Apply" LINK — a text action, deliberately NOT a .btn: it lives
+   inside the field and must not read as a second button competing with
+   the page's one primary CTA. */
+.promo__apply {
+  flex: none;
+  border: 0;
+  padding: 6px 2px;
+  background: transparent;
+  font-size: 15px;
+  font-weight: 500;
+  color: #db336c; /* brand pink — the action accent */
+  cursor: pointer;
+  transition:
+    opacity 0.2s ease,
+    color 0.2s ease;
+}
+.promo__apply:hover:not(:disabled) {
+  text-decoration: underline;
+}
+.promo__apply:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* Applied state */
+.promo__success {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 8px 14px;
+  background: #e9f7ec; /* light tint of Success #209B34 */
+  border: 1px solid rgba(32, 155, 52, 0.35);
+  border-radius: 10px;
+}
+.promo__check {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #209b34; /* brand Success */
+  color: #ffffff;
+}
+.promo__check svg {
+  width: 15px;
+  height: 15px;
+}
+.promo__meta {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.promo__code {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #182325;
+}
+.promo__desc {
+  font-size: 11px;
+  line-height: 1.3;
+  color: #4b5563;
+}
+.promo__remove {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #6b7280;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+.promo__remove svg {
+  width: 14px;
+  height: 14px;
+}
+.promo__remove:hover {
+  background: rgba(32, 155, 52, 0.12);
+  color: #182325;
+}
+
+/* Green flash + radial wipe. The flash sits ON TOP (z-3) and fades out
+   once the success row is swapped in underneath — both end on #e9f7ec,
+   so the hand-off is seamless. */
+.promo__flash {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #209b34;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s ease;
+}
+.promo.is-applying .promo__flash {
+  opacity: 1;
+  transition-duration: 0.1s;
+}
+.promo__wipe {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 130%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #e9f7ec;
+  transform: translate(-50%, -50%) scale(0);
+}
+.promo.is-applying .promo__wipe {
+  animation: promoWipe 0.44s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+@keyframes promoWipe {
+  from {
+    transform: translate(-50%, -50%) scale(0);
+  }
+  to {
+    transform: translate(-50%, -50%) scale(2.2);
+  }
+}
+
+/* Invalid code */
+.promo.is-invalid .promo__form {
+  border-color: #d83434; /* brand Error */
+  animation: promoShake 0.4s ease;
+}
+.promo__error {
+  margin-top: 6px;
+  font-size: 12px;
+  color: #d83434;
+}
+@keyframes promoShake {
+  10%,
+  90% {
+    transform: translateX(-1px);
+  }
+  20%,
+  80% {
+    transform: translateX(2px);
+  }
+  30%,
+  50%,
+  70% {
+    transform: translateX(-4px);
+  }
+  40%,
+  60% {
+    transform: translateX(4px);
+  }
+}
+
+/* Fireworks canvas — fixed, above the page, never interactive. */
+.promo-fx {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .promo.is-applying .promo__wipe,
+  .promo.is-invalid .promo__form {
+    animation: none;
+  }
+  .promo__flash {
+    display: none;
+  }
+}
+
+/* =================================================================
+   SEGMENTED — sliding-thumb toggle for the homepage products tabs.
+   Same surface as .chip: 6px radius, no border, white bg, soft 10%
+   shadow. A dark thumb slides under the active segment (nested 4px
+   radius); segments are transparent and their text turns white when
+   active, with a subtle pop. Reuses the .tab-btn / data-tab wiring;
+   JS (initSegmented) positions the thumb. Variation selectors and
+   filters stay as .chip pills (same look, no slider).
+   ================================================================= */
+.segmented {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 4px;
+  border-radius: 6px;
+  border: 0;
+  background: #ffffff;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.12); /* even, low-Y — wraps the track */
+  overflow: hidden; /* clip the thumb's gentle overshoot to the track */
+  max-width: 100%;
+}
+.segmented__thumb {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 0;
+  width: 0;
+  border-radius: 4px;
+  background: #182325; /* primaryDark */
+  opacity: 0;
+  transform: translateX(0);
+  transition:
+    transform 0.42s cubic-bezier(0.34, 1.25, 0.64, 1),
+    width 0.36s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, width;
+  pointer-events: none;
+  z-index: 0;
+}
+.segmented.is-ready .segmented__thumb {
+  opacity: 1;
+}
+.segmented.is-init .segmented__thumb {
+  transition: none; /* no slide on first placement / resize */
+}
+.segmented .tab-btn {
+  position: relative;
+  z-index: 1;
+  border: 0;
+  background: transparent;
+  color: #6f7276; /* secondary text */
+  cursor: pointer;
+  white-space: nowrap;
+  border-radius: 4px;
+  transition: color 0.25s ease;
+}
+.segmented .tab-btn:hover:not(.is-active) {
+  color: #182325;
+}
+/* Pre-JS fallback: keep active text dark (readable on white) until
+   the thumb is positioned; once ready, active text goes white +pops. */
+.segmented .tab-btn.is-active {
+  color: #182325;
+}
+.segmented.is-ready .tab-btn.is-active {
+  color: #ffffff;
+  animation: segLabelPop 0.4s ease;
+}
+@keyframes segLabelPop {
+  0% {
+    transform: scale(1);
+  }
+  45% {
+    transform: scale(1.09);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .segmented__thumb {
+    transition: none;
+  }
+  .segmented.is-ready .tab-btn.is-active {
+    animation: none;
+  }
+  .chip {
+    transition: none;
+  }
+}
+
+/* =================================================================
+   COUNTER — the quantity counter for the single-product page and the
+   cart summaries, styled after the Base UI number-field: a bordered,
+   rounded group with gray end-buttons (minus / plus), thin dividers,
+   and a white center holding the value. Size scales by position via
+   --c-* custom props: base = 44px, .counter--lg = product/cart line
+   (48px→70px responsive), .counter--sm = the cart-drawer line. JS
+   wiring is unchanged (data-stepper/data-step/data-qty). NOTE: the
+   product-CARD widget counter is intentionally separate (turquoise,
+   own utility markup) and is NOT this component.
+   ================================================================= */
+.counter {
+  --c-h: 44px;
+  --c-btn: 44px;
+  --c-radius: 10px;
+  --c-qty: 56px;
+  --c-icon: 16px;
+  --c-font: 1rem;
+  display: inline-flex;
+  align-items: stretch;
+  flex: none; /* never shrink — overflow:hidden would clip the + button */
+  height: var(--c-h);
+  background: #ffffff;
+  border: 1px solid #e5e7eb; /* light gray hairline */
+  border-radius: var(--c-radius);
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+}
+.counter__btn {
+  flex: none;
+  width: var(--c-btn);
+  display: grid;
+  place-items: center;
+  background: #f9fafb; /* gray-50 end caps */
+  color: #374151; /* gray-700 glyphs */
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+.counter__btn:hover {
+  background: #f3f4f6; /* gray-100 */
+}
+.counter__btn:active {
+  background: #e5e7eb; /* gray-200 */
+}
+.counter__btn:first-child {
+  border-right: 1px solid #e5e7eb; /* divider before the value */
+}
+.counter__inc {
+  border-left: 1px solid #e5e7eb; /* divider after the value */
+}
+.counter__btn svg,
+.counter__btn img {
+  width: var(--c-icon);
+  height: var(--c-icon);
+}
+.counter__qty {
+  flex: 1 1 auto;
+  min-width: var(--c-qty);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  font-size: var(--c-font);
+  font-weight: 500;
+  line-height: 1;
+  color: #182325;
+  font-variant-numeric: tabular-nums;
+}
+.counter--lg {
+  --c-h: 48px;
+  --c-btn: 42px;
+  --c-radius: 10px;
+  --c-qty: 46px;
+  --c-icon: 17px;
+  --c-font: 1rem;
+}
+@media (min-width: 768px) {
+  .counter--lg {
+    --c-h: 56px;
+    --c-btn: 48px;
+    --c-radius: 12px;
+    --c-qty: 52px;
+    --c-icon: 20px;
+    --c-font: 1.125rem;
+  }
+}
+.counter--sm {
+  --c-h: 34px;
+  --c-btn: 34px;
+  --c-radius: 8px;
+  --c-qty: 40px;
+  --c-icon: 14px;
+  --c-font: 0.9rem;
+}
+
+/* =================================================================
+   GOOEY PRODUCT TABS — vanilla port of the shadcn "gooey-filter tabs"
+   (21st.dev/@danielpetho). A sliding grey-05 tab "thumb" liquid-morphs
+   into the content panel via an SVG goo filter (#goo-tabs); the labels
+   and the content sit OUTSIDE the filter (crisp). initGooTabs (scripts
+   .js) slides the thumb + swaps the panel with a blur/slide-in.
+   ================================================================= */
+[data-goo-tabs] {
+  --goo-fill: #f5f5f6; /* brand Grey 05 — thumb + panel */
+  --goo-tab-h: 48px;
+}
+.goo-shapes {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.goo-panel-bg {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  top: var(--goo-tab-h);
+  background: var(--goo-fill);
+  border-radius: 18px;
+}
+.goo-thumb {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: calc(var(--goo-tab-h) + 10px); /* overlaps the panel so they merge */
+  background: var(--goo-fill);
+  border-radius: 14px 14px 0 0;
+  transition:
+    transform 0.45s cubic-bezier(0.34, 1.3, 0.5, 1),
+    width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, width;
+}
+.goo-labels {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  height: var(--goo-tab-h);
+}
+.goo-tab {
+  flex: 1 1 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: #6b7280;
+  transition: color 0.25s ease;
+  padding: 0 8px;
+}
+.goo-tab.is-active {
+  color: #182325;
+  font-weight: 600;
+}
+.goo-content-wrap {
+  position: relative;
+  z-index: 10;
+}
+[data-goo-content] {
+  animation: goo-in 0.4s ease;
+}
+@keyframes goo-in {
+  0% {
+    opacity: 0;
+    transform: translateY(16px);
+    filter: blur(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+@media (min-width: 768px) {
+  [data-goo-tabs] {
+    --goo-tab-h: 52px;
+  }
+  .goo-tab {
+    font-size: 1rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .goo-thumb {
+    transition: none;
+  }
+  [data-goo-content] {
+    animation: none;
+  }
+}
+
+/* =================================================================
+   FAV-BTN — the ONE favorite/wishlist toggle (product-card widget +
+   single-product page). Surface matches the unselected chip/tab:
+   white bg, light-grey (#DEE2E6) border, soft shadow. The heart is an
+   inline SVG (`.fav-heart`); on `.is-fav` it fills pink (#DB336C) and
+   pops. Size stays on the element (size-8 / w-10 md:w-11). Toggle via
+   `data-fav` → initDelegation flips `.is-fav`.
+   ================================================================= */
+.fav-btn {
+  display: grid;
+  place-items: center;
+  flex: none;
+  background: #ffffff;
+  border: 1px solid #dee2e6; /* gray-3 light grey */
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  color: #6f7276; /* resting heart outline */
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.fav-btn:hover {
+  color: #db336c; /* cta pink */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+.fav-btn svg {
+  width: 55%;
+  height: 55%;
+}
+.fav-btn .fav-heart {
+  fill: none;
+  stroke: currentColor;
+  transition: fill 0.2s ease;
+}
+.fav-btn.is-fav {
+  background: #db336c; /* cta pink fill when selected */
+  color: #ffffff; /* heart (stroke+fill via currentColor) goes white */
+  border-color: #db336c;
+}
+.fav-btn.is-fav .fav-heart {
+  fill: currentColor;
+}
+/* Pop + burst animation is the shared [data-fav] system above. */
+@media (prefers-reduced-motion: reduce) {
+  [data-fav].is-fav svg,
+  [data-fav].is-fav::after {
+    animation: none;
+  }
+}
+
+/* =================================================================
+   SCROLL REVEAL — add [data-reveal] to any element; JS toggles
+   .reveal-in when it scrolls into view. Stagger via inline
+   style="--reveal-delay: .12s". Respects reduced-motion.
+   ================================================================= */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 0.61, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0s);
+  will-change: opacity, transform;
+}
+[data-reveal].reveal-in {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* =================================================================
+   PINNED HORIZONTAL SCROLL — cards translate X on vertical scroll.
+   Default (mobile / reduced-motion): a plain swipeable row. When JS
+   adds .hscroll-on (>= md), the pin holds and JS drives translateX.
+   ================================================================= */
+.hscroll-track {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.hscroll-track::-webkit-scrollbar {
+  display: none;
+}
+.hscroll-card {
+  scroll-snap-align: start;
+}
+.hscroll-on .hscroll-pin {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+}
+.hscroll-on .hscroll-track {
+  overflow: visible;
+  will-change: transform;
+}
+
+/* Header star burst (testimonials): each star pops in with a stagger when
+   the row scrolls into view (reuses [data-reveal] → .reveal-in from JS). */
+.stars-row[data-reveal] {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+.stars-row .star {
+  opacity: 0;
+  transform: scale(0.2) rotate(-25deg);
+}
+.stars-row.reveal-in .star {
+  animation: starPop 0.55s cubic-bezier(0.2, 0.8, 0.3, 1.5) both;
+  animation-delay: calc(var(--i) * 90ms);
+}
+@keyframes starPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.2) rotate(-25deg);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.2) rotate(6deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stars-row .star {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+}
+
+/* =================================================================
+   FOOTER ENTRANCE — each .footer-anim block eases up + fades in when
+   the footer scrolls into view (.footer-in, toggled by JS), and
+   reverses out on scroll-up. Staggered via --footer-delay; repeats.
+   ================================================================= */
+.footer-anim {
+  opacity: 0;
+  transform: translateY(46px);
+  transition:
+    opacity 0.8s cubic-bezier(0.22, 0.61, 0.36, 1),
+    transform 0.8s cubic-bezier(0.22, 0.61, 0.36, 1);
+  transition-delay: var(--footer-delay, 0s);
+  will-change: opacity, transform;
+}
+.footer-in .footer-anim {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .footer-anim {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* =================================================================
+   FLOATING CART — align its right edge to the page content's right
+   edge (like the header cart), not the raw viewport edge, so it stops
+   drifting off to the corner on wide screens. 696px = half the 1512px
+   header container (756) minus its 60px side padding.
+   ================================================================= */
+.floating-cart {
+  inset-inline-end: max(24px, calc(50vw - 696px));
+}
+@media (min-width: 1024px) {
+  .floating-cart {
+    inset-inline-end: max(60px, calc(50vw - 696px));
+  }
+}
+
