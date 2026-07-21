@@ -2159,7 +2159,7 @@ body[data-purchased="true"] .review-gate-hint {
 .segmented.is-init .segmented__thumb {
   transition: none; /* no slide on first placement / resize */
 }
-.segmented .tab-btn {
+.segmented > button {
   position: relative;
   z-index: 1;
   border: 0;
@@ -2170,15 +2170,15 @@ body[data-purchased="true"] .review-gate-hint {
   border-radius: 4px;
   transition: color 0.25s ease;
 }
-.segmented .tab-btn:hover:not(.is-active) {
+.segmented > button:hover:not(.is-active) {
   color: #182325;
 }
 /* Pre-JS fallback: keep active text dark (readable on white) until
    the thumb is positioned; once ready, active text goes white +pops. */
-.segmented .tab-btn.is-active {
+.segmented > button.is-active {
   color: #182325;
 }
-.segmented.is-ready .tab-btn.is-active {
+.segmented.is-ready > button.is-active {
   color: #ffffff;
   animation: segLabelPop 0.4s ease;
 }
@@ -2197,7 +2197,7 @@ body[data-purchased="true"] .review-gate-hint {
   .segmented__thumb {
     transition: none;
   }
-  .segmented.is-ready .tab-btn.is-active {
+  .segmented.is-ready > button.is-active {
     animation: none;
   }
   .chip {
@@ -3108,4 +3108,24 @@ input[type="checkbox"]:not(.wallet-toggle__input):checked::after {
     inset-inline-start: auto;
     inset-inline-end: -48px;
   }
+}
+
+/* Segmented tracks that can outgrow the viewport (the FAQ tabs run to
+   ~725px of labels). The track keeps its natural width — clipping it
+   would make later segments unreachable, since .segmented is
+   overflow:hidden for the thumb overshoot — and the WRAPPER scrolls
+   instead. w-max + auto margins centre it while it fits and scroll
+   cleanly once it doesn't. */
+.segmented-scroll {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+/* display:flex (not the base inline-flex) so margin-inline:auto actually
+   centres it — auto margins do nothing on an inline-level box. */
+.segmented-scroll > .segmented {
+  display: flex;
+  width: max-content;
+  max-width: none;
+  margin-inline: auto;
 }

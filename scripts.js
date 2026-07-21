@@ -1100,8 +1100,10 @@
       const thumb = seg.querySelector(".segmented__thumb");
       if (!thumb || seg.dataset.segReady) return;
       seg.dataset.segReady = "1";
-      const btns = seg.querySelectorAll(".tab-btn");
-      const activeBtn = () => seg.querySelector(".tab-btn.is-active") || btns[0];
+      /* Direct-child buttons, not .tab-btn — the FAQ tabs and the media-center
+         filters use their own class names but are the same control. */
+      const btns = seg.querySelectorAll(":scope > button");
+      const activeBtn = () => seg.querySelector(":scope > button.is-active") || btns[0];
       const place = (btn, animate) => {
         if (!btn) return;
         if (!animate) seg.classList.add("is-init");

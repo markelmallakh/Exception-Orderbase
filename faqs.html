@@ -40,13 +40,16 @@
           <!-- ================= CATEGORY FILTER (tabs, replaces ChipButton state) ================= -->
           <!-- Each tab reveals a filtered accordion panel; auto-wired by scripts.js -->
           <div data-tabs>
-            <div class="flex flex-wrap justify-center gap-2 self-stretch my-3 md:my-6">
-              <button type="button" class="tab-btn is-active chip px-4 py-0.5 text-sm uppercase leading-6 font-medium" data-tab="all">All</button>
-              <button type="button" class="tab-btn chip px-4 py-0.5 text-sm uppercase leading-6 font-medium" data-tab="orders">Orders &amp; Delivery</button>
-              <button type="button" class="tab-btn chip px-4 py-0.5 text-sm uppercase leading-6 font-medium" data-tab="products">Products &amp; Ingredients</button>
-              <button type="button" class="tab-btn chip px-4 py-0.5 text-sm uppercase leading-6 font-medium" data-tab="payment">Payment &amp; Pricing</button>
-              <button type="button" class="tab-btn chip px-4 py-0.5 text-sm uppercase leading-6 font-medium" data-tab="account">Account &amp; Loyalty</button>
-            </div>
+            <div class="segmented-scroll no-scrollbar my-3 md:my-6">
+  <div class="segmented text-sm font-medium" data-segmented role="tablist">
+    <span class="segmented__thumb" aria-hidden="true"></span>
+    <button type="button" class="tab-btn is-active px-4 py-1.5 text-sm uppercase font-medium" data-tab="all">All</button>
+    <button type="button" class="tab-btn px-4 py-1.5 text-sm uppercase font-medium" data-tab="orders">Orders &amp; Delivery</button>
+    <button type="button" class="tab-btn px-4 py-1.5 text-sm uppercase font-medium" data-tab="products">Products &amp; Ingredients</button>
+    <button type="button" class="tab-btn px-4 py-1.5 text-sm uppercase font-medium" data-tab="payment">Payment &amp; Pricing</button>
+    <button type="button" class="tab-btn px-4 py-1.5 text-sm uppercase font-medium" data-tab="account">Account &amp; Loyalty</button>
+  </div>
+</div>
 
             <div class="max-w-[920px] mx-auto px-4 pt-6">
               <!-- ============ ALL ============ -->

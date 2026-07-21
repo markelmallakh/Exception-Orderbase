@@ -37,12 +37,15 @@
         <div class="container px-4">
           <section class="md:py-14">
             <!-- Optional category filter (client-side; filters the grid below) -->
-            <div class="mb-8 md:mb-12 flex flex-wrap items-center justify-center gap-2.5" data-blog-filter>
-              <button type="button" class="blog-filter-btn is-active px-5 py-2.5 chip text-sm font-medium" data-filter="all">All</button>
-              <button type="button" class="blog-filter-btn px-5 py-2.5 chip text-sm font-medium" data-filter="blog">Blog</button>
-              <button type="button" class="blog-filter-btn px-5 py-2.5 chip text-sm font-medium" data-filter="news">News</button>
-              <button type="button" class="blog-filter-btn px-5 py-2.5 chip text-sm font-medium" data-filter="event">Event</button>
-            </div>
+            <div class="segmented-scroll no-scrollbar mb-8 md:mb-12" data-blog-filter>
+  <div class="segmented text-sm font-medium" data-segmented role="tablist">
+    <span class="segmented__thumb" aria-hidden="true"></span>
+    <button type="button" class="blog-filter-btn is-active px-5 py-1.5 text-sm font-medium" data-filter="all">All</button>
+    <button type="button" class="blog-filter-btn px-5 py-1.5 text-sm font-medium" data-filter="blog">Blog</button>
+    <button type="button" class="blog-filter-btn px-5 py-1.5 text-sm font-medium" data-filter="news">News</button>
+    <button type="button" class="blog-filter-btn px-5 py-1.5 text-sm font-medium" data-filter="event">Event</button>
+  </div>
+</div>
 
             <!-- ============================ BLOG GRID ============================ -->
             <!-- Post cards → the same global component the homepage uses -->
