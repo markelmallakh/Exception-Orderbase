@@ -406,44 +406,8 @@
               <svg width="19" height="12" viewBox="0 0 19 12" fill="none" class="text-primaryDark"><path d="M13.5 1L18 6M18 6L13.5 11M18 6H0" stroke="currentColor" stroke-width="1.5" /></svg>
             </a>
           </div>
-          <div class="mx-auto grid w-full max-w-[1392px] grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            <a href="blog.html" class="group flex flex-col gap-3" data-reveal>
-              <div class="flex items-center gap-3">
-                <span class="rounded-[2px] bg-accent-50 px-2.5 py-1 text-xs font-medium text-accent-700">Event</span>
-                <span class="text-xs text-neutral-500">12 Jun 2025</span>
-              </div>
-              <div class="relative aspect-square w-full overflow-hidden rounded-[12px]"><img src="dummy-images/exception-image.jpg" alt="Hosting the Perfect Celebration at Home" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" /></div>
-              <h3 class="text-lg font-semibold leading-snug text-textSecondary group-hover:text-primaryDark">Hosting the Perfect Celebration at Home</h3>
-              <span class="mt-auto inline-flex items-center gap-1.5 text-sm font-medium text-primary transition-all group-hover:gap-2.5">Read more <svg width="16" height="10" viewBox="0 0 19 12" fill="none"><path d="M13.5 1L18 6M18 6L13.5 11M18 6H0" stroke="currentColor" stroke-width="1.5" /></svg></span>
-            </a>
-            <a href="blog.html" class="group flex flex-col gap-3" data-reveal style="--reveal-delay: 0.08s">
-              <div class="flex items-center gap-3">
-                <span class="rounded-[2px] bg-primary-100 px-2.5 py-1 text-xs font-medium text-primaryDark">Blog</span>
-                <span class="text-xs text-neutral-500">3 Jun 2025</span>
-              </div>
-              <div class="relative aspect-square w-full overflow-hidden rounded-[12px]"><img src="dummy-images/chocolate%20cover.webp" alt="The Story Behind Our Signature Baklava" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" /></div>
-              <h3 class="text-lg font-semibold leading-snug text-textSecondary group-hover:text-primaryDark">The Story Behind Our Signature Baklava</h3>
-              <span class="mt-auto inline-flex items-center gap-1.5 text-sm font-medium text-primary transition-all group-hover:gap-2.5">Read more <svg width="16" height="10" viewBox="0 0 19 12" fill="none"><path d="M13.5 1L18 6M18 6L13.5 11M18 6H0" stroke="currentColor" stroke-width="1.5" /></svg></span>
-            </a>
-            <a href="blog.html" class="group flex flex-col gap-3" data-reveal style="--reveal-delay: 0.16s">
-              <div class="flex items-center gap-3">
-                <span class="rounded-[2px] bg-accent-50 px-2.5 py-1 text-xs font-medium text-accent-700">Recipe</span>
-                <span class="text-xs text-neutral-500">28 May 2025</span>
-              </div>
-              <div class="relative aspect-square w-full overflow-hidden rounded-[12px]"><img src="dummy-images/exception-image-2.jpg" alt="The Syrup Makes the Difference" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" /></div>
-              <h3 class="text-lg font-semibold leading-snug text-textSecondary group-hover:text-primaryDark">The Syrup Makes the Difference</h3>
-              <span class="mt-auto inline-flex items-center gap-1.5 text-sm font-medium text-primary transition-all group-hover:gap-2.5">Read more <svg width="16" height="10" viewBox="0 0 19 12" fill="none"><path d="M13.5 1L18 6M18 6L13.5 11M18 6H0" stroke="currentColor" stroke-width="1.5" /></svg></span>
-            </a>
-            <a href="blog.html" class="group flex flex-col gap-3" data-reveal style="--reveal-delay: 0.24s">
-              <div class="flex items-center gap-3">
-                <span class="rounded-[2px] bg-primary-100 px-2.5 py-1 text-xs font-medium text-primaryDark">Guide</span>
-                <span class="text-xs text-neutral-500">15 May 2025</span>
-              </div>
-              <div class="relative aspect-square w-full overflow-hidden rounded-[12px]"><img src="dummy-images/icecream%20cover.webp" alt="A Recipe Rooted in Tradition" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" /></div>
-              <h3 class="text-lg font-semibold leading-snug text-textSecondary group-hover:text-primaryDark">A Recipe Rooted in Tradition</h3>
-              <span class="mt-auto inline-flex items-center gap-1.5 text-sm font-medium text-primary transition-all group-hover:gap-2.5">Read more <svg width="16" height="10" viewBox="0 0 19 12" fill="none"><path d="M13.5 1L18 6M18 6L13.5 11M18 6H0" stroke="currentColor" stroke-width="1.5" /></svg></span>
-            </a>
-          </div>
+          <!-- Post cards → global component (postCardHTML/initPosts in scripts.js) -->
+            <div data-posts data-posts-limit="4" class="mx-auto grid w-full max-w-[1392px] grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4"></div>
           <a href="blogs.html" class="btn btn--secondary btn--sm group self-center md:hidden">
             View all
             <svg width="15" height="10" viewBox="0 0 19 12" fill="none"><path d="M13.5 1L18 6M18 6L13.5 11M18 6H0" stroke="currentColor" stroke-width="1.5" /></svg>

@@ -1725,6 +1725,62 @@
   }
 
   /* ---------------------------------------------------------------
+     POST CARD — the ONE editorial card for the whole site (Mark:
+     "this is our posts global component, use it also in the media
+     center for all posts pages").
+
+     Vertical card: badge + date → 1:1 image → title → turquoise
+     "Read more →". Drop a placeholder and it fills itself:
+
+       <div data-posts></div>                  all posts
+       <div data-posts data-posts-limit="4"></div>   latest N
+
+     POSTS below is the single source for both the homepage strip and
+     the media-center grid, so a post added once shows up in both. The
+     media center previously used a completely different horizontal
+     192px-thumbnail card; that markup is gone.
+     --------------------------------------------------------------- */
+  const POST_BADGE = {
+    event: "bg-accent-50 text-accent-700",
+    recipe: "bg-accent-50 text-accent-700",
+    blog: "bg-primary-100 text-primaryDark",
+    guide: "bg-primary-100 text-primaryDark",
+    news: "bg-primary-100 text-primaryDark",
+  };
+  const POSTS = [
+    { cat: "event", label: "Event", date: "12 Jun 2025", title: "Hosting the Perfect Celebration at Home", img: "dummy-images/exception-image.jpg", url: "blog.html" },
+    { cat: "blog", label: "Blog", date: "3 Jun 2025", title: "The Story Behind Our Signature Baklava", img: "dummy-images/chocolate%20cover.webp", url: "blog.html" },
+    { cat: "blog", label: "Blog", date: "21 May 2025", title: "Five Cake Flavours Everyone Will Love", img: "dummy-images/image-4.webp", url: "blog.html" },
+    { cat: "news", label: "News", date: "8 May 2025", title: "New Flagship Branch Opens in New Cairo", img: "dummy-images/exception-image-2.jpg", url: "blog.html" },
+    { cat: "blog", label: "Blog", date: "27 Apr 2025", title: "How to Store Oriental Sweets and Keep Them Fresh", img: "dummy-images/image-7.webp", url: "blog.html" },
+    { cat: "event", label: "Event", date: "15 Apr 2025", title: "Ramadan Gift Boxes: a Taste of Tradition", img: "dummy-images/special-cake.webp", url: "blog.html" },
+  ];
+  function postCardHTML(p, i) {
+    const badge = POST_BADGE[p.cat] || POST_BADGE.blog;
+    return `
+      <a href="${p.url}" class="group flex flex-col gap-3" data-category="${p.cat}" data-reveal style="--reveal-delay:${(i % 4) * 0.08}s">
+        <div class="flex items-center gap-3">
+          <span class="rounded-[2px] ${badge} px-2.5 py-1 text-xs font-medium">${p.label}</span>
+          <span class="text-xs text-neutral-500">${p.date}</span>
+        </div>
+        <div class="relative aspect-square w-full overflow-hidden rounded-[12px]">
+          <img src="${p.img}" alt="${esc(p.title)}" loading="lazy" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+        </div>
+        <h3 class="text-lg font-semibold leading-snug text-textSecondary group-hover:text-primaryDark">${p.title}</h3>
+        <span class="mt-auto inline-flex items-center gap-1.5 text-sm font-medium text-primary transition-all group-hover:gap-2.5">Read more <svg width="16" height="10" viewBox="0 0 19 12" fill="none" aria-hidden="true"><path d="M13.5 1L18 6M18 6L13.5 11M18 6H0" stroke="currentColor" stroke-width="1.5"/></svg></span>
+      </a>`;
+  }
+  function initPosts(scope) {
+    scope.querySelectorAll("[data-posts]").forEach((el) => {
+      if (el.dataset.postsReady) return;
+      el.dataset.postsReady = "1";
+      const limit = parseInt(el.dataset.postsLimit, 10);
+      const list = limit > 0 ? POSTS.slice(0, limit) : POSTS;
+      el.innerHTML = list.map(postCardHTML).join("");
+    });
+  }
+
+  /* ---------------------------------------------------------------
      Vouchers (my-account-vouchers.html). A voucher is a one-time code
      worth a fixed EGP amount; activating it moves it to "Used" and adds
      its value to the wallet balance (see walletBalance above).
@@ -3230,6 +3286,7 @@
     initCheckoutSteps(scope);
     initCheckoutOptions(scope);
     initCountdown(scope);
+    initPosts(scope);
     initReveal(scope);
     initHScroll(scope);
   };
