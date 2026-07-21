@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Create Account — Exception</title>
+    <meta
+      name="description"
+      content="Create your Exception account to order handcrafted cakes and oriental sweets, track deliveries and collect loyalty points."
+    />
+    <!-- Tailwind (Play CDN) + faithful port of the project's tailwind.config.ts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="tw-config.js"></script>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <script defer src="scripts.js"></script>
+  </head>
+  <body data-page="register" data-path="/register" class="antialiased bg-white">
+    <!-- Shared header is injected here by scripts.js -->
+    <div id="site-header"></div>
+
+    <main class="overflow-x-hidden">
+      <!-- ============================ AUTH: REGISTER ============================ -->
+      <!-- Mirrors RegisterContainer.tsx: single centered card on a lightBlue→cream gradient. -->
+      <div class="px-4 py-10 md:py-24 bg-gray-100">
+        <div class="mx-auto w-full max-w-[712px]">
+          <div class="rounded-[20px] bg-white px-5 py-6 border border-gray-300 md:px-8 flex flex-col gap-5">
+            <h1 class="mb-5 pb-5 border-primaryLight border-b font-medium text-primaryDark text-2xl text-center">Create Account</h1>
+
+            <!-- Demo form: prevented + toasts on submit (see scripts.js data-demo-form) -->
+            <form data-demo-form="Account created!" data-redirect="my-account.html" class="flex flex-col gap-5 w-full">
+              <!-- Full name -->
+              <div class="grid xl:grid-cols-2 gap-4 md:gap-8">
+                <div class="flex flex-col gap-y-2">
+                  <label for="firstName" class="after:ps-1 text-gray-700 after:content-['*']">First Name</label>
+                  <input type="text" id="firstName" name="firstName" class="h-11 px-2.5 py-4 border border-customGrayMedium focus:border-primary-400 rounded-md text-textSecondary transition-colors text-sm font-medium outline-none" />
+                </div>
+                <div class="flex flex-col gap-y-2">
+                  <label for="lastName" class="after:ps-1 text-gray-700 after:content-['*']">Last Name</label>
+                  <input type="text" id="lastName" name="lastName" class="h-11 px-2.5 py-4 border border-customGrayMedium focus:border-primary-400 rounded-md text-textSecondary transition-colors text-sm font-medium outline-none" />
+                </div>
+              </div>
+
+              <!-- Email -->
+              <div class="flex flex-col gap-y-2">
+                <label for="email" class="after:ps-1 text-gray-700 after:content-['*']">Email</label>
+                <input type="email" id="email" name="email" class="h-11 px-2.5 py-4 border border-customGrayMedium focus:border-primary-400 rounded-md text-textSecondary transition-colors text-sm font-medium outline-none" />
+              </div>
+
+              <!-- Phone (styled text input with a country-code select prefix) -->
+              <div class="flex flex-col gap-2">
+                <label for="phone" class="after:ps-1 after:content-['*'] text-gray-700">Phone Number</label>
+                <div class="flex h-[44px] items-center rounded-lg border border-customGrayMedium focus-within:border-primary-400 px-[10px] transition-colors bg-white">
+                  <div class="relative mr-3 flex h-[30px] items-center gap-2 border-r border-[#979BA0] pr-3.5">
+                    <span class="text-base leading-none">🇪🇬</span>
+                    <select aria-label="Country code" class="bg-transparent text-sm font-normal text-[#182325] outline-none appearance-none pr-1 cursor-pointer">
+                      <option value="+20">+20</option>
+                      <option value="+966">+966</option>
+                      <option value="+971">+971</option>
+                      <option value="+974">+974</option>
+                      <option value="+1">+1</option>
+                      <option value="+44">+44</option>
+                    </select>
+                    <svg viewBox="0 0 24 24" fill="none" class="h-[14px] w-[14px] text-gray-500 pointer-events-none"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </div>
+                  <input type="tel" id="phone" name="phone" placeholder="10 1234 5678" class="h-full flex-1 min-w-0 bg-transparent text-base text-blackText outline-none" />
+                </div>
+              </div>
+
+              <!-- Password -->
+              <div class="flex flex-col gap-2">
+                <label for="password" class="after:ps-1 after:content-['*'] text-gray-700 font-medium">Password</label>
+                <div class="relative">
+                  <input type="password" id="password" name="password" class="h-11 w-full rounded-md border border-customGrayMedium focus:border-primary-400 px-2.5 py-4 font-medium text-gray-700 outline-none transition-colors" />
+                  <button type="button" data-password-toggle class="absolute end-[13px] top-1/2 -translate-y-1/2 inline-flex text-primaryText" aria-label="Show password">
+                    <svg viewBox="0 0 24 24" fill="none" class="w-6 h-6"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/></svg>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Confirm password -->
+              <div class="flex flex-col gap-2">
+                <label for="confirmPassword" class="after:ps-1 after:content-['*'] text-gray-700 font-medium">Confirm Password</label>
+                <div class="relative">
+                  <input type="password" id="confirmPassword" name="confirmPassword" class="h-11 w-full rounded-md border border-customGrayMedium focus:border-primary-400 px-2.5 py-4 font-medium text-gray-700 outline-none transition-colors" />
+                  <button type="button" data-password-toggle class="absolute end-[13px] top-1/2 -translate-y-1/2 inline-flex text-primaryText" aria-label="Show password">
+                    <svg viewBox="0 0 24 24" fill="none" class="w-6 h-6"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/></svg>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Date of birth (native selects, populated below) -->
+              <div class="grid grid-cols-3 gap-x-4 gap-y-2 md:gap-x-8">
+                <h5 class="col-span-3 text-gray-700">Date of Birth</h5>
+                <div class="relative">
+                  <select id="dobDay" name="dobDay" class="h-11 px-2.5 text-sm font-medium text-primaryText rounded-md w-full border border-customGrayMedium focus:border-primary-400 appearance-none bg-white outline-none">
+                    <option value="">Day</option>
+                  </select>
+                  <svg viewBox="0 0 24 24" fill="none" class="absolute end-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <div class="relative">
+                  <select id="dobMonth" name="dobMonth" class="h-11 px-2.5 text-sm font-medium text-primaryText rounded-md w-full border border-customGrayMedium focus:border-primary-400 appearance-none bg-white outline-none">
+                    <option value="">Month</option>
+                  </select>
+                  <svg viewBox="0 0 24 24" fill="none" class="absolute end-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <div class="relative">
+                  <select id="dobYear" name="dobYear" class="h-11 px-2.5 text-sm font-medium text-primaryText rounded-md w-full border border-customGrayMedium focus:border-primary-400 appearance-none bg-white outline-none">
+                    <option value="">Year</option>
+                  </select>
+                  <svg viewBox="0 0 24 24" fill="none" class="absolute end-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+              </div>
+
+              <!-- Gender -->
+              <div class="flex flex-col gap-1">
+                <h3 class="text-gray-700">Gender</h3>
+                <div class="optrow-group optrow-group--row">
+<label class="optrow">
+  <input type="radio" name="gender" value="male" class="sr-only" />
+  <span class="optrow__radio"></span>
+  <span class="optrow__body"><span class="optrow__title">Male</span></span>
+</label>
+<label class="optrow">
+  <input type="radio" name="gender" value="female" checked class="sr-only" />
+  <span class="optrow__radio"></span>
+  <span class="optrow__body"><span class="optrow__title">Female</span></span>
+</label>
+</div>
+              </div>
+
+              <!-- Terms -->
+              <label class="flex items-start gap-2 text-sm text-gray-700">
+                <input type="checkbox" name="terms" required class="mt-0.5" />
+                <span>I agree to the <a href="terms-conditions.html" class="text-primaryDark underline">Terms &amp; Conditions</a> and <a href="privacy-policy.html" class="text-primaryDark underline">Privacy Policy</a>.</span>
+              </label>
+
+              <button type="submit" class="btn btn--black btn--md w-full justify-center focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primaryDark">Create Account</button>
+
+              <p class="mb-5 text-primaryText text-sm text-center">
+                Already have an account?
+                <a href="login.html" class="pb-1 border-primaryColor border-b font-medium text-primaryColor">Login</a>
+              </p>
+            </form>
+
+            <!-- OR / social providers (AuthProviders) -->
+            <div class="border-t border-t-gray-300 w-full">
+              <div class="gap-5 grid grid-cols-2 pt-5">
+                <button type="button" class="flex w-full items-center justify-center gap-2 xl:gap-2.5 rounded-[10px] border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-[#3c4043] transition-colors hover:bg-gray-50 xl:h-[52px]" onclick="window.kToast &amp;&amp; window.kToast('Continue with Google (demo)')">
+                  <svg width="23" height="23" viewBox="0 0 23 23" fill="none" aria-hidden="true" class="shrink-0"><path d="M21.004 11.6266C21.004 10.9246 20.941 10.2496 20.824 9.60156H11.5V13.4356H16.828C16.594 14.6686 15.892 15.7126 14.839 16.4146V18.9076H18.052C19.924 17.1796 21.004 14.6416 21.004 11.6266Z" fill="#4285F4"/><path d="M11.4996 21.303C14.1726 21.303 16.4136 20.421 18.0516 18.909L14.8386 16.416C13.9566 17.01 12.8316 17.37 11.4996 17.37C8.92562 17.37 6.73862 15.633 5.95562 13.293H2.66162V15.849C4.29062 19.08 7.62962 21.303 11.4996 21.303Z" fill="#34A853"/><path d="M5.9561 13.2828C5.7581 12.6888 5.6411 12.0588 5.6411 11.4018C5.6411 10.7448 5.7581 10.1148 5.9561 9.52084V6.96484H2.6621C1.9871 8.29684 1.6001 9.79984 1.6001 11.4018C1.6001 13.0038 1.9871 14.5068 2.6621 15.8388L5.2271 13.8408L5.9561 13.2828Z" fill="#FBBC05"/><path d="M11.4996 5.442C12.9576 5.442 14.2536 5.946 15.2886 6.918L18.1236 4.083C16.4046 2.481 14.1726 1.5 11.4996 1.5C7.62962 1.5 4.29062 3.723 2.66162 6.963L5.95562 9.519C6.73862 7.179 8.92562 5.442 11.4996 5.442Z" fill="#EA4335"/></svg>
+                  <span class="hidden md:block">Sign up with Google</span>
+                  <span class="md:hidden">Google</span>
+                </button>
+                <button type="button" class="flex w-full items-center justify-center gap-2 xl:gap-2.5 rounded-[10px] bg-black px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-neutral-800 xl:h-[52px]" onclick="window.kToast &amp;&amp; window.kToast('Continue with Apple (demo)')">
+                  <svg viewBox="0 0 24 24" class="w-5 h-5 shrink-0" fill="currentColor" aria-hidden="true"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11Z"/></svg>
+                  <span class="hidden md:block">Sign up with Apple</span>
+                  <span class="md:hidden">Apple</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Shared footer is injected here by scripts.js -->
+    <div id="site-footer"></div>
+
+    <!-- Page-only enhancements: password toggles + date-of-birth options -->
+    <script>
+      document.querySelectorAll("[data-password-toggle]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var input = btn.parentElement.querySelector("input");
+          if (!input) return;
+          var toText = input.type === "password";
+          input.type = toText ? "text" : "password";
+          btn.setAttribute("aria-label", toText ? "Hide password" : "Show password");
+          btn.classList.toggle("text-primaryDark", toText);
+        });
+      });
+      (function () {
+        function fill(id, count, start, pad) {
+          var sel = document.getElementById(id);
+          if (!sel) return;
+          for (var i = 0; i < count; i++) {
+            var n = start === "year" ? new Date().getFullYear() - i : i + 1;
+            var opt = document.createElement("option");
+            opt.value = pad ? String(n).padStart(2, "0") : String(n);
+            opt.textContent = String(n);
+            sel.appendChild(opt);
+          }
+        }
+        fill("dobDay", 31, 1, true);
+        fill("dobMonth", 12, 1, true);
+        fill("dobYear", 100, "year", false);
+      })();
+    </script>
+  </body>
+</html>

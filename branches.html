@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Our Branches — Exception</title>
+    <meta
+      name="description"
+      content="Find your nearest Exception branch across Cairo, Giza and Alexandria — addresses, working hours, phone numbers and directions."
+    />
+    <!-- Tailwind (Play CDN) + faithful port of the project's tailwind.config.ts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="tw-config.js"></script>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <script defer src="scripts.js"></script>
+  </head>
+  <body data-page="branches" data-path="/branches" class="antialiased bg-white">
+    <!-- Shared header is injected here by scripts.js -->
+    <div id="site-header"></div>
+
+    <main class="overflow-x-hidden">
+      <section class="flex flex-col items-center py-10 xl:py-20">
+        <!-- ==================== MainHeader (global/MainHeader) ==================== -->
+        <div class="px-4 container">
+          <div class="flex flex-col items-center p-0 gap-1 w-full mx-auto">
+            <nav class="flex flex-row items-center p-0 gap-[6px] h-[17px] mb-1">
+              <a href="index.html" class="flex items-center gap-[6px] group">
+                <span class="font-normal text-[12px] leading-[140%] flex items-center text-primaryDark">Home</span>
+              </a>
+              <span class="w-3 h-3 flex items-center justify-center text-primaryDark">
+                <svg width="7" height="11" viewBox="0 0 7 11" fill="none" class="w-full h-full"><path d="M1.25 1.41732L5.33333 5.50065L1.25 9.58398" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" /></svg>
+              </span>
+              <span class="font-normal text-[12px] leading-[140%] flex items-center text-primaryDark opacity-50">Our Branches</span>
+            </nav>
+            <span class="eyebrow">Our Branches</span>
+            <h1 class="font-semibold text-[32px] md:text-[48px] leading-[120%] flex items-center text-center text-textSecondary">Find Exception Near You</h1>
+          </div>
+        </div>
+
+        <div class="pb-12 md:pb-24 w-full">
+          <!-- ==================== City / Area filters (static mockup) ==================== -->
+          <section class="bg-white mx-auto mb-8 md:mb-16 px-6 md:px-12 py-8 md:py-10 w-full flex flex-col gap-4 xl:gap-0 justify-between max-w-[980px]">
+            <form class="flex flex-wrap md:flex-nowrap gap-8 w-full justify-between" data-demo-form="Showing all Exception branches" data-reset="false">
+              <div class="w-full md:min-w-[361px]">
+                <label class="block mb-2 text-sm font-medium text-textSecondary">Cities</label>
+                <select name="city" class="w-full h-[52px] px-4 rounded-lg border border-border-light bg-white text-textSecondary text-sm focus:outline-none focus:border-primaryDark">
+                  <option value="all">All cities</option>
+                  <option>Cairo</option>
+                  <option>Giza</option>
+                  <option>Alexandria</option>
+                </select>
+              </div>
+              <div class="w-full md:min-w-[361px]">
+                <label class="block mb-2 text-sm font-medium text-textSecondary">Areas</label>
+                <select name="area" class="w-full h-[52px] px-4 rounded-lg border border-border-light bg-white text-textSecondary text-sm focus:outline-none focus:border-primaryDark">
+                  <option value="all">All areas</option>
+                  <option>Zamalek</option>
+                  <option>Heliopolis</option>
+                  <option>Nasr City</option>
+                  <option>Maadi</option>
+                  <option>Sheikh Zayed</option>
+                  <option>Downtown Alexandria</option>
+                </select>
+              </div>
+            </form>
+          </section>
+
+          <!-- ==================== Branch grid (BranchItem cards) ==================== -->
+          <div class="gap-5 md:gap-10 grid grid-cols-1 md:grid-cols-3 max-w-[1392px] mx-auto w-full px-4" id="branch-grid"></div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Shared footer is injected here by scripts.js -->
+    <div id="site-footer"></div>
+
+    <!-- Branch data → rendered as BranchItem cards -->
+    <script>
+      (function () {
+        const BRANCHES = [
+          ["Exception Zamalek", "12 26th of July St, Zamalek, Cairo", "8:00 AM - 12:00 AM", "+20 2 2735 1234"],
+          ["Exception Heliopolis", "Cleopatra Square, Heliopolis, Cairo", "9:00 AM - 11:00 PM", "+20 2 2418 5678"],
+          ["Exception Nasr City", "Abbas El Akkad St, Nasr City, Cairo", "8:30 AM - 11:30 PM", "+20 2 2274 9012"],
+          ["Exception Maadi", "Road 9, Maadi, Cairo", "9:00 AM - 11:00 PM", "+20 2 2358 3456"],
+          ["Exception Sheikh Zayed", "Americana Plaza, Sheikh Zayed, Giza", "10:00 AM - 12:00 AM", "+20 2 3850 7890"],
+          ["Exception Alexandria", "Fouad St, Downtown, Alexandria", "9:00 AM - 11:00 PM", "+20 3 486 2345"],
+        ];
+        const phoneIcon =
+          '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" class="w-3.5 h-3.5"><path d="M5.31011 2.30419C4.57119 1.56527 3.37316 1.56527 2.63424 2.30419L2.35485 2.58358C1.98061 2.95782 1.73277 3.45098 1.75094 3.97992C1.81614 5.87888 2.71907 7.95094 4.38406 9.61593C6.04906 11.2809 8.12112 12.1839 10.0201 12.2491C10.549 12.2672 11.0422 12.0194 11.4164 11.6451L11.6958 11.3658C12.4347 10.6268 12.4347 9.42881 11.6958 8.68989L11.5855 8.5796C10.9951 7.98921 10.0644 7.91218 9.38502 8.39748C9.00867 8.6663 8.53324 8.78661 8.09938 8.62639C7.50662 8.4075 6.93649 8.04946 6.44351 7.55649C5.95053 7.06351 5.5925 6.49338 5.37361 5.90062C5.21339 5.46676 5.3337 4.99133 5.60252 4.61498C6.08782 3.93556 6.01079 3.00487 5.4204 2.41448L5.31011 2.30419Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        const mapIcon =
+          '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" class="w-3.5 h-3.5"><path d="M5.75 9.83333L11 11L5.75 0.5L0.5 11L5.75 9.83333ZM5.75 9.83333V5.16667" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        function card([name, address, hours, phone]) {
+          const tel = phone.replace(/\s/g, "");
+          const mapLink = "https://maps.google.com/?q=" + encodeURIComponent(name + " " + address);
+          return `
+          <div class="md:w-full">
+            <div class="flex flex-col items-start p-4 px-3 gap-3 w-full bg-neutral-white border border-border-light rounded-lg box-border xl:min-w-[453px] h-full">
+              <!-- Header: name + quick actions -->
+              <div class="flex flex-row justify-between items-start gap-3 w-full">
+                <h3 class="flex items-center m-0 font-semibold text-base leading-[140%] text-textSecondary">${name}</h3>
+                <div class="flex flex-row items-center gap-1.5 shrink-0">
+                  <a href="tel:${tel}" class="flex flex-row justify-center items-center w-6 h-6 p-0 bg-primary-200 rounded-full text-primary hover:text-primary-700 hover:bg-primary-300 transition-colors">${phoneIcon}</a>
+                  <a href="${mapLink}" target="_blank" rel="noopener noreferrer" class="flex flex-row justify-center items-center w-6 h-6 p-0 bg-primary-200 rounded-full text-primary hover:text-primary-700 hover:bg-primary-300 transition-colors">${mapIcon}</a>
+                </div>
+              </div>
+              <div class="w-full h-px opacity-20 border-t border-primary"></div>
+              <!-- Address -->
+              <div class="flex flex-col items-start w-full gap-1">
+                <p class="w-full m-0 font-medium text-xs leading-[140%] text-neutral-secondary">Address</p>
+                <p class="m-0 font-medium text-sm leading-[140%] text-textSecondary">${address}</p>
+                <a href="${mapLink}" target="_blank" rel="noopener noreferrer" class="m-0 mt-1 font-normal text-sm leading-[140%] text-primary hover:text-primary-700 no-underline transition-colors">Get Direction</a>
+              </div>
+              <!-- Working hours + phone -->
+              <div class="flex flex-row items-start gap-3 w-full flex-wrap">
+                <div class="flex flex-col items-start min-w-[146px] gap-1">
+                  <p class="w-full m-0 font-medium text-xs leading-[140%] text-neutral-secondary">Working Hours</p>
+                  <p class="m-0 font-medium text-sm leading-[140%] text-textSecondary" style="direction: ltr">${hours}</p>
+                </div>
+                <div class="flex flex-col items-start min-w-[146px] gap-1">
+                  <p class="w-full m-0 font-medium text-xs leading-[140%] text-neutral-secondary">Phone</p>
+                  <p class="m-0 font-medium text-sm leading-[140%] text-textSecondary" style="direction: ltr">${phone}</p>
+                </div>
+              </div>
+            </div>
+          </div>`;
+        }
+        const grid = document.getElementById("branch-grid");
+        if (grid) grid.innerHTML = BRANCHES.map(card).join("");
+      })();
+    </script>
+  </body>
+</html>

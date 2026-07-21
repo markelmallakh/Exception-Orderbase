@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>My Points — Exception</title>
+    <meta name="description" content="Track your loyalty points, membership tier and rewards at Exception." />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="tw-config.js"></script>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <script defer src="scripts.js"></script>
+  </head>
+  <body data-page="account" data-path="/my-account/point" class="antialiased bg-white">
+    <!-- Shared header is injected here by scripts.js -->
+    <div id="site-header"></div>
+
+    <main class="overflow-x-clip bg-gray-100">
+      <!-- Account layout: two-column grid (sidebar collapses above content on mobile) -->
+      <div class="flex lg:flex-row flex-col items-start gap-7 md:gap-10 mx-auto px-4 py-10 md:py-20 max-w-[1392px]">
+        <!-- ============================ ACCOUNT SIDEBAR ============================ -->
+        <aside class="w-full lg:w-[25%] lg:min-h-[520px] shrink-0 lg:self-stretch">
+          <div class="rounded-[20px] border border-gray-300 bg-white p-5 md:p-6 lg:pt-6 lg:sticky lg:top-[99px] lg:max-h-[calc(100vh-115px)] lg:overflow-y-auto">
+            <div class="flex items-center gap-4 lg:flex-col lg:items-start border-b border-gray-300 pb-5">
+              <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-primary-light text-xl font-semibold text-primaryDark">MH</div>
+              <div class="flex flex-col gap-1.5">
+                <span data-tier-badge></span>
+                <h3 class="text-lg font-medium text-primaryDark md:text-2xl">Mariam Hassan</h3>
+              </div>
+            </div>
+            <ul class="space-y-2.5 pt-5">
+              <li><a href="my-account.html" class="flex items-center gap-3 md:gap-5 rounded-lg px-4 xl:px-7 py-2.5 transition-all duration-200 text-gray-700 hover:bg-primary-light"><span class="inline-block w-5 md:w-6"><img src="images/icons/account%20icons/overview.webp" alt="Dashboard" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Dashboard</span></a></li>
+              <li><a href="my-account-profile.html" class="flex items-center gap-3 md:gap-5 rounded-lg px-4 xl:px-7 py-2.5 transition-all duration-200 text-gray-700 hover:bg-primary-light"><span class="inline-block w-5 md:w-6"><img src="images/icons/account%20icons/preparing.webp" alt="Profile" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Profile</span></a></li>
+              <li><a href="my-account-orders.html" class="flex items-center gap-3 md:gap-5 rounded-lg px-4 xl:px-7 py-2.5 transition-all duration-200 text-gray-700 hover:bg-primary-light"><span class="inline-block w-5 md:w-6"><img src="images/icons/account%20icons/preparing-1.webp" alt="Orders" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Orders</span></a></li>
+              <li><a href="my-account-addresses.html" class="flex items-center gap-3 md:gap-5 rounded-lg px-4 xl:px-7 py-2.5 transition-all duration-200 text-gray-700 hover:bg-primary-light"><span class="inline-block w-5 md:w-6"><img src="images/icons/account%20icons/preparing-2.webp" alt="Addresses" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Addresses</span></a></li>
+              <li><a href="my-account-favorites.html" class="flex items-center gap-3 md:gap-5 rounded-lg px-4 xl:px-7 py-2.5 transition-all duration-200 text-gray-700 hover:bg-primary-light"><span class="inline-block w-5 md:w-6"><img src="images/icons/account%20icons/preparing-3.webp" alt="Favorites" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Favorites</span></a></li>
+              <li><a href="my-account-wallet.html" class="flex items-center gap-3 md:gap-5 rounded-lg px-4 xl:px-7 py-2.5 transition-all duration-200 text-gray-700 hover:bg-primary-light"><span class="inline-block w-5 md:w-6"><img src="images/icons/account%20icons/wallet.webp" alt="Wallet" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Wallet</span></a></li>
+              <li><a href="my-account-vouchers.html" class="flex items-center gap-3 md:gap-5 rounded-lg px-4 xl:px-7 py-2.5 transition-all duration-200 text-gray-700 hover:bg-primary-light"><span class="inline-block w-5 md:w-6"><img src="images/icons/account%20icons/voucher.webp" alt="Vouchers" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Vouchers</span></a></li>
+              <li><a href="my-account-point.html" aria-current="page" class="flex items-center gap-3 md:gap-5 rounded-lg px-4 xl:px-7 py-2.5 transition-all duration-200 bg-primary-light text-primaryDark"><span class="inline-block w-5 md:w-6"><img src="images/icons/account%20icons/Points.webp" alt="Points" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Points</span></a></li>
+            </ul>
+            <div class="mt-6 border-t border-gray-300 px-1 py-6">
+              <h4 class="mb-3 font-semibold text-neutral-support-bg md:text-lg">Need Help?</h4>
+              <ul class="flex flex-col gap-4">
+                <li><a href="faqs.html" class="font-medium text-primaryColor text-sm md:text-base hover:underline">FAQs</a></li>
+                <li><a href="contact-us.html" class="font-medium text-primaryColor text-sm md:text-base hover:underline">Contact us</a></li>
+              </ul>
+              <a href="login.html" class="mt-4 inline-block font-medium text-gray-700 text-sm hover:underline">Logout</a>
+            </div>
+          </div>
+        </aside>
+
+        <!-- ============================ ACCOUNT CONTENT ============================ -->
+        <div class="w-full lg:w-[calc(75%-36px)]">
+          <nav class="mb-6 flex items-center gap-2 text-sm text-gray-700" aria-label="Breadcrumb">
+            <a href="my-account.html" class="hover:text-primaryDark">My account</a>
+            <span>/</span>
+            <span class="font-medium text-textSecondary">Points</span>
+          </nav>
+
+          <div class="flex flex-col gap-7 md:gap-10">
+            <!-- Page header -->
+            <div class="flex flex-wrap items-center justify-between gap-4">
+              <div class="flex items-center gap-2.5">
+                <h1 class="text-[28px] font-semibold capitalize leading-[50px] text-textSecondary">My Points</h1>
+              </div>
+              <!-- Redeem CTA — sits opposite the headline (parent is justify-between) -->
+              <button type="button" data-redeem class="btn btn--black btn--md flex items-center gap-2 text-nowrap">
+                <svg viewBox="0 0 24 24" fill="none" class="h-4 w-4 md:h-5 md:w-5"><path d="M20 12v9H4v-9M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7ZM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Redeem points
+              </button>
+            </div>
+
+            <!-- Points summary card (dark StyledCard) with progress + redeem -->
+            <section>
+              <div class="rounded-[20px] border border-gray-300 bg-primary-200 px-5 py-6 md:px-8">
+                <div class="flex flex-col items-start justify-between gap-2 xl:flex-row xl:items-center xl:gap-[37px]">
+                  <div class="flex w-full flex-col items-start gap-2 xl:flex-row xl:items-center">
+                    <span class="h-[80px] w-[80px] shrink-0">
+                      <img src="images/icons/account%20icons/Points.webp" alt="Points" width="80" height="80" class="object-contain" />
+                    </span>
+                    <div class="flex w-full flex-col gap-2">
+                      <div class="flex items-center gap-2">
+                        <h3 class="text-sm font-semibold text-primaryColor md:text-xl">Available Points</h3>
+                      </div>
+                      <div class="flex w-full flex-col gap-1.5">
+                        <span class="my-2 text-[32px] font-semibold text-primaryDark">3,200 points</span>
+                        <!-- progress toward the next tier -->
+                        <div class="h-2.5 w-full overflow-hidden rounded-full bg-white">
+                          <div class="h-full rounded-full bg-primaryDark" style="width: 80%"></div>
+                        </div>
+                        <div class="text-end text-sm font-medium text-primaryColor">800 points to Platinum</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Membership tiers overview -->
+            <section class="flex flex-col gap-4">
+              <h2 class="text-xl font-medium text-textSecondary md:text-[18px]">Membership Tiers</h2>
+              <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                <div class="flex items-center gap-3 rounded-[12px] border-2 border-gray-300 bg-white p-4">
+                  <span data-tier-badge="silver"></span>
+                  <span class="text-sm text-gray-700">0 – 1,999 pts</span>
+                </div>
+                <div class="flex items-center gap-3 rounded-[12px] border-2 border-primaryColor bg-white p-4 ring-2 ring-primaryColor/30">
+                  <span data-tier-badge="golden"></span>
+                  <span class="text-sm font-medium text-textSecondary">2,000 – 3,999 pts</span>
+                </div>
+                <div class="flex items-center gap-3 rounded-[12px] border-2 border-gray-300 bg-white p-4">
+                  <span data-tier-badge="platinum"></span>
+                  <span class="text-sm text-gray-700">4,000+ pts</span>
+                </div>
+              </div>
+            </section>
+
+            <!-- How to earn points (PointsGuide) -->
+            <section class="flex flex-col gap-4">
+              <h2 class="text-xl font-medium text-textSecondary md:text-[18px]">How to Earn Points</h2>
+              <div class="grid grid-cols-2 gap-3 lg:grid-cols-3 xl:grid-cols-4">
+                <div class="relative flex h-[141px] flex-1 flex-row items-center rounded-[12px] border-2 border-gray-300 bg-white">
+                  <div class="flex h-full flex-1 flex-col items-center justify-center gap-[6px] p-6">
+                    <span class="flex h-[46px] w-[46px] items-center justify-center text-primaryColor"><svg viewBox="0 0 24 24" fill="none" class="h-8 w-8"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.6"/><path d="M4 21a8 8 0 0 1 16 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+                    <div class="flex flex-none flex-col items-center gap-[4px]">
+                      <h4 class="text-center text-sm font-normal leading-[140%] text-neutral-black">Create Account</h4>
+                      <span class="text-center text-base font-semibold leading-[140%] text-primary">500 points</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="relative flex h-[141px] flex-1 flex-row items-center rounded-[12px] border-2 border-gray-300 bg-white">
+                  <div class="flex h-full flex-1 flex-col items-center justify-center gap-[6px] p-6">
+                    <span class="flex h-[46px] w-[46px] items-center justify-center text-primaryColor"><svg viewBox="0 0 24 24" fill="none" class="h-8 w-8"><rect x="2" y="5" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M2 10h20" stroke="currentColor" stroke-width="1.6"/></svg></span>
+                    <div class="flex flex-none flex-col items-center gap-[4px]">
+                      <h4 class="text-center text-sm font-normal leading-[140%] text-neutral-black">Purchasing</h4>
+                      <span class="text-center text-base font-semibold leading-[140%] text-primary">10 points</span>
+                      <p class="mt-1 text-center text-xs text-gray-600">/ 1 EGP</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="relative flex h-[141px] flex-1 flex-row items-center rounded-[12px] border-2 border-gray-300 bg-white">
+                  <div class="flex h-full flex-1 flex-col items-center justify-center gap-[6px] p-6">
+                    <span class="flex h-[46px] w-[46px] items-center justify-center text-primaryColor"><svg viewBox="0 0 24 24" fill="none" class="h-8 w-8"><path d="M20 12v9H4v-9M2 7h20v5H2zM12 22V7" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7Zm0 0h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></span>
+                    <div class="flex flex-none flex-col items-center gap-[4px]">
+                      <h4 class="text-center text-sm font-normal leading-[140%] text-neutral-black">Birthday Gift</h4>
+                      <span class="text-center text-base font-semibold leading-[140%] text-primary">10 points</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="relative flex h-[141px] flex-1 flex-row items-center rounded-[12px] border-2 border-gray-300 bg-white">
+                  <div class="flex h-full flex-1 flex-col items-center justify-center gap-[6px] p-6">
+                    <span class="flex h-[46px] w-[46px] items-center justify-center text-primaryColor"><svg viewBox="0 0 24 24" fill="none" class="h-8 w-8"><circle cx="9" cy="8" r="3" stroke="currentColor" stroke-width="1.6"/><circle cx="17" cy="9" r="2.5" stroke="currentColor" stroke-width="1.6"/><path d="M3 20a6 6 0 0 1 12 0M15 20a5 5 0 0 1 6-4.9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+                    <div class="flex flex-none flex-col items-center gap-[4px]">
+                      <h4 class="text-center text-sm font-normal leading-[140%] text-neutral-black">Refer Friends</h4>
+                      <span class="text-center text-base font-semibold leading-[140%] text-primary">100 points</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Redeem section (mirrors the redemption success screen) -->
+            <section>
+              <div class="flex flex-col items-center gap-6 rounded-[20px] border border-gray-300 bg-white px-5 py-8 text-center md:flex-row md:gap-8 md:px-8 md:text-start">
+                <img src="images/icons/points%20and%20gifts.webp" alt="Redeem points" width="150" height="150" class="h-[130px] w-[130px] shrink-0 object-contain md:h-[150px] md:w-[150px]" />
+                <div class="flex flex-col items-center gap-3 md:items-start">
+                  <h2 class="text-xl font-semibold text-textSecondary md:text-2xl">Turn Points Into Wallet Credit</h2>
+                  <p class="max-w-[520px] text-sm text-gray-700 md:text-base">You are going to redeem <span class="font-semibold text-textSecondary">3,200 points</span> to your wallet, with an estimated value of <span class="font-semibold text-success">EGP 160.00</span>. Credit is applied instantly and can be used at checkout.</p>
+                  <button type="button" data-redeem class="btn btn--primary btn--md mt-1">Confirm redeem</button>
+                </div>
+              </div>
+            </section>
+
+            <!-- Points history -->
+            <section>
+              <div class="rounded-[20px] border border-gray-300 bg-white px-5 py-6 md:px-8">
+                <div class="overflow-auto styled-scrollbar">
+                  <table class="w-full border-collapse">
+                    <thead class="border-b border-beige-500">
+                      <tr><th colspan="4" class="text-start"><h2 class="mb-4 whitespace-nowrap text-xl font-medium md:text-[18px] xl:mb-[22px]">Points History</h2></th></tr>
+                    </thead>
+                    <thead class="border-b border-beige-500">
+                      <tr>
+                        <th class="whitespace-nowrap p-4 text-start font-bold text-textSecondary md:text-base">Points</th>
+                        <th class="whitespace-nowrap p-4 text-start font-bold text-textSecondary md:text-base">Date</th>
+                        <th class="whitespace-nowrap p-4 text-start font-bold text-textSecondary md:text-base">Reason</th>
+                        <th class="whitespace-nowrap p-4 text-start font-bold text-textSecondary md:text-base">Total points</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="flex items-center gap-2 whitespace-nowrap p-4 text-sm font-medium text-success xl:gap-3"><span class="h-3 w-3 md:h-4 md:w-4"><svg viewBox="0 0 24 24" fill="none" class="w-full"><path d="M12 19V5M6 11l6-6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>+320</span></td>
+                        <td class="whitespace-nowrap p-4 text-xs text-gray-700 md:text-sm">28 Jun 2026</td>
+                        <td class="whitespace-nowrap p-4 text-xs text-gray-700 md:text-sm">Order #10482</td>
+                        <td class="whitespace-nowrap p-4 text-sm font-semibold text-primaryDark md:text-lg">3,200 pts</td>
+                      </tr>
+                      <tr>
+                        <td class="flex items-center gap-2 whitespace-nowrap p-4 text-sm font-medium text-cardbadgecolor xl:gap-3"><span class="h-3 w-3 md:h-4 md:w-4"><svg viewBox="0 0 24 24" fill="none" class="w-full"><path d="M12 5v14M6 13l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>-3,000</span></td>
+                        <td class="whitespace-nowrap p-4 text-xs text-gray-700 md:text-sm">21 Jun 2026</td>
+                        <td class="whitespace-nowrap p-4 text-xs text-gray-700 md:text-sm">Redeemed to wallet</td>
+                        <td class="whitespace-nowrap p-4 text-sm font-semibold text-primaryDark md:text-lg">2,880 pts</td>
+                      </tr>
+                      <tr>
+                        <td class="flex items-center gap-2 whitespace-nowrap p-4 text-sm font-medium text-success xl:gap-3"><span class="h-3 w-3 md:h-4 md:w-4"><svg viewBox="0 0 24 24" fill="none" class="w-full"><path d="M12 19V5M6 11l6-6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>+100</span></td>
+                        <td class="whitespace-nowrap p-4 text-xs text-gray-700 md:text-sm">12 Jun 2026</td>
+                        <td class="whitespace-nowrap p-4 text-xs text-gray-700 md:text-sm">Referred a friend</td>
+                        <td class="whitespace-nowrap p-4 text-sm font-semibold text-primaryDark md:text-lg">5,880 pts</td>
+                      </tr>
+                      <tr>
+                        <td class="flex items-center gap-2 whitespace-nowrap p-4 text-sm font-medium text-success xl:gap-3"><span class="h-3 w-3 md:h-4 md:w-4"><svg viewBox="0 0 24 24" fill="none" class="w-full"><path d="M12 19V5M6 11l6-6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>+260</span></td>
+                        <td class="whitespace-nowrap p-4 text-xs text-gray-700 md:text-sm">05 Jun 2026</td>
+                        <td class="whitespace-nowrap p-4 text-xs text-gray-700 md:text-sm">Order #10318</td>
+                        <td class="whitespace-nowrap p-4 text-sm font-semibold text-primaryDark md:text-lg">5,780 pts</td>
+                      </tr>
+                      <tr>
+                        <td class="flex items-center gap-2 whitespace-nowrap p-4 text-sm font-medium text-success xl:gap-3"><span class="h-3 w-3 md:h-4 md:w-4"><svg viewBox="0 0 24 24" fill="none" class="w-full"><path d="M12 19V5M6 11l6-6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>+500</span></td>
+                        <td class="whitespace-nowrap p-4 text-xs text-gray-700 md:text-sm">01 May 2026</td>
+                        <td class="whitespace-nowrap p-4 text-xs text-gray-700 md:text-sm">Welcome bonus</td>
+                        <td class="whitespace-nowrap p-4 text-sm font-semibold text-primaryDark md:text-lg">5,520 pts</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Shared footer is injected here by scripts.js -->
+    <div id="site-footer"></div>
+
+    <!-- Redeem buttons show a success toast (demo) -->
+    <script>
+      (function () {
+        document.querySelectorAll("[data-redeem]").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            if (window.kToast) window.kToast("Points redeemed successfully");
+          });
+        });
+      })();
+    </script>
+  </body>
+</html>

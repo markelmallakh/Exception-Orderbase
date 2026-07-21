@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FAQs — Exception</title>
+    <meta
+      name="description"
+      content="Answers to the most common questions about ordering cakes and oriental sweets from Exception — delivery, allergens, payment, storage and loyalty points."
+    />
+    <!-- Tailwind (Play CDN) + faithful port of the project's tailwind.config.ts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="tw-config.js"></script>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <script defer src="scripts.js"></script>
+  </head>
+  <body data-page="faqs" data-path="/faqs" class="antialiased bg-white">
+    <!-- Shared header is injected here by scripts.js -->
+    <div id="site-header"></div>
+
+    <main class="overflow-x-hidden">
+      <section class="bg-neutral-50">
+        <!-- ============================ PAGE HEADER (MainHeader) ============================ -->
+        <div class="container px-4 pt-6 md:pt-[44px]">
+          <div class="flex flex-col items-center p-0 gap-1 w-full mx-auto">
+            <nav class="flex flex-row items-center p-0 gap-[6px] mb-1" aria-label="Breadcrumb">
+              <a href="index.html" class="flex items-center gap-[6px] group">
+                <span class="font-normal text-[12px] leading-[140%] text-primaryDark">Home</span>
+              </a>
+              <span class="w-3 h-3 flex items-center justify-center text-primaryDark">
+                <svg viewBox="0 0 24 24" fill="none" class="w-3 h-3"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+              <span class="font-normal text-[12px] leading-[140%] text-primaryDark opacity-50">FAQs</span>
+            </nav>
+            <span class="eyebrow">Have an Inquiry?</span>
+            <h1 class="font-semibold text-[32px] md:text-[48px] leading-[120%] text-center text-textSecondary">Frequently Asked Questions</h1>
+          </div>
+
+          <!-- ================= CATEGORY FILTER (tabs, replaces ChipButton state) ================= -->
+          <!-- Each tab reveals a filtered accordion panel; auto-wired by scripts.js -->
+          <div data-tabs>
+            <div class="flex flex-wrap justify-center gap-2 self-stretch my-3 md:my-6">
+              <button type="button" class="tab-btn is-active chip px-4 py-0.5 text-sm uppercase leading-6 font-medium" data-tab="all">All</button>
+              <button type="button" class="tab-btn chip px-4 py-0.5 text-sm uppercase leading-6 font-medium" data-tab="orders">Orders &amp; Delivery</button>
+              <button type="button" class="tab-btn chip px-4 py-0.5 text-sm uppercase leading-6 font-medium" data-tab="products">Products &amp; Ingredients</button>
+              <button type="button" class="tab-btn chip px-4 py-0.5 text-sm uppercase leading-6 font-medium" data-tab="payment">Payment &amp; Pricing</button>
+              <button type="button" class="tab-btn chip px-4 py-0.5 text-sm uppercase leading-6 font-medium" data-tab="account">Account &amp; Loyalty</button>
+            </div>
+
+            <div class="max-w-[920px] mx-auto px-4 pt-6">
+              <!-- ============ ALL ============ -->
+              <div class="tab-panel" data-panel="all">
+                <div class="flex w-full flex-col gap-4" data-accordion>
+                  <div class="accordion-item flex w-full flex-col rounded-xl border border-customGray bg-white px-[14px] [&.is-open]:border-primaryDark transition-colors">
+                    <button type="button" class="accordion-trigger w-full flex items-center justify-between gap-[13px] py-4 text-start">
+                      <span class="text-base font-medium leading-[140%] text-textSecondary">How do I place an order for delivery?</span>
+                      <span class="accordion-chevron w-5 h-5 shrink-0 text-primaryDark"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                    </button>
+                    <div class="accordion-panel"><div class="pb-4 text-sm font-normal leading-[140%] text-gray-700">Browse the shop, add your favourite cakes and sweets to the cart, then choose your delivery area and preferred time slot at checkout. You can pay online or select cash on delivery, and you will receive an SMS confirmation once your order is accepted.</div></div>
+                  </div>
+                  <div class="accordion-item flex w-full flex-col rounded-xl border border-customGray bg-white px-[14px] [&.is-open]:border-primaryDark transition-colors">
+                    <button type="button" class="accordion-trigger w-full flex items-center justify-between gap-[13px] py-4 text-start">
+                      <span class="text-base font-medium leading-[140%] text-textSecondary">Which areas do you deliver to and what are the fees?</span>
+                      <span class="accordion-chevron w-5 h-5 shrink-0 text-primaryDark"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                    </button>
+                    <div class="accordion-panel"><div class="pb-4 text-sm font-normal leading-[140%] text-gray-700">We deliver across Greater Cairo, Giza, Alexandria and most major cities. Delivery fees start from EGP 35 and are calculated automatically based on your selected address at checkout. Orders above EGP 750 qualify for free delivery within Cairo and Giza.</div></div>
+                  </div>
+                  <div class="accordion-item flex w-full flex-col rounded-xl border border-customGray bg-white px-[14px] [&.is-open]:border-primaryDark transition-colors">
+                    <button type="button" class="accordion-trigger w-full flex items-center justify-between gap-[13px] py-4 text-start">
+                      <span class="text-base font-medium leading-[140%] text-textSecondary">Can I schedule a cake for a specific date and time?</span>
+                      <span class="accordion-chevron w-5 h-5 shrink-0 text-primaryDark"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                    </button>
+                    <div class="accordion-panel"><div class="pb-4 text-sm font-normal leading-[140%] text-gray-700">Yes. For celebration and custom cakes we recommend ordering at least 48 hours in advance. At checkout you can pick a delivery date and a two-hour time window, and we will do our best to arrive right on schedule for your occasion.</div></div>
+                  </div>
+                  <div class="accordion-item flex w-full flex-col rounded-xl border border-customGray bg-white px-[14px] [&.is-open]:border-primaryDark transition-colors">
+                    <button type="button" class="accordion-trigger w-full flex items-center justify-between gap-[13px] py-4 text-start">
+                      <span class="text-base font-medium leading-[140%] text-textSecondary">Are your cakes suitable for people with nut allergies?</span>
+                      <span class="accordion-chevron w-5 h-5 shrink-0 text-primaryDark"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                    </button>
+                    <div class="accordion-panel"><div class="pb-4 text-sm font-normal leading-[140%] text-gray-700">Many of our oriental sweets contain nuts, and all products are prepared in kitchens that also handle nuts, dairy, gluten and sesame. If you have a severe allergy, please contact our team before ordering so we can advise on the safest options.</div></div>
+                  </div>
+                  <div class="accordion-item flex w-full flex-col rounded-xl border border-customGray bg-white px-[14px] [&.is-open]:border-primaryDark transition-colors">
+                    <button type="button" class="accordion-trigger w-full flex items-center justify-between gap-[13px] py-4 text-start">
+                      <span class="text-base font-medium leading-[140%] text-textSecondary">Do you offer sugar-free or eggless options?</span>
+                      <span class="accordion-chevron w-5 h-5 shrink-0 text-primaryDark"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                    </button>
+                    <div class="accordion-panel"><div class="pb-4 text-sm font-normal leading-[140%] text-gray-700">We carry a selected range of sugar-free and eggless cakes that are freshly prepared to order. Look for the dietary labels on each product page, or reach out to us for a tailored recommendation for your celebration.</div></div>
+                  </div>
+                  <div class="accordion-item flex w-full flex-col rounded-xl border border-customGray bg-white px-[14px] [&.is-open]:border-primaryDark transition-colors">
+                    <button type="button" class="accordion-trigger w-full flex items-center justify-between gap-[13px] py-4 text-start">
+                      <span class="text-base font-medium leading-[140%] text-textSecondary">How should I store my cake and how long does it stay fresh?</span>
+                      <span class="accordion-chevron w-5 h-5 shrink-0 text-primaryDark"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                    </button>
+                    <div class="accordion-panel"><div class="pb-4 text-sm font-normal leading-[140%] text-gray-700">Cream and cheesecake products should be kept refrigerated and enjoyed within 2–3 days. Dry oriental sweets such as baklava and maamoul keep well at room temperature for up to a week in a sealed container, away from direct sunlight.</div></div>
+                  </div>
+                  <div class="accordion-item flex w-full flex-col rounded-xl border border-customGray bg-white px-[14px] [&.is-open]:border-primaryDark transition-colors">
+                    <button type="button" class="accordion-trigger w-full flex items-center justify-between gap-[13px] py-4 text-start">
+                      <span class="text-base font-medium leading-[140%] text-textSecondary">What payment methods do you accept?</span>
+                      <span class="accordion-chevron w-5 h-5 shrink-0 text-primaryDark"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                    </button>
+                    <div class="accordion-panel"><div class="pb-4 text-sm font-normal leading-[140%] text-gray-700">We accept Visa, Mastercard and Meeza cards, mobile wallets, and cash on delivery. All online payments are processed through a secure, encrypted gateway, and your card details are never stored on our servers.</div></div>
+                  </div>
+                  <div class="accordion-item flex w-full flex-col rounded-xl border border-customGray bg-white px-[14px] [&.is-open]:border-primaryDark transition-colors">
+                    <button type="button" class="accordion-trigger w-full flex items-center justify-between gap-[13px] py-4 text-start">
+                      <span class="text-base font-medium leading-[140%] text-textSecondary">How do I earn and redeem loyalty points?</span>
+                      <span class="accordion-chevron w-5 h-5 shrink-0 text-primaryDark"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                    </button>
+                    <div class="accordion-panel"><div class="pb-4 text-sm font-normal leading-[140%] text-gray-700">Create a free account and you will earn points on every completed order. Points appear in your wallet and can be redeemed for discounts at checkout. Track your balance any time from the Points &amp; Wallet section of your account.</div></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ============ ORDERS & DELIVERY ============ -->
+              <div class="tab-panel" data-panel="orders" hidden>
+                <div class="flex w-full flex-col gap-4" data-accordion>
+                  <div class="accordion-item flex w-full flex-col rounded-xl border border-customGray bg-white px-[14px] [&.is-open]:border-primaryDark transition-colors">
+                    <button type="button" class="accordion-trigger w-full flex items-center justify-between gap-[13px] py-4 text-start">
+                      <span class="text-base font-medium leading-[140%] text-textSecondary">How do I place an order for delivery?</span>
+                      <span class="accordion-chevron w-5 h-5 shrink-0 text-primaryDark"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                    </button>
+                    <div class="accordion-panel"><div class="pb-4 text-sm font-normal leading-[140%] text-gray-700">Browse the shop, add your favourite cakes and sweets to the cart, then choose your delivery area and preferred time slot at checkout. You can pay online or select cash on delivery, and you will receive an SMS confirmation once your order is accepted.</div></div>
+                  </div>
+                  <div class="accordion-item flex w-full flex-col rounded-xl border border-customGray bg-white px-[14px] [&.is-open]:border-primaryDark transition-colors">
+                    <button type="button" class="accordion-trigger w-full flex items-center justify-between gap-[13px] py-4 text-start">
+                      <span class="text-base font-medium leading-[140%] text-textSecondary">Which areas do you deliver to and what are the fees?</span>
+                      <span class="accordion-chevron w-5 h-5 shrink-0 text-primaryDark"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                    </button>
+                    <div class="accordion-panel"><div class="pb-4 text-sm font-normal leading-[140%] text-gray-700">We deliver across Greater Cairo, Giza, Alexandria and most major cities. Delivery fees start from EGP 35 and are calculated automatically based on your selected address at checkout. Orders above EGP 750 qualify for free delivery within Cairo and Giza.</div></div>
+                  </div>
+                  <div class="accordion-item flex w-full flex-col rounded-xl border border-customGray bg-white px-[14px] [&.is-open]:border-primaryDark transition-colors">
+                    <button type="button" class="accordion-trigger w-full flex items-center justify-between gap-[13px] py-4 text-start">
+                      <span class="text-base font-medium leading-[140%] text-textSecondary">Can I schedule a cake for a specific date and time?</span>
+                      <span class="accordion-chevron w-5 h-5 shrink-0 text-primaryDark"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                    </button>
+                    <div class="accordion-panel"><div class="pb-4 text-sm font-normal leading-[140%] text-gray-700">Yes. For celebration and custom cakes we recommend ordering at least 48 hours in advance. At checkout you can pick a delivery date and a two-hour time window, and we will do our best to arrive right on schedule for your occasion.</div></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ============ PRODUCTS & INGREDIENTS ============ -->
+              <div class="tab-panel" data-panel="products" hidden>
+                <div class="flex w-full flex-col gap-4" data-accordion>
+                  <div class="accordion-item flex w-full flex-col rounded-xl border border-customGray bg-white px-[14px] [&.is-open]:border-primaryDark transition-colors">
+                    <button type="button" class="accordion-trigger w-full flex items-center justify-between gap-[13px] py-4 text-start">
+                      <span class="text-base font-medium leading-[140%] text-textSecondary">Are your cakes suitable for people with nut allergies?</span>
+                      <span class="accordion-chevron w-5 h-5 shrink-0 text-primaryDark"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                    </button>
+                    <div class="accordion-panel"><div class="pb-4 text-sm font-normal leading-[140%] text-gray-700">Many of our oriental sweets contain nuts, and all products are prepared in kitchens that also handle nuts, dairy, gluten and sesame. If you have a severe allergy, please contact our team before ordering so we can advise on the safest options.</div></div>
+                  </div>
+                  <div class="accordion-item flex w-full flex-col rounded-xl border border-customGray bg-white px-[14px] [&.is-open]:border-primaryDark transition-colors">
+                    <button type="button" class="accordion-trigger w-full flex items-center justify-between gap-[13px] py-4 text-start">
+                      <span class="text-base font-medium leading-[140%] text-textSecondary">Do you offer sugar-free or eggless options?</span>
+                      <span class="accordion-chevron w-5 h-5 shrink-0 text-primaryDark"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                    </button>
+                    <div class="accordion-panel"><div class="pb-4 text-sm font-normal leading-[140%] text-gray-700">We carry a selected range of sugar-free and eggless cakes that are freshly prepared to order. Look for the dietary labels on each product page, or reach out to us for a tailored recommendation for your celebration.</div></div>
+                  </div>
+                  <div class="accordion-item flex w-full flex-col rounded-xl border border-customGray bg-white px-[14px] [&.is-open]:border-primaryDark transition-colors">
+                    <button type="button" class="accordion-trigger w-full flex items-center justify-between gap-[13px] py-4 text-start">
+                      <span class="text-base font-medium leading-[140%] text-textSecondary">How should I store my cake and how long does it stay fresh?</span>
+                      <span class="accordion-chevron w-5 h-5 shrink-0 text-primaryDark"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                    </button>
+                    <div class="accordion-panel"><div class="pb-4 text-sm font-normal leading-[140%] text-gray-700">Cream and cheesecake products should be kept refrigerated and enjoyed within 2–3 days. Dry oriental sweets such as baklava and maamoul keep well at room temperature for up to a week in a sealed container, away from direct sunlight.</div></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ============ PAYMENT & PRICING ============ -->
+              <div class="tab-panel" data-panel="payment" hidden>
+                <div class="flex w-full flex-col gap-4" data-accordion>
+                  <div class="accordion-item flex w-full flex-col rounded-xl border border-customGray bg-white px-[14px] [&.is-open]:border-primaryDark transition-colors">
+                    <button type="button" class="accordion-trigger w-full flex items-center justify-between gap-[13px] py-4 text-start">
+                      <span class="text-base font-medium leading-[140%] text-textSecondary">What payment methods do you accept?</span>
+                      <span class="accordion-chevron w-5 h-5 shrink-0 text-primaryDark"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                    </button>
+                    <div class="accordion-panel"><div class="pb-4 text-sm font-normal leading-[140%] text-gray-700">We accept Visa, Mastercard and Meeza cards, mobile wallets, and cash on delivery. All online payments are processed through a secure, encrypted gateway, and your card details are never stored on our servers.</div></div>
+                  </div>
+                  <div class="accordion-item flex w-full flex-col rounded-xl border border-customGray bg-white px-[14px] [&.is-open]:border-primaryDark transition-colors">
+                    <button type="button" class="accordion-trigger w-full flex items-center justify-between gap-[13px] py-4 text-start">
+                      <span class="text-base font-medium leading-[140%] text-textSecondary">Are prices inclusive of tax, and can I use a discount code?</span>
+                      <span class="accordion-chevron w-5 h-5 shrink-0 text-primaryDark"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                    </button>
+                    <div class="accordion-panel"><div class="pb-4 text-sm font-normal leading-[140%] text-gray-700">All prices shown are in Egyptian Pounds and include applicable taxes. If you have a valid promo code, enter it in the discount field at checkout and the total will update automatically before you confirm your order.</div></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ============ ACCOUNT & LOYALTY ============ -->
+              <div class="tab-panel" data-panel="account" hidden>
+                <div class="flex w-full flex-col gap-4" data-accordion>
+                  <div class="accordion-item flex w-full flex-col rounded-xl border border-customGray bg-white px-[14px] [&.is-open]:border-primaryDark transition-colors">
+                    <button type="button" class="accordion-trigger w-full flex items-center justify-between gap-[13px] py-4 text-start">
+                      <span class="text-base font-medium leading-[140%] text-textSecondary">How do I earn and redeem loyalty points?</span>
+                      <span class="accordion-chevron w-5 h-5 shrink-0 text-primaryDark"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                    </button>
+                    <div class="accordion-panel"><div class="pb-4 text-sm font-normal leading-[140%] text-gray-700">Create a free account and you will earn points on every completed order. Points appear in your wallet and can be redeemed for discounts at checkout. Track your balance any time from the Points &amp; Wallet section of your account.</div></div>
+                  </div>
+                  <div class="accordion-item flex w-full flex-col rounded-xl border border-customGray bg-white px-[14px] [&.is-open]:border-primaryDark transition-colors">
+                    <button type="button" class="accordion-trigger w-full flex items-center justify-between gap-[13px] py-4 text-start">
+                      <span class="text-base font-medium leading-[140%] text-textSecondary">I forgot my password — how do I reset it?</span>
+                      <span class="accordion-chevron w-5 h-5 shrink-0 text-primaryDark"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                    </button>
+                    <div class="accordion-panel"><div class="pb-4 text-sm font-normal leading-[140%] text-gray-700">Head to the login page and select “Forgot password”. Enter the email linked to your account and we will send you a secure link to create a new password within a few minutes.</div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============================ STILL HAVE A QUESTION CTA ============================ -->
+        <div class="max-w-[920px] mx-auto px-4 pb-20 pt-6">
+          <div class="flex flex-col items-center justify-center gap-[34px] rounded-xl bg-backgroundLocationBar p-8 md:p-[42px] text-center md:flex-row md:text-start">
+            <div class="relative h-[160px] w-[160px] shrink-0">
+              <div class="absolute bottom-3 left-1/2 h-3 w-[105px] -translate-x-1/2 bg-[radial-gradient(50%_50%_at_50%_50%,rgba(48,35,81,0.6)_0%,rgba(59,51,70,0)_100%)] blur-[6.6px]"></div>
+              <img src="images/icons/Verified.webp" alt="Contact Support" width="160" height="160" class="relative z-10 object-contain" />
+            </div>
+            <div class="flex flex-col items-center gap-4 md:items-start">
+              <div class="flex flex-col gap-0.5">
+                <span class="eyebrow">Still Have a Question?</span>
+                <h3 class="text-[28px] md:text-[40px] font-semibold leading-[120%] text-textSecondary">Contact Our Team</h3>
+              </div>
+              <a href="contact-us.html" class="btn btn--black btn--md w-[234px] justify-center">Contact us</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Shared footer is injected here by scripts.js -->
+    <div id="site-footer"></div>
+  </body>
+</html>

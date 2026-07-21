@@ -1,0 +1,708 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Chocolate Fudge Cake — Exception</title>
+    <meta
+      name="description"
+      content="Order our signature Chocolate Fudge Cake — rich Belgian chocolate sponge layered with silky fudge. Freshly baked and delivered across Egypt."
+    />
+    <!-- Tailwind (Play CDN) + faithful port of the project's tailwind.config.ts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="tw-config.js"></script>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <script defer src="scripts.js"></script>
+  </head>
+  <!-- data-purchased: demo flag for "has this customer bought this product before".
+       Gates the "Leave a review" button (see .review-cta). Server-set in production. -->
+  <body data-page="product" data-path="/products/chocolate-fudge-cake" data-purchased="true" class="antialiased bg-white">
+    <!-- Shared header is injected here by scripts.js -->
+    <div id="site-header"></div>
+
+    <!-- overflow-x-clip (not -hidden): clips horizontal overflow WITHOUT creating a
+         scroll container, so the sticky product gallery below can stick to the viewport. -->
+    <main class="overflow-x-clip">
+      <!-- ============================ PRODUCT DETAIL ============================
+           Source: products/[slug]/page.tsx → section pt-7 md:pt-14 > Container >
+           Breadcrumbs + [ProductImageGallery | ProductInfo]. -->
+      <section class="pt-7 md:pt-14">
+        <div class="mx-auto w-full max-w-[1512px] px-6 lg:px-[60px]">
+          <!-- Desktop breadcrumb -->
+          <div class="mb-6 lg:mb-[32px] hidden md:block">
+            <nav aria-label="Breadcrumbs">
+              <ol class="m-0 flex w-full list-none flex-wrap items-center gap-x-1 gap-y-2 p-0 text-xs capitalize md:justify-start md:gap-2 text-primaryDark">
+                <li class="whitespace-nowrap text-primaryDark">
+                  <a href="index.html"><span>Home</span></a>
+                  <span class="inline-block ms-2 w-4 h-4 align-middle"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                </li>
+                <li class="whitespace-nowrap text-primaryDark">
+                  <a href="shop.html"><span>Shop</span></a>
+                  <span class="inline-block ms-2 w-4 h-4 align-middle"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                </li>
+                <li class="whitespace-nowrap text-primaryDark">
+                  <a href="shop-category.html"><span>Cakes</span></a>
+                  <span class="inline-block ms-2 w-4 h-4 align-middle"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                </li>
+                <li class="whitespace-nowrap text-primaryDark opacity-50"><span>Chocolate Fudge Cake</span></li>
+              </ol>
+            </nav>
+          </div>
+
+          <div class="flex flex-col gap-6 md:gap-14 xl:gap-0">
+            <div class="flex lg:flex-row flex-col xl:justify-between justify-center gap-6 md:gap-14">
+              <!-- ==================== PRODUCT IMAGE GALLERY ====================
+                   Sticky on desktop: self-start lets it take its natural height so the
+                   taller info column scrolls past while the gallery holds under the nav. -->
+              <div class="flex flex-col items-start gap-3 xl:gap-[60px] overflow-hidden xl:w-full !max-w-[698px] lg:sticky lg:top-[100px] lg:self-start">
+                <div class="flex flex-col lg:flex-row-reverse items-start gap-3 w-full">
+                  <!-- Main image -->
+                  <figure class="relative bg-black-901 bg-opacity-10 w-full aspect-square rounded-xl overflow-hidden flex-1">
+                    <img id="pdp-main" src="dummy-images/image-7.webp" alt="Chocolate Fudge Cake" class="w-full h-full object-cover" />
+                  </figure>
+                  <!-- Thumbnail strip (horizontal on mobile, vertical on desktop). Click swaps main image. -->
+                  <div class="flex flex-row lg:flex-col gap-2 w-full lg:w-[94px] shrink-0">
+                    <button type="button" onclick="swapMain(this)" data-src="dummy-images/image-7.webp" class="pdp-thumb relative aspect-square w-16 lg:w-[94px] overflow-hidden rounded-md border-2 border-primaryColor transition-all">
+                      <img src="dummy-images/image-7.webp" alt="Chocolate Fudge Cake view 1" class="w-full h-full object-cover" />
+                    </button>
+                    <button type="button" onclick="swapMain(this)" data-src="dummy-images/image-2.webp" class="pdp-thumb relative aspect-square w-16 lg:w-[94px] overflow-hidden rounded-md border-2 border-transparent opacity-50 transition-all">
+                      <img src="dummy-images/image-2.webp" alt="Chocolate Fudge Cake view 2" class="w-full h-full object-cover" />
+                    </button>
+                    <button type="button" onclick="swapMain(this)" data-src="dummy-images/image-7.webp" class="pdp-thumb relative aspect-square w-16 lg:w-[94px] overflow-hidden rounded-md border-2 border-transparent opacity-50 transition-all">
+                      <img src="dummy-images/image-7.webp" alt="Chocolate Fudge Cake view 3" class="w-full h-full object-cover" />
+                    </button>
+                    <button type="button" onclick="swapMain(this)" data-src="dummy-images/special-cake.webp" class="pdp-thumb relative aspect-square w-16 lg:w-[94px] overflow-hidden rounded-md border-2 border-transparent opacity-50 transition-all">
+                      <img src="dummy-images/special-cake.webp" alt="Chocolate Fudge Cake view 4" class="w-full h-full object-cover" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Mobile breadcrumb -->
+              <div class="mt-4 mb-2 lg:mb-[32px] md:hidden block">
+                <nav aria-label="Breadcrumbs">
+                  <ol class="m-0 flex w-full list-none flex-wrap items-center gap-x-1 gap-y-2 p-0 text-xs capitalize gap-2 text-primaryDark">
+                    <li class="whitespace-nowrap text-primaryDark"><a href="index.html"><span>Home</span></a><span class="inline-block ms-1 w-4 h-4 align-middle"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></li>
+                    <li class="whitespace-nowrap text-primaryDark"><a href="shop-category.html"><span>Cakes</span></a><span class="inline-block ms-1 w-4 h-4 align-middle"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></li>
+                    <li class="whitespace-nowrap text-primaryDark opacity-50"><span>Chocolate Fudge Cake</span></li>
+                  </ol>
+                </nav>
+              </div>
+
+              <!-- ==================== PRODUCT INFO ==================== -->
+              <div class="md:w-[calc(50%-28px)] w-full">
+                <div class="flex flex-col gap-5 mb-2 pb-2 lg:pb-[18px]">
+                  <!-- Category + name + reviews/servings badges (tight cluster) -->
+                  <div class="flex flex-col gap-2.5">
+                    <!-- Category (small badge) -->
+                    <a href="shop-category.html" class="self-start inline-flex items-center -rotate-[2deg] bg-cta text-white text-[11px] leading-none px-1.5 py-0.5 rounded-[4px] hover:opacity-90 transition-opacity">Cakes</a>
+
+                    <!-- Product name + reviews / servings badges -->
+                    <div class="flex items-center gap-3 flex-wrap">
+                      <h1 class="text-lg font-semibold text-textSecondary md:text-xl lg:text-3xl">Chocolate Fudge Cake</h1>
+                      <a href="#reviews" class="inline-flex items-center gap-1.5 bg-primary-light rounded-[4px] px-2.5 py-1 hover:bg-primary-200 transition-colors">
+                        <svg viewBox="0 0 24 24" class="w-4 h-4 text-cta fill-current"><path d="M12 2l2.9 6.26L21.6 9.27l-4.8 4.68 1.13 6.6L12 17.77l-5.93 3.12 1.13-6.6-4.8-4.68 6.7-1.01L12 2z"/></svg>
+                        <span class="text-primaryDark text-xs font-semibold">4.5</span>
+                        <span class="text-gray-700 text-xs underline">(128 reviews)</span>
+                      </a>
+                      <span class="inline-flex items-center gap-1.5 bg-primary-light rounded-[4px] px-2.5 py-1">
+                        <img src="images/icons/group.svg" alt="" class="w-4 h-4" />
+                        <span class="text-primaryDark text-xs font-semibold">8–10</span>
+                        <span class="text-gray-700 text-xs">people</span>
+                      </span>
+                    </div>
+                  </div>
+
+                  <!-- Price — same style as the product-card widget (pink, 650 .00 EGP) -->
+                  <div class="flex items-end gap-3 flex-wrap">
+                    <!-- The two prices are their own tight group so the badge doesn't drift into them -->
+                    <span class="flex items-end gap-1.5 flex-wrap">
+                      <span class="flex items-end gap-0.5 text-cta leading-none" dir="ltr">
+                        <span class="text-2xl font-semibold md:text-3xl">650</span>
+                        <span class="text-lg font-normal">.00</span>
+                        <span class="text-lg font-normal">EGP</span>
+                      </span>
+                      <span class="text-sm text-gray-500 line-through leading-none md:text-base" dir="ltr">720.00EGP</span>
+                    </span>
+                    <!-- Loyalty badge → .points-badge (Figma 6162-30470) -->
+                    <span class="points-badge">
+                      <img src="images/icons/points.webp" alt="" width="18" height="18" />
+                      <span>Earn <span class="points-badge__value">350</span> Points</span>
+                    </span>
+                  </div>
+
+                  <!-- Short description -->
+                  <div class="text-gray-700 text-xs md:text-sm wysiwyg-product">
+                    <p>A rich, moist Belgian chocolate sponge layered with silky chocolate fudge and finished with a glossy ganache. Baked fresh to order and perfect for birthdays, anniversaries and every sweet celebration.</p>
+                  </div>
+
+                  <!-- Variations -->
+                  <div class="flex flex-col gap-4">
+                    <div class="flex flex-col gap-2" data-variation-group>
+                      <label class="font-semibold text-textSecondary text-base capitalize">Size</label>
+                      <div class="flex flex-wrap gap-3">
+                        <button type="button" class="variation-pill is-active chip px-5 py-2.5 text-sm font-medium capitalize">Small (6")</button>
+                        <button type="button" class="variation-pill chip px-5 py-2.5 text-sm font-medium capitalize">Medium (8")</button>
+                        <button type="button" class="variation-pill chip px-5 py-2.5 text-sm font-medium capitalize">Large (10")</button>
+                      </div>
+                    </div>
+                    <div class="flex flex-col gap-2" data-variation-group>
+                      <label class="font-semibold text-textSecondary text-base capitalize">Weight</label>
+                      <div class="flex flex-wrap gap-3">
+                        <button type="button" class="variation-pill is-active chip px-5 py-2.5 text-sm font-medium capitalize">1 kg</button>
+                        <button type="button" class="variation-pill chip px-5 py-2.5 text-sm font-medium capitalize">1.5 kg</button>
+                        <button type="button" class="variation-pill chip px-5 py-2.5 text-sm font-medium capitalize">2 kg</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Purchase actions: counter on its own line, then Add-to-cart + favorite -->
+                  <div class="flex flex-col gap-4">
+                    <!-- Quantity counter (its own line) -->
+                    <div data-stepper class="counter counter--lg self-start">
+                      <button type="button" data-step="-1" class="counter__btn" aria-label="Decrease quantity"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+                      <span data-qty class="counter__qty">1</span>
+                      <button type="button" data-step="1" class="counter__btn counter__inc" aria-label="Increase quantity"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+                    </div>
+
+                    <!-- Add to cart (fills the row) + favorite on the right -->
+                    <div class="flex items-stretch gap-3">
+                      <button type="button" data-open="cart" class="btn btn--primary btn--lg group flex-1 !min-h-0 h-12 md:h-14 justify-center">
+                        <svg viewBox="0 0 30 30" fill="none" class="!w-[22px] !h-[22px]" aria-hidden="true">
+                          <path d="M24.375 14.375C23.0989 10.5999 21.5048 9.375 16.7863 9.375H12.0627C7.18161 9.375 5.29348 10.61 3.94362 15.2966C2.72779 19.518 2.11987 21.6286 2.75546 23.2654C3.14469 24.2679 3.83578 25.1371 4.74117 25.763C6.55009 27.0136 11.2251 27.605 15.625 27.4847" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                          <path d="M8.75 10V7.95455C8.75 4.94208 11.2684 2.5 14.375 2.5C17.4816 2.5 20 4.94208 20 7.95455V10" stroke="currentColor" stroke-width="1.5"/>
+                          <path d="M17.5 22.5H27.5M22.5 27.5L22.5 17.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                          <path d="M13.125 13.75H15.625" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        </svg>
+                        <span class="md:text-xl">Add to cart</span>
+                      </button>
+                      <button type="button" data-fav aria-label="Add to wishlist" class="fav-btn relative shrink-0 w-12 md:w-14">
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path class="fav-heart" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78Z" stroke="currentColor" stroke-width="1.6"/></svg>
+                      </button>
+                    </div>
+
+                    <!-- Trust callouts → global component (pdpCalloutsHTML/.pdp-callouts). Edit it there, not here. -->
+                    <div data-pdp-callouts></div>
+                  </div>
+
+                  <!-- Product details tabs (gooey) — in the info column, opens on Ingredients -->
+                  <div data-goo-tabs>
+                    <svg class="absolute h-0 w-0" aria-hidden="true"><defs><filter id="goo-tabs"><feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur" /><feColorMatrix in="blur" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="goo" /><feComposite in="SourceGraphic" in2="goo" operator="atop" /></filter></defs></svg>
+                    <div class="relative" data-goo-root>
+                      <div class="goo-shapes" style="filter: url(#goo-tabs)">
+                        <div class="goo-panel-bg"></div>
+                        <span class="goo-thumb" data-goo-thumb></span>
+                      </div>
+                      <div class="goo-labels">
+                        <button type="button" class="goo-tab is-active" data-goo-tab="ingredients">Ingredients</button>
+                        <button type="button" class="goo-tab" data-goo-tab="desc">Description</button>
+                        <button type="button" class="goo-tab" data-goo-tab="delivery">Delivery &amp; storage</button>
+                      </div>
+                      <div class="goo-content-wrap px-5 py-5 md:px-6 md:py-6">
+                        <div class="goo-content wysiwyg-product text-gray-700 text-sm md:text-base" data-goo-content="ingredients">
+                          <h3>What's Inside</h3>
+                          <p>We use only premium ingredients, sourced fresh every day.</p>
+                          <ul>
+                            <li>Belgian dark chocolate (54% cocoa)</li>
+                            <li>Fresh dairy cream and butter</li>
+                            <li>Free-range eggs</li>
+                            <li>Unbleached wheat flour</li>
+                            <li>Natural vanilla and cocoa powder</li>
+                          </ul>
+                          <p><strong>Allergens:</strong> contains gluten, eggs, dairy and may contain traces of nuts.</p>
+                        </div>
+                        <div class="goo-content wysiwyg-product text-gray-700 text-sm md:text-base" data-goo-content="desc" hidden>
+                          <h3>The Exception Signature</h3>
+                          <p>Our Chocolate Fudge Cake is built on three layers of deeply moist Belgian chocolate sponge, brushed with sugar syrup and generously filled with a velvety chocolate fudge. Every cake is finished by hand with a mirror-glaze ganache and delicate chocolate shavings.</p>
+                          <p>Made fresh to order in our Cairo kitchens using the same family recipe we have perfected over the decades.</p>
+                          <ul>
+                            <li>Three layers of Belgian chocolate sponge</li>
+                            <li>Silky chocolate fudge filling</li>
+                            <li>Hand-finished ganache glaze</li>
+                            <li>No artificial preservatives</li>
+                          </ul>
+                        </div>
+                        <div class="goo-content wysiwyg-product text-gray-700 text-sm md:text-base" data-goo-content="delivery" hidden>
+                          <h3>Delivery &amp; Storage</h3>
+                          <p>Same-day delivery is available across Greater Cairo for orders placed before 4:00 PM. Nationwide delivery arrives within 1–2 business days in insulated packaging.</p>
+                          <ul>
+                            <li>Keep refrigerated at 2–5°C</li>
+                            <li>Best enjoyed within 3 days</li>
+                            <li>Bring to room temperature 20 minutes before serving</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- ============================ PRODUCT FAQ (AEO) ============================
+                       Connected single-card accordion (shadcn "faqs-1" style, ported to the
+                       site's [data-accordion] behaviour): one bordered card, items divided by
+                       hairlines, rounded outer corners. FAQPage JSON-LD below feeds answer
+                       engines — keep it in sync with the visible Q/A wording. -->
+                  <div class="flex flex-col gap-3">
+                    <h2 class="font-semibold text-textSecondary text-lg md:text-xl">Frequently Asked Questions</h2>
+                    <div class="flex flex-col rounded-xl border border-customGray bg-white overflow-hidden divide-y divide-customGray" data-accordion>
+                      <div class="accordion-item flex w-full flex-col px-4 [&.is-open]:bg-gray-100/60 transition-colors">
+                        <button type="button" class="accordion-trigger w-full flex items-center justify-between gap-[13px] py-4 text-start">
+                          <span class="text-[15px] font-medium leading-6 text-textSecondary">How many people does this cake serve?</span>
+                          <span class="accordion-chevron w-4 h-4 shrink-0 text-primaryDark"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                        </button>
+                        <div class="accordion-panel"><div class="pb-4 text-sm font-normal leading-[140%] text-gray-700">The 1&nbsp;Kg cake comfortably serves 8 to 10 people. Choose a larger size at checkout for bigger gatherings — the 1.5&nbsp;Kg serves around 12 to 15 and the 2&nbsp;Kg serves 16 to 20.</div></div>
+                      </div>
+                      <div class="accordion-item flex w-full flex-col px-4 [&.is-open]:bg-gray-100/60 transition-colors">
+                        <button type="button" class="accordion-trigger w-full flex items-center justify-between gap-[13px] py-4 text-start">
+                          <span class="text-[15px] font-medium leading-6 text-textSecondary">Is this cake made fresh, and how should I store it?</span>
+                          <span class="accordion-chevron w-4 h-4 shrink-0 text-primaryDark"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                        </button>
+                        <div class="accordion-panel"><div class="pb-4 text-sm font-normal leading-[140%] text-gray-700">Every cake is baked fresh to order on the morning it ships. Keep it refrigerated and enjoy it within 3 days. For the best taste and texture, take it out of the fridge about 20 minutes before serving.</div></div>
+                      </div>
+                      <div class="accordion-item flex w-full flex-col px-4 [&.is-open]:bg-gray-100/60 transition-colors">
+                        <button type="button" class="accordion-trigger w-full flex items-center justify-between gap-[13px] py-4 text-start">
+                          <span class="text-[15px] font-medium leading-6 text-textSecondary">How soon can I get it delivered?</span>
+                          <span class="accordion-chevron w-4 h-4 shrink-0 text-primaryDark"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                        </button>
+                        <div class="accordion-panel"><div class="pb-4 text-sm font-normal leading-[140%] text-gray-700">Delivery within Maadi and central Cairo is available within about 1 hour during opening hours. You can also schedule a specific date and time slot at checkout — handy for birthdays and celebrations.</div></div>
+                      </div>
+                      <div class="accordion-item flex w-full flex-col px-4 [&.is-open]:bg-gray-100/60 transition-colors">
+                        <button type="button" class="accordion-trigger w-full flex items-center justify-between gap-[13px] py-4 text-start">
+                          <span class="text-[15px] font-medium leading-6 text-textSecondary">Can I add a personal message or customise the cake?</span>
+                          <span class="accordion-chevron w-4 h-4 shrink-0 text-primaryDark"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                        </button>
+                        <div class="accordion-panel"><div class="pb-4 text-sm font-normal leading-[140%] text-gray-700">Yes. Add a gift message in the order note at checkout, and we will include it with your cake. For a fully custom design or a written message piped onto the cake, use the "Make Your Cake" option or contact us on WhatsApp before ordering.</div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQPage structured data (AEO) — MUST mirror the visible product FAQ in the info column above. -->
+      <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "How many people does this cake serve?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The 1 Kg cake comfortably serves 8 to 10 people. Choose a larger size at checkout for bigger gatherings — the 1.5 Kg serves around 12 to 15 and the 2 Kg serves 16 to 20."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is this cake made fresh, and how should I store it?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Every cake is baked fresh to order on the morning it ships. Keep it refrigerated and enjoy it within 3 days. For the best taste and texture, take it out of the fridge about 20 minutes before serving."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How soon can I get it delivered?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Delivery within Maadi and central Cairo is available within about 1 hour during opening hours. You can also schedule a specific date and time slot at checkout — handy for birthdays and celebrations."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I add a personal message or customise the cake?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Add a gift message in the order note at checkout, and we will include it with your cake. For a fully custom design or a written message piped onto the cake, use the Make Your Cake option or contact us on WhatsApp before ordering."
+            }
+          }
+        ]
+      }
+      </script>
+
+      <!-- ============================ CUSTOMER REVIEWS ============================
+           Customer reviews for this product. The "Leave a review" button is gated
+           on purchase via .review-cta + <body data-purchased> (see styles.css). -->
+      <section id="reviews" class="py-10 md:py-16 scroll-mt-24">
+        <div class="mx-auto w-full max-w-[1512px] px-6 lg:px-[60px]">
+          <div class="flex flex-col gap-8">
+            <!-- Header: rating summary (left) + gated CTA (right) -->
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-gray-200 pb-6">
+              <div class="flex flex-col gap-1.5">
+                <span class="eyebrow">Loved by Our Customers</span>
+                <div class="flex items-center gap-3 flex-wrap">
+                  <h2 class="font-semibold text-textSecondary text-xl md:text-3xl">Customer Reviews</h2>
+                  <span class="inline-flex items-center gap-1.5 bg-primary-light rounded-[4px] px-2.5 py-1">
+                    <svg viewBox="0 0 24 24" class="w-4 h-4 text-cta fill-current"><path d="M12 2l2.9 6.26L21.6 9.27l-4.8 4.68 1.13 6.6L12 17.77l-5.93 3.12 1.13-6.6-4.8-4.68 6.7-1.01L12 2z"/></svg>
+                    <span class="text-primaryDark text-xs font-semibold">4.5</span>
+                    <span class="text-gray-700 text-xs">· 128 reviews</span>
+                  </span>
+                </div>
+              </div>
+              <!-- Gated: only visible to customers who bought this product -->
+              <button type="button" data-open="review" class="btn btn--outline btn--sm review-cta shrink-0 self-start">
+                <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Leave a review
+              </button>
+              <!-- Shown instead, to shoppers who haven't purchased -->
+              <p class="review-gate-hint text-xs text-gray-500 self-start sm:self-center max-w-[240px]">Only customers who purchased this product can leave a review.</p>
+            </div>
+
+            <!-- Reviews grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+              <!-- Review 1 -->
+              <article class="flex flex-col gap-3 rounded-xl border border-gray-200 bg-white p-5">
+                <header class="flex items-center gap-3">
+                  <span class="grid place-items-center size-11 rounded-full bg-primary-200 text-primaryDark font-semibold text-sm shrink-0">NA</span>
+                  <div class="flex flex-col gap-0.5 min-w-0">
+                    <span class="font-semibold text-textSecondary text-sm">Nourhan A.</span>
+                    <span class="inline-flex items-center gap-1 text-[11px] text-green-700"><svg viewBox="0 0 24 24" fill="none" class="w-3 h-3"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Verified purchase</span>
+                  </div>
+                  <span class="ms-auto text-[11px] text-gray-500 shrink-0">2 weeks ago</span>
+                </header>
+                <div class="flex items-center gap-0.5" aria-label="5 out of 5 stars">
+                  <svg viewBox="0 0 24 24" class="w-4 h-4 text-cta fill-current"><path d="M12 2l2.9 6.26L21.6 9.27l-4.8 4.68 1.13 6.6L12 17.77l-5.93 3.12 1.13-6.6-4.8-4.68 6.7-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24" class="w-4 h-4 text-cta fill-current"><path d="M12 2l2.9 6.26L21.6 9.27l-4.8 4.68 1.13 6.6L12 17.77l-5.93 3.12 1.13-6.6-4.8-4.68 6.7-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24" class="w-4 h-4 text-cta fill-current"><path d="M12 2l2.9 6.26L21.6 9.27l-4.8 4.68 1.13 6.6L12 17.77l-5.93 3.12 1.13-6.6-4.8-4.68 6.7-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24" class="w-4 h-4 text-cta fill-current"><path d="M12 2l2.9 6.26L21.6 9.27l-4.8 4.68 1.13 6.6L12 17.77l-5.93 3.12 1.13-6.6-4.8-4.68 6.7-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24" class="w-4 h-4 text-cta fill-current"><path d="M12 2l2.9 6.26L21.6 9.27l-4.8 4.68 1.13 6.6L12 17.77l-5.93 3.12 1.13-6.6-4.8-4.68 6.7-1.01L12 2z"/></svg>
+                </div>
+                <p class="text-sm leading-[150%] text-gray-700">Absolutely divine — the fudge layers were rich without being too sweet, and it arrived perfectly chilled. Ordered it for my sister's birthday and everyone asked where it was from.</p>
+              </article>
+
+              <!-- Review 2 -->
+              <article class="flex flex-col gap-3 rounded-xl border border-gray-200 bg-white p-5">
+                <header class="flex items-center gap-3">
+                  <span class="grid place-items-center size-11 rounded-full bg-accent-100 text-accent-700 font-semibold text-sm shrink-0">KM</span>
+                  <div class="flex flex-col gap-0.5 min-w-0">
+                    <span class="font-semibold text-textSecondary text-sm">Karim M.</span>
+                    <span class="inline-flex items-center gap-1 text-[11px] text-green-700"><svg viewBox="0 0 24 24" fill="none" class="w-3 h-3"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Verified purchase</span>
+                  </div>
+                  <span class="ms-auto text-[11px] text-gray-500 shrink-0">1 month ago</span>
+                </header>
+                <div class="flex items-center gap-0.5" aria-label="5 out of 5 stars">
+                  <svg viewBox="0 0 24 24" class="w-4 h-4 text-cta fill-current"><path d="M12 2l2.9 6.26L21.6 9.27l-4.8 4.68 1.13 6.6L12 17.77l-5.93 3.12 1.13-6.6-4.8-4.68 6.7-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24" class="w-4 h-4 text-cta fill-current"><path d="M12 2l2.9 6.26L21.6 9.27l-4.8 4.68 1.13 6.6L12 17.77l-5.93 3.12 1.13-6.6-4.8-4.68 6.7-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24" class="w-4 h-4 text-cta fill-current"><path d="M12 2l2.9 6.26L21.6 9.27l-4.8 4.68 1.13 6.6L12 17.77l-5.93 3.12 1.13-6.6-4.8-4.68 6.7-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24" class="w-4 h-4 text-cta fill-current"><path d="M12 2l2.9 6.26L21.6 9.27l-4.8 4.68 1.13 6.6L12 17.77l-5.93 3.12 1.13-6.6-4.8-4.68 6.7-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24" class="w-4 h-4 text-cta fill-current"><path d="M12 2l2.9 6.26L21.6 9.27l-4.8 4.68 1.13 6.6L12 17.77l-5.93 3.12 1.13-6.6-4.8-4.68 6.7-1.01L12 2z"/></svg>
+                </div>
+                <p class="text-sm leading-[150%] text-gray-700">Best chocolate cake in Cairo, hands down. Delivery was quick and the packaging kept it intact. Will be reordering for every occasion.</p>
+              </article>
+
+              <!-- Review 3 -->
+              <article class="flex flex-col gap-3 rounded-xl border border-gray-200 bg-white p-5">
+                <header class="flex items-center gap-3">
+                  <span class="grid place-items-center size-11 rounded-full bg-beige text-primaryDark font-semibold text-sm shrink-0">SH</span>
+                  <div class="flex flex-col gap-0.5 min-w-0">
+                    <span class="font-semibold text-textSecondary text-sm">Salma H.</span>
+                    <span class="inline-flex items-center gap-1 text-[11px] text-green-700"><svg viewBox="0 0 24 24" fill="none" class="w-3 h-3"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Verified purchase</span>
+                  </div>
+                  <span class="ms-auto text-[11px] text-gray-500 shrink-0">1 month ago</span>
+                </header>
+                <div class="flex items-center gap-0.5" aria-label="4 out of 5 stars">
+                  <svg viewBox="0 0 24 24" class="w-4 h-4 text-cta fill-current"><path d="M12 2l2.9 6.26L21.6 9.27l-4.8 4.68 1.13 6.6L12 17.77l-5.93 3.12 1.13-6.6-4.8-4.68 6.7-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24" class="w-4 h-4 text-cta fill-current"><path d="M12 2l2.9 6.26L21.6 9.27l-4.8 4.68 1.13 6.6L12 17.77l-5.93 3.12 1.13-6.6-4.8-4.68 6.7-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24" class="w-4 h-4 text-cta fill-current"><path d="M12 2l2.9 6.26L21.6 9.27l-4.8 4.68 1.13 6.6L12 17.77l-5.93 3.12 1.13-6.6-4.8-4.68 6.7-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24" class="w-4 h-4 text-cta fill-current"><path d="M12 2l2.9 6.26L21.6 9.27l-4.8 4.68 1.13 6.6L12 17.77l-5.93 3.12 1.13-6.6-4.8-4.68 6.7-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24" class="w-4 h-4 text-gray-300 fill-current"><path d="M12 2l2.9 6.26L21.6 9.27l-4.8 4.68 1.13 6.6L12 17.77l-5.93 3.12 1.13-6.6-4.8-4.68 6.7-1.01L12 2z"/></svg>
+                </div>
+                <p class="text-sm leading-[150%] text-gray-700">Really delicious and beautifully finished. I would have loved a slightly larger size for the price, but the taste more than made up for it.</p>
+              </article>
+
+              <!-- Review 4 -->
+              <article class="flex flex-col gap-3 rounded-xl border border-gray-200 bg-white p-5">
+                <header class="flex items-center gap-3">
+                  <span class="grid place-items-center size-11 rounded-full bg-primary-200 text-primaryDark font-semibold text-sm shrink-0">OF</span>
+                  <div class="flex flex-col gap-0.5 min-w-0">
+                    <span class="font-semibold text-textSecondary text-sm">Omar F.</span>
+                    <span class="inline-flex items-center gap-1 text-[11px] text-green-700"><svg viewBox="0 0 24 24" fill="none" class="w-3 h-3"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Verified purchase</span>
+                  </div>
+                  <span class="ms-auto text-[11px] text-gray-500 shrink-0">2 months ago</span>
+                </header>
+                <div class="flex items-center gap-0.5" aria-label="5 out of 5 stars">
+                  <svg viewBox="0 0 24 24" class="w-4 h-4 text-cta fill-current"><path d="M12 2l2.9 6.26L21.6 9.27l-4.8 4.68 1.13 6.6L12 17.77l-5.93 3.12 1.13-6.6-4.8-4.68 6.7-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24" class="w-4 h-4 text-cta fill-current"><path d="M12 2l2.9 6.26L21.6 9.27l-4.8 4.68 1.13 6.6L12 17.77l-5.93 3.12 1.13-6.6-4.8-4.68 6.7-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24" class="w-4 h-4 text-cta fill-current"><path d="M12 2l2.9 6.26L21.6 9.27l-4.8 4.68 1.13 6.6L12 17.77l-5.93 3.12 1.13-6.6-4.8-4.68 6.7-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24" class="w-4 h-4 text-cta fill-current"><path d="M12 2l2.9 6.26L21.6 9.27l-4.8 4.68 1.13 6.6L12 17.77l-5.93 3.12 1.13-6.6-4.8-4.68 6.7-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24" class="w-4 h-4 text-cta fill-current"><path d="M12 2l2.9 6.26L21.6 9.27l-4.8 4.68 1.13 6.6L12 17.77l-5.93 3.12 1.13-6.6-4.8-4.68 6.7-1.01L12 2z"/></svg>
+                </div>
+                <p class="text-sm leading-[150%] text-gray-700">Ordered for a work celebration and it disappeared in minutes. Moist, fresh and clearly made with quality ingredients. Highly recommend.</p>
+              </article>
+
+              <!-- Extra reviews — hidden until "Show more reviews" is clicked -->
+              <article data-review-extra hidden class="flex flex-col gap-3 rounded-xl border border-gray-200 bg-white p-5">
+                <header class="flex items-center gap-3">
+                  <span class="grid place-items-center size-11 rounded-full bg-accent-100 text-accent-700 font-semibold text-sm shrink-0">MT</span>
+                  <div class="flex flex-col gap-0.5 min-w-0">
+                    <span class="font-semibold text-textSecondary text-sm">Mariam T.</span>
+                    <span class="inline-flex items-center gap-1 text-[11px] text-green-700"><svg viewBox="0 0 24 24" fill="none" class="w-3 h-3"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Verified purchase</span>
+                  </div>
+                  <span class="ms-auto text-[11px] text-gray-500 shrink-0">3 months ago</span>
+                </header>
+                <div class="flex items-center gap-0.5" aria-label="5 out of 5 stars">
+                  <svg viewBox="0 0 24 24" class="w-4 h-4 text-cta fill-current"><path d="M12 2l2.9 6.26L21.6 9.27l-4.8 4.68 1.13 6.6L12 17.77l-5.93 3.12 1.13-6.6-4.8-4.68 6.7-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24" class="w-4 h-4 text-cta fill-current"><path d="M12 2l2.9 6.26L21.6 9.27l-4.8 4.68 1.13 6.6L12 17.77l-5.93 3.12 1.13-6.6-4.8-4.68 6.7-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24" class="w-4 h-4 text-cta fill-current"><path d="M12 2l2.9 6.26L21.6 9.27l-4.8 4.68 1.13 6.6L12 17.77l-5.93 3.12 1.13-6.6-4.8-4.68 6.7-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24" class="w-4 h-4 text-cta fill-current"><path d="M12 2l2.9 6.26L21.6 9.27l-4.8 4.68 1.13 6.6L12 17.77l-5.93 3.12 1.13-6.6-4.8-4.68 6.7-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24" class="w-4 h-4 text-cta fill-current"><path d="M12 2l2.9 6.26L21.6 9.27l-4.8 4.68 1.13 6.6L12 17.77l-5.93 3.12 1.13-6.6-4.8-4.68 6.7-1.01L12 2z"/></svg>
+                </div>
+                <p class="text-sm leading-[150%] text-gray-700">This has become our go-to celebration cake. The ganache is glossy and the sponge stays moist for days. Consistently excellent every time we order.</p>
+              </article>
+
+              <article data-review-extra hidden class="flex flex-col gap-3 rounded-xl border border-gray-200 bg-white p-5">
+                <header class="flex items-center gap-3">
+                  <span class="grid place-items-center size-11 rounded-full bg-beige text-primaryDark font-semibold text-sm shrink-0">YK</span>
+                  <div class="flex flex-col gap-0.5 min-w-0">
+                    <span class="font-semibold text-textSecondary text-sm">Youssef K.</span>
+                    <span class="inline-flex items-center gap-1 text-[11px] text-green-700"><svg viewBox="0 0 24 24" fill="none" class="w-3 h-3"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Verified purchase</span>
+                  </div>
+                  <span class="ms-auto text-[11px] text-gray-500 shrink-0">3 months ago</span>
+                </header>
+                <div class="flex items-center gap-0.5" aria-label="4 out of 5 stars">
+                  <svg viewBox="0 0 24 24" class="w-4 h-4 text-cta fill-current"><path d="M12 2l2.9 6.26L21.6 9.27l-4.8 4.68 1.13 6.6L12 17.77l-5.93 3.12 1.13-6.6-4.8-4.68 6.7-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24" class="w-4 h-4 text-cta fill-current"><path d="M12 2l2.9 6.26L21.6 9.27l-4.8 4.68 1.13 6.6L12 17.77l-5.93 3.12 1.13-6.6-4.8-4.68 6.7-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24" class="w-4 h-4 text-cta fill-current"><path d="M12 2l2.9 6.26L21.6 9.27l-4.8 4.68 1.13 6.6L12 17.77l-5.93 3.12 1.13-6.6-4.8-4.68 6.7-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24" class="w-4 h-4 text-cta fill-current"><path d="M12 2l2.9 6.26L21.6 9.27l-4.8 4.68 1.13 6.6L12 17.77l-5.93 3.12 1.13-6.6-4.8-4.68 6.7-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24" class="w-4 h-4 text-gray-300 fill-current"><path d="M12 2l2.9 6.26L21.6 9.27l-4.8 4.68 1.13 6.6L12 17.77l-5.93 3.12 1.13-6.6-4.8-4.68 6.7-1.01L12 2z"/></svg>
+                </div>
+                <p class="text-sm leading-[150%] text-gray-700">Great flavour and arrived on time. The delivery driver was careful and the box was well insulated even in the summer heat.</p>
+              </article>
+
+              <article data-review-extra hidden class="flex flex-col gap-3 rounded-xl border border-gray-200 bg-white p-5">
+                <header class="flex items-center gap-3">
+                  <span class="grid place-items-center size-11 rounded-full bg-primary-200 text-primaryDark font-semibold text-sm shrink-0">DS</span>
+                  <div class="flex flex-col gap-0.5 min-w-0">
+                    <span class="font-semibold text-textSecondary text-sm">Dina S.</span>
+                    <span class="inline-flex items-center gap-1 text-[11px] text-green-700"><svg viewBox="0 0 24 24" fill="none" class="w-3 h-3"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Verified purchase</span>
+                  </div>
+                  <span class="ms-auto text-[11px] text-gray-500 shrink-0">4 months ago</span>
+                </header>
+                <div class="flex items-center gap-0.5" aria-label="5 out of 5 stars">
+                  <svg viewBox="0 0 24 24" class="w-4 h-4 text-cta fill-current"><path d="M12 2l2.9 6.26L21.6 9.27l-4.8 4.68 1.13 6.6L12 17.77l-5.93 3.12 1.13-6.6-4.8-4.68 6.7-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24" class="w-4 h-4 text-cta fill-current"><path d="M12 2l2.9 6.26L21.6 9.27l-4.8 4.68 1.13 6.6L12 17.77l-5.93 3.12 1.13-6.6-4.8-4.68 6.7-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24" class="w-4 h-4 text-cta fill-current"><path d="M12 2l2.9 6.26L21.6 9.27l-4.8 4.68 1.13 6.6L12 17.77l-5.93 3.12 1.13-6.6-4.8-4.68 6.7-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24" class="w-4 h-4 text-cta fill-current"><path d="M12 2l2.9 6.26L21.6 9.27l-4.8 4.68 1.13 6.6L12 17.77l-5.93 3.12 1.13-6.6-4.8-4.68 6.7-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24" class="w-4 h-4 text-cta fill-current"><path d="M12 2l2.9 6.26L21.6 9.27l-4.8 4.68 1.13 6.6L12 17.77l-5.93 3.12 1.13-6.6-4.8-4.68 6.7-1.01L12 2z"/></svg>
+                </div>
+                <p class="text-sm leading-[150%] text-gray-700">Beautiful presentation and it tasted even better than it looked. My guests could not believe it was ordered online. Will order again for Eid.</p>
+              </article>
+
+              <article data-review-extra hidden class="flex flex-col gap-3 rounded-xl border border-gray-200 bg-white p-5">
+                <header class="flex items-center gap-3">
+                  <span class="grid place-items-center size-11 rounded-full bg-accent-100 text-accent-700 font-semibold text-sm shrink-0">HM</span>
+                  <div class="flex flex-col gap-0.5 min-w-0">
+                    <span class="font-semibold text-textSecondary text-sm">Hana M.</span>
+                    <span class="inline-flex items-center gap-1 text-[11px] text-green-700"><svg viewBox="0 0 24 24" fill="none" class="w-3 h-3"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Verified purchase</span>
+                  </div>
+                  <span class="ms-auto text-[11px] text-gray-500 shrink-0">5 months ago</span>
+                </header>
+                <div class="flex items-center gap-0.5" aria-label="5 out of 5 stars">
+                  <svg viewBox="0 0 24 24" class="w-4 h-4 text-cta fill-current"><path d="M12 2l2.9 6.26L21.6 9.27l-4.8 4.68 1.13 6.6L12 17.77l-5.93 3.12 1.13-6.6-4.8-4.68 6.7-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24" class="w-4 h-4 text-cta fill-current"><path d="M12 2l2.9 6.26L21.6 9.27l-4.8 4.68 1.13 6.6L12 17.77l-5.93 3.12 1.13-6.6-4.8-4.68 6.7-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24" class="w-4 h-4 text-cta fill-current"><path d="M12 2l2.9 6.26L21.6 9.27l-4.8 4.68 1.13 6.6L12 17.77l-5.93 3.12 1.13-6.6-4.8-4.68 6.7-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24" class="w-4 h-4 text-cta fill-current"><path d="M12 2l2.9 6.26L21.6 9.27l-4.8 4.68 1.13 6.6L12 17.77l-5.93 3.12 1.13-6.6-4.8-4.68 6.7-1.01L12 2z"/></svg>
+                  <svg viewBox="0 0 24 24" class="w-4 h-4 text-cta fill-current"><path d="M12 2l2.9 6.26L21.6 9.27l-4.8 4.68 1.13 6.6L12 17.77l-5.93 3.12 1.13-6.6-4.8-4.68 6.7-1.01L12 2z"/></svg>
+                </div>
+                <p class="text-sm leading-[150%] text-gray-700">Rich, indulgent and not overly sweet — exactly how a chocolate cake should be. The team even accommodated a last-minute delivery time change.</p>
+              </article>
+            </div>
+
+            <!-- Show more / less toggle -->
+            <div class="flex justify-center">
+              <button type="button" data-reviews-toggle aria-expanded="false" class="btn btn--outline btn--sm [&.is-expanded_svg]:rotate-180">
+                <span data-reviews-toggle-label>Show more reviews</span>
+                <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4 transition-transform"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================ CATEGORY ROW — NO BANNER: Related Products ============================
+           Variant of the Category Row component (see index.html "CATEGORY ROW") with the banner
+           tile omitted, so the carousel spans the full width of the white card. -->
+      <section class="bg-gray-200 py-10 md:py-14">
+        <div class="mx-auto max-w-[1392px] px-4">
+          <div class="rounded-[20px] bg-white border border-gray-200 p-4 md:p-8">
+            <div class="mb-6 flex items-center justify-between gap-4">
+              <h2 class="text-xl font-semibold text-primaryDark md:text-[28px]">Related Products</h2>
+              <a href="shop-category.html" class="inline-flex shrink-0 items-center gap-2.5 rounded-[4px] bg-gray-200 px-2 py-1.5 text-sm font-medium text-[#6F7276] transition-colors hover:bg-gray-300">View All <svg viewBox="0 0 24 24" fill="none" class="h-4 w-4"><path d="M4 12h16M14 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            </div>
+            <div class="carousel relative min-w-0" data-loop data-align-arrows style="--carousel-gap: 16px">
+              <div class="carousel-track items-start" data-related-track></div>
+              <div data-fade="start" class="pointer-events-none absolute inset-y-0 start-0 z-[1] w-10 bg-gradient-to-r from-white to-transparent opacity-0 transition-opacity duration-200"></div>
+              <div data-fade="end" class="pointer-events-none absolute inset-y-0 end-0 z-[1] w-10 bg-gradient-to-l from-white to-transparent transition-opacity duration-200"></div>
+              <button type="button" class="carousel-btn carousel-prev !rounded-[8px]" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" class="h-5 w-5"><path d="m15 6-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+              <button type="button" class="carousel-btn carousel-next !rounded-[8px]" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" class="h-5 w-5"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================ CATEGORY ROW — BANNER: Cakes and Gateaux ============================
+           Full Category Row component (see index.html "CATEGORY ROW"), not the
+           No-Banner variant used above for Related Products. The banner tile
+           uses a fixed "Explore More in" cap instead of the index.html
+           pattern's category-name cap + starting price, since this is a
+           single-category promo rather than a shop-wide teaser. -->
+      <section class="bg-gray-200 pt-2 pb-10 md:pb-14">
+        <div class="mx-auto max-w-[1392px] px-4">
+          <div class="rounded-[20px] bg-white border border-gray-200 p-4 md:p-8">
+            <div class="mb-6 flex items-center justify-between gap-4">
+              <h2 class="text-xl font-semibold text-primaryDark md:text-[28px]">Cakes and Gateaux</h2>
+              <a href="shop-category.html" class="inline-flex shrink-0 items-center gap-2.5 rounded-[4px] bg-gray-200 px-2 py-1.5 text-sm font-medium text-[#6F7276] transition-colors hover:bg-gray-300">View All <svg viewBox="0 0 24 24" fill="none" class="h-4 w-4"><path d="M4 12h16M14 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            </div>
+            <div class="flex items-stretch gap-4 md:gap-8">
+              <div class="shrink-0 self-stretch">
+                <a href="shop-category.html" class="relative block h-full w-[240px] overflow-hidden rounded-[20px] md:w-[480px]">
+                  <img src="images/cakes-and-gateaux-category.webp" alt="Cakes and Gateaux" class="absolute inset-0 h-full w-full object-cover" />
+                  <div class="absolute inset-y-0 start-5 flex flex-col justify-center md:start-[30px]">
+                    <div class="inline-flex flex-col overflow-hidden rounded-[20px] text-center shadow-custom-5">
+                      <div class="bg-cta px-5 py-2.5 text-lg font-semibold text-white md:px-6 md:py-3 md:text-2xl">Explore More in</div>
+                      <div class="flex flex-col gap-1.5 bg-white px-5 py-4 text-primaryDark md:gap-2.5 md:p-6">
+                        <p class="text-xl font-semibold leading-tight md:text-[28px]">Cakes and Gateaux</p>
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              </div>
+              <div class="carousel relative min-w-0 flex-1" data-loop data-align-arrows style="--carousel-gap: 16px">
+                <div class="carousel-track items-start" data-cakes-gateaux-track></div>
+                <div data-fade="start" class="pointer-events-none absolute inset-y-0 start-0 z-[1] w-10 bg-gradient-to-r from-white to-transparent opacity-0 transition-opacity duration-200"></div>
+                <div data-fade="end" class="pointer-events-none absolute inset-y-0 end-0 z-[1] w-10 bg-gradient-to-l from-white to-transparent transition-opacity duration-200"></div>
+                <button type="button" class="carousel-btn carousel-prev !rounded-[8px]" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" class="h-5 w-5"><path d="m15 6-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                <button type="button" class="carousel-btn carousel-next !rounded-[8px]" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" class="h-5 w-5"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Shared footer is injected here by scripts.js -->
+    <div id="site-footer"></div>
+
+    <!-- Page-specific interactions: gallery thumbnail swap + variation pills + related products -->
+    <script>
+      // --- Gallery: swap the main image when a thumbnail is clicked ---
+      function swapMain(btn) {
+        const main = document.getElementById("pdp-main");
+        if (main) main.src = btn.getAttribute("data-src");
+        document.querySelectorAll(".pdp-thumb").forEach((t) => {
+          t.classList.remove("border-primaryColor");
+          t.classList.add("border-transparent", "opacity-50");
+        });
+        btn.classList.add("border-primaryColor");
+        btn.classList.remove("border-transparent", "opacity-50");
+      }
+
+      // --- Variation pills: single-select within each group ---
+      document.querySelectorAll("[data-variation-group]").forEach((group) => {
+        group.querySelectorAll(".variation-pill").forEach((pill) => {
+          pill.addEventListener("click", () => {
+            group
+              .querySelectorAll(".variation-pill")
+              .forEach((p) => p.classList.remove("is-active"));
+            pill.classList.add("is-active");
+          });
+        });
+      });
+
+      // --- Related products: render canonical cards as carousel slides ---
+      (function () {
+        const IMGS = [
+          "dummy-images/image.webp",
+          "dummy-images/image-1.webp",
+          "dummy-images/image-2.webp",
+          "dummy-images/image-3.webp",
+          "dummy-images/image-4.webp",
+          "dummy-images/image-5.webp",
+        ];
+        const PRODUCTS = [
+          ["Red Velvet Gateau", 590, 0],
+          ["Belgian Truffle Selection", 380, 0],
+          ["Summer Berry Cheesecake", 540, 480],
+          ["Signature Celebration Cake", 720, 0],
+          ["Salted Caramel Tart", 390, 340],
+          ["Vanilla Bean Gateau", 560, 0],
+        ];
+        function card([name, price, sale], i, imgs = IMGS) {
+          const cur = sale ? Math.min(price, sale) : price;
+          const old = sale ? Math.max(price, sale) : 0;
+          const hasSale = sale && old > cur;
+          const intp = Math.floor(cur);
+          const dec = (cur - intp).toFixed(2).substring(1);
+          return `
+          <div class="carousel-slide shrink-0 w-[200px] md:w-[240px]">
+            <a href="product.html" class="group/card block relative" aria-label="${name}">
+              <div class="relative">
+                <div class="rounded-[12px] aspect-square overflow-hidden bg-primary-light">
+                  <img src="${imgs[i % imgs.length]}" alt="${name}" class="w-full h-full object-cover md:group-hover/card:scale-110 transition-all duration-300" />
+                </div>
+                <span class="absolute end-3 -bottom-5 z-10" data-add-widget data-type="simple">
+                  <button type="button" data-add-btn aria-label="Add to cart" class="grid place-items-center bg-primary-200 text-primaryDark rounded-[8px] size-[42px] shadow-custom-5 hover:bg-primary-300 transition-colors">
+                    <svg viewBox="0 0 24 24" fill="none" class="w-[22px] h-[22px]"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+                  </button>
+                  <span class="hidden items-center gap-0.5 bg-primary-light rounded-[8px] h-[42px] px-2 shadow-custom-5" data-counter>
+                    <button type="button" data-dec aria-label="Remove" class="grid place-items-center size-[26px] rounded-[4px] hover:bg-black/5 transition-colors">
+                      <img data-dec-icon src="images/icons/trash.svg" alt="" width="18" height="18" />
+                    </button>
+                    <span data-qty class="w-[34px] text-center text-lg font-medium text-primaryDark tabular-nums">1</span>
+                    <button type="button" data-inc aria-label="Add" class="grid place-items-center size-[26px] rounded-[4px] bg-primary-300 text-white hover:bg-primary-400 transition-colors">
+                      <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+                    </button>
+                  </span>
+                </span>
+              </div>
+              <div class="flex flex-col gap-2 pt-6">
+                <div class="flex items-end gap-2 flex-wrap">
+                  <span class="flex items-end gap-0.5 text-cta leading-none" dir="ltr">
+                    <span class="text-2xl font-semibold">${intp}</span>
+                    <span class="text-lg font-normal">${dec}</span>
+                    <span class="text-lg font-normal">EGP</span>
+                  </span>
+                  ${hasSale ? `<span class="text-sm text-gray-500 line-through leading-none" dir="ltr">${old}.00EGP</span>` : ""}
+                </div>
+                <p class="text-primaryDark text-base font-medium leading-[1.4] line-clamp-2 min-h-[2.8em]">${name}</p>
+              </div>
+            </a>
+          </div>`;
+        }
+        const track = document.querySelector("[data-related-track]");
+        // NOTE: must be (p, i) => card(p, i), not the bare `card` reference —
+        // Array#map calls its callback with a 3rd (array) argument, which
+        // would otherwise clobber card()'s `imgs = IMGS` default parameter.
+        if (track) track.innerHTML = PRODUCTS.map((p, i) => card(p, i)).join("");
+
+        // Cakes and Gateaux category row — reuses the same card() renderer,
+        // with its own product list and a separate image pool so the two
+        // carousels on this page don't repeat photos.
+        const GATEAUX_IMGS = [
+          "dummy-images/image-6.webp",
+          "dummy-images/image-7.webp",
+          "dummy-images/image-8.webp",
+          "dummy-images/image-9.webp",
+          "dummy-images/image-10.webp",
+        ];
+        const GATEAUX_PRODUCTS = [
+          ["Mille-Feuille Slice", 180, 0],
+          ["Classic English Cake", 320, 0],
+          ["Cupcake Trio", 210, 240],
+          ["Lemon Drizzle Gateau", 350, 0],
+          ["Pistachio Cheesecake", 480, 0],
+        ];
+        const gateauxTrack = document.querySelector("[data-cakes-gateaux-track]");
+        if (gateauxTrack) {
+          gateauxTrack.innerHTML = GATEAUX_PRODUCTS.map((p, i) => card(p, i, GATEAUX_IMGS)).join("");
+        }
+        // scripts.js runs its kInit(document) on DOMContentLoaded (after this inline
+        // script), so the freshly-populated .carousel is picked up automatically.
+      })();
+    </script>
+  </body>
+</html>

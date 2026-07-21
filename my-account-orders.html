@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>My Orders — Exception</title>
+    <meta
+      name="description"
+      content="Track and review your Exception orders — cakes, oriental sweets and gift boxes."
+    />
+    <!-- Tailwind (Play CDN) + faithful port of the project's tailwind.config.ts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="tw-config.js"></script>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <script defer src="scripts.js"></script>
+  </head>
+  <body data-page="account" data-path="/my-account/orders" class="antialiased bg-white">
+    <div id="site-header"></div>
+
+    <main class="overflow-x-clip bg-gray-100">
+      <div class="flex lg:flex-row flex-col items-start gap-7 md:gap-10 mx-auto px-4 py-10 md:py-16 max-w-[1392px]">
+
+        <!-- ============================ MOBILE ACCOUNT NAV (pills) ============================ -->
+        <div class="flex flex-col gap-4 w-full lg:hidden">
+          <div class="flex items-end justify-between w-full">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-full bg-primary-light text-primaryDark flex items-center justify-center font-semibold text-lg shrink-0">MH</div>
+              <div class="flex flex-col gap-1">
+                <span data-tier-badge></span>
+                <h3 class="font-semibold text-primaryDark text-[22px] leading-tight truncate">Mariam Hassan</h3>
+              </div>
+            </div>
+            <a href="login.html" class="shrink-0 text-sm font-medium text-gray-600 hover:underline">Log out</a>
+          </div>
+          <div class="w-full border-b border-primary/20"></div>
+          <div class="w-full overflow-x-auto no-scrollbar">
+            <div class="flex items-center gap-2 min-w-max pb-2">
+              <a href="my-account.html" class="flex items-center gap-2.5 px-4 py-2.5 h-[52px] rounded-lg whitespace-nowrap border border-[#CFD3D8] text-gray-700"><span class="w-5 h-5 flex items-center justify-center"><img src="images/icons/account%20icons/overview.webp" alt="Dashboard" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-base">Dashboard</span></a>
+              <a href="my-account-profile.html" class="flex items-center gap-2.5 px-4 py-2.5 h-[52px] rounded-lg whitespace-nowrap border border-[#CFD3D8] text-gray-700"><span class="w-5 h-5 flex items-center justify-center"><img src="images/icons/account%20icons/preparing.webp" alt="Profile" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-base">Profile</span></a>
+              <a href="my-account-orders.html" class="flex items-center gap-2.5 px-4 py-2.5 h-[52px] rounded-lg whitespace-nowrap bg-primary-light text-primaryDark"><span class="w-5 h-5 flex items-center justify-center"><img src="images/icons/account%20icons/preparing-1.webp" alt="Orders" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-base">Orders</span></a>
+              <a href="my-account-addresses.html" class="flex items-center gap-2.5 px-4 py-2.5 h-[52px] rounded-lg whitespace-nowrap border border-[#CFD3D8] text-gray-700"><span class="w-5 h-5 flex items-center justify-center"><img src="images/icons/account%20icons/preparing-2.webp" alt="Addresses" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-base">Addresses</span></a>
+              <a href="my-account-favorites.html" class="flex items-center gap-2.5 px-4 py-2.5 h-[52px] rounded-lg whitespace-nowrap border border-[#CFD3D8] text-gray-700"><span class="w-5 h-5 flex items-center justify-center"><img src="images/icons/account%20icons/preparing-3.webp" alt="Favorites" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-base">Favorites</span></a>
+              <a href="my-account-wallet.html" class="flex items-center gap-2.5 px-4 py-2.5 h-[52px] rounded-lg whitespace-nowrap border border-[#CFD3D8] text-gray-700"><span class="w-5 h-5 flex items-center justify-center"><img src="images/icons/account%20icons/wallet.webp" alt="Wallet" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-base">Wallet</span></a>
+                <a href="my-account-vouchers.html" class="flex items-center gap-2.5 px-4 py-2.5 h-[52px] rounded-lg whitespace-nowrap border border-[#CFD3D8] text-gray-700"><span class="w-5 h-5 flex items-center justify-center"><img src="images/icons/account%20icons/voucher.webp" alt="Vouchers" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-base">Vouchers</span></a>
+              <a href="my-account-point.html" class="flex items-center gap-2.5 px-4 py-2.5 h-[52px] rounded-lg whitespace-nowrap border border-[#CFD3D8] text-gray-700"><span class="w-5 h-5 flex items-center justify-center"><img src="images/icons/account%20icons/Points.webp" alt="Points" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-base">Points</span></a>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============================ DESKTOP ACCOUNT SIDEBAR ============================ -->
+        <aside class="hidden lg:block w-full lg:w-[25%] shrink-0 min-h-[520px] lg:self-stretch">
+          <div class="rounded-2xl border border-gray-300 bg-white shadow-custom4 overflow-hidden lg:sticky lg:top-[99px] lg:max-h-[calc(100vh-115px)] lg:overflow-y-auto">
+            <div class="flex flex-col gap-4 p-6 border-b border-gray-300">
+              <div class="flex items-center gap-3">
+                <div class="w-14 h-14 rounded-full bg-primary-light text-primaryDark flex items-center justify-center font-semibold text-xl shrink-0">MH</div>
+                <div class="flex flex-col gap-1.5">
+                  <span data-tier-badge></span>
+                  <h3 class="text-primaryDark font-medium text-2xl leading-tight">Mariam Hassan</h3>
+                </div>
+              </div>
+            </div>
+            <nav class="p-4">
+              <ul class="space-y-1.5">
+                <li><a href="my-account.html" class="flex items-center gap-3 rounded-lg px-4 py-2.5 xl:px-6 transition-all duration-200 hover:bg-primary-light text-gray-700"><span class="inline-flex w-6 text-gray-700"><img src="images/icons/account%20icons/overview.webp" alt="Dashboard" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Dashboard</span></a></li>
+                <li><a href="my-account-profile.html" class="flex items-center gap-3 rounded-lg px-4 py-2.5 xl:px-6 transition-all duration-200 hover:bg-primary-light text-gray-700"><span class="inline-flex w-6 text-gray-700"><img src="images/icons/account%20icons/preparing.webp" alt="Profile" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Profile</span></a></li>
+                <li><a href="my-account-orders.html" class="flex items-center gap-3 rounded-lg px-4 py-2.5 xl:px-6 transition-all duration-200 bg-primary-light text-primaryDark"><span class="inline-flex w-6 text-primaryDark"><img src="images/icons/account%20icons/preparing-1.webp" alt="Orders" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Orders</span></a></li>
+                <li><a href="my-account-addresses.html" class="flex items-center gap-3 rounded-lg px-4 py-2.5 xl:px-6 transition-all duration-200 hover:bg-primary-light text-gray-700"><span class="inline-flex w-6 text-gray-700"><img src="images/icons/account%20icons/preparing-2.webp" alt="Addresses" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Addresses</span></a></li>
+                <li><a href="my-account-favorites.html" class="flex items-center gap-3 rounded-lg px-4 py-2.5 xl:px-6 transition-all duration-200 hover:bg-primary-light text-gray-700"><span class="inline-flex w-6 text-gray-700"><img src="images/icons/account%20icons/preparing-3.webp" alt="Favorites" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Favorites</span></a></li>
+                <li><a href="my-account-wallet.html" class="flex items-center gap-3 rounded-lg px-4 py-2.5 xl:px-6 transition-all duration-200 hover:bg-primary-light text-gray-700"><span class="inline-flex w-6 text-gray-700"><img src="images/icons/account%20icons/wallet.webp" alt="Wallet" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Wallet</span></a></li>
+              <li><a href="my-account-vouchers.html" class="flex items-center gap-3 rounded-lg px-4 py-2.5 xl:px-6 transition-all duration-200 hover:bg-primary-light text-gray-700"><span class="inline-flex w-6 text-gray-700"><img src="images/icons/account%20icons/voucher.webp" alt="Vouchers" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Vouchers</span></a></li>
+                <li><a href="my-account-point.html" class="flex items-center gap-3 rounded-lg px-4 py-2.5 xl:px-6 transition-all duration-200 hover:bg-primary-light text-gray-700"><span class="inline-flex w-6 text-gray-700"><img src="images/icons/account%20icons/Points.webp" alt="Points" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Points</span></a></li>
+              </ul>
+              <div class="my-4 border-t border-gray-300"></div>
+              <div class="px-2 pb-2">
+                <h4 class="mb-3 font-semibold text-neutral-support-bg md:text-lg">Need Help?</h4>
+                <ul class="flex flex-col gap-3">
+                  <li><a href="faqs.html" class="font-medium text-primaryColor text-sm md:text-base hover:underline">FAQs</a></li>
+                  <li><a href="contact-us.html" class="font-medium text-primaryColor text-sm md:text-base hover:underline">Contact us</a></li>
+                </ul>
+                <a href="login.html" class="inline-flex items-center gap-2 pt-4 font-medium text-gray-700 text-sm hover:underline">
+                  <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  Log out
+                </a>
+              </div>
+            </nav>
+          </div>
+        </aside>
+
+        <!-- ============================ ACCOUNT CONTENT ============================ -->
+        <div class="w-full lg:w-[calc(75%-36px)]">
+          <nav class="mb-6 flex items-center gap-2 text-sm text-gray-700" aria-label="Breadcrumb">
+            <a href="index.html" class="hover:text-primaryDark">Home</a>
+            <span class="text-gray-400">/</span>
+            <a href="my-account.html" class="hover:text-primaryDark">My Account</a>
+            <span class="text-gray-400">/</span>
+            <span class="text-primaryDark font-medium">Orders</span>
+          </nav>
+
+          <div class="flex flex-col gap-7 md:gap-8">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+              <h1 class="text-2xl md:text-[32px] font-semibold text-textSecondary">My Orders</h1>
+            </div>
+
+            <!-- Status tabs + order cards (tabs use the shared data-tabs contract in scripts.js) -->
+            <div data-tabs class="flex flex-col gap-6">
+              <ul class="no-scrollbar -mx-4 flex items-center gap-2.5 overflow-auto px-4 md:mx-0 md:px-0">
+                <li class="whitespace-nowrap"><button type="button" class="tab-btn is-active px-5 py-2.5 chip text-sm font-medium" data-tab="all">All orders</button></li>
+                <li class="whitespace-nowrap"><button type="button" class="tab-btn px-5 py-2.5 chip text-sm font-medium" data-tab="processing">Processing</button></li>
+                <li class="whitespace-nowrap"><button type="button" class="tab-btn px-5 py-2.5 chip text-sm font-medium" data-tab="delivered">Delivered</button></li>
+                <li class="whitespace-nowrap"><button type="button" class="tab-btn px-5 py-2.5 chip text-sm font-medium" data-tab="cancelled">Cancelled</button></li>
+              </ul>
+
+              <!-- ALL -->
+              <div class="tab-panel flex flex-col gap-4" data-panel="all">
+                <!-- Order card: Delivered -->
+                <article class="flex flex-col sm:flex-row sm:items-center gap-4 rounded-2xl border border-border-light bg-white p-4 md:p-5 shadow-custom4">
+                  <div class="flex flex-1 flex-col gap-2">
+                    <div class="flex items-center justify-between gap-2">
+                      <span class="text-base md:text-lg font-semibold text-textSecondary">Order #100234</span>
+                      <span class="inline-flex items-center justify-center rounded-md px-2.5 py-[2px] text-sm font-medium bg-success text-white">Delivered</span>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2 text-sm text-gray-700">
+                      <span>July 6, 2025</span><span class="h-1 w-1 rounded-full bg-gray-400"></span><span>3 items</span>
+                    </div>
+                    <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
+                      <div class="flex items-baseline gap-1 text-textSecondary" dir="ltr"><span class="text-sm font-medium">EGP</span><span class="text-xl font-semibold">890.00</span></div>
+                      <a href="my-account-order.html" class="btn btn--secondary btn--sm inline-flex items-center gap-2">View details<svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                    </div>
+                  </div>
+                </article>
+                <!-- Order card: Processing -->
+                <article class="flex flex-col sm:flex-row sm:items-center gap-4 rounded-2xl border border-border-light bg-white p-4 md:p-5 shadow-custom4">
+                  <div class="flex flex-1 flex-col gap-2">
+                    <div class="flex items-center justify-between gap-2">
+                      <span class="text-base md:text-lg font-semibold text-textSecondary">Order #100221</span>
+                      <span class="inline-flex items-center justify-center rounded-md px-2.5 py-[2px] text-sm font-medium bg-accent-50 text-accent-600">Processing</span>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2 text-sm text-gray-700">
+                      <span>June 28, 2025</span><span class="h-1 w-1 rounded-full bg-gray-400"></span><span>5 items</span>
+                    </div>
+                    <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
+                      <div class="flex items-baseline gap-1 text-textSecondary" dir="ltr"><span class="text-sm font-medium">EGP</span><span class="text-xl font-semibold">1,240.00</span></div>
+                      <a href="my-account-order.html" class="btn btn--secondary btn--sm inline-flex items-center gap-2">View details<svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                    </div>
+                  </div>
+                </article>
+                <!-- Order card: Delivered -->
+                <article class="flex flex-col sm:flex-row sm:items-center gap-4 rounded-2xl border border-border-light bg-white p-4 md:p-5 shadow-custom4">
+                  <div class="flex flex-1 flex-col gap-2">
+                    <div class="flex items-center justify-between gap-2">
+                      <span class="text-base md:text-lg font-semibold text-textSecondary">Order #100205</span>
+                      <span class="inline-flex items-center justify-center rounded-md px-2.5 py-[2px] text-sm font-medium bg-success text-white">Delivered</span>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2 text-sm text-gray-700">
+                      <span>June 15, 2025</span><span class="h-1 w-1 rounded-full bg-gray-400"></span><span>2 items</span>
+                    </div>
+                    <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
+                      <div class="flex items-baseline gap-1 text-textSecondary" dir="ltr"><span class="text-sm font-medium">EGP</span><span class="text-xl font-semibold">560.00</span></div>
+                      <a href="my-account-order.html" class="btn btn--secondary btn--sm inline-flex items-center gap-2">View details<svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                    </div>
+                  </div>
+                </article>
+                <!-- Order card: Cancelled -->
+                <article class="flex flex-col sm:flex-row sm:items-center gap-4 rounded-2xl border border-border-light bg-white p-4 md:p-5 shadow-custom4">
+                  <div class="flex flex-1 flex-col gap-2">
+                    <div class="flex items-center justify-between gap-2">
+                      <span class="text-base md:text-lg font-semibold text-textSecondary">Order #100198</span>
+                      <span class="inline-flex items-center justify-center rounded-md px-2.5 py-[2px] text-sm font-medium bg-accent-error text-white">Cancelled</span>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2 text-sm text-gray-700">
+                      <span>June 2, 2025</span><span class="h-1 w-1 rounded-full bg-gray-400"></span><span>1 item</span>
+                    </div>
+                    <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
+                      <div class="flex items-baseline gap-1 text-textSecondary" dir="ltr"><span class="text-sm font-medium">EGP</span><span class="text-xl font-semibold">430.00</span></div>
+                      <a href="my-account-order.html" class="btn btn--secondary btn--sm inline-flex items-center gap-2">View details<svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                    </div>
+                  </div>
+                </article>
+              </div>
+
+              <!-- PROCESSING -->
+              <div class="tab-panel flex flex-col gap-4" data-panel="processing" hidden>
+                <article class="flex flex-col sm:flex-row sm:items-center gap-4 rounded-2xl border border-border-light bg-white p-4 md:p-5 shadow-custom4">
+                  <div class="flex flex-1 flex-col gap-2">
+                    <div class="flex items-center justify-between gap-2">
+                      <span class="text-base md:text-lg font-semibold text-textSecondary">Order #100221</span>
+                      <span class="inline-flex items-center justify-center rounded-md px-2.5 py-[2px] text-sm font-medium bg-accent-50 text-accent-600">Processing</span>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2 text-sm text-gray-700">
+                      <span>June 28, 2025</span><span class="h-1 w-1 rounded-full bg-gray-400"></span><span>5 items</span>
+                    </div>
+                    <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
+                      <div class="flex items-baseline gap-1 text-textSecondary" dir="ltr"><span class="text-sm font-medium">EGP</span><span class="text-xl font-semibold">1,240.00</span></div>
+                      <a href="my-account-order.html" class="btn btn--secondary btn--sm inline-flex items-center gap-2">View details<svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                    </div>
+                  </div>
+                </article>
+              </div>
+
+              <!-- DELIVERED -->
+              <div class="tab-panel flex flex-col gap-4" data-panel="delivered" hidden>
+                <article class="flex flex-col sm:flex-row sm:items-center gap-4 rounded-2xl border border-border-light bg-white p-4 md:p-5 shadow-custom4">
+                  <div class="flex flex-1 flex-col gap-2">
+                    <div class="flex items-center justify-between gap-2">
+                      <span class="text-base md:text-lg font-semibold text-textSecondary">Order #100234</span>
+                      <span class="inline-flex items-center justify-center rounded-md px-2.5 py-[2px] text-sm font-medium bg-success text-white">Delivered</span>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2 text-sm text-gray-700">
+                      <span>July 6, 2025</span><span class="h-1 w-1 rounded-full bg-gray-400"></span><span>3 items</span>
+                    </div>
+                    <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
+                      <div class="flex items-baseline gap-1 text-textSecondary" dir="ltr"><span class="text-sm font-medium">EGP</span><span class="text-xl font-semibold">890.00</span></div>
+                      <a href="my-account-order.html" class="btn btn--secondary btn--sm inline-flex items-center gap-2">View details<svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                    </div>
+                  </div>
+                </article>
+                <article class="flex flex-col sm:flex-row sm:items-center gap-4 rounded-2xl border border-border-light bg-white p-4 md:p-5 shadow-custom4">
+                  <div class="flex flex-1 flex-col gap-2">
+                    <div class="flex items-center justify-between gap-2">
+                      <span class="text-base md:text-lg font-semibold text-textSecondary">Order #100205</span>
+                      <span class="inline-flex items-center justify-center rounded-md px-2.5 py-[2px] text-sm font-medium bg-success text-white">Delivered</span>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2 text-sm text-gray-700">
+                      <span>June 15, 2025</span><span class="h-1 w-1 rounded-full bg-gray-400"></span><span>2 items</span>
+                    </div>
+                    <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
+                      <div class="flex items-baseline gap-1 text-textSecondary" dir="ltr"><span class="text-sm font-medium">EGP</span><span class="text-xl font-semibold">560.00</span></div>
+                      <a href="my-account-order.html" class="btn btn--secondary btn--sm inline-flex items-center gap-2">View details<svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                    </div>
+                  </div>
+                </article>
+              </div>
+
+              <!-- CANCELLED -->
+              <div class="tab-panel flex flex-col gap-4" data-panel="cancelled" hidden>
+                <article class="flex flex-col sm:flex-row sm:items-center gap-4 rounded-2xl border border-border-light bg-white p-4 md:p-5 shadow-custom4">
+                  <div class="flex flex-1 flex-col gap-2">
+                    <div class="flex items-center justify-between gap-2">
+                      <span class="text-base md:text-lg font-semibold text-textSecondary">Order #100198</span>
+                      <span class="inline-flex items-center justify-center rounded-md px-2.5 py-[2px] text-sm font-medium bg-accent-error text-white">Cancelled</span>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2 text-sm text-gray-700">
+                      <span>June 2, 2025</span><span class="h-1 w-1 rounded-full bg-gray-400"></span><span>1 item</span>
+                    </div>
+                    <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
+                      <div class="flex items-baseline gap-1 text-textSecondary" dir="ltr"><span class="text-sm font-medium">EGP</span><span class="text-xl font-semibold">430.00</span></div>
+                      <a href="my-account-order.html" class="btn btn--secondary btn--sm inline-flex items-center gap-2">View details<svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                    </div>
+                  </div>
+                </article>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div id="site-footer"></div>
+  </body>
+</html>

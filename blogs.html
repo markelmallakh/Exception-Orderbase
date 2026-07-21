@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Media Center — Exception</title>
+    <meta
+      name="description"
+      content="Stories, recipes and news from Exception — behind our signature sweets, celebration tips and moments worth sharing."
+    />
+    <!-- Tailwind (Play CDN) + faithful port of the project's tailwind.config.ts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="tw-config.js"></script>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <script defer src="scripts.js"></script>
+  </head>
+  <body data-page="blogs" data-path="/blogs" class="antialiased bg-white">
+    <!-- Shared header is injected here by scripts.js -->
+    <div id="site-header"></div>
+
+    <main class="overflow-x-hidden">
+      <section>
+        <!-- ============================ BLOG HEADER ============================ -->
+        <div class="bg-white">
+          <div class="container px-4 flex flex-col items-center justify-center py-10">
+            <nav aria-label="Breadcrumb" class="flex items-center gap-2 text-sm text-gray-700 justify-center mb-4">
+              <a href="index.html" class="hover:text-primaryDark transition-colors">Home</a>
+              <span class="text-gray-400">/</span>
+              <span class="text-primaryDark font-medium">Media Center</span>
+            </nav>
+            <span class="eyebrow mb-2">Media Center</span>
+            <h1 class="text-primaryDark text-4xl md:text-5xl font-bold mb-8 text-center">Moments Worth Sharing</h1>
+          </div>
+        </div>
+
+        <div class="container px-4">
+          <section class="md:py-14">
+            <!-- Optional category filter (client-side; filters the grid below) -->
+            <div class="mb-8 md:mb-12 flex flex-wrap items-center justify-center gap-2.5" data-blog-filter>
+              <button type="button" class="blog-filter-btn is-active px-5 py-2.5 chip text-sm font-medium" data-filter="all">All</button>
+              <button type="button" class="blog-filter-btn px-5 py-2.5 chip text-sm font-medium" data-filter="blog">Blog</button>
+              <button type="button" class="blog-filter-btn px-5 py-2.5 chip text-sm font-medium" data-filter="news">News</button>
+              <button type="button" class="blog-filter-btn px-5 py-2.5 chip text-sm font-medium" data-filter="event">Event</button>
+            </div>
+
+            <!-- ============================ BLOG GRID ============================ -->
+            <div class="gap-4 md:gap-[38px] grid grid-cols-1 lg:grid-cols-2 md:mx-0" data-blog-grid>
+              <!-- Card 1 -->
+              <div class="flex-none md:w-full" data-category="event">
+                <article class="group flex flex-col md:flex-row items-center gap-4 w-full md:max-w-[612px] md:h-[192px]" role="article">
+                  <a href="blog.html" class="block relative flex-none w-full md:w-[192px] h-[192px] rounded-[17.5px] overflow-hidden" aria-label='Read more about "Hosting the perfect celebration at home"'>
+                    <img src="dummy-images/exception-image.jpg" alt='Image for the blog post titled "Hosting the perfect celebration at home"' loading="lazy" class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-all ease-in-out duration-300" />
+                  </a>
+                  <div class="flex flex-col items-start gap-4 w-full md:max-w-[469px]">
+                    <div class="flex flex-col items-start gap-2 w-full">
+                      <div class="flex justify-center items-center px-[10px] py-[2px] gap-[10px] bg-green-800 rounded-[2px]"><span class="font-normal text-[10px] leading-[140%] text-white uppercase">Event</span></div>
+                      <div class="flex flex-row items-center gap-[7px] w-full">
+                        <span class="font-medium text-[12px] leading-[140%] text-neutral-700">12 June 2025</span>
+                        <div class="w-[5px] h-[5px] bg-neutral-700 rounded-full"></div>
+                        <span class="font-medium text-[12px] leading-[140%] text-neutral-700">4 mins reading</span>
+                      </div>
+                    </div>
+                    <a href="blog.html" class="font-medium text-[18px] leading-[140%] text-black group-hover:underline line-clamp-2">Hosting the perfect celebration at home</a>
+                    <a href="blog.html" class="flex flex-row items-center gap-[10px] font-normal text-[16px] leading-[140%] text-primaryDark group-hover:text-accent-600" aria-label="Read more about Hosting the perfect celebration at home">
+                      Read More
+                      <span class="w-[19px] h-[12px] flex items-center justify-center"><svg width="19" height="12" viewBox="0 0 19 12" fill="none" class="w-full h-full"><path d="M13.5 1L18 6M18 6L13.5 11M18 6H0" stroke="currentColor" stroke-width="1.5" /></svg></span>
+                    </a>
+                  </div>
+                </article>
+              </div>
+
+              <!-- Card 2 -->
+              <div class="flex-none md:w-full" data-category="blog">
+                <article class="group flex flex-col md:flex-row items-center gap-4 w-full md:max-w-[612px] md:h-[192px]" role="article">
+                  <a href="blog.html" class="block relative flex-none w-full md:w-[192px] h-[192px] rounded-[17.5px] overflow-hidden" aria-label='Read more about "The story behind our signature baklava"'>
+                    <img src="dummy-images/chocolate%20cover.webp" alt='Image for the blog post titled "The story behind our signature baklava"' loading="lazy" class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-all ease-in-out duration-300" />
+                  </a>
+                  <div class="flex flex-col items-start gap-4 w-full md:max-w-[469px]">
+                    <div class="flex flex-col items-start gap-2 w-full">
+                      <div class="flex justify-center items-center px-[10px] py-[2px] gap-[10px] bg-green-800 rounded-[2px]"><span class="font-normal text-[10px] leading-[140%] text-white uppercase">Blog</span></div>
+                      <div class="flex flex-row items-center gap-[7px] w-full">
+                        <span class="font-medium text-[12px] leading-[140%] text-neutral-700">03 June 2025</span>
+                        <div class="w-[5px] h-[5px] bg-neutral-700 rounded-full"></div>
+                        <span class="font-medium text-[12px] leading-[140%] text-neutral-700">6 mins reading</span>
+                      </div>
+                    </div>
+                    <a href="blog.html" class="font-medium text-[18px] leading-[140%] text-black group-hover:underline line-clamp-2">The story behind our signature baklava</a>
+                    <a href="blog.html" class="flex flex-row items-center gap-[10px] font-normal text-[16px] leading-[140%] text-primaryDark group-hover:text-accent-600" aria-label="Read more about The story behind our signature baklava">
+                      Read More
+                      <span class="w-[19px] h-[12px] flex items-center justify-center"><svg width="19" height="12" viewBox="0 0 19 12" fill="none" class="w-full h-full"><path d="M13.5 1L18 6M18 6L13.5 11M18 6H0" stroke="currentColor" stroke-width="1.5" /></svg></span>
+                    </a>
+                  </div>
+                </article>
+              </div>
+
+              <!-- Card 3 -->
+              <div class="flex-none md:w-full" data-category="blog">
+                <article class="group flex flex-col md:flex-row items-center gap-4 w-full md:max-w-[612px] md:h-[192px]" role="article">
+                  <a href="blog.html" class="block relative flex-none w-full md:w-[192px] h-[192px] rounded-[17.5px] overflow-hidden" aria-label='Read more about "Five cake flavours everyone will love"'>
+                    <img src="dummy-images/image-4.webp" alt='Image for the blog post titled "Five cake flavours everyone will love"' loading="lazy" class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-all ease-in-out duration-300" />
+                  </a>
+                  <div class="flex flex-col items-start gap-4 w-full md:max-w-[469px]">
+                    <div class="flex flex-col items-start gap-2 w-full">
+                      <div class="flex justify-center items-center px-[10px] py-[2px] gap-[10px] bg-green-800 rounded-[2px]"><span class="font-normal text-[10px] leading-[140%] text-white uppercase">Blog</span></div>
+                      <div class="flex flex-row items-center gap-[7px] w-full">
+                        <span class="font-medium text-[12px] leading-[140%] text-neutral-700">21 May 2025</span>
+                        <div class="w-[5px] h-[5px] bg-neutral-700 rounded-full"></div>
+                        <span class="font-medium text-[12px] leading-[140%] text-neutral-700">5 mins reading</span>
+                      </div>
+                    </div>
+                    <a href="blog.html" class="font-medium text-[18px] leading-[140%] text-black group-hover:underline line-clamp-2">Five cake flavours everyone will love</a>
+                    <a href="blog.html" class="flex flex-row items-center gap-[10px] font-normal text-[16px] leading-[140%] text-primaryDark group-hover:text-accent-600" aria-label="Read more about Five cake flavours everyone will love">
+                      Read More
+                      <span class="w-[19px] h-[12px] flex items-center justify-center"><svg width="19" height="12" viewBox="0 0 19 12" fill="none" class="w-full h-full"><path d="M13.5 1L18 6M18 6L13.5 11M18 6H0" stroke="currentColor" stroke-width="1.5" /></svg></span>
+                    </a>
+                  </div>
+                </article>
+              </div>
+
+              <!-- Card 4 -->
+              <div class="flex-none md:w-full" data-category="news">
+                <article class="group flex flex-col md:flex-row items-center gap-4 w-full md:max-w-[612px] md:h-[192px]" role="article">
+                  <a href="blog.html" class="block relative flex-none w-full md:w-[192px] h-[192px] rounded-[17.5px] overflow-hidden" aria-label='Read more about "New flagship branch opens in New Cairo"'>
+                    <img src="dummy-images/exception-image-2.jpg" alt='Image for the blog post titled "New flagship branch opens in New Cairo"' loading="lazy" class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-all ease-in-out duration-300" />
+                  </a>
+                  <div class="flex flex-col items-start gap-4 w-full md:max-w-[469px]">
+                    <div class="flex flex-col items-start gap-2 w-full">
+                      <div class="flex justify-center items-center px-[10px] py-[2px] gap-[10px] bg-green-800 rounded-[2px]"><span class="font-normal text-[10px] leading-[140%] text-white uppercase">News</span></div>
+                      <div class="flex flex-row items-center gap-[7px] w-full">
+                        <span class="font-medium text-[12px] leading-[140%] text-neutral-700">08 May 2025</span>
+                        <div class="w-[5px] h-[5px] bg-neutral-700 rounded-full"></div>
+                        <span class="font-medium text-[12px] leading-[140%] text-neutral-700">3 mins reading</span>
+                      </div>
+                    </div>
+                    <a href="blog.html" class="font-medium text-[18px] leading-[140%] text-black group-hover:underline line-clamp-2">New flagship branch opens in New Cairo</a>
+                    <a href="blog.html" class="flex flex-row items-center gap-[10px] font-normal text-[16px] leading-[140%] text-primaryDark group-hover:text-accent-600" aria-label="Read more about New flagship branch opens in New Cairo">
+                      Read More
+                      <span class="w-[19px] h-[12px] flex items-center justify-center"><svg width="19" height="12" viewBox="0 0 19 12" fill="none" class="w-full h-full"><path d="M13.5 1L18 6M18 6L13.5 11M18 6H0" stroke="currentColor" stroke-width="1.5" /></svg></span>
+                    </a>
+                  </div>
+                </article>
+              </div>
+
+              <!-- Card 5 -->
+              <div class="flex-none md:w-full" data-category="blog">
+                <article class="group flex flex-col md:flex-row items-center gap-4 w-full md:max-w-[612px] md:h-[192px]" role="article">
+                  <a href="blog.html" class="block relative flex-none w-full md:w-[192px] h-[192px] rounded-[17.5px] overflow-hidden" aria-label='Read more about "How to store oriental sweets and keep them fresh"'>
+                    <img src="dummy-images/image-7.webp" alt='Image for the blog post titled "How to store oriental sweets and keep them fresh"' loading="lazy" class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-all ease-in-out duration-300" />
+                  </a>
+                  <div class="flex flex-col items-start gap-4 w-full md:max-w-[469px]">
+                    <div class="flex flex-col items-start gap-2 w-full">
+                      <div class="flex justify-center items-center px-[10px] py-[2px] gap-[10px] bg-green-800 rounded-[2px]"><span class="font-normal text-[10px] leading-[140%] text-white uppercase">Blog</span></div>
+                      <div class="flex flex-row items-center gap-[7px] w-full">
+                        <span class="font-medium text-[12px] leading-[140%] text-neutral-700">27 April 2025</span>
+                        <div class="w-[5px] h-[5px] bg-neutral-700 rounded-full"></div>
+                        <span class="font-medium text-[12px] leading-[140%] text-neutral-700">4 mins reading</span>
+                      </div>
+                    </div>
+                    <a href="blog.html" class="font-medium text-[18px] leading-[140%] text-black group-hover:underline line-clamp-2">How to store oriental sweets and keep them fresh</a>
+                    <a href="blog.html" class="flex flex-row items-center gap-[10px] font-normal text-[16px] leading-[140%] text-primaryDark group-hover:text-accent-600" aria-label="Read more about How to store oriental sweets and keep them fresh">
+                      Read More
+                      <span class="w-[19px] h-[12px] flex items-center justify-center"><svg width="19" height="12" viewBox="0 0 19 12" fill="none" class="w-full h-full"><path d="M13.5 1L18 6M18 6L13.5 11M18 6H0" stroke="currentColor" stroke-width="1.5" /></svg></span>
+                    </a>
+                  </div>
+                </article>
+              </div>
+
+              <!-- Card 6 -->
+              <div class="flex-none md:w-full" data-category="event">
+                <article class="group flex flex-col md:flex-row items-center gap-4 w-full md:max-w-[612px] md:h-[192px]" role="article">
+                  <a href="blog.html" class="block relative flex-none w-full md:w-[192px] h-[192px] rounded-[17.5px] overflow-hidden" aria-label='Read more about "Ramadan gift boxes: a taste of tradition"'>
+                    <img src="dummy-images/special-cake.webp" alt='Image for the blog post titled "Ramadan gift boxes: a taste of tradition"' loading="lazy" class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-all ease-in-out duration-300" />
+                  </a>
+                  <div class="flex flex-col items-start gap-4 w-full md:max-w-[469px]">
+                    <div class="flex flex-col items-start gap-2 w-full">
+                      <div class="flex justify-center items-center px-[10px] py-[2px] gap-[10px] bg-green-800 rounded-[2px]"><span class="font-normal text-[10px] leading-[140%] text-white uppercase">Event</span></div>
+                      <div class="flex flex-row items-center gap-[7px] w-full">
+                        <span class="font-medium text-[12px] leading-[140%] text-neutral-700">15 April 2025</span>
+                        <div class="w-[5px] h-[5px] bg-neutral-700 rounded-full"></div>
+                        <span class="font-medium text-[12px] leading-[140%] text-neutral-700">5 mins reading</span>
+                      </div>
+                    </div>
+                    <a href="blog.html" class="font-medium text-[18px] leading-[140%] text-black group-hover:underline line-clamp-2">Ramadan gift boxes: a taste of tradition</a>
+                    <a href="blog.html" class="flex flex-row items-center gap-[10px] font-normal text-[16px] leading-[140%] text-primaryDark group-hover:text-accent-600" aria-label="Read more about Ramadan gift boxes: a taste of tradition">
+                      Read More
+                      <span class="w-[19px] h-[12px] flex items-center justify-center"><svg width="19" height="12" viewBox="0 0 19 12" fill="none" class="w-full h-full"><path d="M13.5 1L18 6M18 6L13.5 11M18 6H0" stroke="currentColor" stroke-width="1.5" /></svg></span>
+                    </a>
+                  </div>
+                </article>
+              </div>
+            </div>
+
+            <!-- Static pagination (mirrors Pagination.tsx) -->
+            <div class="flex justify-center mt-10 md:mt-14">
+              <button type="button" disabled class="px-4 py-2 mx-1 rounded bg-gray-200 text-gray-700 disabled:opacity-50">Previous</button>
+              <button type="button" class="px-4 py-2 mx-1 rounded bg-primaryColor text-white">1</button>
+              <button type="button" class="px-4 py-2 mx-1 rounded bg-gray-200 text-gray-700">2</button>
+              <button type="button" class="px-4 py-2 mx-1 rounded bg-gray-200 text-gray-700">3</button>
+              <button type="button" class="px-4 py-2 mx-1 rounded bg-gray-200 text-gray-700">Next</button>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <!-- Shared footer is injected here by scripts.js -->
+    <div id="site-footer"></div>
+
+    <!-- Client-side category filter for the blog grid -->
+    <script>
+      (function () {
+        const wrap = document.querySelector("[data-blog-filter]");
+        const grid = document.querySelector("[data-blog-grid]");
+        if (!wrap || !grid) return;
+        wrap.addEventListener("click", (e) => {
+          const btn = e.target.closest(".blog-filter-btn");
+          if (!btn) return;
+          wrap.querySelectorAll(".blog-filter-btn").forEach((b) => b.classList.remove("is-active"));
+          btn.classList.add("is-active");
+          const f = btn.getAttribute("data-filter");
+          grid.querySelectorAll("[data-category]").forEach((item) => {
+            item.hidden = !(f === "all" || item.getAttribute("data-category") === f);
+          });
+        });
+      })();
+    </script>
+  </body>
+</html>

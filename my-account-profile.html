@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>My Profile — Exception</title>
+    <meta
+      name="description"
+      content="Edit your Exception profile details and change your password."
+    />
+    <!-- Tailwind (Play CDN) + faithful port of the project's tailwind.config.ts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="tw-config.js"></script>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <script defer src="scripts.js"></script>
+  </head>
+  <body data-page="account" data-path="/my-account/profile" class="antialiased bg-white">
+    <div id="site-header"></div>
+
+    <main class="overflow-x-clip bg-gray-100">
+      <div class="flex lg:flex-row flex-col items-start gap-7 md:gap-10 mx-auto px-4 py-10 md:py-16 max-w-[1392px]">
+
+        <!-- ============================ MOBILE ACCOUNT NAV (pills) ============================ -->
+        <div class="flex flex-col gap-4 w-full lg:hidden">
+          <div class="flex items-end justify-between w-full">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-full bg-primary-light text-primaryDark flex items-center justify-center font-semibold text-lg shrink-0">MH</div>
+              <div class="flex flex-col gap-1">
+                <span data-tier-badge></span>
+                <h3 class="font-semibold text-primaryDark text-[22px] leading-tight truncate">Mariam Hassan</h3>
+              </div>
+            </div>
+            <a href="login.html" class="shrink-0 text-sm font-medium text-gray-600 hover:underline">Log out</a>
+          </div>
+          <div class="w-full border-b border-primary/20"></div>
+          <div class="w-full overflow-x-auto no-scrollbar">
+            <div class="flex items-center gap-2 min-w-max pb-2">
+              <a href="my-account.html" class="flex items-center gap-2.5 px-4 py-2.5 h-[52px] rounded-lg whitespace-nowrap border border-[#CFD3D8] text-gray-700"><span class="w-5 h-5 flex items-center justify-center"><img src="images/icons/account%20icons/overview.webp" alt="Dashboard" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-base">Dashboard</span></a>
+              <a href="my-account-profile.html" class="flex items-center gap-2.5 px-4 py-2.5 h-[52px] rounded-lg whitespace-nowrap bg-primary-light text-primaryDark"><span class="w-5 h-5 flex items-center justify-center"><img src="images/icons/account%20icons/preparing.webp" alt="Profile" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-base">Profile</span></a>
+              <a href="my-account-orders.html" class="flex items-center gap-2.5 px-4 py-2.5 h-[52px] rounded-lg whitespace-nowrap border border-[#CFD3D8] text-gray-700"><span class="w-5 h-5 flex items-center justify-center"><img src="images/icons/account%20icons/preparing-1.webp" alt="Orders" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-base">Orders</span></a>
+              <a href="my-account-addresses.html" class="flex items-center gap-2.5 px-4 py-2.5 h-[52px] rounded-lg whitespace-nowrap border border-[#CFD3D8] text-gray-700"><span class="w-5 h-5 flex items-center justify-center"><img src="images/icons/account%20icons/preparing-2.webp" alt="Addresses" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-base">Addresses</span></a>
+              <a href="my-account-favorites.html" class="flex items-center gap-2.5 px-4 py-2.5 h-[52px] rounded-lg whitespace-nowrap border border-[#CFD3D8] text-gray-700"><span class="w-5 h-5 flex items-center justify-center"><img src="images/icons/account%20icons/preparing-3.webp" alt="Favorites" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-base">Favorites</span></a>
+              <a href="my-account-wallet.html" class="flex items-center gap-2.5 px-4 py-2.5 h-[52px] rounded-lg whitespace-nowrap border border-[#CFD3D8] text-gray-700"><span class="w-5 h-5 flex items-center justify-center"><img src="images/icons/account%20icons/wallet.webp" alt="Wallet" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-base">Wallet</span></a>
+                <a href="my-account-vouchers.html" class="flex items-center gap-2.5 px-4 py-2.5 h-[52px] rounded-lg whitespace-nowrap border border-[#CFD3D8] text-gray-700"><span class="w-5 h-5 flex items-center justify-center"><img src="images/icons/account%20icons/voucher.webp" alt="Vouchers" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-base">Vouchers</span></a>
+              <a href="my-account-point.html" class="flex items-center gap-2.5 px-4 py-2.5 h-[52px] rounded-lg whitespace-nowrap border border-[#CFD3D8] text-gray-700"><span class="w-5 h-5 flex items-center justify-center"><img src="images/icons/account%20icons/Points.webp" alt="Points" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-base">Points</span></a>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============================ DESKTOP ACCOUNT SIDEBAR ============================ -->
+        <aside class="hidden lg:block w-full lg:w-[25%] shrink-0 min-h-[520px] lg:self-stretch">
+          <div class="rounded-2xl border border-gray-300 bg-white shadow-custom4 overflow-hidden lg:sticky lg:top-[99px] lg:max-h-[calc(100vh-115px)] lg:overflow-y-auto">
+            <div class="flex flex-col gap-4 p-6 border-b border-gray-300">
+              <div class="flex items-center gap-3">
+                <div class="w-14 h-14 rounded-full bg-primary-light text-primaryDark flex items-center justify-center font-semibold text-xl shrink-0">MH</div>
+                <div class="flex flex-col gap-1.5">
+                  <span data-tier-badge></span>
+                  <h3 class="text-primaryDark font-medium text-2xl leading-tight">Mariam Hassan</h3>
+                </div>
+              </div>
+            </div>
+            <nav class="p-4">
+              <ul class="space-y-1.5">
+                <li><a href="my-account.html" class="flex items-center gap-3 rounded-lg px-4 py-2.5 xl:px-6 transition-all duration-200 hover:bg-primary-light text-gray-700"><span class="inline-flex w-6 text-gray-700"><img src="images/icons/account%20icons/overview.webp" alt="Dashboard" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Dashboard</span></a></li>
+                <li><a href="my-account-profile.html" class="flex items-center gap-3 rounded-lg px-4 py-2.5 xl:px-6 transition-all duration-200 bg-primary-light text-primaryDark"><span class="inline-flex w-6 text-primaryDark"><img src="images/icons/account%20icons/preparing.webp" alt="Profile" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Profile</span></a></li>
+                <li><a href="my-account-orders.html" class="flex items-center gap-3 rounded-lg px-4 py-2.5 xl:px-6 transition-all duration-200 hover:bg-primary-light text-gray-700"><span class="inline-flex w-6 text-gray-700"><img src="images/icons/account%20icons/preparing-1.webp" alt="Orders" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Orders</span></a></li>
+                <li><a href="my-account-addresses.html" class="flex items-center gap-3 rounded-lg px-4 py-2.5 xl:px-6 transition-all duration-200 hover:bg-primary-light text-gray-700"><span class="inline-flex w-6 text-gray-700"><img src="images/icons/account%20icons/preparing-2.webp" alt="Addresses" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Addresses</span></a></li>
+                <li><a href="my-account-favorites.html" class="flex items-center gap-3 rounded-lg px-4 py-2.5 xl:px-6 transition-all duration-200 hover:bg-primary-light text-gray-700"><span class="inline-flex w-6 text-gray-700"><img src="images/icons/account%20icons/preparing-3.webp" alt="Favorites" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Favorites</span></a></li>
+                <li><a href="my-account-wallet.html" class="flex items-center gap-3 rounded-lg px-4 py-2.5 xl:px-6 transition-all duration-200 hover:bg-primary-light text-gray-700"><span class="inline-flex w-6 text-gray-700"><img src="images/icons/account%20icons/wallet.webp" alt="Wallet" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Wallet</span></a></li>
+              <li><a href="my-account-vouchers.html" class="flex items-center gap-3 rounded-lg px-4 py-2.5 xl:px-6 transition-all duration-200 hover:bg-primary-light text-gray-700"><span class="inline-flex w-6 text-gray-700"><img src="images/icons/account%20icons/voucher.webp" alt="Vouchers" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Vouchers</span></a></li>
+                <li><a href="my-account-point.html" class="flex items-center gap-3 rounded-lg px-4 py-2.5 xl:px-6 transition-all duration-200 hover:bg-primary-light text-gray-700"><span class="inline-flex w-6 text-gray-700"><img src="images/icons/account%20icons/Points.webp" alt="Points" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Points</span></a></li>
+              </ul>
+              <div class="my-4 border-t border-gray-300"></div>
+              <div class="px-2 pb-2">
+                <h4 class="mb-3 font-semibold text-neutral-support-bg md:text-lg">Need Help?</h4>
+                <ul class="flex flex-col gap-3">
+                  <li><a href="faqs.html" class="font-medium text-primaryColor text-sm md:text-base hover:underline">FAQs</a></li>
+                  <li><a href="contact-us.html" class="font-medium text-primaryColor text-sm md:text-base hover:underline">Contact us</a></li>
+                </ul>
+                <a href="login.html" class="inline-flex items-center gap-2 pt-4 font-medium text-gray-700 text-sm hover:underline">
+                  <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  Log out
+                </a>
+              </div>
+            </nav>
+          </div>
+        </aside>
+
+        <!-- ============================ ACCOUNT CONTENT ============================ -->
+        <div class="w-full lg:w-[calc(75%-36px)]">
+          <nav class="mb-6 flex items-center gap-2 text-sm text-gray-700" aria-label="Breadcrumb">
+            <a href="index.html" class="hover:text-primaryDark">Home</a>
+            <span class="text-gray-400">/</span>
+            <a href="my-account.html" class="hover:text-primaryDark">My Account</a>
+            <span class="text-gray-400">/</span>
+            <span class="text-primaryDark font-medium">Profile</span>
+          </nav>
+
+          <div class="flex flex-col gap-7 md:gap-10">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+              <h1 class="text-2xl md:text-[32px] font-semibold text-textSecondary">My Profile</h1>
+            </div>
+
+            <!-- Edit profile form -->
+            <div class="flex flex-col gap-5 xl:gap-8 max-w-[538px] p-6 md:p-8 border items-center justify-center border-gray-300 rounded-[12px] bg-white shadow-custom4">
+              <img src="images/icons/account%20icons/preparing.webp" alt="edit profile" width="60" height="60" class="w-[60px] h-[60px] object-contain" />
+              <!-- Demo form: prevents submit and shows a toast (see scripts.js) -->
+              <form data-demo-form="Profile updated" data-reset="false" class="flex flex-col gap-5 w-full">
+                <div class="grid xl:grid-cols-2 gap-4 md:gap-6">
+                  <div class="flex flex-col gap-1.5">
+                    <label for="firstName" class="text-sm font-medium text-textSecondary">First name</label>
+                    <input id="firstName" name="firstName" type="text" value="Mariam" class="w-full rounded-lg border border-border-light bg-white px-4 py-3 text-textSecondary outline-none transition-colors focus:border-primaryDark" />
+                  </div>
+                  <div class="flex flex-col gap-1.5">
+                    <label for="lastName" class="text-sm font-medium text-textSecondary">Last name</label>
+                    <input id="lastName" name="lastName" type="text" value="Hassan" class="w-full rounded-lg border border-border-light bg-white px-4 py-3 text-textSecondary outline-none transition-colors focus:border-primaryDark" />
+                  </div>
+                </div>
+                <div class="flex flex-col gap-1.5">
+                  <label for="email" class="text-sm font-medium text-textSecondary">Email</label>
+                  <input id="email" name="email" type="email" value="mariam.hassan@example.com" readonly class="w-full rounded-lg border border-border-light bg-gray-100 px-4 py-3 text-gray-600 outline-none cursor-not-allowed" />
+                </div>
+                <div class="flex flex-col gap-1.5">
+                  <label for="phone" class="text-sm font-medium text-textSecondary">Phone number</label>
+                  <input id="phone" name="phone" type="tel" value="+20 100 123 4567" dir="ltr" class="w-full rounded-lg border border-border-light bg-white px-4 py-3 text-textSecondary outline-none transition-colors focus:border-primaryDark" />
+                </div>
+                <div class="grid grid-cols-3 gap-x-4 gap-y-2 md:gap-x-6">
+                  <h5 class="col-span-3 text-sm font-medium text-textSecondary">Date of Birth</h5>
+                  <select name="dobDay" class="w-full rounded-lg border border-border-light bg-white px-3 py-3 text-textSecondary outline-none transition-colors focus:border-primaryDark">
+                    <option value="" disabled>Day</option>
+                    <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option selected>12</option><option>13</option><option>14</option><option>15</option><option>16</option><option>17</option><option>18</option><option>19</option><option>20</option><option>21</option><option>22</option><option>23</option><option>24</option><option>25</option><option>26</option><option>27</option><option>28</option><option>29</option><option>30</option><option>31</option>
+                  </select>
+                  <select name="dobMonth" class="w-full rounded-lg border border-border-light bg-white px-3 py-3 text-textSecondary outline-none transition-colors focus:border-primaryDark">
+                    <option value="" disabled>Month</option>
+                    <option>January</option><option>February</option><option>March</option><option selected>April</option><option>May</option><option>June</option><option>July</option><option>August</option><option>September</option><option>October</option><option>November</option><option>December</option>
+                  </select>
+                  <select name="dobYear" class="w-full rounded-lg border border-border-light bg-white px-3 py-3 text-textSecondary outline-none transition-colors focus:border-primaryDark">
+                    <option value="" disabled>Year</option>
+                    <option>2005</option><option>2000</option><option selected>1996</option><option>1992</option><option>1990</option><option>1985</option><option>1980</option>
+                  </select>
+                </div>
+                <div class="flex flex-col gap-1.5">
+                  <h3 class="text-sm font-medium text-textSecondary">Gender</h3>
+                  <div class="optrow-group optrow-group--row">
+<label class="optrow">
+  <input type="radio" name="gender" value="female" checked class="sr-only" />
+  <span class="optrow__radio"></span>
+  <span class="optrow__body"><span class="optrow__title">Female</span></span>
+</label>
+<label class="optrow">
+  <input type="radio" name="gender" value="male" class="sr-only" />
+  <span class="optrow__radio"></span>
+  <span class="optrow__body"><span class="optrow__title">Male</span></span>
+</label>
+</div>
+                </div>
+                <button type="submit" class="btn btn--black btn--md w-full inline-flex items-center justify-center gap-2">Save changes</button>
+              </form>
+            </div>
+
+            <!-- Change password form -->
+            <div class="flex flex-col gap-6 max-w-[538px] p-6 md:p-8 border border-gray-300 rounded-[12px] bg-white shadow-custom4">
+              <div class="flex flex-col gap-1">
+                <h2 class="text-xl font-semibold text-textSecondary">Change Password</h2>
+                <p class="text-sm text-gray-700">Keep your account secure with a strong password.</p>
+              </div>
+              <form data-demo-form="Password changed" class="flex flex-col gap-5">
+                <div class="flex flex-col gap-1.5">
+                  <label for="currentPassword" class="text-sm font-medium text-textSecondary">Current password</label>
+                  <input id="currentPassword" name="currentPassword" type="password" placeholder="Enter current password" class="w-full rounded-lg border border-border-light bg-white px-4 py-3 text-textSecondary outline-none transition-colors focus:border-primaryDark" />
+                </div>
+                <div class="flex flex-col gap-1.5">
+                  <label for="newPassword" class="text-sm font-medium text-textSecondary">New password</label>
+                  <input id="newPassword" name="newPassword" type="password" placeholder="Enter new password" class="w-full rounded-lg border border-border-light bg-white px-4 py-3 text-textSecondary outline-none transition-colors focus:border-primaryDark" />
+                </div>
+                <div class="flex flex-col gap-1.5">
+                  <label for="confirmPassword" class="text-sm font-medium text-textSecondary">Confirm password</label>
+                  <input id="confirmPassword" name="confirmPassword" type="password" placeholder="Re-enter new password" class="w-full rounded-lg border border-border-light bg-white px-4 py-3 text-textSecondary outline-none transition-colors focus:border-primaryDark" />
+                </div>
+                <button type="submit" class="btn btn--black btn--md w-full inline-flex items-center justify-center gap-2">Change password</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div id="site-footer"></div>
+  </body>
+</html>

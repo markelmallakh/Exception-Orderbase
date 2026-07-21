@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Our Story — Exception</title>
+    <meta
+      name="description"
+      content="Discover the story of Exception — a legacy of oriental sweets, celebration cakes and fine chocolate crafted in Egypt."
+    />
+    <!-- Tailwind (Play CDN) + faithful port of the project's tailwind.config.ts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="tw-config.js"></script>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <script defer src="scripts.js"></script>
+  </head>
+  <body data-page="about" data-path="/about" class="antialiased bg-white">
+    <!-- Shared header is injected here by scripts.js -->
+    <div id="site-header"></div>
+
+    <main class="overflow-x-hidden">
+      <!-- ============================ HERO (about/sections/hero-section) ============================ -->
+      <section class="bg-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+          <div class="text-center max-w-3xl mx-auto">
+            <div class="mb-6 sm:mb-8">
+              <div class="w-32 h-32 sm:w-40 sm:h-40 mx-auto rounded-full overflow-hidden border-4 border-white shadow-xl">
+                <img src="dummy-images/exception-image.jpg" alt="A legacy of taste" class="w-full h-full object-cover" />
+              </div>
+            </div>
+            <h2 class="text-accent-600 font-serif italic text-xl sm:text-2xl mb-4">Our Story</h2>
+            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-textSecondary mb-6">A Legacy of Taste</h1>
+            <div class="text-gray-700 text-base sm:text-lg leading-relaxed">
+              <p>
+                What began as a single, modest bakery in the heart of Cairo has grown into one of Egypt's most beloved
+                names in oriental sweets and celebration cakes. For more than six decades, Exception has
+                stayed true to the family recipes that started it all — pairing the finest local ingredients with the
+                patience and craft that only time can teach. From glistening trays of baklava and kunafa to towering
+                gateaux for life's happiest moments, every bite carries the same promise we have always kept:
+                nothing but the best for our guests.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================ STORY GRID + STAT COUNTERS (story-grid-section) ============================ -->
+      <section class="max-w-[1392px] mx-auto px-4 sm:px-[60px] py-[50px]">
+        <div class="flex flex-col lg:flex-row gap-[17px] items-start justify-center">
+          <div class="flex flex-col gap-3 w-full lg:w-[910px]">
+            <div class="flex flex-col sm:flex-row gap-3 w-full">
+              <!-- Branches counter card (clickable → branches.html) -->
+              <a href="branches.html" class="rounded-[20px] p-10 flex flex-col justify-between cursor-pointer transition-all duration-300 hover:shadow-lg group w-full sm:w-[300px] h-[300px] bg-primary-200">
+                <div class="flex flex-col">
+                  <div class="w-[116px] h-[74px] flex items-center text-center">
+                    <span class="font-semibold text-[62px] leading-[120%] text-textSecondary">+30</span>
+                  </div>
+                  <div class="h-[34px] flex items-center">
+                    <span class="font-semibold text-[28px] leading-[120%] text-textSecondary">Branches</span>
+                  </div>
+                </div>
+                <div class="flex items-center gap-[10px]">
+                  <span class="hidden group-hover:flex font-normal text-[16px] leading-[140%] text-primary">Know More</span>
+                  <div class="w-[19px] h-[12px] flex items-center justify-center">
+                    <svg viewBox="0 0 19 12" fill="none" class="w-[19px] h-[12px] text-primary"><path d="M13.5 1L18 6M18 6L13.5 11M18 6H0" stroke="currentColor" stroke-width="1.5" /></svg>
+                  </div>
+                </div>
+              </a>
+
+              <div class="flex-1 h-[300px] rounded-[18px] overflow-hidden">
+                <img src="dummy-images/cheif.webp" alt="Our master bakers at work" class="w-full h-full object-cover" />
+              </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3 w-full">
+              <div class="flex-1 h-[302px] rounded-[18px] overflow-hidden order-2 sm:order-1">
+                <img src="dummy-images/special-cake.webp" alt="Freshly crafted oriental sweets" class="w-full h-full object-cover" />
+              </div>
+
+              <!-- Years counter card -->
+              <div class="rounded-[20px] p-10 flex flex-col justify-between w-full sm:w-[302px] h-[302px] bg-primaryLight order-1 sm:order-2">
+                <div class="flex flex-col">
+                  <div class="w-[116px] h-[74px] flex items-center text-center">
+                    <span class="font-semibold text-[62px] leading-[120%] text-textSecondary">+90</span>
+                  </div>
+                  <div class="h-[34px] flex items-center">
+                    <span class="font-semibold text-[28px] leading-[120%] text-textSecondary">Years</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="w-full lg:w-[465px] h-[618px] rounded-[18px] overflow-hidden">
+            <img src="dummy-images/exception-image-2.jpg" alt="Our Cairo flagship storefront" class="w-full h-full object-cover" loading="lazy" />
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================ MOBILE APP SECTION (home/mobile-app-section) ============================ -->
+      <section class="flex w-full flex-col items-center justify-center bg-white px-4 pb-10 pt-20 md:gap-[54px] 2xl:px-0 max-w-[1392px] mx-auto">
+        <div class="relative flex h-[143px] w-full max-w-[1392px] flex-col items-center justify-between gap-10 rounded-[6px] px-4 xl:px-[62px] py-[14px] md:h-auto md:rounded-[20px] md:px-6 md:py-[52px] md:flex-row md:gap-[62px] md:pr-[100px] xl:ps-[139px] xl:pe-[221px]" style="background: linear-gradient(97.66deg, rgba(219,231,255,0.62) 0.37%, #C5D4FB 31.25%, #D9E3FF 73.31%, #ABC2FF 100.03%)">
+          <div class="absolute left-[19px] xl:left-[39px] top-[-8px] z-10 h-[168px] w-[120px] shrink-0 md:static md:-mt-[100px] md:h-[500px] md:w-[350px] lg:w-[423px]">
+            <img src="dummy-images/app-banner.png" alt="Exception mobile app" class="h-full w-full object-contain drop-shadow-xl md:h-auto" />
+          </div>
+          <div class="relative left-[78px] xl:left-[170px] top-[12px] xl:top-[20px] flex w-[213px] flex-col items-start gap-[9px] text-start md:static md:w-auto md:gap-8">
+            <div class="flex flex-col gap-[2px] md:gap-2">
+              <span class="eyebrow">Sweetness on the go</span>
+              <h2 class="text-[20px] font-semibold leading-[1.2] text-textSecondary md:text-[40px]">Download the Exception App</h2>
+            </div>
+            <p class="hidden max-w-[509px] text-base font-medium leading-[1.4] text-gray-700 md:block md:text-lg">Order faster, track deliveries live and collect loyalty points with every purchase.</p>
+            <div class="flex flex-row flex-wrap justify-start gap-[4px] md:gap-3">
+              <a href="#" class="group flex h-[18px] w-[60px] items-center justify-center rounded-[2px] border-[0.5px] border-neutral-support-bg bg-neutral-support-bg md:h-[53px] md:w-[170px] md:rounded-lg md:border-2 md:bg-transparent">
+                <div class="flex items-center gap-[2px] md:gap-2">
+                  <svg viewBox="0 0 24 24" class="h-[10px] w-[10px] fill-current text-white md:h-8 md:w-8 md:text-primaryDark"><path d="M3,20.5V3.5C3,2.91 3.34,2.39 3.84,2.15L13.69,12L3.84,21.85C3.34,21.6 3,21.09 3,20.5M16.81,15.12L6.05,21.34L14.54,12.85L16.81,15.12M20.16,10.81C20.5,11.08 20.75,11.5 20.75,12C20.75,12.5 20.53,12.92 20.16,13.19L17.89,14.5L15.39,12L17.89,9.5L20.16,10.81M6.05,2.66L16.81,8.88L14.54,11.15L6.05,2.66Z" /></svg>
+                  <div class="flex flex-col items-start justify-center"><span class="hidden text-[10px] uppercase text-white md:block md:text-primaryDark">Get it on</span><span class="text-[5px] font-bold text-white md:text-base md:text-primaryDark">Google Play</span></div>
+                </div>
+              </a>
+              <a href="#" class="group flex h-[18px] w-[60px] items-center justify-center rounded-[2px] border-[0.5px] border-neutral-support-bg bg-neutral-support-bg md:h-[53px] md:w-[170px] md:rounded-lg md:border-2 md:bg-transparent">
+                <div class="flex items-center gap-[2px] md:gap-2">
+                  <svg viewBox="0 0 24 24" class="h-[10px] w-[10px] fill-current text-white md:h-8 md:w-8 md:text-primaryDark"><path d="M18.71,19.5C17.88,20.74 17,21.95 15.66,21.97C14.32,22 13.89,21.18 12.37,21.18C10.84,21.18 10.37,21.95 9.1,22C7.79,22.05 6.8,20.68 5.96,19.47C4.25,17 2.94,12.45 4.7,9.39C5.57,7.87 7.13,6.91 8.82,6.88C10.1,6.86 11.32,7.75 12.11,7.75C12.89,7.75 14.37,6.68 15.92,6.84C16.57,6.87 18.39,7.1 19.56,8.82C19.47,8.88 17.39,10.1 17.41,12.63C17.44,15.65 20.06,16.66 20.09,16.67C20.06,16.74 19.67,18.11 18.71,19.5M13,3.5C13.73,2.67 14.94,2.04 15.94,2C16.07,3.17 15.6,4.35 14.9,5.19C14.21,6.04 13.07,6.7 11.95,6.61C11.8,5.37 12.36,4.26 13,3.5Z" /></svg>
+                  <div class="flex flex-col items-start justify-center"><span class="hidden text-[10px] uppercase text-white md:block md:text-primaryDark">Download on the</span><span class="text-[5px] font-bold text-white md:text-base md:text-primaryDark">App Store</span></div>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Shared footer is injected here by scripts.js -->
+    <div id="site-footer"></div>
+  </body>
+</html>

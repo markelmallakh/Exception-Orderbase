@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>My Cart — Exception</title>
+    <meta name="description" content="Review the cakes, oriental sweets and chocolate in your cart, apply a promo code and proceed to checkout — Exception." />
+    <!-- Tailwind (Play CDN) + faithful port of the project's tailwind.config.ts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="tw-config.js"></script>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <script defer src="scripts.js"></script>
+  </head>
+  <body data-page="cart" data-path="/cart" class="antialiased bg-white">
+    <!-- Shared header is injected here by scripts.js -->
+    <div id="site-header"></div>
+
+    <!-- overflow-x-clip (not -hidden): clips horizontal overflow WITHOUT creating a
+         scroll container, so the sticky order summary can stick to the viewport.
+         With -hidden, overflow-y computes to `auto` and sticky anchors to <main>
+         instead — which silently does nothing. -->
+    <main class="overflow-x-clip">
+      <!-- ============================ CART ============================ -->
+      <section class="pt-7 md:pt-14 pb-10 md:pb-24">
+        <div class="mx-auto px-4 lg:px-5 max-w-[1392px]">
+          <!-- CartContent: filled cart (empty state markup lives at the bottom of the file, hidden) -->
+          <div class="flex lg:flex-row flex-col justify-between gap-y-12">
+            <!-- ---------- Left: breadcrumbs + title + line items ---------- -->
+            <div class="flex flex-col flex-1 gap-y-6 md:gap-y-10 lg:pe-14">
+              <div class="flex flex-col gap-y-3.5">
+                <!-- Breadcrumbs -->
+                <nav aria-label="Breadcrumbs">
+                  <ol class="order-first m-0 flex w-full list-none flex-wrap items-center gap-x-1 gap-y-2 p-0 text-xs capitalize md:justify-start md:gap-2">
+                    <li class="text-primaryDark whitespace-nowrap">
+                      <a href="index.html"><span>Home</span></a>
+                      <span class="inline-block ms-2 w-4 h-4 align-middle">
+                        <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      </span>
+                    </li>
+                    <li class="text-primaryDark whitespace-nowrap opacity-50"><span>Cart</span></li>
+                  </ol>
+                </nav>
+                <!-- Title (medium) -->
+                <h2 class="capitalize text-[28px] md:text-[28px] md:leading-[50px] font-semibold text-textSecondary">My Cart</h2>
+              </div>
+
+              <!-- CartListPage -->
+              <ul data-cart-list class="flex flex-col gap-6 divide-y divide-primaryLight">
+                <!-- ---- Line item 1 ---- -->
+                <li data-cart-row data-unit-price="650" class="flex items-center justify-between pt-6 first:pt-0">
+                  <div class="flex gap-2.5 w-full">
+                    <a href="product.html" class="shrink-0">
+                      <img src="dummy-images/image-7.webp" alt="Chocolate Fudge Cake" class="h-[99px] !w-[99px] lg:h-[146px] lg:!w-[146px] rounded object-cover bg-primary-light" />
+                    </a>
+                    <div class="flex flex-col gap-2 w-full xl:max-w-[300px] justify-center">
+                      <a href="product.html">
+                        <h6 class="font-semibold text-textSecondary text-sm md:text-xl xl:max-w-[228px]">Chocolate Fudge Cake</h6>
+                      </a>
+                      <div class="vtags">
+                        <span class="vtag"><span class="vtag__k">Size:</span><span class="vtag__v">1 Kg</span></span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="flex flex-col-reverse md:flex-row items-center gap-2 lg:gap-[40px] justify-between xl:w-[395px]">
+                    <!-- QuantitySelector (large) → data-stepper -->
+                    <div data-stepper data-removable class="counter counter--lg">
+                      <button type="button" data-step="-1" class="counter__btn" aria-label="Decrease quantity"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+                      <span data-qty class="counter__qty">1</span>
+                      <button type="button" data-step="1" class="counter__btn counter__inc" aria-label="Increase quantity"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+                    </div>
+                    <!-- ProductPrice (large): LINE TOTAL in brand pink, with the
+                         unit x quantity breakdown beneath it. -->
+                    <div class="flex flex-col items-center md:items-end gap-1">
+                      <div class="flex gap-x-2 text-cta flex-col">
+                        <div class="flex items-center gap-0.5" dir="ltr" data-line-total>
+                          <span class="md:text-lg font-medium">EGP</span>
+                          <span class="md:text-2xl font-semibold">650</span>
+                          <span class="md:text-lg font-medium">.00</span>
+                        </div>
+                      </div>
+                      <span class="text-xs text-gray-700" data-line-breakdown>EGP 650.00 &times; 1</span>
+                    </div>
+                  </div>
+                </li>
+
+                <!-- ---- Line item 2 (on sale) ---- -->
+                <li data-cart-row data-unit-price="420" class="flex items-center justify-between pt-6 first:pt-0">
+                  <div class="flex gap-2.5 w-full">
+                    <a href="product.html" class="shrink-0">
+                      <img src="dummy-images/image-2.webp" alt="Assorted Baklava Box" class="h-[99px] !w-[99px] lg:h-[146px] lg:!w-[146px] rounded object-cover bg-primary-light" />
+                    </a>
+                    <div class="flex flex-col gap-2 w-full xl:max-w-[300px] justify-center">
+                      <a href="product.html">
+                        <h6 class="font-semibold text-textSecondary text-sm md:text-xl xl:max-w-[228px]">Assorted Baklava Box</h6>
+                      </a>
+                      <div class="vtags">
+                        <span class="vtag"><span class="vtag__k">Weight:</span><span class="vtag__v">500 g</span></span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="flex flex-col-reverse md:flex-row items-center gap-2 lg:gap-[40px] justify-between xl:w-[395px]">
+                    <div data-stepper data-removable class="counter counter--lg">
+                      <button type="button" data-step="-1" class="counter__btn" aria-label="Decrease quantity"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+                      <span data-qty class="counter__qty">1</span>
+                      <button type="button" data-step="1" class="counter__btn counter__inc" aria-label="Increase quantity"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+                    </div>
+                    <div class="flex flex-col items-center md:items-end gap-1">
+                      <div class="flex gap-x-2 text-cta flex-col">
+                        <div class="flex items-center gap-0.5" dir="ltr" data-line-total>
+                          <span class="md:text-lg font-medium">EGP</span>
+                          <span class="md:text-2xl font-semibold">420</span>
+                          <span class="md:text-lg font-medium">.00</span>
+                        </div>
+                        <span class="text-xs text-gray-700 line-through" data-line-compare data-compare-unit="480">EGP 480.00</span>
+                      </div>
+                      <span class="text-xs text-gray-700" data-line-breakdown>EGP 420.00 &times; 1</span>
+                    </div>
+                  </div>
+                </li>
+
+                <!-- ---- Line item 3 (qty 2) ---- -->
+                <li data-cart-row data-unit-price="380" class="flex items-center justify-between pt-6 first:pt-0">
+                  <div class="flex gap-2.5 w-full">
+                    <a href="product.html" class="shrink-0">
+                      <img src="dummy-images/image-7.webp" alt="Belgian Truffle Selection" class="h-[99px] !w-[99px] lg:h-[146px] lg:!w-[146px] rounded object-cover bg-primary-light" />
+                    </a>
+                    <div class="flex flex-col gap-2 w-full xl:max-w-[300px] justify-center">
+                      <a href="product.html">
+                        <h6 class="font-semibold text-textSecondary text-sm md:text-xl xl:max-w-[228px]">Belgian Truffle Selection</h6>
+                      </a>
+                      <div class="vtags">
+                        <span class="vtag"><span class="vtag__k">Box:</span><span class="vtag__v">24 pcs</span></span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="flex flex-col-reverse md:flex-row items-center gap-2 lg:gap-[40px] justify-between xl:w-[395px]">
+                    <div data-stepper data-removable class="counter counter--lg">
+                      <button type="button" data-step="-1" class="counter__btn" aria-label="Decrease quantity"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+                      <span data-qty class="counter__qty">2</span>
+                      <button type="button" data-step="1" class="counter__btn counter__inc" aria-label="Increase quantity"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+                    </div>
+                    <div class="flex flex-col items-center md:items-end gap-1">
+                      <div class="flex gap-x-2 text-cta flex-col">
+                        <div class="flex items-center gap-0.5" dir="ltr" data-line-total>
+                          <span class="md:text-lg font-medium">EGP</span>
+                          <span class="md:text-2xl font-semibold">760</span>
+                          <span class="md:text-lg font-medium">.00</span>
+                        </div>
+                      </div>
+                      <span class="text-xs text-gray-700" data-line-breakdown>EGP 380.00 &times; 2</span>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+            <!-- ---------- Right: order summary card (ExpandableCard) ---------- -->
+            <div class="flex flex-col bg-white xl:border xl:border-gray-300 rounded-xl lg:p-7 gap-4 h-fit lg:w-[460px] w-full lg:sticky lg:top-6 self-start">
+              <!-- Header (hidden on mobile like the source) -->
+              <div class="hidden md:flex items-center justify-between w-full">
+                <div class="flex items-center gap-2 md:gap-6 pb-3">
+                  <!-- Branded cart-box illustration (same asset as the header +
+                       floating cart). No tinted circle behind it: that backdrop
+                       existed to carry a flat outline icon, and the illustration
+                       is full-colour and used bare everywhere else. -->
+                  <img src="images/icons/cart-box.webp" alt="" class="size-9 shrink-0 object-contain" />
+                  <span class="font-semibold text-primaryDark md:text-[21px]">My Cart</span>
+                </div>
+              </div>
+
+              <!-- Cart utilities: coupon + note -->
+              <div class="flex flex-col gap-2">
+                <!-- CouponManager → .promo component (see initPromo in scripts.js) -->
+                <div class="promo" data-promo>
+                  <div class="promo__form" data-promo-form>
+                    <input type="text" class="promo__input" placeholder="Promo code" aria-label="Promo code" data-promo-input />
+                    <button type="button" class="promo__apply" data-promo-apply>Apply</button>
+                  </div>
+                  <div class="promo__success" data-promo-success hidden>
+                    <span class="promo__check"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                    <span class="promo__meta">
+                      <span class="promo__code" data-promo-code></span>
+                      <span class="promo__desc" data-promo-desc></span>
+                    </span>
+                    <button type="button" class="promo__remove" data-promo-remove aria-label="Remove promo code"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+                  </div>
+                  <span class="promo__flash" aria-hidden="true"><span class="promo__wipe"></span></span>
+                  <p class="promo__error" data-promo-error role="alert" hidden></p>
+                </div>
+
+                <!-- NoteManager (native <details> replaces the React toggle) -->
+              <!-- Order note → global component (orderNoteHTML/.ordernote in scripts.js) -->
+              <div data-order-note></div>
+              </div>
+
+              <!-- CartTotal (isCartPage) -->
+              <div class="flex flex-col items-start gap-3 w-full py-4">
+                <div class="flex flex-row justify-between items-center w-full">
+                  <span class="text-textSecondary font-medium text-sm">Subtotal</span>
+                  <span class="text-blackText font-semibold text-sm" data-summary-subtotal>EGP 1,830.00</span>
+                </div>
+                <div class="flex flex-row justify-between items-center w-full">
+                  <span class="text-gray-700 font-normal text-sm">Delivery fees</span>
+                  <span class="text-gray-700 font-normal text-sm" data-summary-delivery>EGP 40.00</span>
+                </div>
+                <!-- Discount: promo-driven — hidden until a code is applied -->
+                <div class="flex flex-row justify-between items-center w-full" data-summary-discount-row hidden>
+                  <span class="text-gray-700 font-normal text-sm">Discount</span>
+                  <span class="font-medium text-sm text-[#209B34]" data-summary-discount></span>
+                </div>
+                <div class="w-full h-px bg-border-light"></div>
+                <div class="flex flex-row justify-between items-center w-full">
+                  <span class="text-textSecondary font-medium text-lg">Total</span>
+                  <span class="text-blackText font-semibold text-lg" data-summary-total>EGP 1,870.00</span>
+                </div>
+              </div>
+
+              <!-- ProceedToCheckoutButton -->
+              <a href="checkout.html" class="btn btn--primary btn--lg w-full justify-center gap-2 !text-[18px]">
+                <span>Proceed To Checkout</span>
+                <svg viewBox="0 0 24 24" fill="none" class="w-3 h-3"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </a>
+
+              <!-- Shipping callout → global component (deliveryCalloutHTML/.callout--delivery),
+                   the same one the PDP uses. Replaced the older .delivery-note bar here. -->
+              <div data-shipping-callout data-edit="false"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================ CATEGORY ROW — NO BANNER: You May Also Like ============================
+           Variant of the Category Row component (see index.html "CATEGORY ROW") with the banner
+           tile omitted, so the carousel spans the full width of the white card. -->
+      <section class="bg-gray-200 py-10 md:py-14">
+        <div class="mx-auto max-w-[1392px] px-4">
+          <div class="rounded-[20px] bg-white border border-gray-200 p-4 md:p-8">
+            <div class="mb-6 flex items-center justify-between gap-4">
+              <h2 class="text-xl font-semibold text-primaryDark md:text-[28px]">You May Also Like</h2>
+              <a href="shop.html" class="inline-flex shrink-0 items-center gap-2.5 rounded-[4px] bg-gray-200 px-2 py-1.5 text-sm font-medium text-[#6F7276] transition-colors hover:bg-gray-300">View All <svg viewBox="0 0 24 24" fill="none" class="h-4 w-4"><path d="M4 12h16M14 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            </div>
+            <div class="carousel relative min-w-0" data-loop data-align-arrows style="--carousel-gap: 16px">
+              <div class="carousel-track items-start" id="more-products"></div>
+              <div data-fade="start" class="pointer-events-none absolute inset-y-0 start-0 z-[1] w-10 bg-gradient-to-r from-white to-transparent opacity-0 transition-opacity duration-200"></div>
+              <div data-fade="end" class="pointer-events-none absolute inset-y-0 end-0 z-[1] w-10 bg-gradient-to-l from-white to-transparent transition-opacity duration-200"></div>
+              <button type="button" class="carousel-btn carousel-prev !rounded-[8px]" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" class="h-5 w-5"><path d="m15 6-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+              <button type="button" class="carousel-btn carousel-next !rounded-[8px]" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" class="h-5 w-5"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Empty-cart state (hidden mockup — swap with the filled view when the cart is empty)
+      <div class="flex flex-col justify-center items-center gap-5 h-full min-h-72">
+        <span class="inline-block w-6 h-8 text-primaryDark">
+          <svg viewBox="0 0 24 24" fill="none" class="w-6 h-8"><path d="M2.5 3h1.6c.5 0 .93.35 1.03.84l.34 1.66m0 0 1.4 6.86c.16.8.87 1.37 1.68 1.37h7.9c.79 0 1.48-.54 1.66-1.31l1.3-5.4a.85.85 0 0 0-.83-1.05H5.47M9 20a1 1 0 1 1-2 0 1 1 0 0 1 2 0Zm9 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <div class="font-medium text-blackText text-2xl">Your cart is empty</div>
+        <a href="shop.html" class="inline-flex items-center gap-2 text-primaryDark font-medium">Continue shopping →</a>
+      </div>
+      -->
+    </main>
+
+    <!-- Shared footer is injected here by scripts.js -->
+    <div id="site-footer"></div>
+
+    <!-- "You may also like" product data → rendered as canonical product cards -->
+    <script>
+      (function () {
+        const IMGS = [
+          "dummy-images/image-7.webp",
+          "dummy-images/image-2.webp",
+          "dummy-images/image-7.webp",
+          "dummy-images/image-8.webp",
+          "dummy-images/special-cake.webp",
+        ];
+        const DATA = [
+          ["Red Velvet Gateau", 590, 0],
+          ["Pistachio Kunafa", 260, 0],
+          ["Salted Caramel Tart", 340, 390],
+          ["Mango Mousse Cake", 610, 0],
+          ["Basbousa Tray", 240, 0],
+        ];
+        /* Canonical product-card markup (matches index.html / shop.html /
+           shop-category.html / product.html / my-account-favorites.html):
+           image + quick-add widget, then price (pink/cta) above the title
+           (dark). This file previously had its own one-off layout — title
+           first, price last, no quick-add — unified here so every product
+           widget site-wide reads the same way. */
+        function card([name, price, sale], i) {
+          const cur = sale ? Math.min(price, sale) : price;
+          const old = sale ? Math.max(price, sale) : 0;
+          const hasSale = sale && old > cur;
+          const intp = Math.floor(cur);
+          const dec = (cur - intp).toFixed(2).substring(1);
+          return `
+          <div class="carousel-slide shrink-0 w-[200px] md:w-[240px]">
+          <a href="product.html" class="group/card block relative" aria-label="${name}">
+            <div class="relative">
+              <div class="rounded-[12px] aspect-square overflow-hidden bg-primary-light">
+                <img src="${IMGS[i % IMGS.length]}" alt="${name}" class="w-full h-full object-cover md:group-hover/card:scale-110 transition-all duration-300" />
+              </div>
+              <span class="absolute end-3 -bottom-5 z-10" data-add-widget data-type="simple">
+                <button type="button" data-add-btn aria-label="Add to cart" class="grid place-items-center bg-primary-200 text-primaryDark rounded-[8px] size-[42px] shadow-custom-5 hover:bg-primary-300 transition-colors">
+                  <svg viewBox="0 0 24 24" fill="none" class="w-[22px] h-[22px]"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+                </button>
+                <span class="hidden items-center gap-0.5 bg-primary-light rounded-[8px] h-[42px] px-2 shadow-custom-5" data-counter>
+                  <button type="button" data-dec aria-label="Remove" class="grid place-items-center size-[26px] rounded-[4px] hover:bg-black/5 transition-colors">
+                    <img data-dec-icon src="images/icons/trash.svg" alt="" width="18" height="18" />
+                  </button>
+                  <span data-qty class="w-[34px] text-center text-lg font-medium text-primaryDark tabular-nums">1</span>
+                  <button type="button" data-inc aria-label="Add" class="grid place-items-center size-[26px] rounded-[4px] bg-primary-300 text-white hover:bg-primary-400 transition-colors">
+                    <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+                  </button>
+                </span>
+              </span>
+            </div>
+            <div class="flex flex-col gap-2 pt-6">
+              <div class="flex items-end gap-2 flex-wrap">
+                <span class="flex items-end gap-0.5 text-cta leading-none" dir="ltr">
+                  <span class="text-2xl font-semibold">${intp}</span>
+                  <span class="text-lg font-normal">${dec}</span>
+                  <span class="text-lg font-normal">EGP</span>
+                </span>
+                ${hasSale ? `<span class="text-sm text-gray-500 line-through leading-none" dir="ltr">${old}.00EGP</span>` : ""}
+              </div>
+              <p class="text-primaryDark text-base font-medium leading-[1.4] line-clamp-2 min-h-[2.8em]">${name}</p>
+            </div>
+          </a>
+          </div>`;
+        }
+        const track = document.getElementById("more-products");
+        if (track) track.innerHTML = DATA.map((p, i) => card(p, i)).join("");
+        // scripts.js runs kInit(document) on DOMContentLoaded (after this inline
+        // script), so the freshly-populated .carousel is wired up automatically.
+      })();
+    </script>
+  </body>
+</html>

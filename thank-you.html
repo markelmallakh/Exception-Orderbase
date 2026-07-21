@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Thank You — Order Confirmed — Exception</title>
+    <meta name="description" content="Your Exception order has been placed successfully. Review your order summary and delivery details." />
+    <!-- Tailwind (Play CDN) + faithful port of the project's tailwind.config.ts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="tw-config.js"></script>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <script defer src="scripts.js"></script>
+  </head>
+  <body data-page="thankyou" data-path="/thank-you" class="antialiased bg-white">
+    <!-- Shared header is injected here by scripts.js -->
+    <div id="site-header"></div>
+
+    <main class="overflow-x-hidden">
+      <section class="flex flex-col items-center justify-start min-h-screen bg-gradient-to-b from-lightBlue to-white py-[60px] gap-8">
+        <!-- Success header -->
+        <div class="flex flex-col items-center gap-2 w-full max-w-[1200px] px-4">
+          <div class="relative w-[42px] h-[42px] flex items-center justify-center">
+            <svg viewBox="0 0 24 24" fill="none" class="w-[42px] h-[42px] text-success"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.8"/><path d="m8 12 2.5 2.5L16 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <h1 class="text-[28px] font-semibold text-success text-center leading-[120%]">Thank You, Mariam</h1>
+          <p class="text-[16px] text-textSecondary text-center font-normal leading-[140%]">Your order has been placed successfully</p>
+        </div>
+
+        <!-- Order card -->
+        <div class="flex flex-col lg:flex-row items-start p-8 gap-6 w-full max-w-[1200px] bg-white shadow-[0px_0px_6px_rgba(0,0,0,0.08)] rounded-xl mx-4">
+          <!-- ---------- Left column ---------- -->
+          <div class="flex flex-col flex-1 gap-8 w-full z-10">
+            <!-- Order number + status -->
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-customGray pb-4 gap-4">
+              <h2 class="text-[24px] font-semibold text-success leading-[120%]">Order #12345</h2>
+              <div class="flex items-center gap-4">
+                <div class="relative w-[50px] h-[50px] md:w-[76px] md:h-[76px]">
+                  <img src="images/icons/delivery-scooter.webp" alt="Order confirmed" class="w-full h-full object-contain" />
+                </div>
+                <span class="text-[18px] font-medium capitalize text-accent-yellow">Preparing</span>
+              </div>
+            </div>
+
+            <!-- Personal information -->
+            <div class="flex flex-col gap-4">
+              <h3 class="text-[24px] font-semibold text-textSecondary">Personal Information</h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-12">
+                <div class="flex flex-col gap-1">
+                  <p class="text-[14px] text-gray-700">First name</p>
+                  <p class="text-[16px] font-medium text-textSecondary">Mariam Hassan</p>
+                </div>
+                <div class="flex flex-col gap-1">
+                  <p class="text-[14px] text-gray-700">Phone</p>
+                  <p class="text-[16px] font-medium text-textSecondary" dir="ltr">+20 100 123 4567</p>
+                </div>
+                <div class="flex flex-col gap-1 md:col-span-2">
+                  <p class="text-[14px] text-gray-700">Email</p>
+                  <p class="text-[16px] font-medium text-textSecondary">mariam.hassan@example.com</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="w-full h-[1px] bg-customGray"></div>
+
+            <!-- Shipping information -->
+            <div class="flex flex-col gap-4">
+              <h3 class="text-[24px] font-semibold text-textSecondary">Shipping Information</h3>
+
+              <div class="flex flex-wrap items-center gap-2 mb-2 border-b border-customGray pb-4">
+                <div class="relative w-[24px] h-[24px] flex items-center justify-center">
+                  <svg viewBox="0 0 24 24" fill="none" class="w-full h-full text-textSecondary"><path d="M3 13h11V6H5.5A2.5 2.5 0 0 0 3 8.5V13Zm11 0h4l3-3.5V16m-7-3v3m9 0v.5m-2.5 3a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm-11 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <span class="text-[16px] font-medium text-textSecondary">Delivery</span>
+                <span class="w-1 h-1 bg-textSecondary rounded-full mx-1"></span>
+                <span class="text-[16px] font-medium text-textSecondary">8 Jul 2026</span>
+                <span class="w-1 h-1 bg-textSecondary rounded-full mx-1"></span>
+                <span class="text-[16px] font-medium text-textSecondary">2:00 PM – 4:00 PM</span>
+              </div>
+
+              <div class="grid grid-cols-2 md:grid-cols-3 gap-y-4 gap-x-8">
+                <div class="flex flex-col gap-1">
+                  <p class="text-[14px] text-gray-700">City</p>
+                  <p class="text-[16px] font-medium text-textSecondary">Cairo</p>
+                </div>
+                <div class="flex flex-col gap-1">
+                  <p class="text-[14px] text-gray-700">Area</p>
+                  <p class="text-[16px] font-medium text-textSecondary">New Cairo</p>
+                </div>
+                <div class="flex flex-col gap-1">
+                  <p class="text-[14px] text-gray-700">District</p>
+                  <p class="text-[16px] font-medium text-textSecondary">5th Settlement</p>
+                </div>
+                <div class="flex flex-col gap-1 md:col-span-3">
+                  <p class="text-[14px] text-gray-700">Address</p>
+                  <p class="text-[16px] font-medium text-textSecondary">Street 90, next to Cairo Festival City</p>
+                </div>
+                <div class="flex flex-col gap-1">
+                  <p class="text-[14px] text-gray-700">Building number</p>
+                  <p class="text-[16px] font-medium text-textSecondary">12</p>
+                </div>
+                <div class="flex flex-col gap-1">
+                  <p class="text-[14px] text-gray-700">Floor</p>
+                  <p class="text-[16px] font-medium text-textSecondary">3</p>
+                </div>
+                <div class="flex flex-col gap-1">
+                  <p class="text-[14px] text-gray-700">Apartment number</p>
+                  <p class="text-[16px] font-medium text-textSecondary">7</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- vertical divider -->
+          <div class="hidden lg:block w-[1px] bg-customGray self-stretch"></div>
+
+          <!-- ---------- Right column: order summary ---------- -->
+          <div class="flex flex-col w-full lg:w-[428px] shrink-0 gap-6">
+            <h3 class="text-[24px] font-semibold text-textSecondary">Order Summary</h3>
+
+            <div class="flex flex-col gap-4 max-h-[400px] overflow-y-auto pr-2">
+              <!-- item 1 -->
+              <div class="flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                  <div class="relative h-[58px] w-[58px] shrink-0 overflow-hidden rounded-lg bg-gray-100">
+                    <img src="dummy-images/image-7.webp" alt="Chocolate Fudge Cake" class="w-full h-full object-cover" />
+                  </div>
+                  <div class="flex flex-col gap-[2px]">
+                    <p class="text-[18px] font-medium text-textSecondary line-clamp-1">Chocolate Fudge Cake</p>
+                    <div class="flex items-center gap-1 text-[10px] text-gray-700">
+                      <span>1 Kg</span>
+                      <span class="w-1 h-1 bg-gray-700 rounded-full"></span>
+                      <span>1 items</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex items-end gap-1 shrink-0">
+                  <span class="text-[12px] text-textSecondary uppercase">EGP</span>
+                  <span class="text-[16px] font-medium text-textSecondary">650</span>
+                </div>
+              </div>
+              <!-- item 2 -->
+              <div class="flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                  <div class="relative h-[58px] w-[58px] shrink-0 overflow-hidden rounded-lg bg-gray-100">
+                    <img src="dummy-images/image-2.webp" alt="Assorted Baklava Box" class="w-full h-full object-cover" />
+                  </div>
+                  <div class="flex flex-col gap-[2px]">
+                    <p class="text-[18px] font-medium text-textSecondary line-clamp-1">Assorted Baklava Box</p>
+                    <div class="flex items-center gap-1 text-[10px] text-gray-700">
+                      <span>500 gm</span>
+                      <span class="w-1 h-1 bg-gray-700 rounded-full"></span>
+                      <span>1 items</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex items-end gap-1 shrink-0">
+                  <span class="text-[12px] text-textSecondary uppercase">EGP</span>
+                  <span class="text-[16px] font-medium text-textSecondary">420</span>
+                </div>
+              </div>
+              <!-- item 3 -->
+              <div class="flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                  <div class="relative h-[58px] w-[58px] shrink-0 overflow-hidden rounded-lg bg-gray-100">
+                    <img src="dummy-images/image-7.webp" alt="Belgian Truffle Selection" class="w-full h-full object-cover" />
+                  </div>
+                  <div class="flex flex-col gap-[2px]">
+                    <p class="text-[18px] font-medium text-textSecondary line-clamp-1">Belgian Truffle Selection</p>
+                    <div class="flex items-center gap-1 text-[10px] text-gray-700">
+                      <span>24 pcs</span>
+                      <span class="w-1 h-1 bg-gray-700 rounded-full"></span>
+                      <span>2 items</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex items-end gap-1 shrink-0">
+                  <span class="text-[12px] text-textSecondary uppercase">EGP</span>
+                  <span class="text-[16px] font-medium text-textSecondary">760</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-4 bg-neutral-50 -mx-4 px-4 py-4 md:bg-transparent md:mx-0 md:px-0 md:py-0 rounded-lg">
+              <div class="w-full h-[1px] bg-gray-300 hidden md:block"></div>
+
+              <div class="flex flex-col gap-3">
+                <div class="flex items-center justify-between">
+                  <span class="text-[14px] font-medium text-textSecondary">Subtotal</span>
+                  <div class="flex items-center gap-1 text-[14px] font-medium text-textSecondary"><span class="text-[12px]">EGP</span> 1,830</div>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-[14px] font-normal text-gray-700">Shipping</span>
+                  <div class="flex items-center gap-1 text-[14px] font-normal text-gray-700"><span class="text-[12px]">EGP</span> 40</div>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-[14px] font-normal text-success">Discount</span>
+                  <div class="flex items-center gap-1 text-[14px] font-normal text-success"><span>-</span><span class="text-[12px]">EGP</span> 50</div>
+                </div>
+              </div>
+
+              <div class="w-full h-[1px] bg-gray-300 hidden md:block"></div>
+
+              <div class="flex items-center justify-between">
+                <span class="text-[18px] font-medium text-textSecondary">Total</span>
+                <div class="flex items-center gap-1 text-[18px] font-bold text-textSecondary"><span class="text-[12px] uppercase">EGP</span> 1,820</div>
+              </div>
+            </div>
+
+            <!-- CTAs -->
+            <div class="flex flex-col gap-3">
+              <a href="my-account-orders.html" class="btn btn--primary btn--md justify-center gap-2">
+                <svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M3 13h8V6H5.5A2.5 2.5 0 0 0 3 8.5V13Zm8 0h6l3-3.5V13m-9 0v4m4 0.5a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm-9 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Track your order
+              </a>
+              <a href="shop.html" class="btn btn--outline btn--md justify-center gap-2">
+                Continue shopping
+                <svg width="19" height="12" viewBox="0 0 19 12" fill="none" class="transition-transform"><path d="M13.5 1L18 6M18 6L13.5 11M18 6H0" stroke="currentColor" stroke-width="1.5"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Shared footer is injected here by scripts.js -->
+    <div id="site-footer"></div>
+  </body>
+</html>

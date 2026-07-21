@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cakes — Exception</title>
+    <meta
+      name="description"
+      content="Order handcrafted celebration cakes from Exception — gateaux, cheesecakes, cupcakes and more, with same-day delivery across Egypt."
+    />
+    <!-- Tailwind (Play CDN) + faithful port of the project's tailwind.config.ts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="tw-config.js"></script>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <script defer src="scripts.js"></script>
+  </head>
+  <body data-page="shop" data-path="/shop/cakes" class="antialiased bg-white">
+    <!-- Shared header is injected here by scripts.js -->
+    <div id="site-header"></div>
+
+    <main class="overflow-x-hidden">
+      <!-- ============================ SHOPPING CONTROLLER (filters + grid) ============================
+           Source: ShoppingController > ShoppingFilters (category pills + sort) + ProductsList grid. -->
+      <section class="pt-10 md:pt-12 pb-14 md:pb-24">
+        <div class="container flex flex-col gap-10">
+          <!-- ShoppingFilters: category pills (left) + price/sort selects (right) -->
+          <div class="flex flex-col gap-7 md:flex-row md:items-center md:justify-between border-b border-gray-200 pb-4 xl:border-b-0">
+            <!-- Category filter buttons (CategoryFilterButton) -->
+            <div class="no-scrollbar -mx-4 flex w-[calc(100%+32px)] gap-2 overflow-x-auto px-4 md:mx-0 md:w-auto md:overflow-visible md:px-0">
+              <button class="text-sm font-medium md:font-normal md:text-base flex items-center gap-1 py-1 px-4 rounded-full transition-colors capitalize whitespace-nowrap bg-primary-200 text-[#20242D]">
+                <svg viewBox="0 0 24 24" fill="none" class="w-5 h-5 text-[#20242D]"><path d="m5 13 4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                All
+              </button>
+              <button class="text-sm font-medium md:font-normal md:text-base flex items-center gap-1 py-1 px-4 rounded-full transition-colors capitalize whitespace-nowrap bg-backgroundLocationBar text-textSecondary">Gateaux</button>
+              <button class="text-sm font-medium md:font-normal md:text-base flex items-center gap-1 py-1 px-4 rounded-full transition-colors capitalize whitespace-nowrap bg-backgroundLocationBar text-textSecondary">Cheesecakes</button>
+              <button class="text-sm font-medium md:font-normal md:text-base flex items-center gap-1 py-1 px-4 rounded-full transition-colors capitalize whitespace-nowrap bg-backgroundLocationBar text-textSecondary">Cupcakes</button>
+              <button class="text-sm font-medium md:font-normal md:text-base flex items-center gap-1 py-1 px-4 rounded-full transition-colors capitalize whitespace-nowrap bg-backgroundLocationBar text-textSecondary">Tarts</button>
+              <button class="text-sm font-medium md:font-normal md:text-base flex items-center gap-1 py-1 px-4 rounded-full transition-colors capitalize whitespace-nowrap bg-backgroundLocationBar text-textSecondary">Mini Cakes</button>
+            </div>
+
+            <!-- Price + Sort selects (placeholder-select styling) -->
+            <div class="flex items-center gap-3 shrink-0">
+              <select class="placeholder-select w-[150px] md:w-[170px] border border-neutral-200 rounded-full pl-4 pr-9 h-11 text-sm text-textSecondary capitalize">
+                <option value="">any price</option>
+                <option value="0-300">under EGP 300</option>
+                <option value="300-500">EGP 300 – 500</option>
+                <option value="500-800">EGP 500 – 800</option>
+                <option value="800+">EGP 800+</option>
+              </select>
+              <select class="placeholder-select w-[150px] md:w-[190px] border border-neutral-200 rounded-full pl-4 pr-9 h-11 text-sm text-textSecondary capitalize">
+                <option value="best_selling">sort: best selling</option>
+                <option value="new_arrivals">sort: new arrivals</option>
+                <option value="price_asc">sort: price low to high</option>
+                <option value="price_desc">sort: price high to low</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <span class="text-xs md:text-sm text-gray-700"><span data-count>15</span> products in Cakes</span>
+          </div>
+
+          <!-- ProductsList grid -->
+          <div class="grid gap-y-7 gap-x-2.5 md:gap-x-5 md:gap-y-10 grid-cols-2 md:grid-cols-3 xl:grid-cols-5" data-products-grid></div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Shared footer is injected here by scripts.js -->
+    <div id="site-footer"></div>
+
+    <!-- Product data → rendered into the grid as canonical product cards -->
+    <script>
+      (function () {
+        const IMGS = [
+          "dummy-images/image-2.webp",
+          "dummy-images/image-7.webp",
+          "dummy-images/image-7.webp",
+          "dummy-images/image-8.webp",
+          "dummy-images/special-cake.webp",
+        ];
+        // [name, price, sale(0 = none)]
+        const PRODUCTS = [
+          ["Chocolate Fudge Cake", 650, 0],
+          ["Red Velvet Gateau", 590, 0],
+          ["Summer Berry Cheesecake", 540, 480],
+          ["Signature Celebration Cake", 720, 0],
+          ["Mango Mousse Cake", 610, 0],
+          ["Vanilla Bean Gateau", 560, 0],
+          ["Salted Caramel Tart", 390, 340],
+          ["Mini Cupcake Dozen", 280, 0],
+          ["Tiramisu Cake", 520, 0],
+          ["Lotus Biscoff Cheesecake", 500, 0],
+          ["Strawberry Shortcake", 470, 420],
+          ["Pistachio Cream Gateau", 640, 0],
+          ["Nutella Fudge Cake", 660, 0],
+          ["Lemon Drizzle Cake", 360, 0],
+          ["Black Forest Gateau", 580, 0],
+        ];
+        function card([name, price, sale], i) {
+          const cur = sale ? Math.min(price, sale) : price;
+          const old = sale ? Math.max(price, sale) : 0;
+          const hasSale = sale && old > cur;
+          const intp = Math.floor(cur);
+          const dec = (cur - intp).toFixed(2).substring(1);
+          return `
+          <a href="product.html" class="group/card block relative" aria-label="${name}">
+            <div class="relative">
+              <div class="rounded-[12px] aspect-square overflow-hidden bg-primary-light">
+                <img src="${IMGS[i % IMGS.length]}" alt="${name}" class="w-full h-full object-cover md:group-hover/card:scale-110 transition-all duration-300" />
+              </div>
+              <span class="absolute end-3 -bottom-5 z-10" data-add-widget data-type="simple">
+                <button type="button" data-add-btn aria-label="Add to cart" class="grid place-items-center bg-primary-200 text-primaryDark rounded-[8px] size-[42px] shadow-custom-5 hover:bg-primary-300 transition-colors">
+                  <svg viewBox="0 0 24 24" fill="none" class="w-[22px] h-[22px]"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+                </button>
+                <span class="hidden items-center gap-0.5 bg-primary-light rounded-[8px] h-[42px] px-2 shadow-custom-5" data-counter>
+                  <button type="button" data-dec aria-label="Remove" class="grid place-items-center size-[26px] rounded-[4px] hover:bg-black/5 transition-colors">
+                    <img data-dec-icon src="images/icons/trash.svg" alt="" width="18" height="18" />
+                  </button>
+                  <span data-qty class="w-[34px] text-center text-lg font-medium text-primaryDark tabular-nums">1</span>
+                  <button type="button" data-inc aria-label="Add" class="grid place-items-center size-[26px] rounded-[4px] bg-primary-300 text-white hover:bg-primary-400 transition-colors">
+                    <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+                  </button>
+                </span>
+              </span>
+            </div>
+            <div class="flex flex-col gap-2 pt-6">
+              <div class="flex items-end gap-2 flex-wrap">
+                <span class="flex items-end gap-0.5 text-cta leading-none" dir="ltr">
+                  <span class="text-2xl font-semibold">${intp}</span>
+                  <span class="text-lg font-normal">${dec}</span>
+                  <span class="text-lg font-normal">EGP</span>
+                </span>
+                ${hasSale ? `<span class="text-sm text-gray-500 line-through leading-none" dir="ltr">${old}.00EGP</span>` : ""}
+              </div>
+              <p class="text-primaryDark text-base font-medium leading-[1.4] line-clamp-2 min-h-[2.8em]">${name}</p>
+            </div>
+          </a>`;
+        }
+        const grid = document.querySelector("[data-products-grid]");
+        if (grid) grid.innerHTML = PRODUCTS.map(card).join("");
+        const count = document.querySelector("[data-count]");
+        if (count) count.textContent = PRODUCTS.length;
+      })();
+    </script>
+  </body>
+</html>

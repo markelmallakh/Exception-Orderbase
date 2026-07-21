@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Order #12345 — Exception</title>
+    <meta
+      name="description"
+      content="Order details, delivery status and totals for your Exception order."
+    />
+    <!-- Tailwind (Play CDN) + faithful port of the project's tailwind.config.ts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="tw-config.js"></script>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <script defer src="scripts.js"></script>
+  </head>
+  <body data-page="account" data-path="/my-account/orders/12345" class="antialiased bg-white">
+    <div id="site-header"></div>
+
+    <main class="overflow-x-clip bg-gray-100">
+      <div class="flex lg:flex-row flex-col items-start gap-7 md:gap-10 mx-auto px-4 py-10 md:py-16 max-w-[1392px]">
+
+        <!-- ============================ MOBILE ACCOUNT NAV (pills) ============================ -->
+        <div class="flex flex-col gap-4 w-full lg:hidden">
+          <div class="flex items-end justify-between w-full">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-full bg-primary-light text-primaryDark flex items-center justify-center font-semibold text-lg shrink-0">MH</div>
+              <div class="flex flex-col gap-1">
+                <span data-tier-badge></span>
+                <h3 class="font-semibold text-primaryDark text-[22px] leading-tight truncate">Mariam Hassan</h3>
+              </div>
+            </div>
+            <a href="login.html" class="shrink-0 text-sm font-medium text-gray-600 hover:underline">Log out</a>
+          </div>
+          <div class="w-full border-b border-primary/20"></div>
+          <div class="w-full overflow-x-auto no-scrollbar">
+            <div class="flex items-center gap-2 min-w-max pb-2">
+              <a href="my-account.html" class="flex items-center gap-2.5 px-4 py-2.5 h-[52px] rounded-lg whitespace-nowrap border border-[#CFD3D8] text-gray-700"><span class="w-5 h-5 flex items-center justify-center"><img src="images/icons/account%20icons/overview.webp" alt="Dashboard" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-base">Dashboard</span></a>
+              <a href="my-account-profile.html" class="flex items-center gap-2.5 px-4 py-2.5 h-[52px] rounded-lg whitespace-nowrap border border-[#CFD3D8] text-gray-700"><span class="w-5 h-5 flex items-center justify-center"><img src="images/icons/account%20icons/preparing.webp" alt="Profile" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-base">Profile</span></a>
+              <a href="my-account-orders.html" class="flex items-center gap-2.5 px-4 py-2.5 h-[52px] rounded-lg whitespace-nowrap bg-primary-light text-primaryDark"><span class="w-5 h-5 flex items-center justify-center"><img src="images/icons/account%20icons/preparing-1.webp" alt="Orders" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-base">Orders</span></a>
+              <a href="my-account-addresses.html" class="flex items-center gap-2.5 px-4 py-2.5 h-[52px] rounded-lg whitespace-nowrap border border-[#CFD3D8] text-gray-700"><span class="w-5 h-5 flex items-center justify-center"><img src="images/icons/account%20icons/preparing-2.webp" alt="Addresses" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-base">Addresses</span></a>
+              <a href="my-account-favorites.html" class="flex items-center gap-2.5 px-4 py-2.5 h-[52px] rounded-lg whitespace-nowrap border border-[#CFD3D8] text-gray-700"><span class="w-5 h-5 flex items-center justify-center"><img src="images/icons/account%20icons/preparing-3.webp" alt="Favorites" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-base">Favorites</span></a>
+              <a href="my-account-wallet.html" class="flex items-center gap-2.5 px-4 py-2.5 h-[52px] rounded-lg whitespace-nowrap border border-[#CFD3D8] text-gray-700"><span class="w-5 h-5 flex items-center justify-center"><img src="images/icons/account%20icons/wallet.webp" alt="Wallet" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-base">Wallet</span></a>
+                <a href="my-account-vouchers.html" class="flex items-center gap-2.5 px-4 py-2.5 h-[52px] rounded-lg whitespace-nowrap border border-[#CFD3D8] text-gray-700"><span class="w-5 h-5 flex items-center justify-center"><img src="images/icons/account%20icons/voucher.webp" alt="Vouchers" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-base">Vouchers</span></a>
+              <a href="my-account-point.html" class="flex items-center gap-2.5 px-4 py-2.5 h-[52px] rounded-lg whitespace-nowrap border border-[#CFD3D8] text-gray-700"><span class="w-5 h-5 flex items-center justify-center"><img src="images/icons/account%20icons/Points.webp" alt="Points" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-base">Points</span></a>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============================ DESKTOP ACCOUNT SIDEBAR ============================ -->
+        <aside class="hidden lg:block w-full lg:w-[25%] shrink-0 min-h-[520px] lg:self-stretch">
+          <div class="rounded-2xl border border-gray-300 bg-white shadow-custom4 overflow-hidden lg:sticky lg:top-[99px] lg:max-h-[calc(100vh-115px)] lg:overflow-y-auto">
+            <div class="flex flex-col gap-4 p-6 border-b border-gray-300">
+              <div class="flex items-center gap-3">
+                <div class="w-14 h-14 rounded-full bg-primary-light text-primaryDark flex items-center justify-center font-semibold text-xl shrink-0">MH</div>
+                <div class="flex flex-col gap-1.5">
+                  <span data-tier-badge></span>
+                  <h3 class="text-primaryDark font-medium text-2xl leading-tight">Mariam Hassan</h3>
+                </div>
+              </div>
+            </div>
+            <nav class="p-4">
+              <ul class="space-y-1.5">
+                <li><a href="my-account.html" class="flex items-center gap-3 rounded-lg px-4 py-2.5 xl:px-6 transition-all duration-200 hover:bg-primary-light text-gray-700"><span class="inline-flex w-6 text-gray-700"><img src="images/icons/account%20icons/overview.webp" alt="Dashboard" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Dashboard</span></a></li>
+                <li><a href="my-account-profile.html" class="flex items-center gap-3 rounded-lg px-4 py-2.5 xl:px-6 transition-all duration-200 hover:bg-primary-light text-gray-700"><span class="inline-flex w-6 text-gray-700"><img src="images/icons/account%20icons/preparing.webp" alt="Profile" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Profile</span></a></li>
+                <li><a href="my-account-orders.html" class="flex items-center gap-3 rounded-lg px-4 py-2.5 xl:px-6 transition-all duration-200 bg-primary-light text-primaryDark"><span class="inline-flex w-6 text-primaryDark"><img src="images/icons/account%20icons/preparing-1.webp" alt="Orders" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Orders</span></a></li>
+                <li><a href="my-account-addresses.html" class="flex items-center gap-3 rounded-lg px-4 py-2.5 xl:px-6 transition-all duration-200 hover:bg-primary-light text-gray-700"><span class="inline-flex w-6 text-gray-700"><img src="images/icons/account%20icons/preparing-2.webp" alt="Addresses" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Addresses</span></a></li>
+                <li><a href="my-account-favorites.html" class="flex items-center gap-3 rounded-lg px-4 py-2.5 xl:px-6 transition-all duration-200 hover:bg-primary-light text-gray-700"><span class="inline-flex w-6 text-gray-700"><img src="images/icons/account%20icons/preparing-3.webp" alt="Favorites" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Favorites</span></a></li>
+                <li><a href="my-account-wallet.html" class="flex items-center gap-3 rounded-lg px-4 py-2.5 xl:px-6 transition-all duration-200 hover:bg-primary-light text-gray-700"><span class="inline-flex w-6 text-gray-700"><img src="images/icons/account%20icons/wallet.webp" alt="Wallet" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Wallet</span></a></li>
+              <li><a href="my-account-vouchers.html" class="flex items-center gap-3 rounded-lg px-4 py-2.5 xl:px-6 transition-all duration-200 hover:bg-primary-light text-gray-700"><span class="inline-flex w-6 text-gray-700"><img src="images/icons/account%20icons/voucher.webp" alt="Vouchers" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Vouchers</span></a></li>
+                <li><a href="my-account-point.html" class="flex items-center gap-3 rounded-lg px-4 py-2.5 xl:px-6 transition-all duration-200 hover:bg-primary-light text-gray-700"><span class="inline-flex w-6 text-gray-700"><img src="images/icons/account%20icons/Points.webp" alt="Points" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Points</span></a></li>
+              </ul>
+              <div class="my-4 border-t border-gray-300"></div>
+              <div class="px-2 pb-2">
+                <h4 class="mb-3 font-semibold text-neutral-support-bg md:text-lg">Need Help?</h4>
+                <ul class="flex flex-col gap-3">
+                  <li><a href="faqs.html" class="font-medium text-primaryColor text-sm md:text-base hover:underline">FAQs</a></li>
+                  <li><a href="contact-us.html" class="font-medium text-primaryColor text-sm md:text-base hover:underline">Contact us</a></li>
+                </ul>
+                <a href="login.html" class="inline-flex items-center gap-2 pt-4 font-medium text-gray-700 text-sm hover:underline">
+                  <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  Log out
+                </a>
+              </div>
+            </nav>
+          </div>
+        </aside>
+
+        <!-- ============================ ACCOUNT CONTENT ============================ -->
+        <div class="w-full lg:w-[calc(75%-36px)]">
+          <nav class="mb-6 flex flex-wrap items-center gap-2 text-sm text-gray-700" aria-label="Breadcrumb">
+            <a href="index.html" class="hover:text-primaryDark">Home</a>
+            <span class="text-gray-400">/</span>
+            <a href="my-account.html" class="hover:text-primaryDark">My Account</a>
+            <span class="text-gray-400">/</span>
+            <a href="my-account-orders.html" class="hover:text-primaryDark">Orders</a>
+            <span class="text-gray-400">/</span>
+            <span class="text-primaryDark font-medium">Order #12345</span>
+          </nav>
+
+          <div class="flex flex-col gap-7 md:gap-8">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+              <h1 class="text-2xl md:text-[32px] font-semibold text-textSecondary">Order #12345</h1>
+              <span class="inline-flex items-center justify-center rounded-md px-3 py-1 text-sm font-medium bg-success text-white">Delivered</span>
+            </div>
+
+            <div class="flex w-full max-w-[760px] flex-col gap-8 rounded-xl bg-white p-6 shadow-[0px_0px_6px_rgba(0,0,0,0.08)] md:p-8">
+
+              <!-- Status hero + stepper -->
+              <div class="flex flex-col items-center gap-4">
+                <div class="relative h-[130px] w-[130px]">
+                  <img src="images/icons/delivery-scooter.webp" alt="Delivered" class="w-full h-full object-contain" />
+                </div>
+                <span class="text-lg font-medium text-success capitalize">Delivered</span>
+              </div>
+
+              <!-- Order status timeline / stepper -->
+              <div class="relative pt-2">
+                <!-- track -->
+                <div class="absolute top-[20px] left-[12.5%] right-[12.5%] h-0.5 bg-gray-200"></div>
+                <div class="absolute top-[20px] left-[12.5%] right-[12.5%] h-0.5 bg-success"></div>
+                <ol class="relative flex justify-between">
+                  <li class="flex w-1/4 flex-col items-center gap-2 text-center">
+                    <div class="z-10 flex h-9 w-9 items-center justify-center rounded-full bg-success text-white ring-4 ring-white"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="m5 13 4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                    <span class="text-xs md:text-sm font-medium text-textSecondary">Order placed</span>
+                    <span class="text-[11px] text-gray-500">Jul 4</span>
+                  </li>
+                  <li class="flex w-1/4 flex-col items-center gap-2 text-center">
+                    <div class="z-10 flex h-9 w-9 items-center justify-center rounded-full bg-success text-white ring-4 ring-white"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="m5 13 4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                    <span class="text-xs md:text-sm font-medium text-textSecondary">Preparing</span>
+                    <span class="text-[11px] text-gray-500">Jul 5</span>
+                  </li>
+                  <li class="flex w-1/4 flex-col items-center gap-2 text-center">
+                    <div class="z-10 flex h-9 w-9 items-center justify-center rounded-full bg-success text-white ring-4 ring-white"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="m5 13 4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                    <span class="text-xs md:text-sm font-medium text-textSecondary">On the way</span>
+                    <span class="text-[11px] text-gray-500">Jul 6</span>
+                  </li>
+                  <li class="flex w-1/4 flex-col items-center gap-2 text-center">
+                    <div class="z-10 flex h-9 w-9 items-center justify-center rounded-full bg-success text-white ring-4 ring-white"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="m5 13 4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                    <span class="text-xs md:text-sm font-medium text-success">Delivered</span>
+                    <span class="text-[11px] text-gray-500">Jul 6</span>
+                  </li>
+                </ol>
+              </div>
+
+              <div class="h-[2px] w-full bg-border-light"></div>
+
+              <!-- Ordered items -->
+              <div class="flex flex-col gap-4">
+                <h2 class="text-lg font-semibold text-textSecondary">Order Items</h2>
+                <div class="flex flex-col gap-4">
+                  <div class="flex items-center justify-between gap-4">
+                    <div class="flex items-center gap-4">
+                      <div class="relative h-[58px] w-[58px] overflow-hidden rounded-lg bg-gray-100"><img src="dummy-images/image-7.webp" alt="Chocolate Fudge Cake" class="w-full h-full object-cover" /></div>
+                      <div>
+                        <p class="text-base font-medium text-textSecondary">Chocolate Fudge Cake</p>
+                        <div class="flex items-center gap-1 text-[11px] text-gray-700"><span>1 kg</span><span class="h-1 w-1 rounded-full bg-gray-700"></span><span>1 item</span></div>
+                      </div>
+                    </div>
+                    <div class="flex items-baseline gap-1 text-textSecondary" dir="ltr"><span class="text-xs">EGP</span><span class="text-base font-medium">650</span></div>
+                  </div>
+                  <div class="flex items-center justify-between gap-4">
+                    <div class="flex items-center gap-4">
+                      <div class="relative h-[58px] w-[58px] overflow-hidden rounded-lg bg-gray-100"><img src="dummy-images/image-2.webp" alt="Assorted Baklava Box" class="w-full h-full object-cover" /></div>
+                      <div>
+                        <p class="text-base font-medium text-textSecondary">Assorted Baklava Box</p>
+                        <div class="flex items-center gap-1 text-[11px] text-gray-700"><span>500 gm</span><span class="h-1 w-1 rounded-full bg-gray-700"></span><span>1 item</span></div>
+                      </div>
+                    </div>
+                    <div class="flex items-baseline gap-1 text-textSecondary" dir="ltr"><span class="text-xs">EGP</span><span class="text-base font-medium">180</span></div>
+                  </div>
+                  <div class="flex items-center justify-between gap-4">
+                    <div class="flex items-center gap-4">
+                      <div class="relative h-[58px] w-[58px] overflow-hidden rounded-lg bg-gray-100"><img src="dummy-images/image-7.webp" alt="Pistachio Kunafa" class="w-full h-full object-cover" /></div>
+                      <div>
+                        <p class="text-base font-medium text-textSecondary">Pistachio Kunafa</p>
+                        <div class="flex items-center gap-1 text-[11px] text-gray-700"><span>250 gm</span><span class="h-1 w-1 rounded-full bg-gray-700"></span><span>2 items</span></div>
+                      </div>
+                    </div>
+                    <div class="flex items-baseline gap-1 text-textSecondary" dir="ltr"><span class="text-xs">EGP</span><span class="text-base font-medium">60</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="h-[1px] w-full bg-customGray"></div>
+
+              <!-- Personal info -->
+              <div class="flex flex-col gap-4">
+                <h3 class="text-lg font-semibold text-textSecondary">Personal Information</h3>
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  <div class="flex flex-col gap-1"><p class="text-sm text-gray-700">First name</p><p class="text-base font-medium text-textSecondary">Mariam Hassan</p></div>
+                  <div class="flex flex-col gap-1"><p class="text-sm text-gray-700">Last name</p><p class="text-base font-medium text-textSecondary">Hassan</p></div>
+                  <div class="flex flex-col gap-1"><p class="text-sm text-gray-700">Email</p><p class="text-base font-medium text-textSecondary">mariam.hassan@example.com</p></div>
+                  <div class="flex flex-col gap-1"><p class="text-sm text-gray-700">Phone</p><p class="text-base font-medium text-textSecondary" dir="ltr">+20 100 123 4567</p></div>
+                </div>
+              </div>
+
+              <div class="h-[1px] w-full bg-customGray"></div>
+
+              <!-- Shipping date & time -->
+              <div class="flex flex-col gap-4">
+                <h3 class="text-lg font-semibold text-textSecondary">Delivery Date</h3>
+                <p class="text-base font-medium text-textSecondary">July 6, 2025 <span class="text-gray-700">| 2:00 PM – 4:00 PM</span></p>
+              </div>
+
+              <div class="h-[1px] w-full bg-customGray"></div>
+
+              <!-- Shipping type -->
+              <div class="flex flex-col gap-4">
+                <h3 class="text-lg font-semibold text-textSecondary">Delivery Type</h3>
+                <div class="flex items-center gap-2">
+                  <span class="relative flex h-6 w-6 items-center justify-center text-textSecondary"><svg viewBox="0 0 24 24" fill="none" class="w-full h-full"><path d="M3 6h11v9H3zM14 9h4l3 3v3h-7V9Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="7" cy="18" r="1.6" stroke="currentColor" stroke-width="1.6"/><circle cx="17" cy="18" r="1.6" stroke="currentColor" stroke-width="1.6"/></svg></span>
+                  <span class="text-base text-textSecondary capitalize">Home delivery</span>
+                </div>
+              </div>
+
+              <div class="h-[1px] w-full bg-customGray"></div>
+
+              <!-- Delivery address -->
+              <div class="flex flex-col gap-4">
+                <h3 class="text-lg font-semibold text-textSecondary">Delivery Address</h3>
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+                  <div class="flex flex-col gap-1"><p class="text-sm text-gray-700">City</p><p class="text-base font-medium text-textSecondary">Cairo</p></div>
+                  <div class="flex flex-col gap-1"><p class="text-sm text-gray-700">Area</p><p class="text-base font-medium text-textSecondary">Nasr City</p></div>
+                </div>
+                <div class="flex flex-col gap-1"><p class="text-sm text-gray-700">Address</p><p class="text-base font-medium text-textSecondary">18 El Nozha Street</p></div>
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+                  <div class="flex flex-col gap-1"><p class="text-sm text-gray-700">Apartment</p><p class="text-base font-medium text-textSecondary">12</p></div>
+                  <div class="flex flex-col gap-1"><p class="text-sm text-gray-700">Floor</p><p class="text-base font-medium text-textSecondary">3</p></div>
+                  <div class="flex flex-col gap-1"><p class="text-sm text-gray-700">Building number</p><p class="text-base font-medium text-textSecondary">18</p></div>
+                </div>
+              </div>
+
+              <div class="h-[1px] w-full bg-customGray"></div>
+
+              <!-- Payment method -->
+              <div class="flex flex-col gap-4">
+                <h3 class="text-lg font-semibold text-textSecondary">Payment Method</h3>
+                <div class="flex items-center gap-3">
+                  <span class="flex h-9 w-12 items-center justify-center rounded-md border border-border-light bg-white text-primaryDark"><svg viewBox="0 0 24 24" fill="none" class="w-6 h-6"><rect x="2" y="5" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M2 10h20" stroke="currentColor" stroke-width="1.6"/></svg></span>
+                  <div class="flex flex-col">
+                    <span class="text-base font-medium text-textSecondary" dir="ltr">Visa •••• 4242</span>
+                    <span class="text-sm text-gray-700">Paid online</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="h-[1px] w-full bg-border-light"></div>
+
+              <!-- Totals breakdown -->
+              <div class="flex flex-col gap-4">
+                <div class="flex items-center justify-between">
+                  <span class="text-sm font-medium text-textSecondary">Subtotal</span>
+                  <div class="flex items-center gap-1 text-sm font-medium text-textSecondary" dir="ltr"><span>890</span><span class="text-xs">EGP</span></div>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-sm font-normal text-gray-700">Shipping fees</span>
+                  <div class="flex items-center gap-1 text-sm font-normal text-gray-700" dir="ltr"><span>30</span><span class="text-xs">EGP</span></div>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-sm font-normal text-success">Discount</span>
+                  <div class="flex items-center gap-1 text-sm font-normal text-success" dir="ltr"><span>- 30</span><span class="text-xs">EGP</span></div>
+                </div>
+              </div>
+
+              <div class="h-[1px] w-full bg-border-light"></div>
+
+              <div class="flex items-center justify-between">
+                <span class="text-lg font-medium text-textSecondary">Total</span>
+                <div class="flex items-center gap-1 text-lg font-bold text-textSecondary" dir="ltr"><span>890</span><span class="text-xs">EGP</span></div>
+              </div>
+
+              <!-- Actions (delivered order → reorder) -->
+              <div class="flex flex-col gap-4 mt-2">
+                <a href="cart.html" class="btn btn--primary btn--md w-full inline-flex items-center justify-center gap-2">
+                  <svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M3 3h1.5l1.2 12.1a2 2 0 0 0 2 1.8h8.6a2 2 0 0 0 2-1.6L20 8H6M9 21a1 1 0 1 1-2 0 1 1 0 0 1 2 0Zm9 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  Reorder
+                </a>
+                <a href="my-account-orders.html" class="btn btn--outline btn--md w-full inline-flex items-center justify-center gap-2">Back to orders</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div id="site-footer"></div>
+  </body>
+</html>

@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>My Addresses — Exception</title>
+    <meta name="description" content="Manage your saved delivery addresses for faster checkout at Exception." />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="tw-config.js"></script>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <script defer src="scripts.js"></script>
+  </head>
+  <body data-page="account" data-path="/my-account/addresses" class="antialiased bg-white">
+    <!-- Shared header is injected here by scripts.js -->
+    <div id="site-header"></div>
+
+    <main class="overflow-x-clip bg-gray-100">
+      <!-- Account layout: two-column grid (sidebar collapses above content on mobile) -->
+      <div class="flex lg:flex-row flex-col items-start gap-7 md:gap-10 mx-auto px-4 py-10 md:py-20 max-w-[1392px]">
+        <!-- ============================ ACCOUNT SIDEBAR ============================ -->
+        <aside class="w-full lg:w-[25%] lg:min-h-[520px] shrink-0 lg:self-stretch">
+          <div class="rounded-[20px] border border-gray-300 bg-white p-5 md:p-6 lg:pt-6 lg:sticky lg:top-[99px] lg:max-h-[calc(100vh-115px)] lg:overflow-y-auto">
+            <!-- Avatar + membership + name -->
+            <div class="flex items-center gap-4 lg:flex-col lg:items-start border-b border-gray-300 pb-5">
+              <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-primary-light text-xl font-semibold text-primaryDark">MH</div>
+              <div class="flex flex-col gap-1.5">
+                <span data-tier-badge></span>
+                <h3 class="text-lg font-medium text-primaryDark md:text-2xl">Mariam Hassan</h3>
+              </div>
+            </div>
+            <!-- Navigation -->
+            <ul class="space-y-2.5 pt-5">
+              <li><a href="my-account.html" class="flex items-center gap-3 md:gap-5 rounded-lg px-4 xl:px-7 py-2.5 transition-all duration-200 text-gray-700 hover:bg-primary-light"><span class="inline-block w-5 md:w-6"><img src="images/icons/account%20icons/overview.webp" alt="Dashboard" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Dashboard</span></a></li>
+              <li><a href="my-account-profile.html" class="flex items-center gap-3 md:gap-5 rounded-lg px-4 xl:px-7 py-2.5 transition-all duration-200 text-gray-700 hover:bg-primary-light"><span class="inline-block w-5 md:w-6"><img src="images/icons/account%20icons/preparing.webp" alt="Profile" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Profile</span></a></li>
+              <li><a href="my-account-orders.html" class="flex items-center gap-3 md:gap-5 rounded-lg px-4 xl:px-7 py-2.5 transition-all duration-200 text-gray-700 hover:bg-primary-light"><span class="inline-block w-5 md:w-6"><img src="images/icons/account%20icons/preparing-1.webp" alt="Orders" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Orders</span></a></li>
+              <li><a href="my-account-addresses.html" aria-current="page" class="flex items-center gap-3 md:gap-5 rounded-lg px-4 xl:px-7 py-2.5 transition-all duration-200 bg-primary-light text-primaryDark"><span class="inline-block w-5 md:w-6"><img src="images/icons/account%20icons/preparing-2.webp" alt="Addresses" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Addresses</span></a></li>
+              <li><a href="my-account-favorites.html" class="flex items-center gap-3 md:gap-5 rounded-lg px-4 xl:px-7 py-2.5 transition-all duration-200 text-gray-700 hover:bg-primary-light"><span class="inline-block w-5 md:w-6"><img src="images/icons/account%20icons/preparing-3.webp" alt="Favorites" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Favorites</span></a></li>
+              <li><a href="my-account-wallet.html" class="flex items-center gap-3 md:gap-5 rounded-lg px-4 xl:px-7 py-2.5 transition-all duration-200 text-gray-700 hover:bg-primary-light"><span class="inline-block w-5 md:w-6"><img src="images/icons/account%20icons/wallet.webp" alt="Wallet" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Wallet</span></a></li>
+              <li><a href="my-account-vouchers.html" class="flex items-center gap-3 md:gap-5 rounded-lg px-4 xl:px-7 py-2.5 transition-all duration-200 text-gray-700 hover:bg-primary-light"><span class="inline-block w-5 md:w-6"><img src="images/icons/account%20icons/voucher.webp" alt="Vouchers" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Vouchers</span></a></li>
+              <li><a href="my-account-point.html" class="flex items-center gap-3 md:gap-5 rounded-lg px-4 xl:px-7 py-2.5 transition-all duration-200 text-gray-700 hover:bg-primary-light"><span class="inline-block w-5 md:w-6"><img src="images/icons/account%20icons/Points.webp" alt="Points" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Points</span></a></li>
+            </ul>
+            <!-- Support / logout footer -->
+            <div class="mt-6 border-t border-gray-300 px-1 py-6">
+              <h4 class="mb-3 font-semibold text-neutral-support-bg md:text-lg">Need Help?</h4>
+              <ul class="flex flex-col gap-4">
+                <li><a href="faqs.html" class="font-medium text-primaryColor text-sm md:text-base hover:underline">FAQs</a></li>
+                <li><a href="contact-us.html" class="font-medium text-primaryColor text-sm md:text-base hover:underline">Contact us</a></li>
+              </ul>
+              <a href="login.html" class="mt-4 inline-block font-medium text-gray-700 text-sm hover:underline">Logout</a>
+            </div>
+          </div>
+        </aside>
+
+        <!-- ============================ ACCOUNT CONTENT ============================ -->
+        <div class="w-full lg:w-[calc(75%-36px)]">
+          <!-- Breadcrumbs (rendered by AccountPageLayout in the source) -->
+          <nav class="mb-6 flex items-center gap-2 text-sm text-gray-700" aria-label="Breadcrumb">
+            <a href="my-account.html" class="hover:text-primaryDark">My account</a>
+            <span>/</span>
+            <span class="font-medium text-textSecondary">Addresses</span>
+          </nav>
+
+          <div class="flex flex-col gap-7 md:gap-10">
+            <!-- Page header: title + add address button -->
+            <div class="flex flex-wrap items-center justify-between gap-4">
+              <div class="flex items-center gap-2.5">
+                <h1 class="text-[28px] font-semibold capitalize leading-[50px] text-textSecondary">My Addresses</h1>
+              </div>
+              <button type="button" data-toggle-form="add-address-form" class="btn btn--black btn--md flex items-center gap-2 group">
+                <svg viewBox="0 0 24 24" fill="none" class="h-4 w-4 md:h-5 md:w-5"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                <span class="text-sm">Add new address</span>
+              </button>
+            </div>
+
+            <!-- Inline add-address form (toggled by the button above; demo-only) -->
+            <form id="add-address-form" data-demo-form="Address saved" class="hidden rounded-[20px] border border-gray-300 bg-white px-5 py-6 md:px-8">
+              <h2 class="mb-5 text-lg font-semibold text-textSecondary">Add a New Address</h2>
+              <div class="grid grid-cols-1 gap-5 md:grid-cols-3">
+                <label class="flex flex-col gap-1.5 text-sm font-medium text-primaryText">City
+                  <select name="city" class="rounded-lg border border-gray-300 px-4 py-2.5 text-blackText focus:border-primaryDark focus:outline-none">
+                    <option value="">Select city</option><option>Cairo</option><option>Giza</option><option>Alexandria</option>
+                  </select>
+                </label>
+                <label class="flex flex-col gap-1.5 text-sm font-medium text-primaryText">Area
+                  <select name="area" class="rounded-lg border border-gray-300 px-4 py-2.5 text-blackText focus:border-primaryDark focus:outline-none">
+                    <option value="">Select area</option><option>Maadi</option><option>Nasr City</option><option>Zamalek</option><option>New Cairo</option>
+                  </select>
+                </label>
+                <label class="flex flex-col gap-1.5 text-sm font-medium text-primaryText">District
+                  <select name="district" class="rounded-lg border border-gray-300 px-4 py-2.5 text-blackText focus:border-primaryDark focus:outline-none">
+                    <option value="">Select district</option><option>1st District</option><option>5th Settlement</option><option>Degla</option>
+                  </select>
+                </label>
+              </div>
+              <div class="mt-5 grid grid-cols-1 gap-5 md:grid-cols-2">
+                <label class="flex flex-col gap-1.5 text-sm font-medium text-primaryText">Address
+                  <input type="text" name="streetName" placeholder="Street name" class="rounded-lg border border-gray-300 px-4 py-2.5 text-blackText focus:border-primaryDark focus:outline-none" />
+                </label>
+                <label class="flex flex-col gap-1.5 text-sm font-medium text-primaryText">Name this address
+                  <input type="text" name="addressName" placeholder="e.g. Home, Work" class="rounded-lg border border-gray-300 px-4 py-2.5 text-blackText focus:border-primaryDark focus:outline-none" />
+                </label>
+              </div>
+              <div class="mt-5">
+                <span class="mb-2 block text-sm font-medium text-primaryText">Address type *</span>
+                <div class="optrow-group optrow-group--row">
+<label class="optrow">
+  <input type="radio" name="buildingType" value="apartment" checked class="sr-only" />
+  <span class="optrow__radio"></span>
+  <span class="optrow__body"><span class="optrow__title">Apartment</span></span>
+</label>
+<label class="optrow">
+  <input type="radio" name="buildingType" value="villa" class="sr-only" />
+  <span class="optrow__radio"></span>
+  <span class="optrow__body"><span class="optrow__title">Villa</span></span>
+</label>
+</div>
+              </div>
+              <div class="mt-5 grid grid-cols-2 gap-5 md:grid-cols-3">
+                <label class="flex flex-col gap-1.5 text-sm font-medium text-primaryText">Building number
+                  <input type="text" name="buildingNumber" class="rounded-lg border border-gray-300 px-4 py-2.5 text-blackText focus:border-primaryDark focus:outline-none" />
+                </label>
+                <label class="flex flex-col gap-1.5 text-sm font-medium text-primaryText">Floor
+                  <input type="text" name="floor" class="rounded-lg border border-gray-300 px-4 py-2.5 text-blackText focus:border-primaryDark focus:outline-none" />
+                </label>
+                <label class="flex flex-col gap-1.5 text-sm font-medium text-primaryText">Apartment number
+                  <input type="text" name="apartmentNumber" class="rounded-lg border border-gray-300 px-4 py-2.5 text-blackText focus:border-primaryDark focus:outline-none" />
+                </label>
+              </div>
+              <div class="mt-6 flex items-center gap-3">
+                <button type="submit" class="btn btn--primary btn--md">Save address</button>
+                <button type="button" data-toggle-form="add-address-form" class="btn btn--outline btn--md">Cancel</button>
+              </div>
+            </form>
+
+            <!-- Saved address cards -->
+            <ul class="grid grid-cols-1 gap-8 md:grid-cols-2">
+              <!-- Home (default) -->
+              <li>
+                <div class="flex h-full min-h-[250px] flex-col justify-between gap-5 rounded-[20px] border border-gray-300 bg-white px-5 py-6 md:px-8">
+                  <div class="flex items-center justify-between border-b border-gray-300 pb-5">
+                    <div class="flex items-center gap-2 text-primaryColor">
+                      <span class="h-4 w-4 md:h-5 md:w-5"><svg viewBox="0 0 24 24" fill="none" class="w-full"><path d="M3 10.5 12 3l9 7.5M5.5 9v11h13V9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                      <span class="text-lg font-semibold capitalize">Home</span>
+                    </div>
+                    <span class="rounded-full bg-primaryColor/10 px-3 py-1 text-xs font-semibold capitalize text-primaryColor">Default</span>
+                  </div>
+                  <div class="flex flex-col gap-1">
+                    <span class="text-sm font-medium capitalize text-primaryText">Address</span>
+                    <span class="text-sm text-blackText md:text-base">14 Street 9 - Degla, Maadi, Cairo</span>
+                  </div>
+                  <div class="flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex flex-col gap-1"><span class="text-sm font-medium capitalize text-primaryText">Floor</span><span class="text-sm text-blackText md:text-base">3</span></div>
+                    <div class="flex flex-col gap-1"><span class="text-sm font-medium capitalize text-primaryText">Apartment</span><span class="text-sm text-blackText md:text-base">7</span></div>
+                    <div class="flex flex-col gap-1"><span class="text-sm font-medium capitalize text-primaryText">City</span><span class="text-sm text-blackText md:text-base">Cairo</span></div>
+                    <div class="flex flex-col gap-1"><span class="text-sm font-medium capitalize text-primaryText">Area</span><span class="text-sm text-blackText md:text-base">Maadi</span></div>
+                  </div>
+                  <div class="flex items-center justify-between gap-2">
+                    <button type="button" class="btn btn--secondary btn--sm flex items-center gap-2 group">
+                      <svg viewBox="0 0 24 24" fill="none" class="h-4 w-4 md:h-5 md:w-5"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      <span class="text-sm">Edit</span>
+                    </button>
+                  </div>
+                </div>
+              </li>
+              <!-- Work -->
+              <li>
+                <div class="flex h-full min-h-[250px] flex-col justify-between gap-5 rounded-[20px] border border-gray-300 bg-white px-5 py-6 md:px-8">
+                  <div class="flex items-center justify-between border-b border-gray-300 pb-5">
+                    <div class="flex items-center gap-2 text-primaryColor">
+                      <span class="h-4 w-4 md:h-5 md:w-5"><svg viewBox="0 0 24 24" fill="none" class="w-full"><path d="M3 10.5 12 3l9 7.5M5.5 9v11h13V9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                      <span class="text-lg font-semibold capitalize">Work</span>
+                    </div>
+                    <button type="button" class="text-sm font-medium capitalize text-primaryColor hover:underline">Set as default</button>
+                  </div>
+                  <div class="flex flex-col gap-1">
+                    <span class="text-sm font-medium capitalize text-primaryText">Address</span>
+                    <span class="text-sm text-blackText md:text-base">90th Street - 5th Settlement, New Cairo, Cairo</span>
+                  </div>
+                  <div class="flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex flex-col gap-1"><span class="text-sm font-medium capitalize text-primaryText">Floor</span><span class="text-sm text-blackText md:text-base">12</span></div>
+                    <div class="flex flex-col gap-1"><span class="text-sm font-medium capitalize text-primaryText">Apartment</span><span class="text-sm text-blackText md:text-base">1204</span></div>
+                    <div class="flex flex-col gap-1"><span class="text-sm font-medium capitalize text-primaryText">City</span><span class="text-sm text-blackText md:text-base">Cairo</span></div>
+                    <div class="flex flex-col gap-1"><span class="text-sm font-medium capitalize text-primaryText">Area</span><span class="text-sm text-blackText md:text-base">New Cairo</span></div>
+                  </div>
+                  <div class="flex items-center justify-between gap-2">
+                    <button type="button" class="btn btn--secondary btn--sm flex items-center gap-2 group">
+                      <svg viewBox="0 0 24 24" fill="none" class="h-4 w-4 md:h-5 md:w-5"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      <span class="text-sm">Edit</span>
+                    </button>
+                    <button type="button" class="font-medium text-[#D83434] underline">Delete</button>
+                  </div>
+                </div>
+              </li>
+              <!-- Family house (villa) -->
+              <li>
+                <div class="flex h-full min-h-[250px] flex-col justify-between gap-5 rounded-[20px] border border-gray-300 bg-white px-5 py-6 md:px-8">
+                  <div class="flex items-center justify-between border-b border-gray-300 pb-5">
+                    <div class="flex items-center gap-2 text-primaryColor">
+                      <span class="h-4 w-4 md:h-5 md:w-5"><svg viewBox="0 0 24 24" fill="none" class="w-full"><path d="M3 10.5 12 3l9 7.5M5.5 9v11h13V9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                      <span class="text-lg font-semibold capitalize">Family house</span>
+                    </div>
+                    <button type="button" class="text-sm font-medium capitalize text-primaryColor hover:underline">Set as default</button>
+                  </div>
+                  <div class="flex flex-col gap-1">
+                    <span class="text-sm font-medium capitalize text-primaryText">Address</span>
+                    <span class="text-sm text-blackText md:text-base">7 El Nozha Street - Sheikh Zayed, 6th of October, Giza</span>
+                  </div>
+                  <div class="flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex flex-col gap-1"><span class="text-sm font-medium capitalize text-primaryText">Villa</span><span class="text-sm text-blackText md:text-base">Villa 22</span></div>
+                    <div class="flex flex-col gap-1"><span class="text-sm font-medium capitalize text-primaryText">City</span><span class="text-sm text-blackText md:text-base">Giza</span></div>
+                    <div class="flex flex-col gap-1"><span class="text-sm font-medium capitalize text-primaryText">Area</span><span class="text-sm text-blackText md:text-base">Sheikh Zayed</span></div>
+                  </div>
+                  <div class="flex items-center justify-between gap-2">
+                    <button type="button" class="btn btn--secondary btn--sm flex items-center gap-2 group">
+                      <svg viewBox="0 0 24 24" fill="none" class="h-4 w-4 md:h-5 md:w-5"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      <span class="text-sm">Edit</span>
+                    </button>
+                    <button type="button" class="font-medium text-[#D83434] underline">Delete</button>
+                  </div>
+                </div>
+              </li>
+            </ul>
+            <!-- Empty state (when the customer has no saved addresses):
+                 "You have no saved addresses yet" + an "Add new address" button. -->
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Shared footer is injected here by scripts.js -->
+    <div id="site-footer"></div>
+
+    <!-- Toggle the inline add-address form -->
+    <script>
+      (function () {
+        document.querySelectorAll("[data-toggle-form]").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            var form = document.getElementById(btn.getAttribute("data-toggle-form"));
+            if (!form) return;
+            form.classList.toggle("hidden");
+            if (!form.classList.contains("hidden")) {
+              form.scrollIntoView({ behavior: "smooth", block: "center" });
+            }
+          });
+        });
+      })();
+    </script>
+  </body>
+</html>

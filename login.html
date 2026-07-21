@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Login — Exception</title>
+    <meta
+      name="description"
+      content="Sign in to your Exception account to track orders, save favourites and check out faster."
+    />
+    <!-- Tailwind (Play CDN) + faithful port of the project's tailwind.config.ts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="tw-config.js"></script>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <script defer src="scripts.js"></script>
+  </head>
+  <body data-page="login" data-path="/login" class="antialiased bg-white">
+    <!-- Shared header is injected here by scripts.js -->
+    <div id="site-header"></div>
+
+    <main class="overflow-x-hidden">
+      <!-- ============================ AUTH: LOGIN ============================ -->
+      <!-- Mirrors src/app/[locale]/login/page.tsx: 2-col split — promo card (left) + login card (right). -->
+      <div class="py-10 md:py-24">
+        <div class="container mx-auto px-4">
+          <div class="lg:grid gap-7 flex flex-col-reverse lg:grid-cols-2">
+            <!-- ── Create-account promo card (CreateAccountCard) ── -->
+            <div class="order-2 rounded-xl bg-white p-6 md:order-1 border border-gray-300 md:px-8 md:py-9">
+              <div class="flex h-full flex-col items-center justify-stretch gap-5">
+                <div class="flex h-full flex-col items-center justify-stretch gap-5 text-center">
+                  <h1 class="w-full text-2xl font-medium text-textSecondary">Create Account</h1>
+                  <div class="m-auto flex flex-col items-center justify-center gap-5 pb-9">
+                    <img src="images/icons/Create%20Account.webp" alt="Create an account" width="246" height="246" class="w-[246px] h-[246px] object-contain" />
+                    <p class="text-lg text-gray-700">Create an account to enjoy faster checkout, order tracking, loyalty points and your favourite sweets saved for next time.</p>
+                  </div>
+                  <a href="register.html" class="btn btn--outline btn--md md:w-full justify-center">
+                    <span>Create Account</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- ── Login card (LoginContainer) ── -->
+            <div class="order-1">
+              <div class="rounded-[20px] bg-white px-5 py-6 border border-gray-300 md:px-8 flex flex-col justify-stretch items-center gap-5">
+                <h2 class="pb-5 border-primaryLight border-b w-full font-medium text-textSecondary text-2xl text-center">Login</h2>
+
+                <!-- Demo form: prevented + toasts on submit (see scripts.js data-demo-form) -->
+                <form data-demo-form="Signed in successfully" data-redirect="my-account.html" class="flex w-full flex-col gap-y-6 py-5">
+                  <div class="flex flex-col gap-y-2">
+                    <label for="email-login" class="after:ps-1 text-gray-700 after:content-['*']">Email or phone</label>
+                    <input
+                      type="text"
+                      id="email-login"
+                      name="email"
+                      placeholder="you@example.com or +20 10 1234 5678"
+                      class="h-11 px-2.5 py-4 border border-primaryText focus:border-primary-400 rounded-md text-textSecondary transition-colors text-sm font-medium outline-none"
+                    />
+                  </div>
+
+                  <div class="flex flex-col gap-2">
+                    <label for="password-login" class="after:ps-1 after:content-['*'] text-gray-700 font-medium">Password</label>
+                    <div class="relative">
+                      <input
+                        type="password"
+                        id="password-login"
+                        name="password"
+                        class="h-11 w-full rounded-md border border-primaryText focus:border-primary-400 px-2.5 py-4 font-medium text-gray-700 outline-none transition-colors"
+                      />
+                      <button type="button" data-password-toggle class="absolute end-[13px] top-1/2 -translate-y-1/2 inline-flex text-primaryText" aria-label="Show password">
+                        <svg viewBox="0 0 24 24" fill="none" class="w-6 h-6"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/></svg>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="flex items-center justify-between gap-4">
+                    <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer select-none">
+                      <input type="checkbox" name="remember" />
+                      Remember me
+                    </label>
+                    <a href="forget-password.html" class="text-sm text-primaryDark underline">Forgot password?</a>
+                  </div>
+
+                  <div class="flex flex-col items-center gap-5">
+                    <button type="submit" class="btn btn--black btn--md w-full justify-center focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primaryDark">Login</button>
+                  </div>
+                </form>
+
+                <!-- OR divider + social providers (AuthProviders) -->
+                <div class="flex flex-col items-center gap-4 w-full">
+                  <div class="flex flex-row justify-center items-center gap-4 w-full h-[22px]">
+                    <div class="flex-grow h-0 border-t border-gray-300"></div>
+                    <span class="font-medium text-base leading-[140%] text-dividerText">OR</span>
+                    <div class="flex-grow h-0 border-t border-gray-300"></div>
+                  </div>
+                  <div class="gap-5 grid grid-cols-2 pt-5 w-full">
+                    <button type="button" class="flex w-full items-center justify-center gap-2 xl:gap-2.5 rounded-[10px] border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-[#3c4043] transition-colors hover:bg-gray-50 xl:h-[52px]" onclick="window.kToast &amp;&amp; window.kToast('Continue with Google (demo)')">
+                      <svg width="23" height="23" viewBox="0 0 23 23" fill="none" aria-hidden="true" class="shrink-0"><path d="M21.004 11.6266C21.004 10.9246 20.941 10.2496 20.824 9.60156H11.5V13.4356H16.828C16.594 14.6686 15.892 15.7126 14.839 16.4146V18.9076H18.052C19.924 17.1796 21.004 14.6416 21.004 11.6266Z" fill="#4285F4"/><path d="M11.4996 21.303C14.1726 21.303 16.4136 20.421 18.0516 18.909L14.8386 16.416C13.9566 17.01 12.8316 17.37 11.4996 17.37C8.92562 17.37 6.73862 15.633 5.95562 13.293H2.66162V15.849C4.29062 19.08 7.62962 21.303 11.4996 21.303Z" fill="#34A853"/><path d="M5.9561 13.2828C5.7581 12.6888 5.6411 12.0588 5.6411 11.4018C5.6411 10.7448 5.7581 10.1148 5.9561 9.52084V6.96484H2.6621C1.9871 8.29684 1.6001 9.79984 1.6001 11.4018C1.6001 13.0038 1.9871 14.5068 2.6621 15.8388L5.2271 13.8408L5.9561 13.2828Z" fill="#FBBC05"/><path d="M11.4996 5.442C12.9576 5.442 14.2536 5.946 15.2886 6.918L18.1236 4.083C16.4046 2.481 14.1726 1.5 11.4996 1.5C7.62962 1.5 4.29062 3.723 2.66162 6.963L5.95562 9.519C6.73862 7.179 8.92562 5.442 11.4996 5.442Z" fill="#EA4335"/></svg>
+                      <span class="hidden md:block">Sign in with Google</span>
+                      <span class="md:hidden">Google</span>
+                    </button>
+                    <button type="button" class="flex w-full items-center justify-center gap-2 xl:gap-2.5 rounded-[10px] bg-black px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-neutral-800 xl:h-[52px]" onclick="window.kToast &amp;&amp; window.kToast('Continue with Apple (demo)')">
+                      <svg viewBox="0 0 24 24" class="w-5 h-5 shrink-0" fill="currentColor" aria-hidden="true"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11Z"/></svg>
+                      <span class="hidden md:block">Sign in with Apple</span>
+                      <span class="md:hidden">Apple</span>
+                    </button>
+                  </div>
+                  <p class="pt-2 text-sm text-primaryText text-center">
+                    New here?
+                    <a href="register.html" class="pb-1 border-primaryColor border-b font-medium text-primaryColor">Create an account</a>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Shared footer is injected here by scripts.js -->
+    <div id="site-footer"></div>
+
+    <!-- Page-only enhancement: password show/hide toggles -->
+    <script>
+      document.querySelectorAll("[data-password-toggle]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var input = btn.parentElement.querySelector("input");
+          if (!input) return;
+          var toText = input.type === "password";
+          input.type = toText ? "text" : "password";
+          btn.setAttribute("aria-label", toText ? "Hide password" : "Show password");
+          btn.classList.toggle("text-primaryDark", toText);
+        });
+      });
+    </script>
+  </body>
+</html>

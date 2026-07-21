@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>My Account — Exception</title>
+    <meta
+      name="description"
+      content="Your Exception account dashboard — loyalty points, wallet balance, recent orders and profile at a glance."
+    />
+    <!-- Tailwind (Play CDN) + faithful port of the project's tailwind.config.ts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="tw-config.js"></script>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <script defer src="scripts.js"></script>
+  </head>
+  <body data-page="account" data-path="/my-account" class="antialiased bg-white">
+    <!-- Shared header is injected here by scripts.js -->
+    <div id="site-header"></div>
+
+    <main class="overflow-x-clip bg-gray-100">
+      <!-- Account shell: two-column grid (sidebar + content). Mirrors src/app/[locale]/my-account/layout.tsx -->
+      <div class="flex lg:flex-row flex-col items-start gap-7 md:gap-10 mx-auto px-4 py-10 md:py-16 max-w-[1392px]">
+
+        <!-- ============================ MOBILE ACCOUNT NAV (pills) ============================ -->
+        <div class="flex flex-col gap-4 w-full lg:hidden">
+          <div class="flex items-end justify-between w-full">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-full bg-primary-light text-primaryDark flex items-center justify-center font-semibold text-lg shrink-0">MH</div>
+              <div class="flex flex-col gap-1">
+                <span data-tier-badge></span>
+                <h3 class="font-semibold text-primaryDark text-[22px] leading-tight truncate">Mariam Hassan</h3>
+              </div>
+            </div>
+            <a href="login.html" class="shrink-0 text-sm font-medium text-gray-600 hover:underline">Log out</a>
+          </div>
+          <div class="w-full border-b border-primary/20"></div>
+          <div class="w-full overflow-x-auto no-scrollbar">
+            <div class="flex items-center gap-2 min-w-max pb-2">
+              <a href="my-account.html" class="flex items-center gap-2.5 px-4 py-2.5 h-[52px] rounded-lg whitespace-nowrap bg-primary-light text-primaryDark"><span class="w-5 h-5 flex items-center justify-center"><img src="images/icons/account%20icons/overview.webp" alt="Dashboard" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-base">Dashboard</span></a>
+              <a href="my-account-profile.html" class="flex items-center gap-2.5 px-4 py-2.5 h-[52px] rounded-lg whitespace-nowrap border border-[#CFD3D8] text-gray-700"><span class="w-5 h-5 flex items-center justify-center"><img src="images/icons/account%20icons/preparing.webp" alt="Profile" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-base">Profile</span></a>
+              <a href="my-account-orders.html" class="flex items-center gap-2.5 px-4 py-2.5 h-[52px] rounded-lg whitespace-nowrap border border-[#CFD3D8] text-gray-700"><span class="w-5 h-5 flex items-center justify-center"><img src="images/icons/account%20icons/preparing-1.webp" alt="Orders" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-base">Orders</span></a>
+              <a href="my-account-addresses.html" class="flex items-center gap-2.5 px-4 py-2.5 h-[52px] rounded-lg whitespace-nowrap border border-[#CFD3D8] text-gray-700"><span class="w-5 h-5 flex items-center justify-center"><img src="images/icons/account%20icons/preparing-2.webp" alt="Addresses" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-base">Addresses</span></a>
+              <a href="my-account-favorites.html" class="flex items-center gap-2.5 px-4 py-2.5 h-[52px] rounded-lg whitespace-nowrap border border-[#CFD3D8] text-gray-700"><span class="w-5 h-5 flex items-center justify-center"><img src="images/icons/account%20icons/preparing-3.webp" alt="Favorites" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-base">Favorites</span></a>
+              <a href="my-account-wallet.html" class="flex items-center gap-2.5 px-4 py-2.5 h-[52px] rounded-lg whitespace-nowrap border border-[#CFD3D8] text-gray-700"><span class="w-5 h-5 flex items-center justify-center"><img src="images/icons/account%20icons/wallet.webp" alt="Wallet" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-base">Wallet</span></a>
+                <a href="my-account-vouchers.html" class="flex items-center gap-2.5 px-4 py-2.5 h-[52px] rounded-lg whitespace-nowrap border border-[#CFD3D8] text-gray-700"><span class="w-5 h-5 flex items-center justify-center"><img src="images/icons/account%20icons/voucher.webp" alt="Vouchers" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-base">Vouchers</span></a>
+              <a href="my-account-point.html" class="flex items-center gap-2.5 px-4 py-2.5 h-[52px] rounded-lg whitespace-nowrap border border-[#CFD3D8] text-gray-700"><span class="w-5 h-5 flex items-center justify-center"><img src="images/icons/account%20icons/Points.webp" alt="Points" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-base">Points</span></a>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============================ DESKTOP ACCOUNT SIDEBAR ============================ -->
+        <aside class="hidden lg:block w-full lg:w-[25%] shrink-0 min-h-[520px] lg:self-stretch">
+          <div class="rounded-2xl border border-gray-300 bg-white shadow-custom4 overflow-hidden lg:sticky lg:top-[99px] lg:max-h-[calc(100vh-115px)] lg:overflow-y-auto">
+            <div class="flex flex-col gap-4 p-6 border-b border-gray-300">
+              <div class="flex items-center gap-3">
+                <div class="w-14 h-14 rounded-full bg-primary-light text-primaryDark flex items-center justify-center font-semibold text-xl shrink-0">MH</div>
+                <div class="flex flex-col gap-1.5">
+                  <span data-tier-badge></span>
+                  <h3 class="text-primaryDark font-medium text-2xl leading-tight">Mariam Hassan</h3>
+                </div>
+              </div>
+            </div>
+            <nav class="p-4">
+              <ul class="space-y-1.5">
+                <li><a href="my-account.html" class="flex items-center gap-3 rounded-lg px-4 py-2.5 xl:px-6 transition-all duration-200 bg-primary-light text-primaryDark"><span class="inline-flex w-6 text-primaryDark"><img src="images/icons/account%20icons/overview.webp" alt="Dashboard" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Dashboard</span></a></li>
+                <li><a href="my-account-profile.html" class="flex items-center gap-3 rounded-lg px-4 py-2.5 xl:px-6 transition-all duration-200 hover:bg-primary-light text-gray-700"><span class="inline-flex w-6 text-gray-700"><img src="images/icons/account%20icons/preparing.webp" alt="Profile" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Profile</span></a></li>
+                <li><a href="my-account-orders.html" class="flex items-center gap-3 rounded-lg px-4 py-2.5 xl:px-6 transition-all duration-200 hover:bg-primary-light text-gray-700"><span class="inline-flex w-6 text-gray-700"><img src="images/icons/account%20icons/preparing-1.webp" alt="Orders" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Orders</span></a></li>
+                <li><a href="my-account-addresses.html" class="flex items-center gap-3 rounded-lg px-4 py-2.5 xl:px-6 transition-all duration-200 hover:bg-primary-light text-gray-700"><span class="inline-flex w-6 text-gray-700"><img src="images/icons/account%20icons/preparing-2.webp" alt="Addresses" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Addresses</span></a></li>
+                <li><a href="my-account-favorites.html" class="flex items-center gap-3 rounded-lg px-4 py-2.5 xl:px-6 transition-all duration-200 hover:bg-primary-light text-gray-700"><span class="inline-flex w-6 text-gray-700"><img src="images/icons/account%20icons/preparing-3.webp" alt="Favorites" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Favorites</span></a></li>
+                <li><a href="my-account-wallet.html" class="flex items-center gap-3 rounded-lg px-4 py-2.5 xl:px-6 transition-all duration-200 hover:bg-primary-light text-gray-700"><span class="inline-flex w-6 text-gray-700"><img src="images/icons/account%20icons/wallet.webp" alt="Wallet" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Wallet</span></a></li>
+              <li><a href="my-account-vouchers.html" class="flex items-center gap-3 rounded-lg px-4 py-2.5 xl:px-6 transition-all duration-200 hover:bg-primary-light text-gray-700"><span class="inline-flex w-6 text-gray-700"><img src="images/icons/account%20icons/voucher.webp" alt="Vouchers" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Vouchers</span></a></li>
+                <li><a href="my-account-point.html" class="flex items-center gap-3 rounded-lg px-4 py-2.5 xl:px-6 transition-all duration-200 hover:bg-primary-light text-gray-700"><span class="inline-flex w-6 text-gray-700"><img src="images/icons/account%20icons/Points.webp" alt="Points" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Points</span></a></li>
+              </ul>
+              <div class="my-4 border-t border-gray-300"></div>
+              <div class="px-2 pb-2">
+                <h4 class="mb-3 font-semibold text-neutral-support-bg md:text-lg">Need Help?</h4>
+                <ul class="flex flex-col gap-3">
+                  <li><a href="faqs.html" class="font-medium text-primaryColor text-sm md:text-base hover:underline">FAQs</a></li>
+                  <li><a href="contact-us.html" class="font-medium text-primaryColor text-sm md:text-base hover:underline">Contact us</a></li>
+                </ul>
+                <a href="login.html" class="inline-flex items-center gap-2 pt-4 font-medium text-gray-700 text-sm hover:underline">
+                  <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  Log out
+                </a>
+              </div>
+            </nav>
+          </div>
+        </aside>
+
+        <!-- ============================ ACCOUNT CONTENT ============================ -->
+        <div class="w-full lg:w-[calc(75%-36px)]">
+          <!-- Breadcrumbs -->
+          <nav class="mb-6 flex items-center gap-2 text-sm text-gray-700" aria-label="Breadcrumb">
+            <a href="index.html" class="hover:text-primaryDark">Home</a>
+            <span class="text-gray-400">/</span>
+            <span class="text-primaryDark font-medium">My Account</span>
+          </nav>
+
+          <div class="flex flex-col gap-7 md:gap-10">
+            <!-- Greeting + page header -->
+            <div class="flex flex-wrap items-center justify-between gap-4">
+              <div>
+                <h1 class="text-2xl md:text-[32px] font-semibold text-textSecondary">Welcome Back, Mariam</h1>
+                <p class="pt-1 text-sm text-gray-700 md:text-base">Here's what's happening with your Exception account.</p>
+              </div>
+              <div class="flex gap-2">
+                <span class="h-12 w-12 md:h-16 md:w-16 shrink-0"><img src="images/icons/account%20icons/wallet.webp" alt="wallet" width="64" height="64" class="w-full h-full object-contain" /></span>
+                <div class="flex flex-col gap-1 text-start">
+                  <span class="text-textSecondary font-normal md:text-[18px]">Wallet balance</span>
+                  <span class="text-lg font-semibold text-success xl:text-[28px]" dir="ltr">EGP 350.00</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick stats -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-5">
+              <div class="flex items-center gap-4 rounded-[11.4px] border border-gray-300 bg-white p-5">
+                <span class="h-12 w-12 shrink-0"><img src="images/icons/account%20icons/Points.webp" alt="points" width="48" height="48" class="w-full h-full object-contain" /></span>
+                <div class="flex flex-col">
+                  <span class="text-sm text-gray-700">Loyalty points</span>
+                  <span class="text-2xl font-semibold text-textSecondary">1,250 <span class="text-sm font-medium text-gray-700">pts</span></span>
+                </div>
+              </div>
+              <div class="flex items-center gap-4 rounded-[11.4px] border border-gray-300 bg-white p-5">
+                <span class="h-12 w-12 shrink-0"><img src="images/icons/account%20icons/wallet.webp" alt="wallet" width="48" height="48" class="w-full h-full object-contain" /></span>
+                <div class="flex flex-col">
+                  <span class="text-sm text-gray-700">Wallet balance</span>
+                  <span class="text-2xl font-semibold text-success" dir="ltr">EGP 350<span class="text-sm">.00</span></span>
+                </div>
+              </div>
+              <div class="flex items-center gap-4 rounded-[11.4px] border border-gray-300 bg-white p-5">
+                <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary-light text-primaryDark">
+                  <svg viewBox="0 0 24 24" fill="none" class="w-6 h-6"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4H6ZM3 6h18M16 10a4 4 0 0 1-8 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+                <div class="flex flex-col">
+                  <span class="text-sm text-gray-700">Total orders</span>
+                  <span class="text-2xl font-semibold text-textSecondary">12</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Recent orders preview -->
+            <section class="w-full rounded-[11.4px] border border-gray-300 bg-white py-6 px-4 md:px-8 md:py-6">
+              <div class="mb-6 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="text-textSecondary"><path d="M8.5 10C7.67 10 7 10.67 7 11.5S7.67 13 8.5 13 10 12.33 10 11.5 9.33 10 8.5 10Zm0 0V5.5c0-.46 0-.7.03-.89A2 2 0 0 1 11.1 2.03C11.3 2 11.54 2 12 2s.7 0 .89.03a2 2 0 0 1 1.58 1.58c.03.19.03.43.03.89V10m0 0c-.83 0-1.5.67-1.5 1.5S14.67 13 15.5 13 17 12.33 17 11.5 16.33 10 15.5 10ZM13 22h-2c-2.8 0-4.2 0-5.27-.55a5 5 0 0 1-2.18-2.18C3 18.2 3 16.8 3 14s0-4.2.55-5.27a5 5 0 0 1 2.18-2.18C6.8 6 8.2 6 11 6h2c2.8 0 4.2 0 5.27.55a5 5 0 0 1 2.18 2.18C21 9.8 21 11.2 21 14s0 4.2-.55 5.27a5 5 0 0 1-2.18 2.18C17.2 22 15.8 22 13 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <h3 class="text-lg font-medium text-textSecondary">Latest Orders</h3>
+                </div>
+                <a href="my-account-orders.html" class="group flex items-center gap-2 text-primary hover:text-accent-600">
+                  <span class="text-base font-normal">View all</span>
+                  <svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+              </div>
+
+              <!-- desktop table header -->
+              <div class="mb-5 hidden grid-cols-12 gap-4 border-b border-primary/20 pb-2 md:grid">
+                <div class="col-span-3 text-base font-bold text-textSecondary">Order #</div>
+                <div class="col-span-3 text-base font-bold text-textSecondary">Date</div>
+                <div class="col-span-3 text-base font-bold text-textSecondary">Status</div>
+                <div class="col-span-3 text-base font-bold text-textSecondary">Total</div>
+              </div>
+
+              <div class="flex flex-col gap-6">
+                <!-- Order rows: mobile (stacked) + desktop (grid) -->
+                <div>
+                  <div class="flex flex-row items-center justify-between border-b border-gray-100 py-4 last:border-0 md:hidden">
+                    <span class="text-sm font-medium text-[#182325]">#100234</span>
+                    <div class="flex flex-col items-center justify-center gap-1.5">
+                      <span class="inline-flex items-center justify-center rounded-md px-2.5 py-[2px] text-sm font-medium bg-success text-white">Delivered</span>
+                      <span class="text-sm font-medium text-gray-700">July 6, 2025</span>
+                      <span class="text-sm font-medium text-gray-700" dir="ltr">EGP 890</span>
+                    </div>
+                    <a href="my-account-order.html" class="flex items-center text-primary"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                  </div>
+                  <div class="hidden grid-cols-12 items-center gap-4 md:grid">
+                    <div class="col-span-3"><span class="text-sm font-medium text-textSecondary">#100234</span></div>
+                    <div class="col-span-3"><span class="text-sm font-medium text-gray-700">July 6, 2025</span></div>
+                    <div class="col-span-3"><span class="inline-flex items-center justify-center rounded-md px-2.5 py-[2px] text-sm font-medium bg-success text-white">Delivered</span></div>
+                    <div class="col-span-3 flex items-center justify-between">
+                      <span class="text-sm font-medium text-gray-700" dir="ltr">EGP 890</span>
+                      <a href="my-account-order.html" class="flex items-center text-primaryDark"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div class="flex flex-row items-center justify-between border-b border-gray-100 py-4 last:border-0 md:hidden">
+                    <span class="text-sm font-medium text-[#182325]">#100221</span>
+                    <div class="flex flex-col items-center justify-center gap-1.5">
+                      <span class="inline-flex items-center justify-center rounded-md px-2.5 py-[2px] text-sm font-medium bg-accent-50 text-accent-600">Processing</span>
+                      <span class="text-sm font-medium text-gray-700">June 28, 2025</span>
+                      <span class="text-sm font-medium text-gray-700" dir="ltr">EGP 1,240</span>
+                    </div>
+                    <a href="my-account-order.html" class="flex items-center text-primary"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                  </div>
+                  <div class="hidden grid-cols-12 items-center gap-4 md:grid">
+                    <div class="col-span-3"><span class="text-sm font-medium text-textSecondary">#100221</span></div>
+                    <div class="col-span-3"><span class="text-sm font-medium text-gray-700">June 28, 2025</span></div>
+                    <div class="col-span-3"><span class="inline-flex items-center justify-center rounded-md px-2.5 py-[2px] text-sm font-medium bg-accent-50 text-accent-600">Processing</span></div>
+                    <div class="col-span-3 flex items-center justify-between">
+                      <span class="text-sm font-medium text-gray-700" dir="ltr">EGP 1,240</span>
+                      <a href="my-account-order.html" class="flex items-center text-primaryDark"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div class="flex flex-row items-center justify-between border-b border-gray-100 py-4 last:border-0 md:hidden">
+                    <span class="text-sm font-medium text-[#182325]">#100205</span>
+                    <div class="flex flex-col items-center justify-center gap-1.5">
+                      <span class="inline-flex items-center justify-center rounded-md px-2.5 py-[2px] text-sm font-medium bg-success text-white">Delivered</span>
+                      <span class="text-sm font-medium text-gray-700">June 15, 2025</span>
+                      <span class="text-sm font-medium text-gray-700" dir="ltr">EGP 560</span>
+                    </div>
+                    <a href="my-account-order.html" class="flex items-center text-primary"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                  </div>
+                  <div class="hidden grid-cols-12 items-center gap-4 md:grid">
+                    <div class="col-span-3"><span class="text-sm font-medium text-textSecondary">#100205</span></div>
+                    <div class="col-span-3"><span class="text-sm font-medium text-gray-700">June 15, 2025</span></div>
+                    <div class="col-span-3"><span class="inline-flex items-center justify-center rounded-md px-2.5 py-[2px] text-sm font-medium bg-success text-white">Delivered</span></div>
+                    <div class="col-span-3 flex items-center justify-between">
+                      <span class="text-sm font-medium text-gray-700" dir="ltr">EGP 560</span>
+                      <a href="my-account-order.html" class="flex items-center text-primaryDark"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div class="flex flex-row items-center justify-between border-b border-gray-100 py-4 last:border-0 md:hidden">
+                    <span class="text-sm font-medium text-[#182325]">#100198</span>
+                    <div class="flex flex-col items-center justify-center gap-1.5">
+                      <span class="inline-flex items-center justify-center rounded-md px-2.5 py-[2px] text-sm font-medium bg-accent-error text-white">Cancelled</span>
+                      <span class="text-sm font-medium text-gray-700">June 2, 2025</span>
+                      <span class="text-sm font-medium text-gray-700" dir="ltr">EGP 430</span>
+                    </div>
+                    <a href="my-account-order.html" class="flex items-center text-primary"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                  </div>
+                  <div class="hidden grid-cols-12 items-center gap-4 md:grid">
+                    <div class="col-span-3"><span class="text-sm font-medium text-textSecondary">#100198</span></div>
+                    <div class="col-span-3"><span class="text-sm font-medium text-gray-700">June 2, 2025</span></div>
+                    <div class="col-span-3"><span class="inline-flex items-center justify-center rounded-md px-2.5 py-[2px] text-sm font-medium bg-accent-error text-white">Cancelled</span></div>
+                    <div class="col-span-3 flex items-center justify-between">
+                      <span class="text-sm font-medium text-gray-700" dir="ltr">EGP 430</span>
+                      <a href="my-account-order.html" class="flex items-center text-primaryDark"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- My info -->
+            <section>
+              <h3 class="mb-4 text-2xl font-semibold text-textSecondary">My Information</h3>
+              <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+                <!-- Profile info card -->
+                <div class="flex flex-col gap-5 rounded-[12px] border border-gray-300 bg-white p-6 shadow-custom4">
+                  <div class="flex items-center justify-between border-b border-beige-500 pb-5">
+                    <div class="flex items-center gap-2 text-primaryDark">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M15.5 6.5C15.5 8.43 13.93 10 12 10S8.5 8.43 8.5 6.5 10.07 3 12 3s3.5 1.57 3.5 3.5Z" stroke="#182325" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 17.5C3 15.57 4.57 14 6.5 14h11c1.93 0 3.5 1.57 3.5 3.5S19.43 21 17.5 21h-11C4.57 21 3 19.43 3 17.5Z" stroke="#182325" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      <span class="font-semibold md:text-[18px] text-textSecondary">My profile</span>
+                    </div>
+                    <a href="my-account-profile.html" class="inline-flex items-center gap-1.5 text-sm font-medium text-primaryDark hover:underline">
+                      Edit
+                      <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                  </div>
+                  <div class="flex flex-col gap-1">
+                    <span class="text-sm md:text-base font-medium text-textSecondary">Mariam Hassan</span>
+                    <span class="text-sm md:text-base font-medium text-textSecondary">mariam.hassan@example.com</span>
+                    <span class="text-sm md:text-base font-medium text-textSecondary" dir="ltr">+20 100 123 4567</span>
+                  </div>
+                </div>
+                <!-- Main address card -->
+                <div class="flex flex-col gap-5 rounded-[12px] border border-gray-300 bg-white p-6 shadow-custom4">
+                  <div class="flex items-center justify-between border-b border-beige-500 pb-5">
+                    <div class="flex items-center gap-2 text-primaryExtraDark">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M17.66 16.66c-.94.93-2.9 2.9-4.24 4.24a1.99 1.99 0 0 1-2.83 0c-1.33-1.33-3.25-3.24-4.25-4.24a8 8 0 1 1 11.32 0Z" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 11a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      <span class="font-semibold md:text-[18px] text-textSecondary">Main address</span>
+                    </div>
+                    <a href="my-account-addresses.html" class="inline-flex items-center gap-1.5 text-sm font-medium text-primaryDark hover:underline">
+                      Edit
+                      <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </a>
+                  </div>
+                  <h4 class="text-sm md:text-[18px] font-medium text-textSecondary">18 El Nozha Street, Egypt, Cairo</h4>
+                  <div class="flex gap-6">
+                    <div class="flex flex-col gap-1">
+                      <span class="text-sm text-gray-700 md:text-base">Floor</span>
+                      <span class="text-sm md:text-[18px] font-medium text-textSecondary">3</span>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <span class="text-sm text-gray-700 md:text-base">Apartment</span>
+                      <span class="text-sm md:text-[18px] font-medium text-textSecondary">12</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Shared footer is injected here by scripts.js -->
+    <div id="site-footer"></div>
+  </body>
+</html>
