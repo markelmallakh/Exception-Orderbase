@@ -224,7 +224,10 @@ select {
   content: "";
   width: 22px;
   height: 22px;
-  background-image: url("images/icons/check@2x.svg");
+  /* Inlined tick — the old check@2x.svg was removed with the competitor
+     assets and left this bullet blank. A data URI keeps it self-contained
+     so there is no file to go missing again. */
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12.5l5.5 5.5L20 6.5'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-size: 15px;
   background-position: center;
