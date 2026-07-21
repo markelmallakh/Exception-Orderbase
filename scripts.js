@@ -226,6 +226,13 @@
     menu: '<svg width="31" height="30" viewBox="0 0 31 30" fill="none"><path d="M21 6 9 6M21 12 3 12M15 18H3" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     bars: '<svg viewBox="0 0 24 24" fill="none" class="w-6 h-6"><path d="M20 7H8M20 12H4M20 17H10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     bag: '<svg viewBox="0 0 24 24" fill="none" class="w-6 h-6"><path d="M6.5 8h11l-.7 10.4a1.6 1.6 0 0 1-1.6 1.5H8.8a1.6 1.6 0 0 1-1.6-1.5L6.5 8Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 8.5V7a3 3 0 0 1 6 0v1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+    /* Empty-cart glyph for the count badge. Sized in % (not a fixed px
+       class) so the one markup fits every badge it's dropped into —
+       22px desktop/floating and 16px mobile — and inherits the badge's
+       white via currentColor. Heavier stroke than ICON.bag: at ~13px the
+       1.6 weight of the full-size icon renders too faint to read. */
+    bagBadge:
+      '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true" class="w-3/5 h-3/5"><path d="M6.5 8h11l-.7 10.4a1.6 1.6 0 0 1-1.6 1.5H8.8a1.6 1.6 0 0 1-1.6-1.5L6.5 8Z" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M9 8.5V7a3 3 0 0 1 6 0v1.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>',
     close2: '<svg viewBox="0 0 24 24" fill="none" class="w-6 h-6"><path d="M18 6 6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     close:
       '<svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M18 6 6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
@@ -345,7 +352,7 @@
       <div class="hidden md:block">
         ${
           checkout
-            ? `<div class="relative z-40 bg-[linear-gradient(180deg,#E7FFFC_0%,rgba(255,255,255,0)_100%)] border-t-[4px] lg:!border-t-[10px] border-primaryDark py-[22px]">
+            ? `<div class="relative z-40 bg-white shadow-header border-t-[4px] lg:!border-t-[10px] border-primaryDark py-[22px]">
                  <div class="mx-auto flex max-w-[1392px] items-center justify-center relative px-4 2xl:px-0">
                    <a href="index.html" aria-label="Exception home">${logoMark(true, 44)}</a>
                    <div class="absolute end-4 2xl:end-0">${langSelector}</div>
@@ -353,9 +360,10 @@
                </div>`
             : `<div class="relative z-40 bg-primary-200">
                  <div class="mx-auto flex items-center justify-between gap-4 max-w-[1512px] px-6 lg:px-[60px] py-[20px]">
-                   <!-- Left: pages menu + Go To location -->
+                   <!-- Left: pages menu + search + Go To location -->
                    <div class="flex flex-1 items-center gap-2 min-w-0">
                      ${pagesMenu}
+                     <button type="button" data-open="search" aria-label="Search" class="grid place-items-center shrink-0 rounded-[4px] size-[34px] text-primaryDark border border-primaryDark shadow-custom-5 hover:bg-primaryDark/5 transition-colors"><img src="images/icons/search-icon.svg" alt="" width="18" height="18" /></button>
                      <div class="relative min-w-0" data-locmenu>
                        <button type="button" data-loc-toggle class="relative flex items-center gap-1.5 bg-[#E7FFFC]/80 rounded-[5px] px-2.5 h-[34px] text-primaryDark min-w-0">
                          <span class="absolute -top-2 start-2 -rotate-[4deg] bg-cta text-white text-[11px] leading-none px-1.5 py-0.5 rounded-[4px]">Go To</span>
@@ -380,12 +388,10 @@
                    </div>
                    <!-- Center: logo -->
                    <a href="index.html" aria-label="Exception home" class="shrink-0">${logoMark(true, 52)}</a>
-                   <!-- Right: language · search · account · phone + cart -->
+                   <!-- Right: language · account · phone + cart (search moved to the left group) -->
                    <div class="flex flex-1 items-center justify-end gap-4 min-w-0 dir-ltr">
                      <div class="flex items-center gap-3.5 px-1.5">
                        ${langSelector}
-                       <span class="w-px h-[26px] bg-primaryDark/25"></span>
-                       <button type="button" data-open="search" aria-label="Search" class="grid place-items-center shrink-0 hover:opacity-70 transition-opacity"><img src="images/icons/search-icon.svg" alt="" width="18" height="18" /></button>
                        <span class="w-px h-[26px] bg-primaryDark/25"></span>
                        <a href="login.html" aria-label="Account" class="grid place-items-center shrink-0 hover:opacity-70 transition-opacity"><img src="images/icons/user-icon.svg" alt="Account" width="18" height="18" /></a>
                        <span class="w-px h-[26px] bg-primaryDark/25"></span>
@@ -569,6 +575,16 @@
 
   const YEAR = 2025; // static build stamp (Date.now avoided for determinism)
 
+  /* Single source of truth for the demo cart's starting contents — read by
+     overlaysHTML() to render the drawer AND by cartCount's initial value
+     below, so the header badge always starts equal to the actual number
+     of units in the drawer (and so reaches exactly 0 when it's emptied,
+     instead of stopping at a leftover offset from an unrelated seed). */
+  const DEMO_CART_ITEMS = [
+    { name: "Chocolate Fudge Cake", price: 650, qty: 1, img: "dummy-images/image-7.webp", variants: [["Size", "1 Kg"]] },
+    { name: "Assorted Baklava Box", price: 420, qty: 1, img: "dummy-images/image.webp", variants: [["Weight", "500 g"]] },
+  ];
+
   /* ---------------------------------------------------------------
      Overlays: backdrop, cart drawer, mobile menu, search, location
      --------------------------------------------------------------- */
@@ -578,10 +594,7 @@
         `<li><a href="${pageHref(i.url)}" class="text-primaryDark text-[26px] font-medium leading-none hover:text-cta transition-colors">${esc(i.title)}</a></li>`,
     ).join("");
 
-    const demoCartItems = [
-      { name: "Chocolate Fudge Cake", price: 650, qty: 1, img: "images/dummy-images/new-product.png", variants: [["Size", "1 Kg"]] },
-      { name: "Assorted Baklava Box", price: 420, qty: 1, img: "images/menudeafult.webp", variants: [["Weight", "500 g"]] },
-    ];
+    const demoCartItems = DEMO_CART_ITEMS;
     // Variation tags — variable products only; simple products get no row.
     const vtags = (variants) =>
       variants && variants.length
@@ -592,12 +605,12 @@
     const cartRows = demoCartItems
       .map(
         (it) => `
-      <div class="flex gap-3 py-4 border-b border-neutral-100">
+      <div class="flex gap-3 py-4 border-b border-neutral-100" data-cart-row data-unit-price="${it.price}">
         <img src="${it.img}" alt="${esc(it.name)}" class="w-[72px] h-[72px] rounded-lg object-cover bg-primary-light" />
         <div class="flex-1">
           <p class="font-medium text-textSecondary text-sm">${esc(it.name)}</p>
           ${vtags(it.variants)}
-          <p class="mt-1 font-semibold text-primaryDark text-sm">EGP ${it.price}</p>
+          <p class="mt-1 font-semibold text-cta text-sm">EGP ${it.price}</p>
           <div class="counter counter--sm mt-2" data-stepper data-removable>
             <button type="button" data-step="-1" class="counter__btn" aria-label="Decrease quantity"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
             <span data-qty class="counter__qty">${it.qty}</span>
@@ -608,20 +621,101 @@
       )
       .join("");
 
+    /* Cross-sell grid — "Complete Your Order". Sits inside the same
+       scrollable region as the line items (not pinned above the footer),
+       so it doesn't eat into checkout visibility on a short drawer. Fixed
+       2-row × 3-column grid (not a carousel — everything is visible at
+       once, no swiping needed for 6 items). Reuses the standard
+       data-add-widget/data-add-btn quick-add pattern (see product cards)
+       at a smaller scale, so the existing global click-delegation in
+       initDelegation() wires it up for free — no drawer-specific JS. */
+    const demoUpsellItems = [
+      { name: "Pistachio Kunafa", price: 260, img: "dummy-images/image-1.webp" },
+      { name: "Mini Cupcake Dozen", price: 280, img: "dummy-images/image-4.webp" },
+      { name: "Dark Chocolate Gift Box", price: 500, img: "dummy-images/image-7.webp" },
+      { name: "Basbousa Tray", price: 240, img: "dummy-images/image-8.webp" },
+      { name: "Kahk Assortment", price: 220, img: "dummy-images/image-9.webp" },
+      { name: "Vanilla Bean Tub", price: 160, img: "dummy-images/image-3.webp" },
+    ];
+    const upsellCards = demoUpsellItems
+      .map(
+        (it) => `
+      <div>
+        <div class="relative">
+          <div class="rounded-[10px] aspect-square overflow-hidden bg-primary-light">
+            <img src="${it.img}" alt="${esc(it.name)}" class="w-full h-full object-cover" />
+          </div>
+          <span class="absolute end-1.5 -bottom-2.5 z-10" data-add-widget data-type="simple">
+            <button type="button" data-add-btn aria-label="Add ${esc(it.name)} to cart" class="grid place-items-center bg-primary-200 text-primaryDark rounded-[6px] size-[24px] shadow-custom-5 hover:bg-primary-300 transition-colors">
+              <svg viewBox="0 0 24 24" fill="none" class="w-3 h-3"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>
+            </button>
+            <span class="hidden items-center gap-0.5 bg-white rounded-[6px] h-[24px] px-1 shadow-custom-5" data-counter>
+              <button type="button" data-dec aria-label="Remove" class="grid place-items-center size-[16px] rounded-[3px] hover:bg-black/5 transition-colors">
+                <img data-dec-icon src="images/icons/trash.svg" alt="" width="10" height="10" />
+              </button>
+              <span data-qty class="w-[14px] text-center text-[10px] font-medium text-primaryDark tabular-nums">1</span>
+              <button type="button" data-inc aria-label="Add" class="grid place-items-center size-[16px] rounded-[3px] bg-primary-200 text-primaryDark hover:bg-primary-300 transition-colors">
+                <svg viewBox="0 0 24 24" fill="none" class="w-2.5 h-2.5"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>
+              </button>
+            </span>
+          </span>
+        </div>
+        <p class="mt-3 text-[11px] font-semibold text-cta leading-tight">EGP ${it.price}</p>
+        <p class="text-[11px] font-medium text-textSecondary leading-tight line-clamp-1">${esc(it.name)}</p>
+      </div>`,
+      )
+      .join("");
+    const cartUpsell = `
+      <div class="py-4">
+        <p class="font-semibold text-textSecondary text-sm mb-3">Complete Your Order</p>
+        <div class="grid grid-cols-3 gap-x-2.5 gap-y-4">${upsellCards}</div>
+      </div>`;
+
+    const initialSubtotal = demoCartItems.reduce((sum, it) => sum + it.price * it.qty, 0);
+
     return `
     <div data-backdrop class="overlay-backdrop"></div>
 
-    <!-- Cart drawer -->
+    <!-- Cart drawer: header and footer (summary + CTA) are shrink-0 siblings
+         of the flex-1 overflow-y-auto scroll region, so only the middle
+         (line items + cross-sell grid) scrolls when the cart is full —
+         header and footer stay pinned. The free-shipping strip is ALSO
+         shrink-0, sitting directly above the footer (not below the header)
+         so it stays in view next to the CTA rather than scrolling away
+         with the line items it's reporting on. -->
     <aside data-drawer="cart" class="side-drawer side-drawer--right" aria-label="Shopping cart">
-      <div class="flex items-center justify-between px-5 py-4 border-b border-neutral-100">
+      <!-- Close sits OUTSIDE the panel (see .side-drawer__close) so the header
+           is all content; it tucks back inside on narrow screens where there
+           is no room beside the drawer. -->
+      <button type="button" data-close class="side-drawer__close" aria-label="Close cart">${ICON.close}</button>
+      <div class="shrink-0 flex items-center px-5 py-4 border-b border-neutral-100">
         <h2 class="font-semibold text-textSecondary text-lg">Your Cart</h2>
-        <button type="button" data-close class="grid place-items-center w-8 h-8 rounded-full hover:bg-neutral-100 text-textSecondary">${ICON.close}</button>
       </div>
-      <div class="flex-1 overflow-y-auto px-5">${cartRows}</div>
-      <div class="px-5 py-4 border-t border-neutral-100 shadow-cart-overview">
-        <div class="flex justify-between mb-3"><span class="text-neutral-600 text-sm">Subtotal</span><span class="font-semibold text-primaryDark">EGP 1,070</span></div>
-        <a href="checkout.html" class="btn btn--primary btn--md w-full justify-center">Checkout</a>
-        <a href="cart.html" class="block w-full text-center mt-2 text-primaryDark font-medium py-2 text-sm">View full cart</a>
+      <div class="flex-1 overflow-y-auto px-5">
+        <div data-cart-rows>${cartRows}</div>
+        ${cartUpsell}
+      </div>
+      <div class="shrink-0${initialSubtotal <= 0 ? " hidden" : ""}" data-free-shipping data-fs-unlocked="${initialSubtotal >= FREE_SHIP_THRESHOLD ? "1" : "0"}">${freeShippingHTML(initialSubtotal)}</div>
+      <div class="shrink-0 px-5 py-4 border-t border-neutral-100 shadow-cart-overview">
+        <div data-promo class="mb-3"></div>
+        <div class="flex justify-between"><span class="text-neutral-600 text-sm">Subtotal</span><span class="font-semibold text-primaryDark" data-cart-subtotal>${egp(initialSubtotal)}</span></div>
+        <!-- Discount + Total appear only once a code is applied, so the drawer
+             stays a two-line summary until there's actually maths to show. -->
+        <div class="flex justify-between mt-1.5" data-cart-discount-row hidden>
+          <span class="text-neutral-600 text-sm">Discount</span>
+          <span class="font-medium text-sm text-[#209B34]" data-cart-discount></span>
+        </div>
+        <div class="flex justify-between mt-1.5" data-cart-total-row hidden>
+          <span class="text-neutral-600 text-sm">Total</span>
+          <span class="font-semibold text-primaryDark" data-cart-total></span>
+        </div>
+        <a href="checkout.html" class="btn btn--primary btn--md w-full justify-center mt-3">Continue checkout</a>
+        <div class="mt-2 flex items-center justify-center gap-4 text-sm">
+          <a href="cart.html" class="text-primaryDark font-medium py-2">View full cart</a>
+          <span class="h-3 w-px bg-neutral-200" aria-hidden="true"></span>
+          <!-- shop.html is the all-products listing ("Shop the Full Collection") -->
+          <a href="shop.html" class="text-primaryDark font-medium py-2">Continue shopping</a>
+        </div>
       </div>
     </aside>
 
@@ -659,6 +753,58 @@
               )
               .join("")}
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Store picker (checkout → "Pickup from store"). City → Area → the
+         branches assigned to that area. Body is rendered by
+         initCheckoutOptions(); this is just the shell. -->
+    <div data-modal="storepicker" class="modal-shell">
+      <div class="flex w-full max-w-[520px] max-h-[85vh] flex-col overflow-hidden rounded-2xl bg-white shadow-custom3" data-modal-box>
+        <div class="flex shrink-0 items-center justify-between border-b border-neutral-100 px-5 py-4">
+          <h2 class="font-semibold text-textSecondary text-lg">Choose a store</h2>
+          <button type="button" data-close class="grid place-items-center w-8 h-8 rounded-full hover:bg-neutral-100 text-textSecondary">${ICON.close}</button>
+        </div>
+        <div class="flex shrink-0 flex-col gap-3 px-5 py-4 sm:flex-row">
+          <label class="block flex-1">
+            <span class="label">City</span>
+            <select data-store-city class="placeholder-select mt-1 h-12 w-full rounded-lg border border-neutral-200 px-3 text-textSecondary"></select>
+          </label>
+          <label class="block flex-1">
+            <span class="label">Area</span>
+            <select data-store-area class="placeholder-select mt-1 h-12 w-full rounded-lg border border-neutral-200 px-3 text-textSecondary"></select>
+          </label>
+        </div>
+        <div class="min-h-[120px] flex-1 overflow-y-auto px-5" data-store-list></div>
+        <div class="shrink-0 border-t border-neutral-100 px-5 py-4">
+          <button type="button" data-store-confirm class="btn btn--primary btn--md w-full justify-center">Choose store</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Schedule picker (checkout → "Schedule for later"). Day chips across
+         the top, that day's slots below, confirmed with a Schedule CTA. -->
+    <div data-modal="schedule" class="modal-shell">
+      <div class="flex w-full max-w-[560px] max-h-[85vh] flex-col overflow-hidden rounded-2xl bg-white shadow-custom3" data-modal-box>
+        <div class="flex shrink-0 items-center justify-between border-b border-neutral-100 px-5 py-4">
+          <h2 class="font-semibold text-textSecondary text-lg">Schedule a time</h2>
+          <button type="button" data-close class="grid place-items-center w-8 h-8 rounded-full hover:bg-neutral-100 text-textSecondary">${ICON.close}</button>
+        </div>
+        <div class="shrink-0 border-b border-neutral-100 px-5 py-4">
+          <div class="flex items-center gap-2">
+            <button type="button" data-sched-prev class="sched-nav" aria-label="Earlier days">
+              <svg viewBox="0 0 24 24" fill="none" class="h-4 w-4"><path d="m15 6-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="no-scrollbar flex flex-1 gap-2 overflow-x-auto scroll-smooth" data-sched-days></div>
+            <button type="button" data-sched-next class="sched-nav" aria-label="Later days">
+              <svg viewBox="0 0 24 24" fill="none" class="h-4 w-4"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="min-h-[140px] flex-1 overflow-y-auto px-5" data-sched-slots></div>
+        <div class="shrink-0 border-t border-neutral-100 px-5 py-4">
+          <button type="button" data-sched-confirm class="btn btn--primary btn--md w-full justify-center">Schedule</button>
         </div>
       </div>
     </div>
@@ -732,6 +878,9 @@
     search: '[data-modal="search"]',
     location: '[data-sheet="location"]',
     review: '[data-sheet="review"]',
+    storepicker: '[data-modal="storepicker"]',
+    schedule: '[data-modal="schedule"]',
+    voucher: '[data-modal="voucher"]',
   };
   let openEl = null;
 
@@ -1099,7 +1248,10 @@
      Classes on the placeholder are KEPT; .pdp-callouts is added.
      --------------------------------------------------------------- */
   const DELIVERY_ETA = "60 mins";
-  function calloutHTML(variant, icon, title, sub) {
+  /* action → optional trailing control (e.g. the Edit button), rendered as
+     its own flex child so CSS can pin it to the end of the box instead of
+     running it inline after the subtitle text. */
+  function calloutHTML(variant, icon, title, sub, action) {
     return `
       <div class="callout callout--${variant}">
         <span class="callout__icon"><img src="images/icons/${icon}.webp" alt="" /></span>
@@ -1107,20 +1259,34 @@
           <span class="callout__title">${title}</span>
           <span class="callout__sub">${sub}</span>
         </span>
+        ${action ? `<span class="callout__action">${action}</span>` : ""}
       </div>`;
   }
-  function pdpCalloutsHTML(o) {
+  /* The shipping callout on its own — shared by the PDP's three-badge set
+     and by any page that wants just this one (cart summary uses it in
+     place of the older .delivery-note bar). Defined once so the copy,
+     icon and Edit affordance can't drift between the two. */
+  function deliveryCalloutHTML(o) {
     o = o || {};
     const place = o.place || DELIVERY_PLACE;
     const eta = o.eta || DELIVERY_ETA;
+    // edit:false drops the trailing Edit control (cart page — the location
+    // is edited at checkout, so an Edit here led nowhere useful).
+    const edit = o.edit !== false;
+    return calloutHTML(
+      "delivery",
+      "delivery",
+      "Fast Delivery",
+      `Within ${esc(eta)} to ${esc(place)}`,
+      edit ? `<button type="button" data-open="location" class="callout__edit">Edit</button>` : ""
+    );
+  }
+  function pdpCalloutsHTML(o) {
+    /* Delivery first: it carries the longest copy (location + Edit) and takes
+       the full-width top row, with the other two splitting the row below. */
     return [
+      deliveryCalloutHTML(o),
       calloutHTML("baked", "baked-fresh", "Freshly Baked", "Fresh from the oven to you"),
-      calloutHTML(
-        "delivery",
-        "delivery",
-        "Fast Delivery",
-        `Within ${esc(eta)} to ${esc(place)} <button type="button" data-open="location" class="callout__edit">Edit</button>`
-      ),
       calloutHTML("natural", "natural-ingredients", "Natural Ingredients", "Guaranteed pure goodness inside"),
     ].join("");
   }
@@ -1130,6 +1296,21 @@
       el.dataset.pcReady = "1";
       el.classList.add("pdp-callouts");
       el.innerHTML = pdpCalloutsHTML({ place: el.dataset.place, eta: el.dataset.eta });
+    });
+  }
+  /* Standalone shipping callout: <div data-shipping-callout></div>
+     Reuses the .pdp-callouts wrapper so it inherits the same spacing, and
+     .callout--delivery spans the full width when it's the only child. */
+  function initShippingCallout(scope) {
+    scope.querySelectorAll("[data-shipping-callout]").forEach((el) => {
+      if (el.dataset.scReady) return;
+      el.dataset.scReady = "1";
+      el.classList.add("pdp-callouts");
+      el.innerHTML = deliveryCalloutHTML({
+        place: el.dataset.place,
+        eta: el.dataset.eta,
+        edit: el.dataset.edit !== "false",
+      });
     });
   }
 
@@ -1167,10 +1348,21 @@
   const PAPER_COUNT = 13;
   // Ribbon-heavy mix, matching the reference's shape ratio.
   const PAPER_SHAPES = ["ribbon", "ribbon", "ribbon", "square", "ribbon", "ring"];
-  function promoPaperBurst(x, y) {
+  /* opts lets a caller retune the burst for a different context WITHOUT
+     touching the promo defaults above (those are matched to Mark's
+     reference clip and should stay put):
+       count / spread / speed / speedVar / scale / decay — burst shape
+       className — extra class, e.g. to lift the canvas above an overlay */
+  function promoPaperBurst(x, y, opts) {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    opts = opts || {};
+    const count = opts.count || PAPER_COUNT;
+    const spread = opts.spread != null ? opts.spread : 190;
+    const speedMin = opts.speed != null ? opts.speed : 2.3;
+    const speedVar = opts.speedVar != null ? opts.speedVar : 2.5;
+    const scale = opts.scale || 1;
     const canvas = document.createElement("canvas");
-    canvas.className = "promo-fx";
+    canvas.className = "promo-fx" + (opts.className ? " " + opts.className : "");
     canvas.setAttribute("aria-hidden", "true");
     document.body.appendChild(canvas);
     const ctx = canvas.getContext("2d");
@@ -1182,11 +1374,11 @@
     };
     size();
 
-    const papers = Array.from({ length: PAPER_COUNT }, (_, i) => {
+    const papers = Array.from({ length: count }, (_, i) => {
       // Start across the actual field, then drift up and out in a slow arc.
-      const launchX = x + (Math.random() - 0.5) * 190;
+      const launchX = x + (Math.random() - 0.5) * spread;
       const angle = -Math.PI / 2 + (Math.random() - 0.5) * 1.9;
-      const speed = 2.3 + Math.random() * 2.5; // slow — the reference floats
+      const speed = speedMin + Math.random() * speedVar; // slow — the reference floats
       return {
         x: launchX,
         y: y + (Math.random() - 0.5) * 12,
@@ -1195,15 +1387,15 @@
         shape: PAPER_SHAPES[i % PAPER_SHAPES.length],
         // Sized off the reference: a ribbon reads ~15% of the field's width
         // there. At 32–58px they came out about half that and looked timid.
-        len: 44 + Math.random() * 30,
-        amp: 9 + Math.random() * 7, // ribbon wave depth
-        s: 7 + Math.random() * 3, // square / ring size
-        lw: 5 + Math.random() * 1.8, // ribbon stroke weight
+        len: (44 + Math.random() * 30) * scale,
+        amp: (9 + Math.random() * 7) * scale, // ribbon wave depth
+        s: (7 + Math.random() * 3) * scale, // square / ring size
+        lw: (5 + Math.random() * 1.8) * scale, // ribbon stroke weight
         rotation: Math.random() * Math.PI * 2,
         spin: (Math.random() - 0.5) * 0.05, // slow tumble, not a flutter
         color: FX_COLORS[i % FX_COLORS.length],
         life: 1,
-        decay: 0.0045 + Math.random() * 0.003, // ~2.5–3.7s on screen
+        decay: opts.decay || 0.0045 + Math.random() * 0.003, // ~2.5–3.7s on screen
       };
     });
 
@@ -1270,25 +1462,669 @@
     raf = requestAnimationFrame(tick);
   }
 
-  /* Reflect the applied/removed discount in the page's order summary.
-     No-ops on any page that doesn't have one. */
-  function promoSyncSummary(discount) {
-    const row = document.querySelector("[data-summary-discount-row]");
-    const amountEl = document.querySelector("[data-summary-discount]");
+  /* The discount currently applied, remembered so the cart DRAWER can
+     re-apply it whenever its subtotal is recomputed (quantity change,
+     row removal) rather than losing it. */
+  let promoDiscount = 0;
+
+  /* Drawer totals. Discount + Total stay hidden until a code is applied,
+     so the drawer is just "Subtotal" in the normal case. */
+  function syncCartDrawerTotals() {
+    const drawer = document.querySelector('[data-drawer="cart"]');
+    if (!drawer) return;
+    const subEl = drawer.querySelector("[data-cart-subtotal]");
+    const dRow = drawer.querySelector("[data-cart-discount-row]");
+    const dEl = drawer.querySelector("[data-cart-discount]");
+    const tRow = drawer.querySelector("[data-cart-total-row]");
+    const tEl = drawer.querySelector("[data-cart-total]");
+    if (!subEl || !dRow || !tRow) return;
+    const show = promoDiscount > 0;
+    dRow.hidden = !show;
+    tRow.hidden = !show;
+    if (show) {
+      const sub = parseEGP(subEl.textContent);
+      if (dEl) dEl.textContent = "− " + egp(promoDiscount);
+      if (tEl) tEl.textContent = egp(Math.max(0, sub - promoDiscount));
+    }
+  }
+
+  /* THE one source of truth for the page order summary. Promo code and
+     wallet balance are two deductions against the SAME total, so neither
+     may own a private copy of the arithmetic — each sets its own module
+     state and then calls this to recompute every row. No-ops on any page
+     without a summary. */
+  let walletApplied = 0;
+  function syncSummary() {
     const totalEl = document.querySelector("[data-summary-total]");
     const subtotalEl = document.querySelector("[data-summary-subtotal]");
+    if (!totalEl || !subtotalEl) return null;
     const deliveryEl = document.querySelector("[data-summary-delivery]");
-    if (!totalEl || !subtotalEl) return;
-    if (row) row.hidden = discount <= 0;
-    if (amountEl) amountEl.textContent = "− " + egp(discount);
-    const total = parseEGP(subtotalEl.textContent) + (deliveryEl ? parseEGP(deliveryEl.textContent) : 0) - discount;
-    totalEl.textContent = egp(Math.max(0, total));
+    const subtotal = parseEGP(subtotalEl.textContent);
+    const delivery = deliveryEl ? parseEGP(deliveryEl.textContent) : 0;
+
+    const discountRow = document.querySelector("[data-summary-discount-row]");
+    const discountEl = document.querySelector("[data-summary-discount]");
+    if (discountRow) discountRow.hidden = promoDiscount <= 0;
+    if (discountEl) discountEl.textContent = "− " + egp(promoDiscount);
+
+    /* The wallet spends against what is still owed AFTER the promo, and
+       is capped at the bill — so a balance larger than the order can
+       never drive the total negative or "refund" the difference. */
+    const afterPromo = Math.max(0, subtotal + delivery - promoDiscount);
+    const walletUsed = Math.min(walletApplied, afterPromo);
+    const walletRow = document.querySelector("[data-summary-wallet-row]");
+    const walletEl = document.querySelector("[data-summary-wallet]");
+    if (walletRow) walletRow.hidden = walletUsed <= 0;
+    if (walletEl) walletEl.textContent = "− " + egp(walletUsed);
+
+    totalEl.textContent = egp(Math.max(0, afterPromo - walletUsed));
+    return { afterPromo, walletUsed };
+  }
+
+  /* Reflect the applied/removed discount in the page's order summary. */
+  function promoSyncSummary(discount) {
+    promoDiscount = discount || 0;
+    syncCartDrawerTotals(); // drawer exists on every page; page summary may not
+    syncSummary();
+  }
+
+  /* ---------------------------------------------------------------
+     Free-shipping banner — cart drawer only. Sits as its own shrink-0
+     strip directly ABOVE the footer (not below the header), so it stays
+     next to the checkout CTA it's motivating rather than scrolling away
+     with the line items.
+
+     Matched to the Figma pair (Frame 2147227129 / 2147227130): BOTH
+     states share the same pink card and only the copy changes —
+     "Add {n} EGP and get [FREE DELIVERY]" while short, "[WOW] You
+     Unlocked FREE DELIVERY" once reached. The progress bar is not a
+     separate widget: it IS the bottom divider between the pink card and
+     the white footer below, so the fill doubles as the seam. Turquoise =
+     covered, light pink (cta-light) = still to go, so the empty space
+     stays inside the pink family instead of reading as a dark rule; at
+     100% the seam reads as one solid turquoise rule. Keeping the pink
+     card square-cornered lets it sit flush against the footer, and the
+     strip is kept short (py-1.5) so it nudges without shouting over the
+     checkout CTA below it. Keeping the pink constant means the footer never
+     jumps or colour-flashes when the threshold flips — only the bar and
+     the words change. Reuses promoPaperBurst() for the celebration so
+     cart and promo-code success feel like the same brand moment. */
+  const FREE_SHIP_THRESHOLD = 1000;
+  function freeShippingHTML(subtotal) {
+    const remaining = Math.max(0, FREE_SHIP_THRESHOLD - subtotal);
+    const pct = Math.min(100, Math.round((subtotal / FREE_SHIP_THRESHOLD) * 100));
+    const unlocked = remaining <= 0;
+    const chip = (text) =>
+      `<span class="inline-flex shrink-0 items-center rounded-[3px] bg-primary-100 px-1.5 py-[3px]"><span class="text-[10px] font-bold text-primaryDark leading-none tracking-[0.2px]">${text}</span></span>`;
+    const label = unlocked
+      ? `${chip("WOW")}<span class="text-[11px] font-medium text-white leading-none">You Unlocked <span class="font-bold">FREE DELIVERY</span></span>`
+      : `<span class="text-[11px] font-medium text-white leading-none">Add <span data-fs-remaining>${Math.ceil(remaining)} EGP</span> and get</span>${chip("FREE DELIVERY")}`;
+    return `
+      <div class="bg-cta" data-fs-state="${unlocked ? "unlocked" : "progress"}">
+        <div class="flex items-center gap-1.5 px-4 py-1.5">${label}</div>
+        <div class="h-[5px] w-full bg-cta-light"><div class="h-full bg-primary-200 transition-[width] duration-500 ease-out" style="width:${unlocked ? 100 : pct}%"></div></div>
+      </div>`;
+  }
+  /* Recomputed from the actual cart-row prices/quantities (not the
+     cross-sell grid — nothing on this site persists a real "add to
+     cart", including the grid's own quick-add, so counting it would
+     move the bar without a line item ever appearing above it). Hidden
+     entirely once the cart is empty — there's nothing to show progress
+     toward. */
+  function updateFreeShipping() {
+    const drawer = document.querySelector('[data-drawer="cart"]');
+    const mount = drawer && drawer.querySelector("[data-free-shipping]");
+    if (!drawer || !mount) return;
+    const rows = drawer.querySelectorAll("[data-cart-row]");
+    let subtotal = 0;
+    rows.forEach((row) => {
+      const price = parseFloat(row.dataset.unitPrice) || 0;
+      const qtyEl = row.querySelector("[data-qty]");
+      const qty = qtyEl ? parseInt(qtyEl.textContent, 10) || 0 : 0;
+      subtotal += price * qty;
+    });
+    // Update the footer subtotal BEFORE the empty-cart early-return, or an
+    // emptied cart keeps showing the last non-zero total.
+    const subtotalEl = drawer.querySelector("[data-cart-subtotal]");
+    if (subtotalEl) subtotalEl.textContent = egp(subtotal);
+    // Re-apply any active promo against the new subtotal.
+    syncCartDrawerTotals();
+
+    if (!rows.length) {
+      mount.classList.add("hidden");
+      mount.innerHTML = "";
+      delete mount.dataset.fsUnlocked;
+      return;
+    }
+
+    mount.classList.remove("hidden");
+    const wasUnlocked = mount.dataset.fsUnlocked === "1";
+    const isUnlocked = subtotal >= FREE_SHIP_THRESHOLD;
+    mount.innerHTML = freeShippingHTML(subtotal);
+    mount.dataset.fsUnlocked = isUnlocked ? "1" : "0";
+    if (isUnlocked && !wasUnlocked) {
+      const r = mount.getBoundingClientRect();
+      const cx = r.left + r.width / 2;
+      /* Launch from the banner's TOP edge, not its centre: the strip sits
+         low in the drawer, so pieces spawned at the middle immediately
+         fall off-screen. From the top edge they arc up over the cart. */
+      const cy = r.top;
+      /* Retuned vs the promo default for this context: the drawer is only
+         ~420px wide (vs a full-page field), so a 13-piece burst at that
+         spread reads as a few stray specks. More pieces, tighter spread,
+         and a harder launch make it POP; slightly smaller shapes keep it
+         from swamping a narrow panel. Lifted above the drawer's z-100. */
+      const burst = (delay, opts) =>
+        setTimeout(() => promoPaperBurst(cx, cy, Object.assign({ className: "promo-fx--over-overlay" }, opts)), delay);
+      burst(0, { count: 26, spread: 150, speed: 4.2, speedVar: 3.4, scale: 0.78 });
+      // Second, softer wave a beat later so the effect blooms rather than
+      // firing once and instantly thinning out.
+      burst(160, { count: 14, spread: 230, speed: 3.2, speedVar: 3, scale: 0.62 });
+    }
+  }
+
+  /* Empty-cart state — swapped into [data-cart-rows] once the last line
+     item is removed via the stepper (see initSteppers). The bag icon
+     reuses shopping-bag-icon.svg (a white-stroke outline) on a dark
+     circle backdrop, matching the floating cart button's own empty state
+     so the two read as the same "empty" motif. */
+  function cartEmptyStateHTML() {
+    return `
+      <div class="flex flex-col items-center justify-center gap-3 py-14 text-center">
+        <span class="grid place-items-center size-14 rounded-full bg-primaryDark"><img src="images/icons/shopping-bag-icon.svg" alt="" class="w-6 h-6" /></span>
+        <p class="font-medium text-textSecondary">Your cart is empty</p>
+        <a href="shop.html" class="text-cta font-medium text-sm hover:underline">Continue shopping →</a>
+      </div>`;
+  }
+  function checkCartEmpty() {
+    const drawer = document.querySelector('[data-drawer="cart"]');
+    const rowsWrap = drawer && drawer.querySelector("[data-cart-rows]");
+    if (!rowsWrap) return;
+    if (!rowsWrap.querySelector("[data-cart-row]")) rowsWrap.innerHTML = cartEmptyStateHTML();
+  }
+
+  /* Cart PAGE (cart.html) summary — the drawer has its own updater above;
+     this keeps the full-page version honest when a line item's quantity
+     changes or the row is removed via the counter. Removing the row but
+     leaving a stale "EGP 1,830.00" subtotal would be worse than not
+     supporting removal at all, so this runs on every stepper change.
+     No-ops on pages without per-row price data (e.g. checkout.html, whose
+     summary is a static order review with no counters), so the static
+     demo figures there are left alone. */
+  function syncCartPageSummary() {
+    const subtotalEl = document.querySelector("[data-summary-subtotal]");
+    // Scoped to [data-cart-list]: the cart DRAWER is injected into every
+    // page and its line items also carry [data-cart-row], so an unscoped
+    // query double-counts the drawer's contents into the page subtotal.
+    const list = document.querySelector("[data-cart-list]");
+    // Bail on pages with no cart list at all (checkout.html) — but NOT on a
+    // list that has emptied out, which must still fall through and zero the
+    // figures rather than leave the last stale subtotal on screen.
+    if (!subtotalEl || !list) return;
+    const rows = list.querySelectorAll("[data-cart-row][data-unit-price]");
+    let subtotal = 0;
+    rows.forEach((row) => {
+      const price = parseFloat(row.dataset.unitPrice) || 0;
+      const qtyEl = row.querySelector("[data-qty]");
+      const qty = qtyEl ? parseInt(qtyEl.textContent, 10) || 0 : 0;
+      const line = price * qty;
+      subtotal += line;
+      /* The prominent pink figure is the LINE TOTAL (unit x qty); the small
+         grey line under it carries the unit x quantity breakdown. Rebuilt
+         from the same three-span structure the static markup uses so the
+         EGP / integer / decimal type sizes survive the update. */
+      const lineEl = row.querySelector("[data-line-total]");
+      if (lineEl) {
+        const intp = Math.floor(line);
+        const dec = (line - intp).toFixed(2).substring(1);
+        lineEl.innerHTML =
+          '<span class="md:text-lg font-medium">EGP</span>' +
+          '<span class="md:text-2xl font-semibold">' + intp.toLocaleString("en-US") + "</span>" +
+          '<span class="md:text-lg font-medium">' + dec + "</span>";
+      }
+      const breakdownEl = row.querySelector("[data-line-breakdown]");
+      if (breakdownEl) breakdownEl.innerHTML = egp(price) + " &times; " + qty;
+      /* Compare-at ("was") price scales with quantity too — otherwise a
+         qty-2 row would show a doubled total struck through against a
+         single-unit original. */
+      const compareEl = row.querySelector("[data-line-compare]");
+      if (compareEl) {
+        const unitWas = parseFloat(compareEl.dataset.compareUnit) || 0;
+        if (unitWas) compareEl.textContent = egp(unitWas * qty);
+      }
+    });
+    subtotalEl.textContent = egp(subtotal);
+    /* Nothing in the cart means nothing to deliver — leaving the 40 EGP
+       fee standing would show a non-zero Total on an empty cart. Stashed
+       on first zero-out so it can be restored if items come back. */
+    const deliveryEl = document.querySelector("[data-summary-delivery]");
+    if (deliveryEl) {
+      if (!deliveryEl.dataset.baseFee) deliveryEl.dataset.baseFee = String(parseEGP(deliveryEl.textContent));
+      deliveryEl.textContent = egp(subtotal > 0 ? parseFloat(deliveryEl.dataset.baseFee) || 0 : 0);
+    }
+    // Re-apply whatever discount is currently showing so Total stays right.
+    const dRow = document.querySelector("[data-summary-discount-row]");
+    const dEl = document.querySelector("[data-summary-discount]");
+    const discount = dRow && !dRow.hidden && dEl ? parseEGP(dEl.textContent) : 0;
+    promoSyncSummary(discount);
+  }
+
+  /* Empty state for the cart PAGE list (distinct from the drawer's).
+     Targets [data-cart-list] rather than deriving the <ul> from a row —
+     by the time this runs the last row is already gone, so there'd be
+     nothing left to walk up from. */
+  function checkCartPageEmpty() {
+    const list = document.querySelector("[data-cart-list]");
+    if (!list || list.querySelector("[data-cart-row]")) return;
+    list.outerHTML = `
+      <div class="flex flex-col justify-center items-center gap-5 py-16 text-center">
+        <span class="grid place-items-center size-14 rounded-full bg-primaryDark"><img src="images/icons/shopping-bag-icon.svg" alt="" class="w-6 h-6" /></span>
+        <div class="font-medium text-blackText text-2xl">Your cart is empty</div>
+        <a href="shop.html" class="text-cta font-medium hover:underline">Continue shopping →</a>
+      </div>`;
+  }
+
+  /* ---------------------------------------------------------------
+     Vouchers (my-account-vouchers.html). A voucher is a one-time code
+     worth a fixed EGP amount; activating it moves it to "Used" and adds
+     its value to the wallet balance (see walletBalance above).
+
+     Two entry points, matching the design: activate an existing voucher
+     from the list, or add one by code. Both land in the same
+     [data-modal="voucher"] shell — one modal with two bodies — so there
+     is a single close/backdrop path rather than two competing overlays.
+     --------------------------------------------------------------- */
+  const VOUCHER_CODES = { EX150: 150, SWEET100: 100, GIFT250: 250 };
+  /* A voucher is "old" once it is either spent or past its date. Which of
+     the two is carried ONLY by the meta line (Used … / Expired …) — Mark:
+     the two states share a row style and are told apart by the label. */
+  function voucherState(v) {
+    if (v.used) return "used";
+    return new Date(v.expires) < startOfToday() ? "expired" : "available";
+  }
+  function voucherMeta(v) {
+    const st = voucherState(v);
+    if (st === "used") return "Used " + fmtDate(new Date(v.usedOn));
+    if (st === "expired") return "Expired " + fmtDate(new Date(v.expires));
+    return "Valid till " + fmtDate(new Date(v.expires));
+  }
+  function voucherRowHTML(v) {
+    const st = voucherState(v);
+    const old = st !== "available";
+    return `
+      <li class="voucher${old ? " voucher--old" : ""}" data-voucher-id="${v.id}" data-voucher-value="${v.value}" data-voucher-state="${st}">
+        <span class="voucher__ico"><img src="images/icons/account%20icons/voucher.webp" alt="" /></span>
+        <span class="voucher__body">
+          <span class="voucher__title">${v.value} EGP Discount</span>
+          <span class="voucher__meta">${voucherMeta(v)}</span>
+        </span>
+        ${
+          old
+            ? ""
+            : `<button type="button" class="voucher__action" data-voucher-activate aria-label="Activate ${v.value} EGP voucher">
+                 <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+               </button>`
+        }
+      </li>`;
+  }
+  function initVouchers(scope) {
+    const root = scope.querySelector("[data-vouchers]");
+    if (!root || root.dataset.vouchersReady) return;
+    root.dataset.vouchersReady = "1";
+
+    const availList = root.querySelector("[data-voucher-list='available']");
+    const oldList = root.querySelector("[data-voucher-list='old']");
+    const modal = document.querySelector('[data-modal="voucher"]');
+    const paneAdd = modal.querySelector("[data-voucher-pane='add']");
+    const paneActivate = modal.querySelector("[data-voucher-pane='activate']");
+    const codeInput = modal.querySelector("[data-voucher-code]");
+    const codeError = modal.querySelector("[data-voucher-error]");
+    const activateCopy = modal.querySelector("[data-voucher-activate-copy]");
+    let pending = null; // the <li> awaiting confirmation
+
+    const render = () => {
+      availList.innerHTML = VOUCHERS.filter((v) => voucherState(v) === "available").map(voucherRowHTML).join("");
+      oldList.innerHTML = VOUCHERS.filter((v) => voucherState(v) !== "available").map(voucherRowHTML).join("");
+      // Empty states — an empty <ul> with a heading above reads as broken.
+      root.querySelectorAll("[data-voucher-empty]").forEach((el) => {
+        const which = el.dataset.voucherEmpty;
+        const n = VOUCHERS.filter((v) =>
+          which === "old" ? voucherState(v) !== "available" : voucherState(v) === "available"
+        ).length;
+        el.hidden = n > 0;
+      });
+    };
+    const showPane = (which) => {
+      paneAdd.hidden = which !== "add";
+      paneActivate.hidden = which !== "activate";
+    };
+    const open = (which) => {
+      showPane(which);
+      if (codeError) codeError.hidden = true;
+      openOverlay("voucher");
+    };
+
+    root.addEventListener("click", (e) => {
+      const act = e.target.closest("[data-voucher-activate]");
+      if (act) {
+        pending = act.closest("[data-voucher-id]");
+        activateCopy.textContent = `${pending.dataset.voucherValue} EGP will be added to your wallet balance`;
+        open("activate");
+        return;
+      }
+      if (e.target.closest("[data-voucher-add]")) {
+        if (codeInput) codeInput.value = "";
+        open("add");
+      }
+    });
+
+    // Confirm activation → credit the wallet, move the row to Used.
+    modal.querySelector("[data-voucher-confirm]").addEventListener("click", () => {
+      if (!pending) return;
+      const v = VOUCHERS.find((x) => String(x.id) === pending.dataset.voucherId);
+      if (v && !v.used) {
+        v.used = true;
+        v.usedOn = isoToday();
+        addVoucherRedeemed(v.value);
+        syncWalletBalance(document);
+      }
+      pending = null;
+      render();
+      closeOverlay();
+      celebrateVoucher();
+    });
+
+    // Add by code → validates against the demo code table.
+    modal.querySelector("[data-voucher-submit]").addEventListener("click", () => {
+      const code = (codeInput.value || "").trim().toUpperCase();
+      const value = VOUCHER_CODES[code];
+      if (!value) {
+        codeError.textContent = code ? "That code isn't valid or has already been used." : "Enter a voucher code.";
+        codeError.hidden = false;
+        return;
+      }
+      if (VOUCHERS.some((v) => v.code === code)) {
+        codeError.textContent = "That voucher is already in your list.";
+        codeError.hidden = false;
+        return;
+      }
+      VOUCHERS.push({ id: "v" + (VOUCHERS.length + 1), code, value, used: false, expires: isoInMonths(3) });
+      render();
+      closeOverlay();
+      celebrateVoucher();
+    });
+
+    // Enter submits the code without submitting any surrounding form.
+    if (codeInput) {
+      codeInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          modal.querySelector("[data-voucher-submit]").click();
+        }
+      });
+      codeInput.addEventListener("input", () => {
+        if (codeError) codeError.hidden = true;
+      });
+    }
+
+    render();
+    syncWalletBalance(document);
+  }
+  /* Reuses the promo-code confetti so redeeming feels like the same
+     brand moment as applying a discount. */
+  function celebrateVoucher() {
+    if (typeof promoPaperBurst !== "function") return;
+    const r = { left: innerWidth / 2 - 40, top: innerHeight / 2, width: 80, height: 10 };
+    try {
+      promoPaperBurst(r.left + r.width / 2, r.top);
+    } catch (e) {}
+  }
+  const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  function fmtDate(d) {
+    return `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
+  }
+  /* Midnight today — comparing against `new Date()` would call a voucher
+     expiring today "expired" from one second past midnight. */
+  function startOfToday() {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }
+  const iso = (d) => d.toISOString().slice(0, 10);
+  function isoToday() {
+    return iso(new Date());
+  }
+  function isoInMonths(n) {
+    const d = new Date();
+    d.setMonth(d.getMonth() + n);
+    return iso(d);
+  }
+  /* `expires` drives available-vs-expired, so the demo ages on its own
+     rather than needing dates edited by hand. v7 is deliberately an
+     expired-but-never-used voucher — the case the old model couldn't show. */
+  const VOUCHERS = [
+    { id: "v1", code: "EX100A", value: 100, used: false, expires: "2026-10-20" },
+    { id: "v2", code: "EX100B", value: 100, used: false, expires: "2026-10-20" },
+    { id: "v3", code: "EX150A", value: 150, used: false, expires: "2026-11-05" },
+    { id: "v4", code: "EX250A", value: 250, used: false, expires: "2026-12-18" },
+    { id: "v5", code: "EX100C", value: 100, used: true, usedOn: "2025-10-20", expires: "2025-12-01" },
+    { id: "v6", code: "EX100D", value: 100, used: true, usedOn: "2025-10-20", expires: "2025-12-01" },
+    { id: "v7", code: "EX050A", value: 50, used: false, expires: "2025-09-03" },
+  ];
+
+  /* ---------------------------------------------------------------
+     Membership tier badge — Golden / Silver / Platinum
+     (Figma 6233-56907). Gradient pill + circular avatar + uppercase
+     label. Drop a placeholder anywhere: <span data-tier-badge></span>,
+     or force one with <span data-tier-badge="platinum"></span>.
+
+     ONE constant drives every instance. The badge appears 14 times
+     across the 8 account pages (most render the profile block twice —
+     mobile pills + desktop sidebar) and was previously hard-coded to
+     "Gold" in all 14, in three different markup variants. Change
+     USER_TIER and the whole demo follows.
+
+     The avatar reuses the account-icon person illustration, per the
+     images-only-from-dummy-images-or-icons rule — there is no
+     dedicated tier artwork in either allowed folder.
+     --------------------------------------------------------------- */
+  /* ---------------------------------------------------------------
+     Wallet balance — vouchers are the ONLY way to add balance (there is
+     no card/Fawry top-up). Base balance + whatever vouchers have been
+     activated this session.
+
+     Redeemed total is persisted in localStorage so the balance survives
+     the hop from the vouchers page to the wallet page and the checkout
+     wallet toggle — without it, "activating" a voucher would claim to
+     top up a balance that never changed. This is the only persisted
+     state on the site; clear `ex_voucher_redeemed` to reset the demo.
+     --------------------------------------------------------------- */
+  const WALLET_BASE = 1250;
+  const VOUCHER_STORE = "ex_voucher_redeemed";
+  function voucherRedeemed() {
+    try {
+      return parseFloat(localStorage.getItem(VOUCHER_STORE)) || 0;
+    } catch (e) {
+      return 0; // private mode / storage disabled — degrade to base balance
+    }
+  }
+  function addVoucherRedeemed(amount) {
+    try {
+      localStorage.setItem(VOUCHER_STORE, String(voucherRedeemed() + amount));
+    } catch (e) {}
+  }
+  function walletBalance() {
+    return WALLET_BASE + voucherRedeemed();
+  }
+  /* Paints every wallet-balance readout on the page. */
+  function syncWalletBalance(scope) {
+    (scope || document).querySelectorAll("[data-wallet-balance]").forEach((el) => {
+      el.textContent = egp(walletBalance());
+    });
+  }
+
+  const USER_TIER = "golden"; // golden | silver | platinum
+  const TIERS = { golden: "Golden", silver: "Silver", platinum: "Platinum" };
+  function tierBadgeHTML(tier) {
+    const key = TIERS[tier] ? tier : "golden";
+    return `<span class="tier-badge tier-badge--${key}">
+        <span class="tier-badge__ico"><img src="images/icons/account%20icons/preparing.webp" alt="" /></span>
+        <span class="tier-badge__label">${TIERS[key]}</span>
+      </span>`;
+  }
+  function initTierBadge(scope) {
+    scope.querySelectorAll("[data-tier-badge]").forEach((el) => {
+      if (el.dataset.tierReady) return;
+      el.dataset.tierReady = "1";
+      el.innerHTML = tierBadgeHTML(el.dataset.tierBadge || USER_TIER);
+    });
+  }
+
+  /* ---------------------------------------------------------------
+     Wallet balance toggle — "Use My Wallet Balance" (Figma 6231-56797).
+     Mint card, brand wallet illustration, the balance as a turquoise
+     badge, switch on the end. Drop a placeholder anywhere in an order
+     summary: <div data-wallet-toggle></div>
+
+     Switching it on applies the WHOLE balance and leaves any remainder
+     payable on the selected method (capped at the bill — see
+     syncSummary). The balance mirrors my-account-wallet.html.
+
+     The control is a real <input type="checkbox"> so it is keyboard- and
+     screen-reader-operable for free, wrapped in a <label> so the entire
+     card is a hit target. It is deliberately NOT a <button>: this card
+     sits inside checkout's one giant place-order <form>, where a
+     default-type button submits and places the order (the same trap
+     already hit by the promo Apply button and the delivery-note Edit
+     button).
+     --------------------------------------------------------------- */
+  function walletCardHTML(balance) {
+    return `
+      <label class="wallet-toggle">
+        <img src="images/icons/wallet.webp" alt="" class="wallet-toggle__icon" />
+        <span class="wallet-toggle__label">Use My Wallet Balance</span>
+        <span class="wallet-toggle__amount">${Math.round(balance).toLocaleString("en-US")} EGP</span>
+        <input type="checkbox" class="wallet-toggle__input" data-wallet-input aria-label="Use my wallet balance" />
+        <span class="wallet-toggle__switch" aria-hidden="true"></span>
+      </label>`;
+  }
+  function initWalletToggle(scope) {
+    scope.querySelectorAll("[data-wallet-toggle]").forEach((root) => {
+      if (root.dataset.walletReady) return;
+      root.dataset.walletReady = "1";
+      root.innerHTML = walletCardHTML(walletBalance());
+      const input = root.querySelector("[data-wallet-input]");
+      input.addEventListener("change", () => {
+        walletApplied = input.checked ? walletBalance() : 0;
+        syncSummary();
+      });
+    });
+  }
+
+  /* ---------------------------------------------------------------
+     Order note — a pink link that expands into a compose form, then
+     collapses into a saved white card with a remove control.
+     Drop a placeholder anywhere: <div data-order-note></div>
+     --------------------------------------------------------------- */
+  function orderNoteHTML() {
+    return `
+      <button type="button" class="ordernote__toggle" data-note-toggle aria-expanded="false">
+        <span class="ordernote__toggleMain">
+          <svg class="ordernote__noteIcon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2v10Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span data-note-toggle-label>Add order note</span>
+        </span>
+        <svg class="ordernote__plus" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+      </button>
+      <div class="ordernote__panel" data-note-panel>
+        <div class="ordernote__panelInner">
+          <textarea rows="3" class="ordernote__field" data-note-field placeholder="Write a note for your order (e.g. happy birthday message)…"></textarea>
+          <div class="ordernote__actions">
+            <button type="button" class="btn btn--primary btn--sm" data-note-save>Add note</button>
+          </div>
+        </div>
+      </div>
+      <div data-note-saved hidden></div>`;
+  }
+  function initOrderNote(scope) {
+    scope.querySelectorAll("[data-order-note]").forEach((root) => {
+      if (root.dataset.noteReady) return;
+      root.dataset.noteReady = "1";
+      root.classList.add("ordernote");
+      root.innerHTML = orderNoteHTML();
+
+      const toggle = root.querySelector("[data-note-toggle]");
+      const label = root.querySelector("[data-note-toggle-label]");
+      const field = root.querySelector("[data-note-field]");
+      const savedWrap = root.querySelector("[data-note-saved]");
+
+      const open = (on) => {
+        root.classList.toggle("is-open", on);
+        toggle.setAttribute("aria-expanded", String(on));
+        if (on) setTimeout(() => field.focus(), 180);
+      };
+
+      function showSaved(text) {
+        savedWrap.hidden = false;
+        savedWrap.innerHTML = `
+          <div class="ordernote__saved">
+            <span class="ordernote__savedIcon"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2v10Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="ordernote__savedText">${esc(text)}</span>
+            <button type="button" class="ordernote__remove" data-note-remove aria-label="Remove note"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+          </div>`;
+        // With a note saved, the link becomes the way back in to edit it.
+        toggle.hidden = true;
+      }
+
+      /* The +/× in the toggle is the only open AND close control — a separate
+         "Close" button in the actions row would duplicate what the × does. */
+      toggle.addEventListener("click", () => open(!root.classList.contains("is-open")));
+      root.querySelector("[data-note-save]").addEventListener("click", () => {
+        const text = field.value.trim();
+        if (!text) {
+          field.focus();
+          return;
+        }
+        open(false);
+        showSaved(text);
+      });
+      savedWrap.addEventListener("click", (e) => {
+        if (!e.target.closest("[data-note-remove]")) return;
+        savedWrap.hidden = true;
+        savedWrap.innerHTML = "";
+        field.value = "";
+        toggle.hidden = false;
+        label.textContent = "Add order note";
+      });
+    });
+  }
+
+  /* Promo markup, so a bare <div data-promo></div> is enough to place the
+     field. Pages that still ship the full markup inline keep working —
+     this only fills in an empty container. */
+  function promoFieldHTML() {
+    return `
+      <div class="promo__form" data-promo-form>
+        <input type="text" class="promo__input" placeholder="Promo code" aria-label="Promo code" data-promo-input />
+        <button type="button" class="promo__apply" data-promo-apply>Apply</button>
+      </div>
+      <div class="promo__success" data-promo-success hidden>
+        <span class="promo__check"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <span class="promo__meta">
+          <span class="promo__code" data-promo-code></span>
+          <span class="promo__desc" data-promo-desc></span>
+        </span>
+        <button type="button" class="promo__remove" data-promo-remove aria-label="Remove promo code"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+      </div>
+      <span class="promo__flash" aria-hidden="true"><span class="promo__wipe"></span></span>
+      <p class="promo__error" data-promo-error role="alert" hidden></p>`;
   }
 
   function initPromo(scope) {
     scope.querySelectorAll("[data-promo]").forEach((promo) => {
       if (promo.dataset.promoReady) return;
       promo.dataset.promoReady = "1";
+      promo.classList.add("promo");
+      if (!promo.querySelector("[data-promo-form]")) promo.innerHTML = promoFieldHTML();
       const form = promo.querySelector("[data-promo-form]");
       const input = promo.querySelector("[data-promo-input]");
       const applyBtn = promo.querySelector("[data-promo-apply]");
@@ -1386,6 +2222,137 @@
     });
   }
 
+  /* ---------------------------------------------------------------
+     Select → styled dropdown. Vanilla equivalent of the shadcn/Radix
+     "same width as trigger" menu: the popup is absolutely positioned
+     with inset-inline:0 inside a wrapper that matches the trigger, so
+     it always spans exactly the trigger's width.
+
+     Progressive enhancement — the original <select> is left in place and
+     still owns the value, so anything already listening for `change`
+     (branch filters, the store picker's city→area cascade, …) keeps
+     working untouched. If a select's <option>s are rebuilt at runtime,
+     call el._uiSelectRefresh() to re-sync the menu.
+     --------------------------------------------------------------- */
+  const UI_SELECT_CHEVRON =
+    '<svg class="ui-select__chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const UI_SELECT_CHECK =
+    '<svg class="ui-select__check" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  let uiSelectOpen = null;
+  function uiSelectCloseAll() {
+    if (!uiSelectOpen) return;
+    uiSelectOpen.root.classList.remove("is-open");
+    uiSelectOpen.menu.hidden = true;
+    uiSelectOpen.trigger.setAttribute("aria-expanded", "false");
+    uiSelectOpen = null;
+  }
+
+  function initSelects(scope) {
+    scope.querySelectorAll("select").forEach((sel) => {
+      if (sel.dataset.uiSelectReady) return;
+      sel.dataset.uiSelectReady = "1";
+
+      const root = document.createElement("div");
+      root.className = "ui-select";
+      sel.parentNode.insertBefore(root, sel);
+      root.appendChild(sel);
+      sel.classList.add("ui-select__native");
+      sel.setAttribute("aria-hidden", "true");
+      sel.setAttribute("tabindex", "-1");
+
+      const trigger = document.createElement("button");
+      trigger.type = "button";
+      /* Inherit the select's own utility classes so each context keeps its
+         shape (pill on shop filters, rounded-md on checkout, etc.) — only
+         the chevron/padding behaviour is unified. */
+      trigger.className = (sel.dataset.uiSelectClass || sel.className)
+        .replace(/\bui-select__native\b/, "")
+        .trim();
+      trigger.classList.add("ui-select__trigger");
+      trigger.setAttribute("aria-haspopup", "listbox");
+      trigger.setAttribute("aria-expanded", "false");
+      trigger.innerHTML = '<span class="ui-select__value"></span>' + UI_SELECT_CHEVRON;
+      root.appendChild(trigger);
+
+      const menu = document.createElement("div");
+      menu.className = "ui-select__menu";
+      menu.setAttribute("role", "listbox");
+      menu.hidden = true;
+      root.appendChild(menu);
+
+      const valueEl = trigger.querySelector(".ui-select__value");
+
+      function render() {
+        const opts = [...sel.options];
+        valueEl.textContent = sel.selectedIndex >= 0 ? sel.options[sel.selectedIndex].textContent : "";
+        menu.innerHTML = opts
+          .map(
+            (o, i) =>
+              `<button type="button" role="option" class="ui-select__item${i === sel.selectedIndex ? " is-selected" : ""}" aria-selected="${i === sel.selectedIndex}" data-i="${i}">${UI_SELECT_CHECK}<span>${esc(o.textContent)}</span></button>`,
+          )
+          .join("");
+      }
+      render();
+      // Lets callers that repopulate <option>s re-sync the custom menu.
+      sel._uiSelectRefresh = render;
+
+      function open() {
+        uiSelectCloseAll();
+        render();
+        menu.hidden = false;
+        root.classList.add("is-open");
+        trigger.setAttribute("aria-expanded", "true");
+        uiSelectOpen = { root, menu, trigger };
+        const cur = menu.querySelector(".is-selected");
+        if (cur) cur.classList.add("is-active");
+      }
+
+      trigger.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (root.classList.contains("is-open")) uiSelectCloseAll();
+        else open();
+      });
+
+      menu.addEventListener("click", (e) => {
+        const item = e.target.closest(".ui-select__item");
+        if (!item) return;
+        e.stopPropagation();
+        sel.selectedIndex = parseInt(item.dataset.i, 10);
+        // Native event so existing change listeners fire exactly as before.
+        sel.dispatchEvent(new Event("change", { bubbles: true }));
+        render();
+        uiSelectCloseAll();
+      });
+
+      trigger.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowDown" || e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          if (!root.classList.contains("is-open")) open();
+        } else if (e.key === "Escape") {
+          uiSelectCloseAll();
+        }
+      });
+      menu.addEventListener("keydown", (e) => {
+        const items = [...menu.querySelectorAll(".ui-select__item")];
+        const cur = items.findIndex((i) => i.classList.contains("is-active"));
+        if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+          e.preventDefault();
+          const next = e.key === "ArrowDown" ? Math.min(items.length - 1, cur + 1) : Math.max(0, cur - 1);
+          items.forEach((i, n) => i.classList.toggle("is-active", n === next));
+          items[next].scrollIntoView({ block: "nearest" });
+        } else if (e.key === "Enter") {
+          e.preventDefault();
+          if (items[cur]) items[cur].click();
+        } else if (e.key === "Escape") {
+          uiSelectCloseAll();
+          trigger.focus();
+        }
+      });
+    });
+  }
+  document.addEventListener("click", uiSelectCloseAll);
+
   function initSteppers(scope) {
     scope.querySelectorAll("[data-stepper]").forEach((st) => {
       const qtyEl = st.querySelector("[data-qty]");
@@ -1400,13 +2367,42 @@
         decBtn.setAttribute("aria-label", one ? "Remove item" : "Decrease quantity");
       };
       syncDec();
+      // Cart-row steppers feed the free-shipping banner, the footer
+      // subtotal, and the header cart badge; harmless no-op for every
+      // other stepper (PDP qty picker, etc.) since updateFreeShipping()
+      // bails out when it finds no cart drawer content, and the removal
+      // branch below only fires when a [data-cart-row] ancestor exists.
+      const inCartDrawer = !!st.closest('[data-drawer="cart"]');
       st.querySelectorAll("[data-step]").forEach((b) => {
         b.addEventListener("click", () => {
           const delta = parseInt(b.getAttribute("data-step"), 10);
-          let v = parseInt(qtyEl.textContent, 10) || 1;
-          v = Math.max(1, v + delta);
-          qtyEl.textContent = v;
+          const cur = parseInt(qtyEl.textContent, 10) || 1;
+          // The trash icon at qty 1 is a promise, not just a floor: a
+          // removable stepper decrementing past 1 removes the whole row
+          // instead of clamping at 1 forever (which is what silently
+          // broke "remove item" before this fix).
+          if (delta < 0 && cur <= 1 && removable) {
+            const row = st.closest("[data-cart-row]");
+            if (row) {
+              row.remove();
+              if (inCartDrawer) {
+                bumpCart(delta);
+                checkCartEmpty();
+                updateFreeShipping();
+              } else {
+                // Cart page: no badge to bump, but the summary and the
+                // empty state both have to keep up with the removal.
+                syncCartPageSummary();
+                checkCartPageEmpty();
+              }
+              return;
+            }
+          }
+          qtyEl.textContent = Math.max(1, cur + delta);
           syncDec();
+          if (removable && inCartDrawer) bumpCart(delta);
+          if (inCartDrawer) updateFreeShipping();
+          else syncCartPageSummary();
         });
       });
     });
@@ -1445,6 +2441,302 @@
       tick();
       setInterval(tick, 1000);
     });
+  }
+
+  /* ---------------------------------------------------------------
+     Checkout steps — the page ships a two-tab stepper (Shipping →
+     Payment) but everything used to render at once. Sections carry
+     [data-checkout-step="1"|"2"]; step 1 collects shipping + personal
+     details and ends in "Continue to payment", step 2 reveals the
+     payment methods and the real "Place order" submit.
+
+     Both steps live inside ONE <form>, so step 1's CTA must be
+     type="button" — a submit there would fire the form's demo handler
+     and skip straight to thank-you.html without ever showing payment.
+     --------------------------------------------------------------- */
+  function initCheckoutSteps(scope) {
+    const form = scope.querySelector("[data-checkout-next]") && document.querySelector("form");
+    if (!form || form.dataset.stepsReady) return;
+    const nextBtn = document.querySelector("[data-checkout-next]");
+    const backBtn = document.querySelector("[data-checkout-back]");
+    const submitBtn = document.querySelector("[data-checkout-submit]");
+    if (!nextBtn || !submitBtn) return;
+    form.dataset.stepsReady = "1";
+
+    function show(step) {
+      document.querySelectorAll("[data-checkout-step]").forEach((el) => {
+        el.hidden = el.getAttribute("data-checkout-step") !== String(step);
+      });
+      nextBtn.hidden = step !== 1;
+      submitBtn.hidden = step !== 2;
+      if (backBtn) backBtn.hidden = step !== 2;
+      /* Stepper: steps before the current one are .is-done (tick + filled
+         connector), the current one is .is-current, the rest stay plain. */
+      document.querySelectorAll("[data-step-tab]").forEach((tab) => {
+        const n = parseInt(tab.getAttribute("data-step-tab"), 10);
+        tab.classList.toggle("is-current", n === step);
+        tab.classList.toggle("is-done", n < step);
+      });
+      document.querySelectorAll("[data-step-line]").forEach((line) => {
+        line.classList.toggle("is-done", step > 1);
+      });
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    nextBtn.addEventListener("click", () => {
+      /* Honour the browser's own required-field validation for step 1
+         before advancing — otherwise a user could skip past empty
+         address fields and only get stopped at the very end. */
+      const stepOne = [...document.querySelectorAll('[data-checkout-step="1"]')];
+      for (const section of stepOne) {
+        for (const field of section.querySelectorAll("input, select, textarea")) {
+          if (!field.checkValidity()) {
+            field.reportValidity();
+            return;
+          }
+        }
+      }
+      show(2);
+    });
+    if (backBtn) backBtn.addEventListener("click", () => show(1));
+    document.querySelectorAll("[data-step-tab]").forEach((tab) => {
+      tab.addEventListener("click", () => {
+        // Only allow jumping BACK to step 1 via the tabs; advancing must
+        // go through the CTA so validation still runs.
+        if (tab.getAttribute("data-step-tab") === "1") show(1);
+      });
+    });
+
+    show(1);
+  }
+
+  /* ---------------------------------------------------------------
+     Checkout option rows (.optrow) + their pickers.
+
+     Two groups, both [data-optgroup]: shipping TYPE (deliver / pickup)
+     and shipping DATE (asap / schedule). Selecting a row that carries
+     [data-opens] also opens its picker, and whatever the picker returns
+     is written back into that row's [data-opt-meta] on the right.
+     --------------------------------------------------------------- */
+  /* Branch tree — city → area → the branches assigned to that area.
+     Mirrors the BRANCHES list on branches.html, with a couple of extra
+     stores per area so the picker has something to actually filter. */
+  const STORE_TREE = {
+    Cairo: {
+      "New Cairo": ["Exception 5th Settlement — 90th St", "Exception Al Rehab — Market Mall"],
+      "Nasr City": ["Exception Nasr City — Abbas El Akkad St", "Exception City Stars — Level 2"],
+      Maadi: ["Exception Maadi — Road 9", "Exception Degla — Road 231"],
+      Zamalek: ["Exception Zamalek — 12 26th of July St"],
+      Heliopolis: ["Exception Heliopolis — Cleopatra Square", "Exception Korba — Baghdad St"],
+    },
+    Giza: {
+      "Sheikh Zayed": ["Exception Sheikh Zayed — Americana Plaza", "Exception Arkan — Arkan Plaza"],
+      Mohandessin: ["Exception Mohandessin — Gameat El Dowal St"],
+      Dokki: ["Exception Dokki — Tahrir St"],
+    },
+    Alexandria: {
+      Downtown: ["Exception Alexandria — Fouad St"],
+      Smouha: ["Exception Smouha — Green Plaza"],
+    },
+  };
+  const SCHED_SLOTS = [
+    "11:00 AM – 1:00 PM",
+    "12:00 PM – 2:00 PM",
+    "1:00 PM – 3:00 PM",
+    "3:00 PM – 5:00 PM",
+    "5:00 PM – 7:00 PM",
+    "7:00 PM – 9:00 PM",
+  ];
+
+  function initCheckoutOptions(scope) {
+    const groups = scope.querySelectorAll("[data-optgroup]");
+    if (!groups.length) return;
+
+    /* ---- row selection ---- */
+    groups.forEach((group) => {
+      if (group.dataset.optReady) return;
+      group.dataset.optReady = "1";
+      const rows = [...group.querySelectorAll(".optrow")];
+      rows.forEach((row) => {
+        row.addEventListener("click", () => {
+          rows.forEach((r) => r.classList.toggle("is-selected", r === row));
+          const opens = row.getAttribute("data-opens");
+          if (opens) openOverlay(opens);
+        });
+      });
+    });
+
+    const meta = (key) => document.querySelector('[data-opt-meta="' + key + '"]');
+    function setMeta(key, text) {
+      const el = meta(key);
+      if (!el) return;
+      el.textContent = text;
+      el.classList.remove("optrow__meta--prompt"); // resolved — no longer a prompt
+    }
+
+    /* ---- "Deliver to my address" mirrors the address selects below ---- */
+    const addressSection = document.querySelector('[data-checkout-step="1"] .grid.grid-cols-1');
+    if (addressSection && !addressSection.dataset.mirrorReady) {
+      addressSection.dataset.mirrorReady = "1";
+      const selects = [...addressSection.querySelectorAll("select")];
+      const syncAddress = () => {
+        const [, area, district] = selects.map((s) => s.options[s.selectedIndex].textContent.trim());
+        const el = meta("deliver");
+        if (el) el.textContent = [area, district].filter(Boolean).join(", ");
+      };
+      selects.forEach((s) => s.addEventListener("change", syncAddress));
+      syncAddress();
+    }
+
+    /* ---- store picker ---- */
+    const citySel = document.querySelector("[data-store-city]");
+    const areaSel = document.querySelector("[data-store-area]");
+    const storeList = document.querySelector("[data-store-list]");
+    const storeConfirm = document.querySelector("[data-store-confirm]");
+    if (citySel && areaSel && storeList && storeConfirm && !citySel.dataset.storeReady) {
+      citySel.dataset.storeReady = "1";
+      let pickedStore = null;
+
+      // These rebuild <option>s at runtime, so the enhanced menu built by
+      // initSelects() has to be told to re-read them.
+      const resync = (el) => el._uiSelectRefresh && el._uiSelectRefresh();
+      const fillCities = () => {
+        citySel.innerHTML = Object.keys(STORE_TREE)
+          .map((c) => `<option>${esc(c)}</option>`)
+          .join("");
+        resync(citySel);
+      };
+      const fillAreas = () => {
+        const areas = Object.keys(STORE_TREE[citySel.value] || {});
+        areaSel.innerHTML = areas.map((a) => `<option>${esc(a)}</option>`).join("");
+        resync(areaSel);
+      };
+      const fillStores = () => {
+        const list = (STORE_TREE[citySel.value] || {})[areaSel.value] || [];
+        pickedStore = null;
+        storeConfirm.disabled = true;
+        storeList.innerHTML = list.length
+          ? list
+              .map(
+                (s) => `
+          <button type="button" class="pickrow" data-store="${esc(s)}">
+            <span class="pickrow__radio"></span>
+            <span class="text-sm text-primaryDark">${esc(s)}</span>
+          </button>`,
+              )
+              .join("")
+          : '<p class="py-6 text-center text-sm text-gray-500">No stores in this area yet.</p>';
+      };
+
+      fillCities();
+      fillAreas();
+      fillStores();
+      citySel.addEventListener("change", () => {
+        fillAreas();
+        fillStores();
+      });
+      areaSel.addEventListener("change", fillStores);
+
+      storeList.addEventListener("click", (e) => {
+        const btn = e.target.closest("[data-store]");
+        if (!btn) return;
+        pickedStore = btn.getAttribute("data-store");
+        storeList.querySelectorAll(".pickrow").forEach((r) => r.classList.toggle("is-selected", r === btn));
+        storeConfirm.disabled = false;
+      });
+      storeConfirm.addEventListener("click", () => {
+        if (!pickedStore) return;
+        setMeta("pickup", pickedStore);
+        closeOverlay();
+      });
+    }
+
+    /* ---- schedule picker ---- */
+    const daysWrap = document.querySelector("[data-sched-days]");
+    const slotsWrap = document.querySelector("[data-sched-slots]");
+    const schedConfirm = document.querySelector("[data-sched-confirm]");
+    if (daysWrap && slotsWrap && schedConfirm && !daysWrap.dataset.schedReady) {
+      daysWrap.dataset.schedReady = "1";
+      let pickedDay = null;
+      let pickedSlot = null;
+
+      // Next 7 days starting today.
+      const days = Array.from({ length: 7 }, (_, i) => {
+        const d = new Date();
+        d.setDate(d.getDate() + i);
+        return {
+          key: String(i),
+          label: i === 0 ? "Today" : d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" }),
+          long: i === 0 ? "Today" : d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" }),
+        };
+      });
+
+      const renderSlots = () => {
+        pickedSlot = null;
+        schedConfirm.disabled = true;
+        slotsWrap.innerHTML = SCHED_SLOTS.map(
+          (s) => `
+          <button type="button" class="pickrow" data-slot="${esc(s)}">
+            <span class="pickrow__radio"></span>
+            <span class="text-sm text-primaryDark">${esc(s)}</span>
+          </button>`,
+        ).join("");
+      };
+
+      daysWrap.innerHTML = days
+        .map(
+          (d, i) => `
+        <button type="button" class="pickchip${i === 0 ? " is-selected" : ""}" data-day="${d.key}" data-day-label="${esc(d.long)}">
+          <span class="block text-sm font-semibold text-primaryDark">${esc(d.label)}</span>
+        </button>`,
+        )
+        .join("");
+      pickedDay = days[0];
+      renderSlots();
+
+      /* Day-strip arrows. Scrolls by ~2 chips a press and greys out at each
+         end so the control reflects whether there's anything left to reach. */
+      const prevBtn = document.querySelector("[data-sched-prev]");
+      const nextBtn = document.querySelector("[data-sched-next]");
+      if (prevBtn && nextBtn) {
+        const step = () => {
+          const chip = daysWrap.querySelector(".pickchip");
+          return chip ? (chip.getBoundingClientRect().width + 8) * 2 : 200;
+        };
+        const syncNav = () => {
+          const max = daysWrap.scrollWidth - daysWrap.clientWidth - 1;
+          prevBtn.disabled = daysWrap.scrollLeft <= 0;
+          nextBtn.disabled = max <= 0 || daysWrap.scrollLeft >= max;
+        };
+        prevBtn.addEventListener("click", () => daysWrap.scrollBy({ left: -step(), behavior: "smooth" }));
+        nextBtn.addEventListener("click", () => daysWrap.scrollBy({ left: step(), behavior: "smooth" }));
+        daysWrap.addEventListener("scroll", () => window.requestAnimationFrame(syncNav), { passive: true });
+        window.addEventListener("resize", syncNav);
+        syncNav();
+        // Widths are 0 while the modal is still hidden, so re-check on open.
+        document.querySelectorAll('[data-opt="later"]').forEach((r) => r.addEventListener("click", () => setTimeout(syncNav, 60)));
+      }
+
+      daysWrap.addEventListener("click", (e) => {
+        const btn = e.target.closest("[data-day]");
+        if (!btn) return;
+        daysWrap.querySelectorAll(".pickchip").forEach((c) => c.classList.toggle("is-selected", c === btn));
+        pickedDay = { long: btn.getAttribute("data-day-label") };
+        renderSlots();
+      });
+      slotsWrap.addEventListener("click", (e) => {
+        const btn = e.target.closest("[data-slot]");
+        if (!btn) return;
+        pickedSlot = btn.getAttribute("data-slot");
+        slotsWrap.querySelectorAll(".pickrow").forEach((r) => r.classList.toggle("is-selected", r === btn));
+        schedConfirm.disabled = false;
+      });
+      schedConfirm.addEventListener("click", () => {
+        if (!pickedDay || !pickedSlot) return;
+        setMeta("later", pickedDay.long + " | " + pickedSlot);
+        closeOverlay();
+      });
+    }
   }
 
   function initDemoForms(scope) {
@@ -1623,11 +2915,25 @@
   /* ---------------------------------------------------------------
      Product card — add-to-cart counter (Simple products)
      --------------------------------------------------------------- */
-  let cartCount = 4; // demo starting count (matches the seeded badges)
+  // Starts equal to the actual unit count in DEMO_CART_ITEMS (1+1=2), not
+  // an arbitrary seed — so it reaches exactly 0 when the drawer empties.
+  let cartCount = DEMO_CART_ITEMS.reduce((n, it) => n + it.qty, 0);
+  /* The branded "box of pastries" art always stays — on the header carts
+     AND the sticky/floating one. Only the dark count badge changes: it
+     shows the number while there are items, and a small white bag glyph
+     once the cart is empty (rather than a bare "0", which reads as a
+     count rather than a state). One code path covers every badge on the
+     page because they all carry [data-cart-count]. */
   function setCartCount(n) {
-    document
-      .querySelectorAll("[data-cart-count]")
-      .forEach((el) => (el.textContent = n));
+    document.querySelectorAll("[data-cart-count]").forEach((el) => {
+      if (n > 0) {
+        el.textContent = n;
+        el.removeAttribute("aria-label");
+      } else {
+        el.innerHTML = ICON.bagBadge;
+        el.setAttribute("aria-label", "Cart is empty");
+      }
+    });
   }
   function bumpCart(delta) {
     cartCount = Math.max(0, cartCount + delta);
@@ -1910,10 +3216,19 @@
     initSegmented(scope);
     initGooTabs(scope);
     initSteppers(scope);
+    initSelects(scope);
     initDeliveryNote(scope);
     initPdpCallouts(scope);
+    initShippingCallout(scope);
     initPromo(scope);
+    initOrderNote(scope);
+    initWalletToggle(scope);
+    initTierBadge(scope);
+    initVouchers(scope);
+    syncWalletBalance(scope);
     initDemoForms(scope);
+    initCheckoutSteps(scope);
+    initCheckoutOptions(scope);
     initCountdown(scope);
     initReveal(scope);
     initHScroll(scope);
@@ -1954,6 +3269,9 @@
     initCatnavCurrent();
     applyLang(initialLang());
     window.kInit(document);
+    // The badge markup carries a hardcoded placeholder; sync every badge
+    // (and the floating cart's empty/full icon) to the real seeded count.
+    setCartCount(cartCount);
     initFooterReveal();
 
     // Footer DotField background (plain canvas script).

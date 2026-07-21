@@ -197,6 +197,10 @@ tailwind.config = {
           "0px 1px 3px rgba(0, 0, 0, 0.1), 0px 1px 2px rgba(0, 0, 0, 0.06)",
         "location-btn": "0px 1px 2px rgba(0, 0, 0, 0.05)",
         "search-btn": "0px 1px 2px rgba(0, 0, 0, 0.05)",
+        /* Checkout header: a very soft lift off the page rather than a
+           hard edge — two stacked layers so the falloff stays smooth
+           instead of ending in a visible line. */
+        header: "0px 1px 2px rgba(0, 0, 0, 0.03), 0px 6px 16px rgba(0, 0, 0, 0.05)",
       },
       scale: { flip: "-1" },
       borderRadius: {

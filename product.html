@@ -59,12 +59,12 @@
                 <div class="flex flex-col lg:flex-row-reverse items-start gap-3 w-full">
                   <!-- Main image -->
                   <figure class="relative bg-black-901 bg-opacity-10 w-full aspect-square rounded-xl overflow-hidden flex-1">
-                    <img id="pdp-main" src="images/singleproduct.png" alt="Chocolate Fudge Cake" class="w-full h-full object-cover" />
+                    <img id="pdp-main" src="dummy-images/image-7.webp" alt="Chocolate Fudge Cake" class="w-full h-full object-cover" />
                   </figure>
                   <!-- Thumbnail strip (horizontal on mobile, vertical on desktop). Click swaps main image. -->
                   <div class="flex flex-row lg:flex-col gap-2 w-full lg:w-[94px] shrink-0">
-                    <button type="button" onclick="swapMain(this)" data-src="images/singleproduct.png" class="pdp-thumb relative aspect-square w-16 lg:w-[94px] overflow-hidden rounded-md border-2 border-primaryColor transition-all">
-                      <img src="images/singleproduct.png" alt="Chocolate Fudge Cake view 1" class="w-full h-full object-cover" />
+                    <button type="button" onclick="swapMain(this)" data-src="dummy-images/image-7.webp" class="pdp-thumb relative aspect-square w-16 lg:w-[94px] overflow-hidden rounded-md border-2 border-primaryColor transition-all">
+                      <img src="dummy-images/image-7.webp" alt="Chocolate Fudge Cake view 1" class="w-full h-full object-cover" />
                     </button>
                     <button type="button" onclick="swapMain(this)" data-src="dummy-images/image-2.webp" class="pdp-thumb relative aspect-square w-16 lg:w-[94px] overflow-hidden rounded-md border-2 border-transparent opacity-50 transition-all">
                       <img src="dummy-images/image-2.webp" alt="Chocolate Fudge Cake view 2" class="w-full h-full object-cover" />
@@ -72,8 +72,8 @@
                     <button type="button" onclick="swapMain(this)" data-src="dummy-images/image-7.webp" class="pdp-thumb relative aspect-square w-16 lg:w-[94px] overflow-hidden rounded-md border-2 border-transparent opacity-50 transition-all">
                       <img src="dummy-images/image-7.webp" alt="Chocolate Fudge Cake view 3" class="w-full h-full object-cover" />
                     </button>
-                    <button type="button" onclick="swapMain(this)" data-src="images/secondmemoryimage.png" class="pdp-thumb relative aspect-square w-16 lg:w-[94px] overflow-hidden rounded-md border-2 border-transparent opacity-50 transition-all">
-                      <img src="images/secondmemoryimage.png" alt="Chocolate Fudge Cake view 4" class="w-full h-full object-cover" />
+                    <button type="button" onclick="swapMain(this)" data-src="dummy-images/special-cake.webp" class="pdp-thumb relative aspect-square w-16 lg:w-[94px] overflow-hidden rounded-md border-2 border-transparent opacity-50 transition-all">
+                      <img src="dummy-images/special-cake.webp" alt="Chocolate Fudge Cake view 4" class="w-full h-full object-cover" />
                     </button>
                   </div>
                 </div>
@@ -101,11 +101,11 @@
                     <!-- Product name + reviews / servings badges -->
                     <div class="flex items-center gap-3 flex-wrap">
                       <h1 class="text-lg font-semibold text-textSecondary md:text-xl lg:text-3xl">Chocolate Fudge Cake</h1>
-                      <span class="inline-flex items-center gap-1.5 bg-primary-light rounded-[4px] px-2.5 py-1">
+                      <a href="#reviews" class="inline-flex items-center gap-1.5 bg-primary-light rounded-[4px] px-2.5 py-1 hover:bg-primary-200 transition-colors">
                         <svg viewBox="0 0 24 24" class="w-4 h-4 text-cta fill-current"><path d="M12 2l2.9 6.26L21.6 9.27l-4.8 4.68 1.13 6.6L12 17.77l-5.93 3.12 1.13-6.6-4.8-4.68 6.7-1.01L12 2z"/></svg>
                         <span class="text-primaryDark text-xs font-semibold">4.5</span>
-                        <span class="text-gray-700 text-xs">(128 reviews)</span>
-                      </span>
+                        <span class="text-gray-700 text-xs underline">(128 reviews)</span>
+                      </a>
                       <span class="inline-flex items-center gap-1.5 bg-primary-light rounded-[4px] px-2.5 py-1">
                         <img src="images/icons/group.svg" alt="" class="w-4 h-4" />
                         <span class="text-primaryDark text-xs font-semibold">8–10</span>
@@ -326,13 +326,13 @@
       <!-- ============================ CUSTOMER REVIEWS ============================
            Customer reviews for this product. The "Leave a review" button is gated
            on purchase via .review-cta + <body data-purchased> (see styles.css). -->
-      <section class="py-10 md:py-16">
+      <section id="reviews" class="py-10 md:py-16 scroll-mt-24">
         <div class="mx-auto w-full max-w-[1512px] px-6 lg:px-[60px]">
           <div class="flex flex-col gap-8">
             <!-- Header: rating summary (left) + gated CTA (right) -->
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-gray-200 pb-6">
               <div class="flex flex-col gap-1.5">
-                <span class="font-Caveat font-semibold text-accent-600 text-[22px] leading-none md:text-[28px]">Loved by Our Customers</span>
+                <span class="eyebrow">Loved by Our Customers</span>
                 <div class="flex items-center gap-3 flex-wrap">
                   <h2 class="font-semibold text-textSecondary text-xl md:text-3xl">Customer Reviews</h2>
                   <span class="inline-flex items-center gap-1.5 bg-primary-light rounded-[4px] px-2.5 py-1">
@@ -543,27 +543,45 @@
         </div>
       </section>
 
-      <!-- ============================ PREPARED SECTION ============================
-           Source: PreparedSection → SectionLinearGradient(top) with copy + image. -->
-      <section class="relative flex flex-col justify-center items-start py-8 md:py-12 px-4 md:px-8 lg:px-16 gap-6 md:gap-10 bg-gradient-to-b from-lightBlue to-neutral-cream">
-        <div class="w-full flex flex-col items-center justify-center gap-2">
-          <div class="w-full mx-auto max-w-[1392px] flex flex-col-reverse lg:flex-row items-center gap-8 md:gap-12 lg:gap-14 isolate">
-            <div class="flex flex-col justify-center items-start gap-2 md:gap-3 flex-1 min-w-0">
-              <span class="font-Caveat font-semibold text-accent-600 text-2xl md:text-3xl leading-10 tracking-tight">Prepared with care</span>
-              <h2 class="font-semibold text-textSecondary text-3xl md:text-5xl leading-[1.2] max-w-[46ch]">Freshly Baked,<br class="hidden md:block" /> Never Frozen</h2>
-              <p class="text-neutral-700 text-base leading-[1.4] max-w-[60ch]">Every dessert is handcrafted the morning it ships, using time-honoured recipes and the finest Egyptian and Belgian ingredients — so it reaches you tasting exactly as it should.</p>
+      <!-- ============================ CATEGORY ROW — BANNER: Cakes and Gateaux ============================
+           Full Category Row component (see index.html "CATEGORY ROW"), not the
+           No-Banner variant used above for Related Products. The banner tile
+           uses a fixed "Explore More in" cap instead of the index.html
+           pattern's category-name cap + starting price, since this is a
+           single-category promo rather than a shop-wide teaser. -->
+      <section class="bg-gray-200 pt-2 pb-10 md:pb-14">
+        <div class="mx-auto max-w-[1392px] px-4">
+          <div class="rounded-[20px] bg-white border border-gray-200 p-4 md:p-8">
+            <div class="mb-6 flex items-center justify-between gap-4">
+              <h2 class="text-xl font-semibold text-primaryDark md:text-[28px]">Cakes and Gateaux</h2>
+              <a href="shop-category.html" class="inline-flex shrink-0 items-center gap-2.5 rounded-[4px] bg-gray-200 px-2 py-1.5 text-sm font-medium text-[#6F7276] transition-colors hover:bg-gray-300">View All <svg viewBox="0 0 24 24" fill="none" class="h-4 w-4"><path d="M4 12h16M14 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
             </div>
-            <div class="relative flex-1 w-full max-w-[592px]">
-              <div class="relative aspect-square w-full rounded-xl overflow-hidden bg-neutral-100 shadow-custom3">
-                <img src="images/singleproduct.png" alt="Chef preparing a chocolate cake" class="w-full h-full object-cover" />
+            <div class="flex items-stretch gap-4 md:gap-8">
+              <div class="shrink-0 self-stretch">
+                <a href="shop-category.html" class="relative block h-full w-[240px] overflow-hidden rounded-[20px] md:w-[480px]">
+                  <img src="images/cakes-and-gateaux-category.webp" alt="Cakes and Gateaux" class="absolute inset-0 h-full w-full object-cover" />
+                  <div class="absolute inset-y-0 start-5 flex flex-col justify-center md:start-[30px]">
+                    <div class="inline-flex flex-col overflow-hidden rounded-[20px] text-center shadow-custom-5">
+                      <div class="bg-cta px-5 py-2.5 text-lg font-semibold text-white md:px-6 md:py-3 md:text-2xl">Explore More in</div>
+                      <div class="flex flex-col gap-1.5 bg-white px-5 py-4 text-primaryDark md:gap-2.5 md:p-6">
+                        <p class="text-xl font-semibold leading-tight md:text-[28px]">Cakes and Gateaux</p>
+                      </div>
+                    </div>
+                  </div>
+                </a>
               </div>
-              <div class="absolute left-[15rem] md:left-[-3.5rem] top-[20.5rem] md:top-[6.5rem] w-[100px] h-[100px] md:w-24 md:h-24 rounded-full overflow-hidden shadow-custom4 rotate-12 z-[2]">
-                <img src="images/shoppingwith.webp" alt="Freshly prepared" class="w-full h-full object-cover" />
+              <div class="carousel relative min-w-0 flex-1" data-loop data-align-arrows style="--carousel-gap: 16px">
+                <div class="carousel-track items-start" data-cakes-gateaux-track></div>
+                <div data-fade="start" class="pointer-events-none absolute inset-y-0 start-0 z-[1] w-10 bg-gradient-to-r from-white to-transparent opacity-0 transition-opacity duration-200"></div>
+                <div data-fade="end" class="pointer-events-none absolute inset-y-0 end-0 z-[1] w-10 bg-gradient-to-l from-white to-transparent transition-opacity duration-200"></div>
+                <button type="button" class="carousel-btn carousel-prev !rounded-[8px]" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" class="h-5 w-5"><path d="m15 6-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                <button type="button" class="carousel-btn carousel-next !rounded-[8px]" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" class="h-5 w-5"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
               </div>
             </div>
           </div>
         </div>
       </section>
+
     </main>
 
     <!-- Shared footer is injected here by scripts.js -->
@@ -613,7 +631,7 @@
           ["Salted Caramel Tart", 390, 340],
           ["Vanilla Bean Gateau", 560, 0],
         ];
-        function card([name, price, sale], i) {
+        function card([name, price, sale], i, imgs = IMGS) {
           const cur = sale ? Math.min(price, sale) : price;
           const old = sale ? Math.max(price, sale) : 0;
           const hasSale = sale && old > cur;
@@ -624,7 +642,7 @@
             <a href="product.html" class="group/card block relative" aria-label="${name}">
               <div class="relative">
                 <div class="rounded-[12px] aspect-square overflow-hidden bg-primary-light">
-                  <img src="${IMGS[i % IMGS.length]}" alt="${name}" class="w-full h-full object-cover md:group-hover/card:scale-110 transition-all duration-300" />
+                  <img src="${imgs[i % imgs.length]}" alt="${name}" class="w-full h-full object-cover md:group-hover/card:scale-110 transition-all duration-300" />
                 </div>
                 <span class="absolute end-3 -bottom-5 z-10" data-add-widget data-type="simple">
                   <button type="button" data-add-btn aria-label="Add to cart" class="grid place-items-center bg-primary-200 text-primaryDark rounded-[8px] size-[42px] shadow-custom-5 hover:bg-primary-300 transition-colors">
@@ -656,7 +674,32 @@
           </div>`;
         }
         const track = document.querySelector("[data-related-track]");
-        if (track) track.innerHTML = PRODUCTS.map(card).join("");
+        // NOTE: must be (p, i) => card(p, i), not the bare `card` reference —
+        // Array#map calls its callback with a 3rd (array) argument, which
+        // would otherwise clobber card()'s `imgs = IMGS` default parameter.
+        if (track) track.innerHTML = PRODUCTS.map((p, i) => card(p, i)).join("");
+
+        // Cakes and Gateaux category row — reuses the same card() renderer,
+        // with its own product list and a separate image pool so the two
+        // carousels on this page don't repeat photos.
+        const GATEAUX_IMGS = [
+          "dummy-images/image-6.webp",
+          "dummy-images/image-7.webp",
+          "dummy-images/image-8.webp",
+          "dummy-images/image-9.webp",
+          "dummy-images/image-10.webp",
+        ];
+        const GATEAUX_PRODUCTS = [
+          ["Mille-Feuille Slice", 180, 0],
+          ["Classic English Cake", 320, 0],
+          ["Cupcake Trio", 210, 240],
+          ["Lemon Drizzle Gateau", 350, 0],
+          ["Pistachio Cheesecake", 480, 0],
+        ];
+        const gateauxTrack = document.querySelector("[data-cakes-gateaux-track]");
+        if (gateauxTrack) {
+          gateauxTrack.innerHTML = GATEAUX_PRODUCTS.map((p, i) => card(p, i, GATEAUX_IMGS)).join("");
+        }
         // scripts.js runs its kInit(document) on DOMContentLoaded (after this inline
         // script), so the freshly-populated .carousel is picked up automatically.
       })();

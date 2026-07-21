@@ -22,7 +22,7 @@
     <main class="overflow-x-hidden">
       <!-- ============================ AUTH: REGISTER ============================ -->
       <!-- Mirrors RegisterContainer.tsx: single centered card on a lightBlue→cream gradient. -->
-      <div class="px-4 py-10 md:py-24 bg-gradient-to-b from-lightBlue to-neutral-cream">
+      <div class="px-4 py-10 md:py-24 bg-gray-100">
         <div class="mx-auto w-full max-w-[712px]">
           <div class="rounded-[20px] bg-white px-5 py-6 border border-gray-300 md:px-8 flex flex-col gap-5">
             <h1 class="mb-5 pb-5 border-primaryLight border-b font-medium text-primaryDark text-2xl text-center">Create Account</h1>
@@ -91,7 +91,7 @@
 
               <!-- Date of birth (native selects, populated below) -->
               <div class="grid grid-cols-3 gap-x-4 gap-y-2 md:gap-x-8">
-                <h5 class="col-span-3 text-gray-700">Date of birth</h5>
+                <h5 class="col-span-3 text-gray-700">Date of Birth</h5>
                 <div class="relative">
                   <select id="dobDay" name="dobDay" class="h-11 px-2.5 text-sm font-medium text-primaryText rounded-md w-full border border-customGrayMedium focus:border-primary-400 appearance-none bg-white outline-none">
                     <option value="">Day</option>
@@ -115,19 +115,23 @@
               <!-- Gender -->
               <div class="flex flex-col gap-1">
                 <h3 class="text-gray-700">Gender</h3>
-                <div class="flex gap-4 max-sm:w-full">
-                  <label class="flex items-center gap-2 text-textSecondary cursor-pointer">
-                    <input type="radio" name="gender" value="male" class="accent-primaryDark" /> Male
-                  </label>
-                  <label class="flex items-center gap-2 text-textSecondary cursor-pointer">
-                    <input type="radio" name="gender" value="female" class="accent-primaryDark" /> Female
-                  </label>
-                </div>
+                <div class="optrow-group optrow-group--row">
+<label class="optrow">
+  <input type="radio" name="gender" value="male" class="sr-only" />
+  <span class="optrow__radio"></span>
+  <span class="optrow__body"><span class="optrow__title">Male</span></span>
+</label>
+<label class="optrow">
+  <input type="radio" name="gender" value="female" checked class="sr-only" />
+  <span class="optrow__radio"></span>
+  <span class="optrow__body"><span class="optrow__title">Female</span></span>
+</label>
+</div>
               </div>
 
               <!-- Terms -->
               <label class="flex items-start gap-2 text-sm text-gray-700">
-                <input type="checkbox" name="terms" required class="mt-0.5 h-4 w-4 shrink-0 accent-primaryDark" />
+                <input type="checkbox" name="terms" required class="mt-0.5" />
                 <span>I agree to the <a href="terms-conditions.html" class="text-primaryDark underline">Terms &amp; Conditions</a> and <a href="privacy-policy.html" class="text-primaryDark underline">Privacy Policy</a>.</span>
               </label>
 

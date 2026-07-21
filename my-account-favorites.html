@@ -15,33 +15,31 @@
     <!-- Shared header is injected here by scripts.js -->
     <div id="site-header"></div>
 
-    <main class="overflow-x-hidden">
+    <main class="overflow-x-clip bg-gray-100">
       <!-- Account layout: two-column grid (sidebar collapses above content on mobile) -->
       <div class="flex lg:flex-row flex-col items-start gap-7 md:gap-10 mx-auto px-4 py-10 md:py-20 max-w-[1392px]">
         <!-- ============================ ACCOUNT SIDEBAR ============================ -->
-        <aside class="w-full lg:w-[25%] lg:min-h-[520px] shrink-0">
-          <div class="rounded-[20px] border border-gray-300 bg-white p-5 md:p-6 lg:pt-6">
-            <div class="flex items-center gap-4 lg:flex-col lg:items-start border-b border-gray-200 pb-5">
+        <aside class="w-full lg:w-[25%] lg:min-h-[520px] shrink-0 lg:self-stretch">
+          <div class="rounded-[20px] border border-gray-300 bg-white p-5 md:p-6 lg:pt-6 lg:sticky lg:top-[99px] lg:max-h-[calc(100vh-115px)] lg:overflow-y-auto">
+            <div class="flex items-center gap-4 lg:flex-col lg:items-start border-b border-gray-300 pb-5">
               <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-primary-light text-xl font-semibold text-primaryDark">MH</div>
               <div class="flex flex-col gap-1.5">
-                <span class="flex w-fit items-center gap-1.5 rounded-md bg-accent-900 px-3 py-1 text-xs font-semibold capitalize text-accent-100">
-                  <svg viewBox="0 0 24 24" fill="currentColor" class="h-3.5 w-3.5"><path d="m12 2 2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77 5.82 21l1.18-6.86-5-4.87 7.1-1.01L12 2Z"/></svg>
-                  Gold
-                </span>
+                <span data-tier-badge></span>
                 <h3 class="text-lg font-medium text-primaryDark md:text-2xl">Mariam Hassan</h3>
               </div>
             </div>
             <ul class="space-y-2.5 pt-5">
-              <li><a href="my-account.html" class="flex items-center gap-3 md:gap-5 rounded-lg px-4 xl:px-7 py-2.5 transition-all duration-200 text-gray-700 hover:bg-primary-light"><span class="inline-block w-5 md:w-6"><svg viewBox="0 0 24 24" fill="none" class="w-full"><path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Dashboard</span></a></li>
-              <li><a href="my-account-profile.html" class="flex items-center gap-3 md:gap-5 rounded-lg px-4 xl:px-7 py-2.5 transition-all duration-200 text-gray-700 hover:bg-primary-light"><span class="inline-block w-5 md:w-6"><svg viewBox="0 0 24 24" fill="none" class="w-full"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.6"/><path d="M4 21a8 8 0 0 1 16 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Profile</span></a></li>
-              <li><a href="my-account-orders.html" class="flex items-center gap-3 md:gap-5 rounded-lg px-4 xl:px-7 py-2.5 transition-all duration-200 text-gray-700 hover:bg-primary-light"><span class="inline-block w-5 md:w-6"><svg viewBox="0 0 24 24" fill="none" class="w-full"><path d="M21 8 12 3 3 8v8l9 5 9-5V8Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="m3 8 9 5 9-5M12 13v8" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Orders</span></a></li>
-              <li><a href="my-account-addresses.html" class="flex items-center gap-3 md:gap-5 rounded-lg px-4 xl:px-7 py-2.5 transition-all duration-200 text-gray-700 hover:bg-primary-light"><span class="inline-block w-5 md:w-6"><svg viewBox="0 0 24 24" fill="none" class="w-full"><path d="M3 10.5 12 3l9 7.5M5.5 9v11h13V9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Addresses</span></a></li>
-              <li><a href="my-account-favorites.html" aria-current="page" class="flex items-center gap-3 md:gap-5 rounded-lg px-4 xl:px-7 py-2.5 transition-all duration-200 bg-primary-light text-primaryDark"><span class="inline-block w-5 md:w-6"><svg viewBox="0 0 24 24" fill="none" class="w-full"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78Z" stroke="currentColor" stroke-width="1.6"/></svg></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Favorites</span></a></li>
-              <li><a href="my-account-wallet.html" class="flex items-center gap-3 md:gap-5 rounded-lg px-4 xl:px-7 py-2.5 transition-all duration-200 text-gray-700 hover:bg-primary-light"><span class="inline-block w-5 md:w-6"><svg viewBox="0 0 24 24" fill="none" class="w-full"><path d="M3 7a2 2 0 0 1 2-2h12v4M3 7v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-3M21 11h-5a2 2 0 0 0 0 4h5V9a2 2 0 0 0-2-2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Wallet</span></a></li>
-              <li><a href="my-account-point.html" class="flex items-center gap-3 md:gap-5 rounded-lg px-4 xl:px-7 py-2.5 transition-all duration-200 text-gray-700 hover:bg-primary-light"><span class="inline-block w-5 md:w-6"><img src="images/pointwallet.png" alt="Points" class="w-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Points</span></a></li>
+              <li><a href="my-account.html" class="flex items-center gap-3 md:gap-5 rounded-lg px-4 xl:px-7 py-2.5 transition-all duration-200 text-gray-700 hover:bg-primary-light"><span class="inline-block w-5 md:w-6"><img src="images/icons/account%20icons/overview.webp" alt="Dashboard" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Dashboard</span></a></li>
+              <li><a href="my-account-profile.html" class="flex items-center gap-3 md:gap-5 rounded-lg px-4 xl:px-7 py-2.5 transition-all duration-200 text-gray-700 hover:bg-primary-light"><span class="inline-block w-5 md:w-6"><img src="images/icons/account%20icons/preparing.webp" alt="Profile" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Profile</span></a></li>
+              <li><a href="my-account-orders.html" class="flex items-center gap-3 md:gap-5 rounded-lg px-4 xl:px-7 py-2.5 transition-all duration-200 text-gray-700 hover:bg-primary-light"><span class="inline-block w-5 md:w-6"><img src="images/icons/account%20icons/preparing-1.webp" alt="Orders" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Orders</span></a></li>
+              <li><a href="my-account-addresses.html" class="flex items-center gap-3 md:gap-5 rounded-lg px-4 xl:px-7 py-2.5 transition-all duration-200 text-gray-700 hover:bg-primary-light"><span class="inline-block w-5 md:w-6"><img src="images/icons/account%20icons/preparing-2.webp" alt="Addresses" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Addresses</span></a></li>
+              <li><a href="my-account-favorites.html" aria-current="page" class="flex items-center gap-3 md:gap-5 rounded-lg px-4 xl:px-7 py-2.5 transition-all duration-200 bg-primary-light text-primaryDark"><span class="inline-block w-5 md:w-6"><img src="images/icons/account%20icons/preparing-3.webp" alt="Favorites" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Favorites</span></a></li>
+              <li><a href="my-account-wallet.html" class="flex items-center gap-3 md:gap-5 rounded-lg px-4 xl:px-7 py-2.5 transition-all duration-200 text-gray-700 hover:bg-primary-light"><span class="inline-block w-5 md:w-6"><img src="images/icons/account%20icons/wallet.webp" alt="Wallet" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Wallet</span></a></li>
+              <li><a href="my-account-vouchers.html" class="flex items-center gap-3 md:gap-5 rounded-lg px-4 xl:px-7 py-2.5 transition-all duration-200 text-gray-700 hover:bg-primary-light"><span class="inline-block w-5 md:w-6"><img src="images/icons/account%20icons/voucher.webp" alt="Vouchers" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Vouchers</span></a></li>
+              <li><a href="my-account-point.html" class="flex items-center gap-3 md:gap-5 rounded-lg px-4 xl:px-7 py-2.5 transition-all duration-200 text-gray-700 hover:bg-primary-light"><span class="inline-block w-5 md:w-6"><img src="images/icons/account%20icons/Points.webp" alt="Points" class="acct-ico w-full h-full object-contain" /></span><span class="font-semibold text-sm md:text-base whitespace-nowrap">Points</span></a></li>
             </ul>
-            <div class="mt-6 border-t border-gray-200 px-1 py-6">
-              <h4 class="mb-3 font-semibold text-neutral-support-bg md:text-lg">Need help?</h4>
+            <div class="mt-6 border-t border-gray-300 px-1 py-6">
+              <h4 class="mb-3 font-semibold text-neutral-support-bg md:text-lg">Need Help?</h4>
               <ul class="flex flex-col gap-4">
                 <li><a href="faqs.html" class="font-medium text-primaryColor text-sm md:text-base hover:underline">FAQs</a></li>
                 <li><a href="contact-us.html" class="font-medium text-primaryColor text-sm md:text-base hover:underline">Contact us</a></li>
@@ -86,10 +84,10 @@
         const IMGS = [
           "dummy-images/image-7.webp",
           "dummy-images/image-2.webp",
-          "images/singleproduct.png",
+          "dummy-images/image-7.webp",
           "dummy-images/image-8.webp",
-          "images/secondmemoryimage.png",
-          "images/saleimage.png",
+          "dummy-images/special-cake.webp",
+          "dummy-images/special-cake.webp",
         ];
         // [name, price, saleOriginal(0 = no sale)]
         const DATA = [

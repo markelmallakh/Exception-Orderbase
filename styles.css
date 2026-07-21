@@ -22,6 +22,18 @@
 
 html {
   -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+/* The [hidden] attribute must actually hide things.
+   The UA default is `[hidden] { display: none }` at specificity (0,1,0) —
+   exactly the same as Tailwind's `.flex` / `.grid` / `.block`, which load
+   afterwards and therefore WIN. Any element written as
+   `<div class="flex ..." hidden>` stayed visible: the checkout payment
+   step, the promo Discount summary row, and several tab panels were all
+   silently broken by this. !important restores the intended behaviour. */
+[hidden] {
+  display: none !important;
 }
 
 body {
@@ -1138,6 +1150,586 @@ body[data-purchased="true"] .review-gate-hint {
 }
 
 /* =================================================================
+   ORDER NOTE (.ordernote) — a pink text link that expands into a small
+   compose form, and collapses into a saved white card once submitted.
+   Height is animated via grid-template-rows: 0fr -> 1fr, which is the
+   only way to transition to an element's INTRINSIC height (max-height
+   tricks either clip long notes or ease against a wrong target).
+   ================================================================= */
+/* Full width so the note icon + label sit left and the +/× sits hard
+   right, matching the row it replaced. */
+.ordernote__toggle {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #db336c; /* Secondary/Pink */
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.ordernote__toggleMain {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: underline;
+}
+.ordernote__noteIcon {
+  flex: none;
+  width: 18px;
+  height: 18px;
+}
+/* Only the plus rotates into an ×; scoped so the note glyph beside the
+   label stays upright. */
+.ordernote__plus {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  transition: transform 0.25s ease;
+}
+.ordernote.is-open .ordernote__plus {
+  transform: rotate(45deg);
+}
+.ordernote__panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition:
+    grid-template-rows 0.28s ease,
+    opacity 0.2s ease,
+    margin-top 0.28s ease;
+  opacity: 0;
+  margin-top: 0;
+}
+.ordernote.is-open .ordernote__panel {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  margin-top: 10px;
+}
+.ordernote__panelInner {
+  overflow: hidden; /* required for the 0fr→1fr row to actually clip */
+  min-height: 0;
+}
+.ordernote__field {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #dee2e6;
+  border-radius: 10px;
+  background: #ffffff;
+  font-size: 14px;
+  color: #182325;
+  resize: none;
+  outline: none;
+  transition: border-color 0.18s ease;
+}
+.ordernote__field:focus {
+  border-color: #182325;
+}
+.ordernote__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}
+/* Saved state: the note reads as a record, not an input. */
+.ordernote__saved {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px;
+  background: #ffffff;
+  border: 1px solid #dee2e6;
+  border-radius: 10px;
+  animation: ordernoteIn 0.22s ease-out;
+}
+@keyframes ordernoteIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.ordernote__savedIcon {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+  color: #db336c;
+}
+.ordernote__savedText {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: #182325;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.ordernote__remove {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: #6f7276;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+.ordernote__remove:hover {
+  background: #f3f4f6;
+  color: #db336c;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ordernote__panel,
+  .ordernote__toggle svg,
+  .ordernote__saved {
+    transition: none;
+    animation: none;
+  }
+}
+
+/* =================================================================
+   SELECT / DROPDOWN (.ui-select) — a vanilla stand-in for the shadcn +
+   Radix "same width as trigger" dropdown Mark referenced. This project
+   has no React/Radix, so initSelects() progressively enhances the real
+   <select> elements instead: the native element stays in the DOM (it
+   still holds the value and fires `change`, so existing listeners keep
+   working) and a styled trigger + menu is rendered over it.
+
+   This also fixes the arrow-padding problem site-wide. The old approach
+   painted a chevron as a background-image and relied on each select
+   remembering to reserve room for it (pl-4 pr-9) — most didn't, and used
+   symmetric px-4/px-5, so long option text ran underneath the arrow.
+   Here the chevron is a real flex child, so the label simply can't
+   collide with it regardless of the utility classes on the trigger.
+   ================================================================= */
+.ui-select {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+/* The native control is kept for form value + change events, but the
+   custom trigger is the interactive surface, so it's hidden from AT too. */
+.ui-select__native {
+  display: none;
+}
+.ui-select__trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  background-color: #ffffff;
+  text-align: start;
+  cursor: pointer;
+  /* Kills any inherited background-image chevron from the older
+     .label-select / .placeholder-select helpers — the SVG child replaces it. */
+  background-image: none !important;
+}
+.ui-select__value {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ui-select__chevron {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  opacity: 0.6;
+  transition: transform 0.18s ease;
+}
+.ui-select.is-open .ui-select__chevron {
+  transform: rotate(180deg);
+}
+.ui-select__menu {
+  position: absolute;
+  inset-inline: 0; /* == trigger width, the reference's key behaviour */
+  top: calc(100% + 4px);
+  z-index: 60;
+  max-height: 264px;
+  overflow-y: auto;
+  padding: 4px;
+  background: #ffffff;
+  border: 1px solid #e9e9eb;
+  border-radius: 10px;
+  box-shadow:
+    0 10px 24px rgba(0, 0, 0, 0.1),
+    0 2px 6px rgba(0, 0, 0, 0.05);
+  animation: uiSelectIn 0.12s ease-out;
+}
+@keyframes uiSelectIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.ui-select__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 7px 8px;
+  border-radius: 6px;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #182325;
+  text-align: start;
+  cursor: pointer;
+  transition: background-color 0.12s ease;
+}
+.ui-select__item:hover,
+.ui-select__item.is-active {
+  background: #f3f4f6;
+}
+.ui-select__item.is-selected {
+  font-weight: 600;
+}
+.ui-select__check {
+  flex: none;
+  width: 15px;
+  height: 15px;
+  opacity: 0;
+}
+.ui-select__item.is-selected .ui-select__check {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ui-select__menu {
+    animation: none;
+  }
+  .ui-select__chevron {
+    transition: none;
+  }
+}
+
+/* =================================================================
+   CHECKOUT STEPPER (.stepper) — numbered circles joined by a rule,
+   label beneath each, per the reference Mark supplied. Completed steps
+   swap their number for a tick and the connector fills in, so progress
+   reads at a glance instead of relying on an underline alone.
+   ================================================================= */
+.stepper {
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+}
+.stepper__step {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 150px;
+  background: none;
+  border: 0;
+  padding: 0;
+}
+.stepper__dot {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  background: #f3f4f6; /* Gray2 — upcoming */
+  color: #6b7280;
+  font-size: 15px;
+  font-weight: 600;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+.stepper__check {
+  display: none;
+  width: 20px;
+  height: 20px;
+}
+.stepper__label {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.3;
+  color: #6b7280;
+  text-align: center;
+  transition: color 0.2s ease;
+}
+/* Sits level with the dot centres (44 / 2 − 1) so the rule reads as one
+   continuous line through the circles rather than floating below them. */
+.stepper__line {
+  flex: 1;
+  height: 2px;
+  margin-top: 21px;
+  background: #eaebec;
+  transition: background 0.2s ease;
+}
+.stepper__step.is-current .stepper__dot {
+  background: #b0ded9; /* Primary/turquoise */
+  border-color: #182325;
+  color: #182325;
+}
+.stepper__step.is-current .stepper__label {
+  color: #182325;
+  font-weight: 600;
+}
+.stepper__step.is-done .stepper__dot {
+  background: #182325;
+  border-color: #182325;
+  color: #ffffff;
+}
+.stepper__step.is-done .stepper__label {
+  color: #182325;
+}
+.stepper__step.is-done .stepper__num {
+  display: none;
+}
+.stepper__step.is-done .stepper__check {
+  display: block;
+}
+.stepper__line.is-done {
+  background: #182325;
+}
+.stepper__step:not(.is-done):not(.is-current) {
+  cursor: not-allowed;
+}
+.stepper__step.is-done {
+  cursor: pointer;
+}
+
+/* =================================================================
+   OPTION ROW (.optrow) — checkout's shipping-type / shipping-date
+   selectors, modelled on the Instacart "When" list Mark referenced:
+   a full-width stacked row, icon on the LEFT, label beside it, and the
+   chosen detail right-aligned on the far side.
+
+   Selection is carried by the BORDER only (black selected / grey
+   unselected) rather than a fill — the previous turquoise-fill cards
+   read as buttons you press, not options you pick, and the fill fought
+   with the coloured icon art. box-shadow doubles the border inward so
+   the selected state reads at 2px without the row shifting by a pixel.
+   ================================================================= */
+.optrow-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+.optrow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 16px;
+  background: #ffffff;
+  border: 1px solid #dee2e6; /* Gray3 — unselected */
+  border-radius: 12px;
+  text-align: start;
+  cursor: pointer;
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+.optrow:hover {
+  border-color: #a8abaf;
+}
+.optrow.is-selected {
+  border-color: #182325; /* Primary/Black — selected */
+  box-shadow: inset 0 0 0 1px #182325;
+}
+/* Radio-backed rows (payment method) get the identical selected treatment,
+   driven by :has(:checked) rather than a JS class — the real <input
+   type="radio"> keeps owning form state and native keyboard behaviour. */
+.optrow:has(input:checked) {
+  border-color: #182325;
+  box-shadow: inset 0 0 0 1px #182325;
+}
+.optrow__radio {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid #a8abaf;
+  border-radius: 50%;
+  transition: border-color 0.18s ease;
+}
+.optrow:has(input:checked) .optrow__radio {
+  border-color: #182325;
+}
+.optrow:has(input:checked) .optrow__radio::after {
+  content: "";
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #182325;
+}
+/* Right-hand slot for payment logos / balance chips. */
+.optrow__aside {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.optrow__icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  overflow: hidden; /* clips the scaled-up art below */
+  color: #182325;
+}
+/* Every .webp icon here is drawn on a 500px canvas with ~10-16% of
+   transparent margin, so at icon size the subject rendered far smaller
+   than its box. Scaling inside an overflow:hidden box crops that dead
+   margin away — same result as re-cropping the files, but lossless.
+
+   The safe scale is 500 / (widest artwork dimension), which differs per
+   file, so it's a variable rather than a constant: express.webp's art is
+   412px wide and WOULD be clipped at the 1.28 the others use. Default
+   suits the ~390px-wide icons; override per-icon where measured. */
+.optrow__icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transform: scale(var(--icon-crop, 1.28));
+}
+.optrow__body {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+  flex: 1;
+}
+.optrow__title {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #182325;
+}
+.optrow__sub {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.35;
+  color: #6f7276;
+}
+/* Right-hand detail: the resolved choice (address / branch / time slot),
+   or the prompt that opens the picker when nothing is chosen yet. */
+/* Sized to keep the longest real value — a full branch name like
+   "Exception Mohandessin — Gameat El Dowal St" — on ONE line. At 13px
+   with a 46% cap it wrapped to two, which broke the row's rhythm. */
+.optrow__meta {
+  flex: none;
+  max-width: 58%;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.35;
+  color: #182325;
+  text-align: end;
+  white-space: nowrap;
+}
+.optrow__meta--prompt {
+  color: #db336c; /* Secondary/Pink — reads as the actionable one */
+  text-decoration: underline;
+}
+
+/* --- Picker modals (store / schedule) --- */
+.pickchip {
+  flex: none;
+  min-width: 104px;
+  padding: 10px 14px;
+  border: 1px solid #dee2e6;
+  border-radius: 10px;
+  background: #fff;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+.pickchip:hover {
+  border-color: #a8abaf;
+}
+.pickchip.is-selected {
+  border-color: #182325;
+  box-shadow: inset 0 0 0 1px #182325;
+}
+/* Day-strip arrows in the schedule picker — the row holds 7 chips and
+   overflows on any narrow viewport, so drag isn't the only affordance. */
+.sched-nav {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid #dee2e6;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #182325;
+  cursor: pointer;
+  transition:
+    border-color 0.18s ease,
+    opacity 0.18s ease;
+}
+.sched-nav:hover:not(:disabled) {
+  border-color: #182325;
+}
+.sched-nav:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.pickrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 4px;
+  border-bottom: 1px solid #f3f4f6;
+  text-align: start;
+  cursor: pointer;
+}
+.pickrow:last-child {
+  border-bottom: 0;
+}
+.pickrow__radio {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid #a8abaf;
+  border-radius: 50%;
+}
+.pickrow.is-selected .pickrow__radio {
+  border-color: #182325;
+}
+.pickrow.is-selected .pickrow__radio::after {
+  content: "";
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #182325;
+}
+
+/* =================================================================
    PDP CALLOUTS (.pdp-callouts) — the three trust badges that sit
    under the product price on the PDP (Figma 6205:31458), replacing
    the single .delivery-note bar there. Cart + checkout still use
@@ -1146,69 +1738,41 @@ body[data-purchased="true"] .review-gate-hint {
    behind the icon is drawn in CSS because the .webp art ships with a
    transparent background.
    ================================================================= */
+/* Two-row grid: Fast Delivery spans the full top row (it carries the
+   longest copy — location + Edit), the other two split the row below.
+   Single column on narrow screens where a 2-up would be too cramped. */
 .pdp-callouts {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px 20px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
   width: 100%;
   padding-block: 4px;
 }
-/* Borderless variant (Figma 6207:35931): no card, no padding — just the
-   haloed icon + text. The tinted circle behind the icon is the only
-   colour each badge carries.
-   Spacing rhythm matters here: with no boxes to separate them, the gap
-   BETWEEN badges must stay clearly larger than the icon→text gap inside
-   one, or the three read as a single dense strip. */
+@media (min-width: 480px) {
+  .pdp-callouts {
+    grid-template-columns: 1fr 1fr;
+  }
+  .callout--delivery {
+    grid-column: 1 / -1;
+  }
+}
 .callout {
   --callout-halo: transparent;
   display: flex;
-  flex: 1 1 200px;
   align-items: center;
   gap: 10px;
   min-width: 0;
-}
-/* The PDP info column is only ~390px at 1280 and ~640px at 1512 (the
-   gallery takes 698px), far narrower than the 888px Figma frame — so
-   from lg up, where the two-column layout kicks in, the badges go
-   nowrap and share the row equally at a reduced scale. Below lg the
-   column is full width and they stack. */
-@media (min-width: 1024px) {
-  .pdp-callouts {
-    flex-wrap: nowrap;
-    gap: 18px;
-  }
-  .callout {
-    flex: 1 1 0;
-    gap: 8px;
-  }
-}
-@media (min-width: 1440px) {
-  .pdp-callouts {
-    gap: 26px;
-  }
-  .callout {
-    gap: 10px;
-  }
+  padding: 6px 12px 6px 8px;
+  border: 1px solid;
+  border-radius: 10px;
 }
 .callout__icon {
   position: relative;
   flex: none;
   display: grid;
   place-items: center;
-  width: 52px;
-  height: 52px;
-}
-@media (min-width: 1024px) {
-  .callout__icon {
-    width: 40px;
-    height: 40px;
-  }
-}
-@media (min-width: 1440px) {
-  .callout__icon {
-    width: 48px;
-    height: 48px;
-  }
+  width: 48px;
+  height: 48px;
 }
 .callout__icon::before {
   content: "";
@@ -1244,41 +1808,70 @@ body[data-purchased="true"] .review-gate-hint {
   line-height: 1.45;
   color: #6f7276; /* Text/Secondary Text */
 }
+/* Pinned to the far end of the box via margin-left: auto on the flex row,
+   instead of running inline right after the subtitle text. */
+.callout__action {
+  flex: none;
+  margin-inline-start: auto;
+  padding-inline-start: 12px;
+}
 .callout__edit {
   padding: 0;
   border: 0;
   background: none;
   font: inherit;
-  font-weight: 500;
+  font-size: 12px;
+  font-weight: 600;
   line-height: 1.3;
+  white-space: nowrap;
   color: #db336c; /* Secondary/Pink */
   text-decoration: underline;
   cursor: pointer;
 }
-@media (min-width: 1024px) {
-  .callout__title {
-    font-size: 12px;
-  }
-  .callout__sub {
-    font-size: 10px;
-  }
-}
-@media (min-width: 1440px) {
-  .callout__title {
-    font-size: 13px;
-  }
-  .callout__sub {
-    font-size: 11px;
-  }
-}
-.callout--baked {
-  --callout-halo: #f8dfe2; /* Secondary/light pink */
-}
-.callout--delivery {
-  --callout-halo: #eed3b8; /* Secondary/Beige */
-}
+/* One type size at every breakpoint — the 2-up grid gives each card far
+   more room than the old 3-across row, so nothing needs to shrink. */
+/* Unified on the delivery card's beige/rose (was: a distinct colour per
+   card — pink/beige/turquoise). One palette reads as one component; the
+   --callout-halo variable stays per-card only because the icon art itself
+   is still full-colour and needs a neutral backdrop, not a coloured one. */
+.callout--baked,
+.callout--delivery,
 .callout--natural {
-  --callout-halo: #b0ded9; /* Primary/turquoise */
+  background: #fffdfb; /* near-white; the warmth now comes from the border + halo only */
+  border-color: #f6eae5; /* lightened from Secondary/Rose #E4BCB5 */
+  /* The halo carried most of the perceived weight here — at full-strength
+     Beige (#EED3B8) the card read warm no matter how pale the background
+     got, since it's a solid disc against a near-white field. Lightened to
+     roughly a 35% tint of the same beige: still a visible backdrop for the
+     transparent icon art, no longer the loudest thing in the card. */
+  --callout-halo: #faece0;
+}
+
+/* =================================================================
+   EYEBROW (.eyebrow) — the small pre-headline above a section title
+   (Figma 6215:32009). Replaces the old handwritten Caveat script
+   eyebrows site-wide: uppercase bold pink on a 20% pink chip.
+   width:fit-content keeps the chip hugging its text inside stretch
+   flex columns; no nowrap, because several of these strings are much
+   longer than the Figma sample and must be free to wrap on mobile.
+   ================================================================= */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(219, 51, 108, 0.2); /* Secondary/Pink @ 20% */
+  color: #db336c; /* Secondary/Pink */
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.45;
+  /* Positive tracking, unlike the Figma sample's -0.07px: that was set at
+     14px, and tight spacing on small uppercase text hurts legibility. */
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  text-align: center;
 }
 
 /* =================================================================
@@ -1318,7 +1911,8 @@ body[data-purchased="true"] .review-gate-hint {
    "Discount − EGP 0.00" on a cart with no code applied. */
 .promo__form[hidden],
 .promo__success[hidden],
-[data-summary-discount-row][hidden] {
+[data-summary-discount-row][hidden],
+[data-summary-wallet-row][hidden] {
   display: none;
 }
 .promo__input {
@@ -1500,6 +2094,12 @@ body[data-purchased="true"] .review-gate-hint {
   inset: 0;
   z-index: 90;
   pointer-events: none;
+}
+/* Lifts the burst above .side-drawer (z-100) / .bottom-sheet / .modal-shell.
+   Without this a celebration fired from inside the cart drawer renders
+   BEHIND the drawer panel and is never seen. */
+.promo-fx--over-overlay {
+  z-index: 120;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1982,3 +2582,527 @@ body[data-purchased="true"] .review-gate-hint {
   }
 }
 
+
+/* ---------------------------------------------------------------
+   WALLET TOGGLE — "Use My Wallet Balance" card (Figma 6231-56797).
+   Mint surface + brand wallet illustration + the balance as a
+   turquoise badge + a switch on the end. Rendered by
+   walletCardHTML()/initWalletToggle() in scripts.js into any
+   <div data-wallet-toggle></div>.
+
+   The whole card is a <label>, so tapping anywhere on it flips the
+   switch — the switch itself is a 46px target, too small to be the
+   only hit area on mobile.
+   --------------------------------------------------------------- */
+.wallet-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  /* Light grey + a hairline border so the card reads as a distinct
+     surface on the white summary — grey alone at this lightness barely
+     separates from the page. */
+  background: #f3f4f6;
+  border: 1px solid #dee2e6;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+}
+/* wallet.webp is 500x500 but its artwork fills only ~63% of the frame
+   (8-12% transparent padding per side), so a plain 38px box rendered a
+   ~31px wallet. Scaling past the box crops that dead padding out
+   visually — the transparent margin overflows instead of eating layout
+   space. Box x scale is what to tune, not the box alone. */
+.wallet-toggle__icon {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  object-fit: contain;
+  transform: scale(1.28);
+}
+/* min-width:0 defeats the flex default of min-width:auto, which would
+   otherwise pin this to its full text width and push the badge and
+   switch outside the card on narrow summaries. It wraps instead.
+   white-space:normal is REQUIRED, not redundant: the checkout summary
+   sets nowrap on an ancestor, and inheriting it made the label shrink
+   without wrapping so the text ran underneath the badge. */
+.wallet-toggle__label {
+  min-width: 0;
+  white-space: normal;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: #182325;
+}
+.wallet-toggle__amount {
+  flex: none;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: #8cbab5; /* brand dark turquoise */
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+/* Visually hidden, but still focusable + operable by keyboard/AT. */
+.wallet-toggle__input {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+/* margin-inline-start:auto pins the switch to the end no matter how
+   long the label or balance runs. */
+.wallet-toggle__switch {
+  position: relative;
+  flex: none;
+  margin-inline-start: auto;
+  width: 46px;
+  height: 26px;
+  border-radius: 999px;
+  background: #dee2e6; /* grey-3 = off */
+  transition: background 0.22s ease;
+}
+.wallet-toggle__switch::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  inset-inline-start: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+  transition: transform 0.22s cubic-bezier(0.34, 1.25, 0.64, 1);
+}
+/* On = primaryDark, matching .chip.is-active and .segmented__thumb —
+   the site's established "this is active" signal. Turquoise would
+   read as decoration next to the badge instead of as state. */
+.wallet-toggle__input:checked ~ .wallet-toggle__switch {
+  background: #182325;
+}
+.wallet-toggle__input:checked ~ .wallet-toggle__switch::after {
+  transform: translateX(20px);
+}
+/* The knob travels the other way under RTL (site is bilingual EN/AR);
+   inset-inline-start places it, but transform is physical. */
+[dir="rtl"] .wallet-toggle__input:checked ~ .wallet-toggle__switch::after {
+  transform: translateX(-20px);
+}
+.wallet-toggle__input:focus-visible ~ .wallet-toggle__switch {
+  outline: 2px solid #182325;
+  outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .wallet-toggle__switch,
+  .wallet-toggle__switch::after {
+    transition: none;
+  }
+}
+/* Narrow summaries (mobile checkout/cart): tighten every fixed-width
+   part so the label keeps enough room to stay on one or two lines
+   instead of wrapping to three. */
+@media (max-width: 420px) {
+  .wallet-toggle {
+    gap: 5px;
+    padding: 10px 12px;
+  }
+  .wallet-toggle__icon {
+    width: 38px;
+    height: 38px;
+  }
+  .wallet-toggle__label {
+    font-size: 14px;
+  }
+  .wallet-toggle__amount {
+    padding: 3px 6px;
+    font-size: 12px;
+  }
+  .wallet-toggle__switch {
+    width: 42px;
+    height: 24px;
+  }
+  .wallet-toggle__switch::after {
+    width: 18px;
+    height: 18px;
+  }
+  .wallet-toggle__input:checked ~ .wallet-toggle__switch::after {
+    transform: translateX(18px);
+  }
+  [dir="rtl"] .wallet-toggle__input:checked ~ .wallet-toggle__switch::after {
+    transform: translateX(-18px);
+  }
+}
+
+/* ---------------------------------------------------------------
+   CHECKBOX — the ONE checkbox for the whole site.
+
+   Vanilla port of the 21st.dev/@ringlabs "animated check box". The
+   original is React + shadcn + a NEON theme (#00ffaa on black, glow,
+   12 exploding particles, 4 sparks, flowing borders); this site has no
+   React/build step, and neon-on-black would fight a light pastry brand.
+   Kept: the box, the draw-on checkmark, the pop, and one ring pulse.
+   Dropped: glow, particles, sparks, border-flow. Recoloured to brand
+   black #182325 per Mark.
+
+   Applied by ELEMENT selector, not a class, so every checkbox on the
+   site — including ones added later — is styled without touching
+   markup. appearance:none is what lets a checkbox carry ::before and
+   ::after at all.
+
+   Excluded: .wallet-toggle__input, which is a visually-hidden switch
+   input (see [[exception-wallet-toggle]]) and must NOT render a box.
+   --------------------------------------------------------------- */
+input[type="checkbox"]:not(.wallet-toggle__input) {
+  -webkit-appearance: none;
+  appearance: none;
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  padding: 0;
+  /* Mid-grey (brand grey-5), not the grey-3 hairline used on inputs and
+     card edges: an empty checkbox has no fill to give it presence, so a
+     light border left it easy to miss on white. Hover goes to the same
+     black it fills with when checked, previewing the checked state. */
+  border: 1.5px solid #6b7280;
+  border-radius: 5px;
+  background: #fff;
+  cursor: pointer;
+  transition: background-color 0.22s ease, border-color 0.22s ease;
+}
+input[type="checkbox"]:not(.wallet-toggle__input):hover {
+  border-color: #182325;
+}
+input[type="checkbox"]:not(.wallet-toggle__input):checked {
+  background: #182325;
+  border-color: #182325;
+  animation: cbxPop 0.32s cubic-bezier(0.34, 1.35, 0.64, 1);
+}
+input[type="checkbox"]:not(.wallet-toggle__input):focus-visible {
+  outline: 2px solid #182325;
+  outline-offset: 2px;
+}
+/* The tick. The SVG mask gives a real stroked checkmark (round caps,
+   correct proportions) that a clip-path polygon cannot; clip-path then
+   wipes it on left-to-right, which is what reads as "drawn" — the
+   reference's stroke-dashoffset trick, achieved without an inline SVG
+   element to hang it on. Sized in % so it tracks the box if the size
+   is ever changed. */
+input[type="checkbox"]:not(.wallet-toggle__input)::before {
+  content: "";
+  /* Absolutely positioned, NOT a centred grid item: as a grid item the
+     % size resolved against an auto-sized (content) track and collapsed
+     the tick to 0x0. Inset % resolves against the input's own box. */
+  position: absolute;
+  inset: 16%;
+  background: #fff;
+  -webkit-mask: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12.5l5.5 5.5L20 6.5'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12.5l5.5 5.5L20 6.5'/%3E%3C/svg%3E") center / contain no-repeat;
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 0.28s cubic-bezier(0.16, 1, 0.3, 1) 0.04s;
+}
+input[type="checkbox"]:not(.wallet-toggle__input):checked::before {
+  clip-path: inset(0 0 0 0);
+}
+/* Ring pulse. Re-arms for free: unchecking drops :checked, which
+   removes the animation, so re-checking replays it — no JS reflow
+   hack needed (cf. .counter .is-pop). */
+input[type="checkbox"]:not(.wallet-toggle__input)::after {
+  content: "";
+  position: absolute;
+  inset: -1.5px;
+  border-radius: 7px;
+  border: 2px solid #182325;
+  opacity: 0;
+  pointer-events: none;
+}
+input[type="checkbox"]:not(.wallet-toggle__input):checked::after {
+  animation: cbxRing 0.5s ease-out;
+}
+@keyframes cbxPop {
+  0% { transform: scale(1); }
+  45% { transform: scale(1.14); }
+  100% { transform: scale(1); }
+}
+@keyframes cbxRing {
+  0% { opacity: 0.55; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.9); }
+}
+@media (prefers-reduced-motion: reduce) {
+  input[type="checkbox"]:not(.wallet-toggle__input),
+  input[type="checkbox"]:not(.wallet-toggle__input)::before {
+    transition: none;
+  }
+  input[type="checkbox"]:not(.wallet-toggle__input):checked,
+  input[type="checkbox"]:not(.wallet-toggle__input):checked::after {
+    animation: none;
+  }
+}
+
+/* ---------------------------------------------------------------
+   ACCOUNT NAV ICONS — the client's illustrated set in
+   images/icons/account icons/ is the ONLY icon source allowed on the
+   my-account pages (Mark, 2026-07-21).
+
+   Each file is 500x500 but its artwork (incl. the sparkle flourishes)
+   fills only ~41% of the frame, so in a 24px nav box the drawing
+   rendered ~15px and read as a speck. Scaling past the layout box
+   crops the transparent padding without changing row heights — the
+   same technique as .wallet-toggle__icon, just a bigger factor
+   because the padding here is far heavier.
+   --------------------------------------------------------------- */
+.acct-ico {
+  transform: scale(1.5);
+  transform-origin: center;
+}
+
+/* ---------------------------------------------------------------
+   TIER BADGE — membership tiers Golden / Silver / Platinum
+   (Figma 6233-56907). Gradient pill + circular avatar + uppercase
+   label. Rendered by tierBadgeHTML()/initTierBadge() in scripts.js
+   into any <span data-tier-badge></span>.
+
+   Gradient runs from the light end at the icon to the dark end under
+   the label, so the white text always sits on the dark half.
+   --------------------------------------------------------------- */
+.tier-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px;
+  padding-inline-end: 12px;
+  border-radius: 999px;
+  line-height: 1;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+  background: linear-gradient(to right, var(--tb-from), var(--tb-to));
+}
+/* Gradient is directional, so it must mirror under RTL (site is EN/AR) */
+[dir="rtl"] .tier-badge {
+  background: linear-gradient(to left, var(--tb-from), var(--tb-to));
+}
+.tier-badge__ico {
+  position: relative;
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--tb-ico);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+/* Absolutely positioned, NOT a centred grid item — a %-sized pseudo/child
+   in an auto-sized track collapses to 0 (same trap as the checkbox tick).
+   scale() crops the heavy transparent padding in the account-icon artwork
+   (~41% fill) so the figure fills the circle. */
+.tier-badge__ico img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transform: scale(1.45);
+}
+.tier-badge__label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #fff;
+  white-space: nowrap;
+}
+.tier-badge--golden {
+  --tb-from: #c98b45;
+  --tb-to: #8a4a17;
+  --tb-ico: #f7e7ce;
+}
+.tier-badge--silver {
+  --tb-from: #c9cdd1;
+  --tb-to: #3e4245;
+  --tb-ico: #ffffff;
+}
+/* The one tier whose figure is monochrome in the design */
+.tier-badge--silver .tier-badge__ico img {
+  filter: grayscale(1);
+}
+.tier-badge--platinum {
+  --tb-from: #63b4a3;
+  --tb-to: #2c8a72;
+  --tb-ico: #f8dfe2;
+}
+
+/* Side-by-side variant of .optrow-group — for short 2-option pickers
+   (gender, apartment/villa) where a stacked column wastes a full row.
+   Wraps to a column below 480px so the rows never get too narrow to
+   read. Same .optrow children, so selection styling is identical to
+   checkout's payment picker. */
+.optrow-group--row {
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.optrow-group--row > .optrow {
+  flex: 1 1 160px;
+  width: auto;
+}
+
+/* ---------------------------------------------------------------
+   VOUCHER — a one-time discount code worth a fixed EGP amount
+   (my-account-vouchers.html). Structure follows the OrderBase design;
+   colours are Exception's, per Mark: the original mockup was the old
+   brown/tan template and would have matched nothing else on the site.
+
+   Available rows sit in the pink CTA family because a voucher IS a
+   discount (same family as .promo success and the price accents);
+   used rows drop to flat grey so the two groups separate at a glance
+   without needing the headings.
+   --------------------------------------------------------------- */
+.voucher-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+.voucher {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: #fdecf1; /* accent-50 */
+  border: 1px solid #f3c2cd; /* accent-200 */
+}
+.voucher__ico {
+  position: relative;
+  flex: none;
+  width: 44px;
+  height: 44px;
+}
+/* Same ~41%-fill artwork as the account icons — scale past the box to
+   crop the transparent padding (see .acct-ico). */
+.voucher__ico img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transform: scale(1.3);
+}
+.voucher__body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+.voucher__title {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: #db336c; /* cta */
+}
+.voucher__meta {
+  font-size: 12px;
+  color: #6f7276;
+}
+.voucher__action {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid #db336c;
+  color: #db336c;
+  background: transparent;
+  cursor: pointer;
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease;
+}
+.voucher__action svg {
+  width: 16px;
+  height: 16px;
+}
+.voucher__action:hover {
+  background: #db336c;
+  color: #fff;
+}
+/* Old = spent OR expired. Both share this one flat-grey style; which
+   of the two it is, is carried only by the meta label (Used … /
+   Expired …), per Mark. No action control, art desaturated. */
+.voucher--old {
+  background: #f3f4f6;
+  border-color: #dee2e6;
+}
+.voucher--old .voucher__title {
+  color: #6b7280;
+}
+.voucher--old .voucher__ico img {
+  filter: grayscale(1);
+  opacity: 0.65;
+}
+.voucher-empty {
+  padding: 18px;
+  border: 1px dashed #dee2e6;
+  border-radius: 12px;
+  color: #6f7276;
+  font-size: 14px;
+  text-align: center;
+}
+.voucher-empty[hidden] {
+  display: none;
+}
+
+/* ---------------------------------------------------------------
+   Drawer close button — sits OUTSIDE the panel, level with its top,
+   so the drawer header is pure content. .side-drawer sets no
+   overflow, so an absolutely-positioned child can escape its box.
+
+   The panel is min(420px, 90vw), so there is only room beside it once
+   the viewport is comfortably wider than 420px — below that the
+   button tucks back inside at the top corner rather than hanging off
+   the screen edge. Logical inset props keep it mirrored under RTL.
+   --------------------------------------------------------------- */
+.side-drawer__close {
+  position: absolute;
+  top: 14px;
+  inset-inline-end: 12px;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #182325;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.16);
+  cursor: pointer;
+  transition:
+    background-color 0.18s ease,
+    transform 0.18s ease;
+}
+.side-drawer__close svg {
+  width: 16px;
+  height: 16px;
+}
+.side-drawer__close:hover {
+  background: #f3f4f6;
+  transform: scale(1.05);
+}
+@media (min-width: 520px) {
+  .side-drawer--right > .side-drawer__close {
+    inset-inline-end: auto;
+    inset-inline-start: -48px;
+  }
+  .side-drawer--left > .side-drawer__close {
+    inset-inline-start: auto;
+    inset-inline-end: -48px;
+  }
+}
