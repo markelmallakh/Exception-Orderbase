@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="styles.css" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <script defer src="scripts.js"></script>
+    <script type="module" src="gradient-blinds.js"></script>
   </head>
   <body data-page="export" data-path="/export" class="antialiased bg-white">
     <!-- Shared header is injected here by scripts.js -->
@@ -390,14 +391,17 @@
       <!-- ============================ PARTNERSHIP CTA ============================ -->
       <section class="pb-14 lg:pb-20">
         <div class="container">
-          <div class="flex flex-col items-center gap-4 rounded-[32px] bg-primary-light px-6 py-12 lg:py-16 text-center" data-reveal="zoom">
-            <h2 class="text-[28px] lg:text-[40px] font-semibold text-textSecondary leading-[1.2]">Ready for a Strategic Partnership?</h2>
-            <p class="max-w-[520px] text-base text-gray-700 leading-[160%]">
-              Partner with us today and bring authentic Middle Eastern delicacies to your market.
-            </p>
-            <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
-              <a href="contact-us.html" class="btn btn--primary btn--lg">Request Samples</a>
-              <a href="mailto:export@exception-group.com" class="btn btn--black btn--lg" dir="ltr">export@exception-group.com</a>
+          <div class="relative overflow-hidden rounded-[32px] bg-[#0F3B36] px-6 py-12 lg:py-16" data-reveal="zoom">
+            <div data-gradient-blinds class="absolute inset-0 opacity-60" aria-hidden="true"></div>
+            <div class="relative z-10 flex flex-col items-center gap-4 text-center">
+              <h2 class="text-[28px] lg:text-[40px] font-semibold text-white leading-[1.2]">Ready for a Strategic Partnership?</h2>
+              <p class="max-w-[520px] text-base text-white/85 leading-[160%]">
+                Partner with us today and bring authentic Middle Eastern delicacies to your market.
+              </p>
+              <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
+                <a href="contact-us.html" class="btn btn--primary btn--lg">Request Samples</a>
+                <a href="mailto:export@exception-group.com" class="btn btn--secondary btn--lg" dir="ltr">export@exception-group.com</a>
+              </div>
             </div>
           </div>
         </div>

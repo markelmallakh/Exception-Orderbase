@@ -1871,6 +1871,12 @@ body[data-purchased="true"] .review-gate-hint {
   text-transform: uppercase;
   text-align: center;
 }
+/* On dark bands the 20%-pink chip goes muddy — use the solid light-pink
+   chip (same pairing as the About/Export hero pill) so the pink text
+   keeps its contrast. */
+.eyebrow--dark {
+  background: #f8dfe2;
+}
 
 /* =================================================================
    PROMO CODE (.promo) — matched to the motion reference Mark supplied.
