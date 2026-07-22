@@ -3124,3 +3124,24 @@ input[type="checkbox"]:not(.wallet-toggle__input):checked::after {
   max-width: none;
   margin-inline: auto;
 }
+
+/* ---------------------------------------------------------------
+   SCROLL-REVEAL TEXT — a statement fills word-by-word from light grey
+   to near-black as it scrolls through the viewport (initScrollRevealText
+   in scripts.js splits the text into .rt-word spans and drives their
+   colour from scroll position). The base colour here is the un-revealed
+   state, so it reads sensibly even before JS runs or under
+   reduced-motion (JS paints everything solid in that case).
+   --------------------------------------------------------------- */
+.reveal-text {
+  color: #d3d7db; /* grey-3-ish: the not-yet-read state */
+}
+.reveal-text .rt-word {
+  color: inherit;
+  transition: color 0.1s linear;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal-text .rt-word {
+    transition: none;
+  }
+}

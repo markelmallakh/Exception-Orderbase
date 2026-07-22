@@ -3202,6 +3202,89 @@
     els.forEach((el) => io.observe(el));
   }
 
+  /* ---------------------------------------------------------------
+     Scroll-reveal text — a statement fills word-by-word from light grey
+     to near-black as the block scrolls up through the viewport. Each
+     word interpolates its own colour from its vertical position, so the
+     fill flows top-to-bottom and both ways (re-greys on scroll up).
+
+     Drop-in: <p data-reveal-text class="reveal-text">…</p>. The text is
+     split into `.rt-word` spans once; words keep trailing spaces so the
+     line breaks are unchanged. Guarded for reduced-motion / no-JS: the
+     words just render solid dark.
+     --------------------------------------------------------------- */
+  const RT_GREY = [211, 215, 219]; // #D3D7DB — un-read
+  const RT_DARK = [24, 35, 37]; // #182325 — read (primaryDark)
+  function initScrollRevealText(scope) {
+    const blocks = (scope || document).querySelectorAll("[data-reveal-text]");
+    if (!blocks.length) return;
+    const reduce =
+      window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    blocks.forEach((el) => {
+      if (el.dataset.rtReady) return;
+      el.dataset.rtReady = "1";
+      // Split into word spans, preserving the spaces so wrapping is identical.
+      const words = el.textContent.split(/(\s+)/);
+      el.textContent = "";
+      const spans = [];
+      words.forEach((chunk) => {
+        if (/^\s+$/.test(chunk)) {
+          el.appendChild(document.createTextNode(chunk));
+        } else if (chunk) {
+          const span = document.createElement("span");
+          span.className = "rt-word";
+          span.textContent = chunk;
+          el.appendChild(span);
+          spans.push(span);
+        }
+      });
+      if (reduce) {
+        spans.forEach((s) => (s.style.color = `rgb(${RT_DARK.join(",")})`));
+        return;
+      }
+      el._rtSpans = spans;
+    });
+
+    const lerp = (a, b, t) => Math.round(a + (b - a) * t);
+    const paint = () => {
+      const vh = window.innerHeight;
+      // Words above this line read as "read" (dark); the zone below it is the
+      // soft transition band, so a few words fade at once rather than snapping.
+      const readLine = vh * 0.62;
+      const zone = vh * 0.18;
+      blocks.forEach((el) => {
+        const spans = el._rtSpans;
+        if (!spans) return;
+        spans.forEach((s) => {
+          const r = s.getBoundingClientRect();
+          const mid = r.top + r.height / 2;
+          let t = (readLine + zone - mid) / (zone * 2);
+          t = t < 0 ? 0 : t > 1 ? 1 : t;
+          s.style.color = `rgb(${lerp(RT_GREY[0], RT_DARK[0], t)},${lerp(
+            RT_GREY[1],
+            RT_DARK[1],
+            t
+          )},${lerp(RT_GREY[2], RT_DARK[2], t)})`;
+        });
+      });
+    };
+    if (reduce) return;
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        paint();
+        ticking = false;
+      });
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    window.addEventListener("load", paint);
+    paint();
+  }
+
   /* Pinned horizontal scroll: cards translate X as the page scrolls
      vertically. JS-driven pin (fixed positioning) so it works even under
      the `overflow-x-hidden` main, where CSS position:sticky would fail. */
@@ -3299,6 +3382,7 @@
     initCountdown(scope);
     initPosts(scope);
     initReveal(scope);
+    initScrollRevealText(scope);
     initHScroll(scope);
   };
 
