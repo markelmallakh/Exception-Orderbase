@@ -381,7 +381,7 @@
                              <span class="label w-12 shrink-0">Area</span>
                              <select class="placeholder-select flex-1 min-w-0 border border-gray-300 rounded-lg px-3 h-11 text-sm text-primaryDark"><option>Maadi</option><option>New Cairo</option><option>Nasr City</option><option>Zamalek</option></select>
                            </label>
-                           <button type="submit" class="btn btn--primary btn--md mt-1 w-full justify-center">Confirm location</button>
+                           <button type="submit" class="btn btn--primary btn--md mt-1 w-full justify-center">Confirm Location</button>
                          </form>
                        </div>
                      </div>
@@ -716,10 +716,10 @@
           <span class="text-neutral-600 text-sm">Total</span>
           <span class="font-semibold text-primaryDark" data-cart-total></span>
         </div>
-        <a href="checkout.html" class="btn btn--primary btn--md w-full justify-center mt-3">Continue checkout</a>
+        <a href="checkout.html" class="btn btn--primary btn--md w-full justify-center mt-3">Checkout Now</a>
         <!-- View Cart moved beside the drawer title; shop.html is the
              all-products listing ("Shop the Full Collection"). -->
-        <a href="shop.html" class="mt-2 block w-full text-center text-primaryDark font-medium py-2 text-sm">Continue shopping</a>
+        <a href="shop.html" class="mt-2 block w-full text-center text-primaryDark font-medium py-2 text-sm">Continue Shopping</a>
       </div>
     </aside>
 
@@ -734,7 +734,7 @@
         </ul>
       </nav>
       <div class="px-6 py-6 border-t border-gray-200 flex items-center gap-3">
-        <a href="login.html" class="btn btn--black btn--md flex-1 justify-center">Sign in</a>
+        <a href="login.html" class="btn btn--black btn--md flex-1 justify-center">Sign In</a>
         ${languageSwitcher(true)}
       </div>
     </aside>
@@ -782,7 +782,7 @@
         </div>
         <div class="min-h-[120px] flex-1 overflow-y-auto px-5" data-store-list></div>
         <div class="shrink-0 border-t border-neutral-100 px-5 py-4">
-          <button type="button" data-store-confirm class="btn btn--primary btn--md w-full justify-center">Choose store</button>
+          <button type="button" data-store-confirm class="btn btn--primary btn--md w-full justify-center">Choose Store</button>
         </div>
       </div>
     </div>
@@ -833,7 +833,7 @@
             <option>New Cairo</option><option>Nasr City</option><option>Maadi</option><option>Zamalek</option>
           </select>
         </label>
-        <button type="submit" class="btn btn--primary btn--md mt-2 w-full justify-center">Confirm location</button>
+        <button type="submit" class="btn btn--primary btn--md mt-2 w-full justify-center">Confirm Location</button>
       </form>
     </div>
 
@@ -860,7 +860,7 @@
           <span class="label">Your review</span>
           <textarea rows="4" required placeholder="Tell others what you loved about it…" class="w-full text-sm text-textSecondary outline-none bg-white border border-neutral-200 rounded-lg p-3 resize-none placeholder:text-customGrayMedium"></textarea>
         </label>
-        <button type="submit" class="btn btn--primary btn--md w-full justify-center">Submit review</button>
+        <button type="submit" class="btn btn--primary btn--md w-full justify-center">Submit Review</button>
       </form>
     </div>
 
@@ -2093,7 +2093,7 @@
       <button type="button" class="ordernote__toggle" data-note-toggle aria-expanded="false">
         <span class="ordernote__toggleMain">
           <svg class="ordernote__noteIcon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2v10Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span data-note-toggle-label>Add order note</span>
+          <span data-note-toggle-label>Add Order Note</span>
         </span>
         <svg class="ordernote__plus" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
       </button>
@@ -2101,7 +2101,7 @@
         <div class="ordernote__panelInner">
           <textarea rows="3" class="ordernote__field" data-note-field placeholder="Write a note for your order (e.g. happy birthday message)…"></textarea>
           <div class="ordernote__actions">
-            <button type="button" class="btn btn--primary btn--sm" data-note-save>Add note</button>
+            <button type="button" class="btn btn--primary btn--sm" data-note-save>Add Note</button>
           </div>
         </div>
       </div>
