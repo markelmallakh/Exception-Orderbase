@@ -3286,6 +3286,46 @@
   }
 
   /* ---------------------------------------------------------------
+     Refer a friend — copies the referral link to the clipboard and
+     briefly flips the button to "Copied". Falls back to select+execCommand
+     where the async clipboard API is unavailable (file://, older browsers).
+     --------------------------------------------------------------- */
+  function initReferralCopy(scope) {
+    (scope || document).querySelectorAll("[data-referral]").forEach((root) => {
+      if (root.dataset.referralReady) return;
+      root.dataset.referralReady = "1";
+      const input = root.querySelector("[data-referral-link]");
+      const btn = root.querySelector("[data-referral-copy]");
+      const label = root.querySelector("[data-referral-label]");
+      if (!input || !btn || !label) return;
+      let resetTimer;
+      const flip = (text) => {
+        label.textContent = text;
+        clearTimeout(resetTimer);
+        resetTimer = setTimeout(() => (label.textContent = "Copy"), 1800);
+      };
+      btn.addEventListener("click", async () => {
+        const value = input.value;
+        try {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(value);
+          } else {
+            input.removeAttribute("readonly");
+            input.select();
+            document.execCommand("copy");
+            input.setAttribute("readonly", "");
+          }
+          flip("Copied!");
+        } catch (e) {
+          // Last resort: select the text so the user can copy manually.
+          input.select();
+          flip("Press Ctrl+C");
+        }
+      });
+    });
+  }
+
+  /* ---------------------------------------------------------------
      Vision — the pinned word "Vision" scales up and blurs away as the
      tall .vision-zone scrolls past, while the statement fades in behind
      it. Progress = how far the zone has scrolled through its own height.
@@ -3472,6 +3512,7 @@
     initReveal(scope);
     initScrollRevealText(scope);
     initVision(scope);
+    initReferralCopy(scope);
     initHScroll(scope);
   };
 

@@ -141,6 +141,31 @@
               </div>
             </div>
 
+            <!-- Refer a friend -->
+            <div class="flex flex-col items-start gap-5 rounded-[11.4px] border border-gray-300 bg-white p-5 md:flex-row md:items-center md:gap-6 md:p-6">
+              <span class="h-16 w-16 shrink-0"><img src="images/icons/Refer.webp" alt="" class="h-full w-full object-contain" /></span>
+              <div class="flex flex-1 flex-col gap-1">
+                <h3 class="text-lg font-semibold text-textSecondary">Refer a Friend</h3>
+                <p class="text-sm text-gray-700">Share your link — your friend gets EGP 50 off their first order, and so do you.</p>
+              </div>
+              <!-- Read-only link + copy. data-copy-src points at the field to copy;
+                   initReferralCopy writes to the clipboard and flips the label. -->
+              <div class="flex w-full items-center gap-2 md:w-[380px]" data-referral>
+                <input
+                  type="text"
+                  readonly
+                  aria-label="Your referral link"
+                  value="https://exception-group.com/r/MARIAM50"
+                  data-referral-link
+                  class="h-11 min-w-0 flex-1 rounded-[10px] border border-gray-300 bg-gray-100 px-3 text-sm text-textSecondary outline-none focus:border-primaryDark"
+                />
+                <button type="button" data-referral-copy class="btn btn--primary btn--md shrink-0 gap-1.5">
+                  <svg viewBox="0 0 24 24" fill="none" class="h-4 w-4" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M5 15V5a2 2 0 0 1 2-2h10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+                  <span data-referral-label>Copy</span>
+                </button>
+              </div>
+            </div>
+
             <!-- Recent orders preview -->
             <section class="w-full rounded-[11.4px] border border-gray-300 bg-white py-6 px-4 md:px-8 md:py-6">
               <div class="mb-6 flex items-center justify-between">
