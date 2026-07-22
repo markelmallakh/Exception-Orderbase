@@ -607,11 +607,15 @@
         (it) => `
       <div class="flex gap-3 py-4 border-b border-neutral-100" data-cart-row data-unit-price="${it.price}">
         <img src="${it.img}" alt="${esc(it.name)}" class="w-[72px] h-[72px] rounded-lg object-cover bg-primary-light" />
-        <div class="flex-1">
-          <p class="font-medium text-textSecondary text-sm">${esc(it.name)}</p>
-          ${vtags(it.variants)}
-          <p class="mt-1 font-semibold text-cta text-sm">EGP ${it.price}</p>
-          <div class="counter counter--sm mt-2" data-stepper data-removable>
+        <!-- Text column and counter sit side-by-side (counter no longer stacks
+             below the price), so the row is only as tall as the thumbnail. -->
+        <div class="flex flex-1 items-start gap-2 min-w-0">
+          <div class="flex-1 min-w-0">
+            <p class="font-medium text-textSecondary text-sm">${esc(it.name)}</p>
+            ${vtags(it.variants)}
+            <p class="mt-1 font-semibold text-cta text-sm">EGP ${it.price}</p>
+          </div>
+          <div class="counter counter--sm shrink-0 self-center" data-stepper data-removable>
             <button type="button" data-step="-1" class="counter__btn" aria-label="Decrease quantity"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
             <span data-qty class="counter__qty">${it.qty}</span>
             <button type="button" data-step="1" class="counter__btn counter__inc" aria-label="Increase quantity"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
