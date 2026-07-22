@@ -3189,15 +3189,28 @@ input[type="checkbox"]:not(.wallet-toggle__input):checked::after {
   top: 0;
   height: 100vh;
 }
+/* Smaller starting size than the first pass; as it blurs it stays faintly
+   visible as a backdrop rather than fading fully out. Absolutely centred in
+   the pin so the statement can sit ON TOP of the blurred word. */
 .vision-word {
-  font-size: clamp(84px, 20vw, 260px);
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  font-size: clamp(56px, 13vw, 150px);
   line-height: 1;
   will-change: transform, filter, opacity;
 }
+/* Above the blurred word, in normal flow within the pin. */
 .vision-statement {
+  position: relative;
+  z-index: 1;
   opacity: 0;
-  transform: translateY(24px);
-  will-change: transform, opacity;
+  will-change: opacity;
+}
+.vision-statement .rt-word {
+  transition: color 0.1s linear;
 }
 @media (prefers-reduced-motion: reduce) {
   /* No scroll effect: show a static, readable end state. */
@@ -3210,7 +3223,9 @@ input[type="checkbox"]:not(.wallet-toggle__input):checked::after {
     height: auto;
   }
   .vision-word {
-    font-size: clamp(64px, 12vw, 140px);
+    position: static;
+    inset: auto;
+    font-size: clamp(56px, 12vw, 120px);
   }
   .vision-statement {
     opacity: 1;

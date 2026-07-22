@@ -3301,27 +3301,63 @@
       const x = clamp((t - a) / (b - a));
       return x * x * (3 - 2 * x);
     };
+    const lerpC = (a, b, t) => Math.round(a + (b - a) * t);
+    const RT_GREY = [211, 215, 219]; // #D3D7DB
+    const RT_DARK = [24, 35, 37]; // #182325
     zones.forEach((zone) => {
       const word = zone.querySelector("[data-vision-word]");
       const stmt = zone.querySelector("[data-vision-statement]");
       if (!word || zone.dataset.visionReady) return;
       zone.dataset.visionReady = "1";
+
+      // Split the statement into word spans so it can fill grey→black as the
+      // section scrolls (same look as the Mission block, but driven by the
+      // pin's scroll progress rather than each word's vertical position —
+      // the words don't move here, they're pinned).
+      let spans = [];
+      if (stmt) {
+        const parts = stmt.textContent.split(/(\s+)/);
+        stmt.textContent = "";
+        parts.forEach((chunk) => {
+          if (/^\s+$/.test(chunk)) stmt.appendChild(document.createTextNode(chunk));
+          else if (chunk) {
+            const sp = document.createElement("span");
+            sp.className = "rt-word";
+            sp.textContent = chunk;
+            sp.style.color = `rgb(${RT_GREY.join(",")})`;
+            stmt.appendChild(sp);
+            spans.push(sp);
+          }
+        });
+      }
+
       let ticking = false;
       const paint = () => {
         const rect = zone.getBoundingClientRect();
-        // p: 0 when the zone's top reaches the viewport top, 1 when its
-        // bottom does — i.e. progress across the sticky travel.
         const travel = rect.height - window.innerHeight;
         const p = clamp(-rect.top / (travel || 1));
-        // Word: sharp until ~30%, then scales out + blurs + fades by ~72%.
-        const out = smooth(0.28, 0.72, p);
-        word.style.transform = `scale(${1 + out * 2.2})`;
-        word.style.filter = `blur(${out * 22}px)`;
-        word.style.opacity = String(1 - out);
-        // Statement: fades/rises in as the word leaves.
-        const inp = smooth(0.42, 0.82, p);
-        stmt.style.opacity = String(inp);
-        stmt.style.transform = `translateY(${(1 - inp) * 24}px)`;
+        // Word: sharp until ~26%, then scales up + blurs. It does NOT vanish —
+        // it settles to a faint blurred backdrop (opacity 0.12) so the
+        // statement reads over it.
+        const out = smooth(0.26, 0.66, p);
+        word.style.transform = `scale(${1 + out * 1.9})`;
+        word.style.filter = `blur(${out * 20}px)`;
+        word.style.opacity = String(1 - out * 0.88);
+        // Statement container fades in as the word starts blurring…
+        if (stmt) stmt.style.opacity = String(smooth(0.24, 0.4, p));
+        // …then its words fill grey→black left-to-right across the scroll.
+        const N = spans.length || 1;
+        const revealStart = 0.36;
+        const revealEnd = 0.94;
+        spans.forEach((sp, i) => {
+          const wordStart = revealStart + ((revealEnd - revealStart) * i) / N;
+          const t = clamp((p - wordStart) / 0.05);
+          sp.style.color = `rgb(${lerpC(RT_GREY[0], RT_DARK[0], t)},${lerpC(
+            RT_GREY[1],
+            RT_DARK[1],
+            t
+          )},${lerpC(RT_GREY[2], RT_DARK[2], t)})`;
+        });
       };
       const onScroll = () => {
         if (ticking) return;
