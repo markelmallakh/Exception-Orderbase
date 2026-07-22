@@ -3285,6 +3285,58 @@
     paint();
   }
 
+  /* ---------------------------------------------------------------
+     Vision — the pinned word "Vision" scales up and blurs away as the
+     tall .vision-zone scrolls past, while the statement fades in behind
+     it. Progress = how far the zone has scrolled through its own height.
+     --------------------------------------------------------------- */
+  function initVision(scope) {
+    const zones = (scope || document).querySelectorAll("[data-vision]");
+    if (!zones.length) return;
+    const reduce =
+      window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) return; // CSS shows the static end state
+    const clamp = (n) => (n < 0 ? 0 : n > 1 ? 1 : n);
+    const smooth = (a, b, t) => {
+      const x = clamp((t - a) / (b - a));
+      return x * x * (3 - 2 * x);
+    };
+    zones.forEach((zone) => {
+      const word = zone.querySelector("[data-vision-word]");
+      const stmt = zone.querySelector("[data-vision-statement]");
+      if (!word || zone.dataset.visionReady) return;
+      zone.dataset.visionReady = "1";
+      let ticking = false;
+      const paint = () => {
+        const rect = zone.getBoundingClientRect();
+        // p: 0 when the zone's top reaches the viewport top, 1 when its
+        // bottom does — i.e. progress across the sticky travel.
+        const travel = rect.height - window.innerHeight;
+        const p = clamp(-rect.top / (travel || 1));
+        // Word: sharp until ~30%, then scales out + blurs + fades by ~72%.
+        const out = smooth(0.28, 0.72, p);
+        word.style.transform = `scale(${1 + out * 2.2})`;
+        word.style.filter = `blur(${out * 22}px)`;
+        word.style.opacity = String(1 - out);
+        // Statement: fades/rises in as the word leaves.
+        const inp = smooth(0.42, 0.82, p);
+        stmt.style.opacity = String(inp);
+        stmt.style.transform = `translateY(${(1 - inp) * 24}px)`;
+      };
+      const onScroll = () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          paint();
+          ticking = false;
+        });
+      };
+      window.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("resize", onScroll);
+      paint();
+    });
+  }
+
   /* Pinned horizontal scroll: cards translate X as the page scrolls
      vertically. JS-driven pin (fixed positioning) so it works even under
      the `overflow-x-hidden` main, where CSS position:sticky would fail. */
@@ -3383,6 +3435,7 @@
     initPosts(scope);
     initReveal(scope);
     initScrollRevealText(scope);
+    initVision(scope);
     initHScroll(scope);
   };
 
