@@ -2889,12 +2889,17 @@
     // Stick the category bar once its own top reaches the viewport top
     // (i.e. once the mint header above it has scrolled away).
     let stuck = false;
+    /* z-[85], NOT z-[100]: the overlay backdrop is z-90 and the drawers/
+       modals are z-100. At z-100 the stuck category bar tied the drawer and
+       sat ON TOP of the backdrop, so opening the cart left the nav
+       undimmed. 85 keeps it above page content and the floating cart (80)
+       while letting the backdrop cover it when an overlay opens. */
     const stickyCls = [
       "fixed",
       "top-0",
       "left-0",
       "right-0",
-      "z-[100]",
+      "z-[85]",
       "animate-slideDown",
     ];
     // Measure position LIVE rather than caching an offset at init (that cached
