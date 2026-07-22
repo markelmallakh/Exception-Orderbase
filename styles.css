@@ -1896,14 +1896,21 @@ body[data-purchased="true"] .review-gate-hint {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(
-    135deg,
-    rgba(176, 222, 217, 0.75),
-    rgba(176, 222, 217, 0.12) 35%,
-    rgba(24, 35, 37, 0) 55%,
-    rgba(219, 51, 108, 0.35)
+  padding: 1.5px;
+  /* A faint ring all the way around + a bright turquoise/pink "comet"
+     head that LOOPS around the border (the conic angle is animated via
+     the registered --illum-angle property; first and last stops match
+     so the loop is seamless). */
+  background: conic-gradient(
+    from var(--illum-angle, 0deg),
+    rgba(176, 222, 217, 0.9),
+    rgba(219, 51, 108, 0.5) 14%,
+    rgba(255, 255, 255, 0.08) 32%,
+    rgba(255, 255, 255, 0.08) 68%,
+    rgba(176, 222, 217, 0.45) 86%,
+    rgba(176, 222, 217, 0.9)
   );
+  animation: illum-spin 6s linear infinite;
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);
@@ -1914,6 +1921,21 @@ body[data-purchased="true"] .review-gate-hint {
   mask-composite: exclude;
   pointer-events: none;
   z-index: 2;
+}
+@property --illum-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+@keyframes illum-spin {
+  to {
+    --illum-angle: 360deg;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cta-illum::before {
+    animation: none;
+  }
 }
 .cta-illum::after {
   content: "";
