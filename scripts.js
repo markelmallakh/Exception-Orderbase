@@ -3203,6 +3203,81 @@
   }
 
   /* ---------------------------------------------------------------
+     Tilt cards — vanilla port of React Bits <TiltedCard/> (no React/
+     motion dependency). [data-tilt] elements tilt toward the cursor
+     with a spring-like rAF lerp, plus a slight scale on hover.
+     Optional data-tilt-amp / data-tilt-scale overrides. Pointer-fine
+     devices only; reduced-motion leaves the cards static.
+     --------------------------------------------------------------- */
+  function initTiltCards(scope) {
+    const cards = (scope || document).querySelectorAll("[data-tilt]:not([data-tilt-ready])");
+    if (!cards.length) return;
+    const reduce =
+      window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const fine = window.matchMedia && window.matchMedia("(pointer: fine)").matches;
+    cards.forEach((card) => {
+      card.setAttribute("data-tilt-ready", "1");
+      if (reduce || !fine) return;
+      const AMP = parseFloat(card.getAttribute("data-tilt-amp")) || 8;
+      const SCALE = parseFloat(card.getAttribute("data-tilt-scale")) || 1.03;
+      let tx = 0,
+        ty = 0,
+        ts = 1; // target rotateX / rotateY / scale
+      let cx = 0,
+        cy = 0,
+        cs = 1; // current values, eased toward the targets
+      let raf = 0;
+      const step = () => {
+        cx += (tx - cx) * 0.12;
+        cy += (ty - cy) * 0.12;
+        cs += (ts - cs) * 0.12;
+        card.style.transform =
+          "perspective(800px) rotateX(" +
+          cx.toFixed(2) +
+          "deg) rotateY(" +
+          cy.toFixed(2) +
+          "deg) scale(" +
+          cs.toFixed(3) +
+          ")";
+        if (Math.abs(tx - cx) + Math.abs(ty - cy) + Math.abs(ts - cs) * 10 > 0.02) {
+          raf = requestAnimationFrame(step);
+        } else {
+          raf = 0;
+          if (ts === 1) {
+            // settled back to rest — hand the transform back to CSS
+            card.style.transform = "";
+            card.classList.remove("is-tilting");
+            cx = cy = 0;
+            cs = 1;
+          }
+        }
+      };
+      const kick = () => {
+        if (!raf) raf = requestAnimationFrame(step);
+      };
+      card.addEventListener("mouseenter", () => {
+        card.classList.add("is-tilting");
+        ts = SCALE;
+        kick();
+      });
+      card.addEventListener("mousemove", (e) => {
+        const r = card.getBoundingClientRect();
+        const ox = e.clientX - r.left - r.width / 2;
+        const oy = e.clientY - r.top - r.height / 2;
+        tx = (oy / (r.height / 2)) * -AMP;
+        ty = (ox / (r.width / 2)) * AMP;
+        kick();
+      });
+      card.addEventListener("mouseleave", () => {
+        tx = 0;
+        ty = 0;
+        ts = 1;
+        kick();
+      });
+    });
+  }
+
+  /* ---------------------------------------------------------------
      Scroll-reveal text — a statement fills word-by-word from light grey
      to near-black as the block scrolls up through the viewport. Each
      word interpolates its own colour from its vertical position, so the
@@ -3510,6 +3585,7 @@
     initCountdown(scope);
     initPosts(scope);
     initReveal(scope);
+    initTiltCards(scope);
     initScrollRevealText(scope);
     initVision(scope);
     initReferralCopy(scope);

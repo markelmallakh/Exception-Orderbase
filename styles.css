@@ -2464,6 +2464,34 @@ body[data-purchased="true"] .review-gate-hint {
   opacity: 1;
   transform: none;
 }
+/* Directional variants — set the attribute VALUE, e.g. data-reveal="left".
+   .reveal-in (transform:none) clears every variant the same way. */
+[data-reveal="left"] {
+  transform: translateX(-56px);
+}
+[data-reveal="right"] {
+  transform: translateX(56px);
+}
+[data-reveal="zoom"] {
+  transform: scale(0.9) translateY(16px);
+}
+
+/* =================================================================
+   TILT CARDS — vanilla port of React Bits <TiltedCard/> (the site
+   has no React/build). Add [data-tilt] to a card; initTiltCards in
+   scripts.js drives a springy perspective tilt toward the cursor.
+   .is-tilting kills the [data-reveal] transition while the rAF
+   spring owns the transform (else the 0.7s reveal transition makes
+   the tilt lag a beat behind the cursor).
+   ================================================================= */
+[data-tilt] {
+  will-change: transform;
+}
+[data-tilt].is-tilting {
+  transition: none;
+  position: relative;
+  z-index: 5; /* the scaled/tilted card must paint above its grid neighbours */
+}
 @media (prefers-reduced-motion: reduce) {
   [data-reveal] {
     opacity: 1;
