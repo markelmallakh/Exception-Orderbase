@@ -692,8 +692,9 @@
            is all content; it tucks back inside on narrow screens where there
            is no room beside the drawer. -->
       <button type="button" data-close class="side-drawer__close" aria-label="Close cart">${ICON.close}</button>
-      <div class="shrink-0 flex items-center px-5 py-4 border-b border-neutral-100">
+      <div class="shrink-0 flex items-center gap-3 px-5 py-4 border-b border-neutral-100">
         <h2 class="font-semibold text-textSecondary text-lg">Your Cart</h2>
+        <a href="cart.html" class="text-sm font-medium text-primaryDark underline underline-offset-2 hover:text-cta">View Cart</a>
       </div>
       <div class="flex-1 overflow-y-auto px-5">
         <div data-cart-rows>${cartRows}</div>
@@ -714,12 +715,9 @@
           <span class="font-semibold text-primaryDark" data-cart-total></span>
         </div>
         <a href="checkout.html" class="btn btn--primary btn--md w-full justify-center mt-3">Continue checkout</a>
-        <div class="mt-2 flex items-center justify-center gap-4 text-sm">
-          <a href="cart.html" class="text-primaryDark font-medium py-2">View full cart</a>
-          <span class="h-3 w-px bg-neutral-200" aria-hidden="true"></span>
-          <!-- shop.html is the all-products listing ("Shop the Full Collection") -->
-          <a href="shop.html" class="text-primaryDark font-medium py-2">Continue shopping</a>
-        </div>
+        <!-- View Cart moved beside the drawer title; shop.html is the
+             all-products listing ("Shop the Full Collection"). -->
+        <a href="shop.html" class="mt-2 block w-full text-center text-primaryDark font-medium py-2 text-sm">Continue shopping</a>
       </div>
     </aside>
 
