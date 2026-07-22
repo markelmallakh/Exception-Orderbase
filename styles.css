@@ -2915,6 +2915,10 @@ input[type="checkbox"]:not(.wallet-toggle__input):checked::after {
   text-transform: uppercase;
   color: #fff;
   white-space: nowrap;
+  /* Optical centering: uppercase caps have no descenders, so they sit high in
+     the line box and look top-shifted next to the icon even though the box is
+     centered. Nudge the caps down ~1px to sit on the icon's optical centre. */
+  transform: translateY(1px);
 }
 /* Golden = illuminated metallic gold. The doubled `.tier-badge.tier-badge--golden`
    selector (specificity 0,2,0) is needed so this background beats BOTH the base
@@ -2933,11 +2937,12 @@ input[type="checkbox"]:not(.wallet-toggle__input):checked::after {
     #f2c750 78%,
     #e2ad3c 100%
   );
-  /* soft warm glow (the "illumination") + a top inner highlight for metal sheen */
+  /* Subtle: a light drop + a faint warm halo + a top inner highlight. The
+     shine animation carries the illumination, so the glow stays low-key. */
   box-shadow:
-    0 2px 6px rgba(0, 0, 0, 0.18),
-    0 0 14px rgba(233, 185, 73, 0.6),
-    inset 0 1px 0 rgba(255, 255, 255, 0.55);
+    0 1px 3px rgba(0, 0, 0, 0.12),
+    0 0 5px rgba(233, 185, 73, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 /* Deep brown, not white — high contrast on the bright gold; a faint light
    text-shadow lifts it off the metal. */
