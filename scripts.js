@@ -692,9 +692,11 @@
            is all content; it tucks back inside on narrow screens where there
            is no room beside the drawer. -->
       <button type="button" data-close class="side-drawer__close" aria-label="Close cart">${ICON.close}</button>
-      <div class="shrink-0 flex items-center gap-3 px-5 py-4 border-b border-neutral-100">
+      <div class="shrink-0 flex items-center gap-2 px-5 py-4 border-b border-neutral-100">
+        <!-- Branded cart-box illustration, matching the checkout summary + header -->
+        <img src="images/icons/cart-box.webp" alt="" class="w-6 h-6 shrink-0 object-contain" />
         <h2 class="font-semibold text-textSecondary text-lg">Your Cart</h2>
-        <a href="cart.html" class="text-sm font-medium text-primaryDark underline underline-offset-2 hover:text-cta">View Cart</a>
+        <a href="cart.html" class="ms-1 text-sm font-medium text-primaryDark underline underline-offset-2 hover:text-cta">View Cart</a>
       </div>
       <div class="flex-1 overflow-y-auto px-5">
         <div data-cart-rows>${cartRows}</div>
