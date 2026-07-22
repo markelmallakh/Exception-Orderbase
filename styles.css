@@ -1879,6 +1879,55 @@ body[data-purchased="true"] .review-gate-hint {
 }
 
 /* =================================================================
+   ILLUMINATED CTA CARD (.cta-illum) — dark banner card modeled on a
+   reference Mark supplied: brand Black #182325, a 1px "illumination"
+   border (turquoise glow fading to a faint pink, drawn by a gradient
+   ::before masked to the border ring), and a static film-grain
+   texture (::after, inline feTurbulence SVG). Content goes in a
+   relative z-10 wrapper; both pseudos are pointer-events:none and
+   inherit the card's radius. No hover/mouse effects by design.
+   ================================================================= */
+.cta-illum {
+  position: relative;
+  background: #182325;
+}
+.cta-illum::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    rgba(176, 222, 217, 0.75),
+    rgba(176, 222, 217, 0.12) 35%,
+    rgba(24, 35, 37, 0) 55%,
+    rgba(219, 51, 108, 0.35)
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 2;
+}
+.cta-illum::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23n)"/></svg>');
+  opacity: 0.1;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* =================================================================
    PROMO CODE (.promo) — matched to the motion reference Mark supplied.
    Resting = ONE bare field with "Apply" as an inline text LINK (no
    tinted wrapper, no heading, no pill button). On apply the box flashes

@@ -14,7 +14,6 @@
     <link rel="stylesheet" href="styles.css" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <script defer src="scripts.js"></script>
-    <script type="module" src="gradient-blinds.js"></script>
   </head>
   <body data-page="faqs" data-path="/faqs" class="antialiased bg-white">
     <!-- Shared header is injected here by scripts.js -->
@@ -213,18 +212,13 @@
 
         <!-- ============================ STILL HAVE A QUESTION CTA ============================ -->
         <div class="max-w-[920px] mx-auto px-4 pb-20 pt-6">
-          <div class="relative overflow-hidden flex flex-col items-center justify-center gap-[34px] rounded-xl bg-[#0F3B36] p-8 md:p-[42px] text-center md:flex-row md:text-start">
-            <div data-gradient-blinds class="absolute inset-0 opacity-60" aria-hidden="true"></div>
-            <div class="relative z-10 h-[160px] w-[160px] shrink-0">
-              <div class="absolute bottom-3 left-1/2 h-3 w-[105px] -translate-x-1/2 bg-[radial-gradient(50%_50%_at_50%_50%,rgba(0,0,0,0.5)_0%,rgba(0,0,0,0)_100%)] blur-[6.6px]"></div>
-              <img src="images/icons/Verified.webp" alt="Contact Support" width="160" height="160" class="relative z-10 object-contain" />
-            </div>
-            <div class="relative z-10 flex flex-col items-center gap-4 md:items-start">
-              <div class="flex flex-col gap-0.5">
+          <div class="cta-illum overflow-hidden rounded-[24px] p-8 md:px-[42px] md:py-12">
+            <div class="relative z-10 flex flex-col items-center justify-between gap-6 text-center md:flex-row md:items-center md:gap-10 md:text-start">
+              <div class="flex flex-col items-center gap-2.5 md:items-start">
                 <span class="eyebrow eyebrow--dark">Still Have a Question?</span>
-                <h3 class="text-[28px] md:text-[40px] font-semibold leading-[120%] text-white">Contact Our Team</h3>
+                <h3 class="text-[28px] md:text-[40px] font-semibold leading-[120%] text-white">Contact <span class="text-primary">Our Team</span></h3>
               </div>
-              <a href="contact-us.html" class="btn btn--primary btn--md w-[234px] justify-center">Contact Us</a>
+              <a href="contact-us.html" class="btn btn--primary btn--md w-[234px] shrink-0 justify-center">Contact Us</a>
             </div>
           </div>
         </div>
