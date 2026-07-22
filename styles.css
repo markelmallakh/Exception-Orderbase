@@ -2916,10 +2916,69 @@ input[type="checkbox"]:not(.wallet-toggle__input):checked::after {
   color: #fff;
   white-space: nowrap;
 }
+/* Golden = illuminated metallic gold. The doubled `.tier-badge.tier-badge--golden`
+   selector (specificity 0,2,0) is needed so this background beats BOTH the base
+   `.tier-badge` and the `[dir=rtl] .tier-badge` var-gradient rules. */
 .tier-badge--golden {
-  --tb-from: #c98b45;
-  --tb-to: #8a4a17;
-  --tb-ico: #f7e7ce;
+  --tb-ico: #fff3d4;
+}
+.tier-badge.tier-badge--golden {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(
+    135deg,
+    #f9de8a 0%,
+    #e9b949 26%,
+    #c98a2c 52%,
+    #f2c750 78%,
+    #e2ad3c 100%
+  );
+  /* soft warm glow (the "illumination") + a top inner highlight for metal sheen */
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.18),
+    0 0 14px rgba(233, 185, 73, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+/* Deep brown, not white — high contrast on the bright gold; a faint light
+   text-shadow lifts it off the metal. */
+.tier-badge--golden .tier-badge__label {
+  color: #4a3208;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+/* A diagonal light band sweeps across every few seconds — the shine. */
+.tier-badge--golden::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -60%;
+  width: 42%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.72), transparent);
+  transform: skewX(-18deg);
+  pointer-events: none;
+  z-index: 0;
+  animation: tierShine 3.8s ease-in-out infinite;
+}
+/* Keep the icon + label above the shine band. */
+.tier-badge--golden .tier-badge__ico,
+.tier-badge--golden .tier-badge__label {
+  position: relative;
+  z-index: 1;
+}
+@keyframes tierShine {
+  0%,
+  55% {
+    left: -60%;
+  }
+  100% {
+    left: 130%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tier-badge--golden::before {
+    animation: none;
+    opacity: 0;
+  }
 }
 .tier-badge--silver {
   --tb-from: #c9cdd1;
