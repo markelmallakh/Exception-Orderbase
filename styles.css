@@ -1057,7 +1057,7 @@ body[data-purchased="true"] .review-gate-hint {
   position: relative;
 }
 .catnav-item.is-current {
-  background: #e7fffc; /* primary-light */
+  background: #b0ded9; /* primary turquoise — the current category fills solid, no underline */
 }
 .catnav-item.is-current span {
   font-weight: 600;
@@ -1084,30 +1084,7 @@ body[data-purchased="true"] .review-gate-hint {
   82% { transform: translateY(0) rotate(1.5deg) scale(1.02); }
   100% { transform: translateY(0) rotate(0) scale(1); }
 }
-/* Underline indicator — grows out from the centre when it becomes current. */
-.catnav-item.is-current::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  bottom: -4px;
-  height: 3px;
-  width: 26px;
-  border-radius: 999px;
-  background: #8cbab5; /* dark turquoise */
-  transform: translateX(-50%) scaleX(0);
-  transform-origin: center;
-  animation: catnavUnderline 0.32s cubic-bezier(0.34, 1.3, 0.5, 1) forwards;
-}
-@keyframes catnavUnderline {
-  to {
-    transform: translateX(-50%) scaleX(1);
-  }
-}
 @media (prefers-reduced-motion: reduce) {
-  .catnav-item.is-current::after {
-    animation: none;
-    transform: translateX(-50%) scaleX(1);
-  }
   .catnav-item img {
     transition: none;
   }

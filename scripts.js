@@ -497,11 +497,11 @@
     ).join("");
 
     const panelLink = (title, url) =>
-      `<li><a href="${pageHref(url)}" class="text-base leading-[1.4] text-primaryDark transition-colors hover:text-primary-700 hover:underline">${esc(title)}</a></li>`;
+      `<li><a href="${pageHref(url)}" class="text-sm leading-[1.35] text-primaryDark transition-colors hover:text-primary-700 hover:underline">${esc(title)}</a></li>`;
 
     const shopLinks = FOOTER_COLUMNS[0].links;
     const shopCol = (links) =>
-      `<ul class="flex flex-col gap-2">${links.map((l) => panelLink(l.title, l.url)).join("")}</ul>`;
+      `<ul class="flex flex-col gap-1.5">${links.map((l) => panelLink(l.title, l.url)).join("")}</ul>`;
 
     const mailIcon =
       '<svg viewBox="0 0 24 24" fill="none" class="h-[19px] w-[19px]"><rect x="3" y="5" width="18" height="14" rx="2.5" stroke="currentColor" stroke-width="1.5"/><path d="m4 7 8 6 8-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
@@ -528,7 +528,7 @@
             <!-- Company -->
             <div class="flex flex-col gap-4">
               <p class="text-[18px] font-semibold leading-[1.4] text-primaryDark">Company</p>
-              <ul class="flex flex-col gap-2">
+              <ul class="flex flex-col gap-1.5">
                 ${FOOTER_COLUMNS[1].links.map((l) => panelLink(l.title, l.url)).join("")}
               </ul>
             </div>
@@ -536,11 +536,11 @@
             <!-- Support (links + contact rows) -->
             <div class="flex flex-col gap-4 md:pe-2">
               <p class="text-[18px] font-semibold leading-[1.4] text-primaryDark">Support</p>
-              <ul class="flex flex-col gap-2 text-primaryDark">
+              <ul class="flex flex-col gap-1.5 text-primaryDark">
                 ${panelLink("FAQs", "/faqs")}
                 ${panelLink("Contact Us", "/contact-us")}
-                <li><a href="tel:16689" class="flex items-center gap-2 text-base leading-[1.4] transition-colors hover:text-primary-700 dir-ltr">${ICON.phone}16689</a></li>
-                <li><a href="mailto:export@exception-group.com" class="flex items-center gap-2 text-base leading-[1.4] transition-colors hover:text-primary-700 dir-ltr">${mailIcon}export@exception-group.com</a></li>
+                <li><a href="tel:16689" class="flex items-center gap-2 text-sm leading-[1.35] transition-colors hover:text-primary-700 dir-ltr">${ICON.phone}16689</a></li>
+                <li><a href="mailto:export@exception-group.com" class="flex items-center gap-2 text-sm leading-[1.35] transition-colors hover:text-primary-700 dir-ltr">${mailIcon}export@exception-group.com</a></li>
                 ${panelLink("Privacy Policy", "/privacy-policy")}
                 ${panelLink("Terms & Conditions", "/terms-conditions")}
               </ul>
