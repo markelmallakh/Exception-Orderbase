@@ -6,7 +6,7 @@
     <title>Make Your Cake — Exception</title>
     <meta
       name="description"
-      content="Design your dream cake step by step — pick the shape, size, flavour, filling, decoration and your message. Built fresh by Exception."
+      content="Play cake designer — build your own Exception cake live on a pedestal: shape, size, flavour, filling and decoration, updated as you go."
     />
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="tw-config.js"></script>
@@ -19,7 +19,7 @@
 
     <main class="overflow-x-hidden">
       <!-- ============================ HERO ============================ -->
-      <section class="bg-gray-100 pt-8 lg:pt-12 pb-8">
+      <section class="bg-gray-100 pt-8 lg:pt-12 pb-6">
         <div class="container">
           <nav aria-label="Breadcrumb" class="flex items-center gap-2 text-sm text-gray-700 mb-5">
             <a href="index.html" class="hover:text-primaryDark transition-colors">Home</a>
@@ -28,8 +28,8 @@
           </nav>
           <div class="flex flex-col items-center gap-3 text-center max-w-[640px] mx-auto">
             <span class="eyebrow">Make Your Cake</span>
-            <h1 class="text-[30px] lg:text-[46px] font-semibold leading-[115%] text-textSecondary">Design Your <span class="text-primary">Dream Cake</span></h1>
-            <p class="text-sm lg:text-base text-gray-700 leading-[150%]">A few friendly steps and it's yours — pick the shape, size, flavour and the little details. We'll bake it fresh.</p>
+            <h1 class="text-[30px] lg:text-[46px] font-semibold leading-[115%] text-textSecondary">Play Cake <span class="text-primary">Designer</span></h1>
+            <p class="text-sm lg:text-base text-gray-700 leading-[150%]">Build your cake live — tap around the tabs and watch it come together on the stand. When it's perfect, add it to your cart.</p>
           </div>
         </div>
       </section>
@@ -37,20 +37,37 @@
       <!-- ============================ BUILDER ============================ -->
       <section class="bg-gray-100 pb-16 lg:pb-24">
         <div class="container">
-          <div class="mx-auto max-w-[900px] rounded-[24px] bg-white shadow-custom4 border border-gray-200 overflow-hidden" data-cake-builder>
-            <!-- Stepper -->
-            <div class="border-b border-gray-200 px-5 md:px-8 py-5 overflow-x-auto">
-              <div class="flex items-center gap-2 md:gap-3 w-max mx-auto" data-myc-stepper></div>
+          <div class="mx-auto max-w-[1040px] grid gap-6 lg:grid-cols-2 lg:items-stretch" data-cake-builder>
+            <!-- Live cake on a pedestal -->
+            <div class="relative overflow-hidden rounded-[24px] border border-gray-200 bg-gradient-to-b from-white to-primary-light/40 shadow-custom4 p-6 flex flex-col items-center justify-center">
+              <div class="cake-stage w-full" style="min-height:360px">
+                <div class="cake-glow"></div>
+                <div class="cake-drop">
+                  <div class="cake3d is-round" id="liveCake" style="--w:clamp(160px,40vw,230px)">
+                    <div class="cake3d__obj">
+                      <span class="cake3d__topper" data-live-topper></span>
+                      <div class="cake3d__top"></div>
+                      <div class="cake3d__body"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="pedestal">
+                  <div class="pedestal__plate"></div>
+                  <div class="pedestal__stem"></div>
+                  <div class="pedestal__foot"></div>
+                </div>
+              </div>
+              <p class="mt-7 text-sm font-semibold text-textSecondary text-center" data-cake-summary></p>
             </div>
 
-            <!-- Panels -->
-            <div class="px-5 md:px-8 py-8 min-h-[340px]" data-myc-body></div>
-
-            <!-- Nav -->
-            <div class="flex items-center justify-between gap-3 border-t border-gray-200 px-5 md:px-8 py-4">
-              <button type="button" class="btn btn--secondary btn--md" data-myc-back>Back</button>
-              <div class="flex items-center gap-2 text-sm text-gray-500" data-myc-progress></div>
-              <button type="button" class="btn btn--primary btn--md" data-myc-next>Next</button>
+            <!-- Config: tabs + options -->
+            <div class="flex flex-col overflow-hidden rounded-[24px] border border-gray-200 bg-white shadow-custom4">
+              <div class="flex items-center gap-5 overflow-x-auto border-b border-gray-200 px-5 md:px-6" data-cake-tabs></div>
+              <div class="flex-1 px-5 md:px-6 py-6" data-cake-panel></div>
+              <div class="flex items-center gap-3 border-t border-gray-200 px-5 md:px-6 py-4">
+                <button type="button" class="btn btn--secondary btn--md whitespace-nowrap" data-surprise>🎲 Surprise Me</button>
+                <button type="button" class="btn btn--primary btn--md flex-1 justify-center" data-add>Add to Cart</button>
+              </div>
             </div>
           </div>
         </div>
@@ -63,251 +80,189 @@
       (function () {
         const builder = document.querySelector("[data-cake-builder]");
         if (!builder) return;
-        const stepperEl = builder.querySelector("[data-myc-stepper]");
-        const bodyEl = builder.querySelector("[data-myc-body]");
-        const backBtn = builder.querySelector("[data-myc-back]");
-        const nextBtn = builder.querySelector("[data-myc-next]");
-        const progressEl = builder.querySelector("[data-myc-progress]");
+        const tabsEl = builder.querySelector("[data-cake-tabs]");
+        const panelEl = builder.querySelector("[data-cake-panel]");
+        const summaryEl = builder.querySelector("[data-cake-summary]");
+        const liveCake = document.getElementById("liveCake");
+        const liveTopper = liveCake.querySelector("[data-live-topper]");
+        const addBtn = builder.querySelector("[data-add]");
+        const surpriseBtn = builder.querySelector("[data-surprise]");
 
-        // Simple square/circle/rectangle glyphs
-        const shapeSVG = (s) =>
-          s === "circle"
-            ? '<svg viewBox="0 0 48 48" class="w-12 h-12"><circle cx="24" cy="24" r="18" fill="none" stroke="currentColor" stroke-width="2.5"/></svg>'
-            : s === "square"
-              ? '<svg viewBox="0 0 48 48" class="w-12 h-12"><rect x="8" y="8" width="32" height="32" rx="4" fill="none" stroke="currentColor" stroke-width="2.5"/></svg>'
-              : '<svg viewBox="0 0 48 48" class="w-12 h-12"><rect x="5" y="13" width="38" height="22" rx="4" fill="none" stroke="currentColor" stroke-width="2.5"/></svg>';
+        // ---- Cake config maps (see .cake3d in styles.css) ----
+        const CAKE_BASE = { shape: "circle", sponge: "#efd9b4", frost: "#fff6ea", fill: "#c9a66b", drip: "transparent", topper: "", scale: 1 };
+        const SHAPE_CLASS = { rectangle: "is-rect", square: "is-square", circle: "is-round" };
+        const FLAV = {
+          chocolate: { sponge: "#5c3a24", frost: "#6f4a2f" },
+          vanilla: { sponge: "#efd9b4", frost: "#fff6ea" },
+          half: { sponge: "#efd9b4", frost: "#6f4a2f" },
+        };
+        const FILLC = { nuts: "#c9a66b", fruit: "#e26d8a", lotus: "#b06b3a", nutella: "#5a3a22" };
+        const DECO = { classic: {}, fruits: { topper: "🍓" }, chocolate: { drip: "#4a2e1a" }, themed: { topper: "⭐" } };
+        const SIZE_SCALE = { "30x40": 0.72, "40x60": 0.86, "60x80": 1, "80x120": 1.18 };
 
-        const STEPS = [
-          {
-            key: "shape",
-            label: "Shape",
-            title: "What shape would you like?",
-            type: "single",
-            options: [
-              { id: "rectangle", name: "Rectangle", media: shapeSVG("rectangle") },
-              { id: "square", name: "Square", media: shapeSVG("square") },
-              { id: "circle", name: "Round", media: shapeSVG("circle") },
-            ],
-          },
-          {
-            key: "size",
-            label: "Size",
-            title: "How big should it be?",
-            type: "single",
-            options: [
-              { id: "30x40", name: "30 × 40", sub: "Serves ~20", media: "🍰" },
-              { id: "40x60", name: "40 × 60", sub: "Serves ~30", media: "🎂" },
-              { id: "60x80", name: "60 × 80", sub: "Serves ~40", media: "🎂" },
-              { id: "80x120", name: "80 × 120", sub: "Serves ~45", media: "🎉" },
-            ],
-          },
-          {
-            key: "flavour",
-            label: "Flavour",
-            title: "Pick your sponge flavour",
-            type: "single",
-            options: [
-              { id: "chocolate", name: "Chocolate", media: "🍫" },
-              { id: "vanilla", name: "Vanilla", media: "🌼" },
-              { id: "half", name: "Half & Half", sub: "Chocolate + Vanilla", media: "🍫🌼" },
-            ],
-          },
-          {
-            key: "filling",
-            label: "Filling",
-            title: "Choose a filling",
-            type: "single",
-            options: [
-              { id: "nuts", name: "Classic Nuts", sub: "Included", media: "🥜" },
-              { id: "fruit", name: "Fresh Fruit", media: "🍓" },
-              { id: "lotus", name: "Lotus", media: "🍪" },
-              { id: "nutella", name: "Nutella", media: "🍫" },
-            ],
-          },
-          {
-            key: "decoration",
-            label: "Decoration",
-            title: "How should we decorate it?",
-            type: "single",
-            options: [
-              { id: "classic", name: "Classic Cream", media: "🎨" },
-              { id: "fruits", name: "Fruit Topping", media: "🍒" },
-              { id: "chocolate", name: "Chocolate Drip", media: "🍫" },
-              { id: "themed", name: "3D Theme Cutout", sub: "From 170 EGP", media: "⭐" },
-            ],
-          },
-          {
-            key: "message",
-            label: "Message",
-            title: "Add a message on the cake",
-            type: "text",
-            placeholder: "e.g. Happy Birthday Mariam",
-            note: "Writing on the cake adds 30 EGP — leave it blank to skip.",
-          },
-          {
-            key: "review",
-            label: "Review",
-            title: "Here's your cake 🎂",
-            type: "review",
-          },
+        const TABS = [
+          { key: "shape", label: "Shape", title: "What shape would you like?", options: [
+            { id: "rectangle", name: "Rectangle" }, { id: "square", name: "Square" }, { id: "circle", name: "Round" } ] },
+          { key: "size", label: "Size", title: "How big should it be?", options: [
+            { id: "30x40", name: "30 × 40", sub: "Serves ~20" }, { id: "40x60", name: "40 × 60", sub: "Serves ~30" },
+            { id: "60x80", name: "60 × 80", sub: "Serves ~40" }, { id: "80x120", name: "80 × 120", sub: "Serves ~45" } ] },
+          { key: "flavour", label: "Flavour", title: "Pick your sponge flavour", options: [
+            { id: "chocolate", name: "Chocolate" }, { id: "vanilla", name: "Vanilla" }, { id: "half", name: "Half & Half" } ] },
+          { key: "filling", label: "Filling", title: "Choose a filling", options: [
+            { id: "nuts", name: "Classic Nuts" }, { id: "fruit", name: "Fresh Fruit" }, { id: "lotus", name: "Lotus" }, { id: "nutella", name: "Nutella" } ] },
+          { key: "decoration", label: "Decoration", title: "How should we decorate it?", options: [
+            { id: "classic", name: "Classic Cream" }, { id: "fruits", name: "Fruit Topping" }, { id: "chocolate", name: "Chocolate Drip" }, { id: "themed", name: "Themed Topper" } ] },
+          { key: "message", label: "Message", title: "Add a message on the cake", type: "text",
+            placeholder: "e.g. Happy Birthday Mariam", note: "Writing on the cake adds 30 EGP — leave it blank to skip." },
         ];
 
-        const state = {};
-        let idx = 0;
+        // Pre-seeded so the cake always looks complete; `touched` tracks real picks.
+        const state = { shape: "circle", size: "40x60", flavour: "vanilla", filling: "nuts", decoration: "classic", message: "" };
+        const touched = {};
+        let tab = 0;
 
-        function renderStepper() {
-          let html = "";
-          STEPS.forEach((s, i) => {
-            const cls = i === idx ? "is-active" : i < idx ? "is-done" : "";
-            html +=
-              '<div class="myc-step ' +
-              cls +
-              '"><span class="myc-step__dot">' +
-              (i < idx ? "✓" : i + 1) +
-              '</span><span class="myc-step__label hidden sm:inline">' +
-              s.label +
-              "</span></div>";
-            if (i < STEPS.length - 1)
-              html += '<span class="myc-step__line ' + (i < idx ? "is-done" : "") + '"></span>';
-          });
-          stepperEl.innerHTML = html;
-        }
-
-        function optionCard(step, o) {
-          const active = state[step.key] === o.id ? " is-active" : "";
-          const media = /^<svg/.test(o.media)
-            ? '<span class="text-primaryDark">' + o.media + "</span>"
-            : '<span class="text-3xl leading-none">' + o.media + "</span>";
+        function cakeVisual(cfg, w) {
+          const c = Object.assign({}, CAKE_BASE, cfg);
+          const cls = SHAPE_CLASS[c.shape] || "is-round";
+          const style =
+            "--w:" + (w || 84) + "px;--scale:" + (c.scale || 1) + ";--sponge:" + c.sponge +
+            ";--frost:" + c.frost + ";--fill:" + c.fill + ";--drip:" + (c.drip || "transparent") + ";";
           return (
-            '<button type="button" class="myc-opt' +
-            active +
-            '" data-opt="' +
-            o.id +
-            '">' +
-            media +
-            '<span class="font-semibold text-sm text-textSecondary">' +
-            o.name +
-            "</span>" +
-            (o.sub ? '<span class="text-xs text-gray-500">' + o.sub + "</span>" : "") +
-            "</button>"
+            '<div class="cake3d ' + cls + '" style="' + style + '"><div class="cake3d__obj">' +
+            (c.topper ? '<span class="cake3d__topper">' + c.topper + "</span>" : "") +
+            '<div class="cake3d__top"></div><div class="cake3d__body"></div></div></div>'
           );
         }
+        function cakeFor(key, id) {
+          if (key === "shape") return { shape: id };
+          if (key === "size") return { scale: SIZE_SCALE[id] || 1 };
+          if (key === "flavour") return FLAV[id] || {};
+          if (key === "filling") return { fill: FILLC[id] || CAKE_BASE.fill };
+          if (key === "decoration") return DECO[id] || {};
+          return {};
+        }
+        function composed() {
+          const cfg = Object.assign({}, CAKE_BASE);
+          cfg.shape = state.shape;
+          Object.assign(cfg, FLAV[state.flavour] || {});
+          cfg.fill = FILLC[state.filling] || CAKE_BASE.fill;
+          Object.assign(cfg, DECO[state.decoration] || {});
+          cfg.scale = Math.min(1.15, (SIZE_SCALE[state.size] || 1) + 0.08);
+          return cfg;
+        }
+        function nameFor(key) {
+          const t = TABS.find((x) => x.key === key);
+          const o = t && t.options && t.options.find((x) => x.id === state[key]);
+          return o ? o.name : "";
+        }
 
-        function renderBody() {
-          const step = STEPS[idx];
-          let inner = '<h2 class="text-xl md:text-2xl font-semibold text-textSecondary text-center mb-6">' + step.title + "</h2>";
-          if (step.type === "single") {
-            inner +=
-              '<div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 max-w-[640px] mx-auto">' +
-              step.options.map((o) => optionCard(step, o)).join("") +
-              "</div>";
-          } else if (step.type === "text") {
-            inner +=
-              '<div class="max-w-[460px] mx-auto flex flex-col gap-2">' +
-              '<input type="text" data-myc-text placeholder="' +
-              step.placeholder +
-              '" value="' +
-              (state.message || "") +
-              '" maxlength="40" class="h-12 w-full rounded-lg border border-customGrayMedium focus:border-primary px-4 text-sm text-textSecondary outline-none transition-colors" />' +
-              '<p class="text-xs text-gray-500 text-center mt-1">' +
-              step.note +
-              "</p></div>";
-          } else if (step.type === "review") {
-            const rows = [
-              ["Shape", labelFor("shape")],
-              ["Size", labelFor("size")],
-              ["Flavour", labelFor("flavour")],
-              ["Filling", labelFor("filling")],
-              ["Decoration", labelFor("decoration")],
-              ["Message", state.message ? '"' + state.message + '"' : "—"],
-            ];
-            inner +=
-              '<div class="max-w-[460px] mx-auto rounded-2xl border border-gray-200 bg-gray-50 overflow-hidden">' +
-              rows
-                .map(
-                  (r, i) =>
-                    '<div class="flex items-center justify-between px-5 py-3' +
-                    (i ? " border-t border-gray-200" : "") +
-                    '"><span class="text-sm text-gray-500">' +
-                    r[0] +
-                    '</span><span class="text-sm font-semibold text-textSecondary">' +
-                    (r[1] || "—") +
-                    "</span></div>",
-                )
-                .join("") +
-              "</div>" +
-              '<p class="text-center text-sm text-gray-600 mt-6">Looks good? Add it to your cart and we\'ll take it from there.</p>';
+        function updateCake(pop) {
+          const c = composed();
+          liveCake.className = "cake3d " + (SHAPE_CLASS[c.shape] || "is-round");
+          liveCake.style.setProperty("--sponge", c.sponge);
+          liveCake.style.setProperty("--frost", c.frost);
+          liveCake.style.setProperty("--fill", c.fill);
+          liveCake.style.setProperty("--drip", c.drip || "transparent");
+          liveCake.style.setProperty("--scale", c.scale);
+          if (c.topper) {
+            liveTopper.textContent = c.topper;
+            liveTopper.classList.remove("drop");
+            void liveTopper.offsetWidth;
+            liveTopper.classList.add("drop");
+          } else {
+            liveTopper.textContent = "";
           }
-          bodyEl.innerHTML = '<div class="myc-panel">' + inner + "</div>";
+          if (pop) {
+            liveCake.classList.remove("is-pop");
+            void liveCake.offsetWidth;
+            liveCake.classList.add("is-pop");
+          }
+          summaryEl.textContent = [nameFor("shape"), nameFor("flavour"), nameFor("filling")].filter(Boolean).join("  ·  ");
         }
 
-        function labelFor(key) {
-          const step = STEPS.find((s) => s.key === key);
-          const o = step && step.options && step.options.find((x) => x.id === state[key]);
-          return o ? o.name : "—";
+        function renderTabs() {
+          tabsEl.innerHTML = TABS.map((t, i) =>
+            '<button type="button" class="cake-tab' + (i === tab ? " is-active" : "") + '" data-tab="' + i + '">' +
+            t.label + (touched[t.key] ? '<span class="cake-tab__check">✓</span>' : "") + "</button>"
+          ).join("");
+        }
+        function renderPanel() {
+          const t = TABS[tab];
+          let inner = '<h2 class="text-lg md:text-xl font-semibold text-textSecondary mb-5">' + t.title + "</h2>";
+          if (t.type === "text") {
+            inner +=
+              '<input type="text" data-cake-text maxlength="40" placeholder="' + t.placeholder + '" value="' + (state.message || "") +
+              '" class="h-12 w-full rounded-lg border border-customGrayMedium focus:border-primary px-4 text-sm text-textSecondary outline-none transition-colors" />' +
+              '<p class="text-xs text-gray-500 mt-2">' + t.note + "</p>";
+          } else {
+            inner +=
+              '<div class="grid grid-cols-2 gap-3 sm:grid-cols-3">' +
+              t.options.map((o) =>
+                '<button type="button" class="myc-opt' + (state[t.key] === o.id ? " is-active" : "") + '" data-opt="' + o.id + '">' +
+                '<span class="grid place-items-center h-[86px]">' + cakeVisual(cakeFor(t.key, o.id), 78) + "</span>" +
+                '<span class="font-semibold text-sm text-textSecondary">' + o.name + "</span>" +
+                (o.sub ? '<span class="text-xs text-gray-500">' + o.sub + "</span>" : "") +
+                "</button>"
+              ).join("") +
+              "</div>";
+          }
+          panelEl.innerHTML = '<div class="cake-panel">' + inner + "</div>";
         }
 
-        function render() {
-          renderStepper();
-          renderBody();
-          backBtn.style.visibility = idx === 0 ? "hidden" : "visible";
-          const step = STEPS[idx];
-          const isReview = step.type === "review";
-          nextBtn.textContent = isReview ? "Add to Cart" : "Next";
-          progressEl.textContent = "Step " + (idx + 1) + " of " + STEPS.length;
-          syncNextEnabled();
-        }
-
-        function syncNextEnabled() {
-          const step = STEPS[idx];
-          const need = step.type === "single";
-          const ok = !need || !!state[step.key];
-          nextBtn.disabled = !ok;
-          nextBtn.classList.toggle("opacity-50", !ok);
-          nextBtn.classList.toggle("pointer-events-none", !ok);
-        }
-
-        bodyEl.addEventListener("click", (e) => {
+        tabsEl.addEventListener("click", (e) => {
+          const b = e.target.closest("[data-tab]");
+          if (!b) return;
+          tab = +b.getAttribute("data-tab");
+          renderTabs();
+          renderPanel();
+        });
+        panelEl.addEventListener("click", (e) => {
           const opt = e.target.closest("[data-opt]");
           if (!opt) return;
-          const step = STEPS[idx];
-          state[step.key] = opt.getAttribute("data-opt");
-          bodyEl.querySelectorAll(".myc-opt").forEach((b) => b.classList.toggle("is-active", b === opt));
-          syncNextEnabled();
+          const key = TABS[tab].key;
+          state[key] = opt.getAttribute("data-opt");
+          touched[key] = true;
+          panelEl.querySelectorAll(".myc-opt").forEach((x) => x.classList.toggle("is-active", x === opt));
+          renderTabs();
+          updateCake(true);
         });
-        bodyEl.addEventListener("input", (e) => {
-          const t = e.target.closest("[data-myc-text]");
-          if (t) state.message = t.value;
-        });
-
-        nextBtn.addEventListener("click", () => {
-          const step = STEPS[idx];
-          if (step.type === "review") {
-            // Bump every cart badge, then a friendly confirmation.
-            document.querySelectorAll("[data-cart-count]").forEach((b) => {
-              b.textContent = (parseInt(b.textContent, 10) || 0) + 1;
-              const cart = b.closest("[data-open='cart'], [data-floating-cart]");
-              if (cart) {
-                cart.classList.add("cart-bump");
-                setTimeout(() => cart.classList.remove("cart-bump"), 500);
-              }
-            });
-            nextBtn.textContent = "Added ✓";
-            nextBtn.disabled = true;
-            nextBtn.classList.add("opacity-60", "pointer-events-none");
-            progressEl.textContent = "Your cake is in the cart!";
-            return;
-          }
-          if (nextBtn.disabled) return;
-          if (idx < STEPS.length - 1) idx++;
-          render();
-        });
-        backBtn.addEventListener("click", () => {
-          if (idx > 0) idx--;
-          render();
+        panelEl.addEventListener("input", (e) => {
+          const t = e.target.closest("[data-cake-text]");
+          if (t) { state.message = t.value; touched.message = true; renderTabs(); }
         });
 
-        render();
+        surpriseBtn.addEventListener("click", () => {
+          TABS.forEach((t) => {
+            if (t.type === "text") return;
+            const pick = t.options[Math.floor(seededRand() * t.options.length)];
+            state[t.key] = pick.id;
+            touched[t.key] = true;
+          });
+          renderTabs();
+          renderPanel();
+          updateCake(true);
+        });
+        // tiny deterministic-ish shuffle without Math.random dependency issues
+        let seed = 7;
+        function seededRand() { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; }
+
+        addBtn.addEventListener("click", () => {
+          document.querySelectorAll("[data-cart-count]").forEach((b) => {
+            b.textContent = (parseInt(b.textContent, 10) || 0) + 1;
+            const cart = b.closest("[data-open='cart'], [data-floating-cart]");
+            if (cart) { cart.classList.add("cart-bump"); setTimeout(() => cart.classList.remove("cart-bump"), 500); }
+          });
+          addBtn.textContent = "Added to Cart ✓";
+          addBtn.classList.add("pointer-events-none", "opacity-70");
+          setTimeout(() => {
+            addBtn.textContent = "Add to Cart";
+            addBtn.classList.remove("pointer-events-none", "opacity-70");
+          }, 1800);
+        });
+
+        renderTabs();
+        renderPanel();
+        updateCake(false);
       })();
     </script>
   </body>

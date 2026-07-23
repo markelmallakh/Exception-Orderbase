@@ -1943,6 +1943,341 @@ body[data-purchased="true"] .review-gate-hint {
 .myc-step__line.is-done {
   background: #8cbab5;
 }
+/* =================================================================
+   CSS 3D CAKE (.cake3d) — a lightweight rendered cake mockup used on
+   the Make Your Cake option cards + review, so users can picture the
+   shape / size / flavour / filling / decoration they pick. Driven by
+   CSS vars: --sponge, --frost, --fill, --drip, --scale; shape via the
+   .is-round / .is-square / .is-rect modifiers. Gentle idle bob.
+   ================================================================= */
+.cake3d {
+  --w: 96px;
+  --scale: 1;
+  --sponge: #efd9b4;
+  --frost: #fff6ea;
+  --fill: #c9a66b;
+  --drip: transparent;
+  width: var(--w);
+  height: var(--w);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  perspective: 500px;
+}
+.cake3d__obj {
+  position: relative;
+  width: calc(var(--w) * 0.8 * var(--scale));
+  height: calc(var(--w) * 0.66 * var(--scale));
+  transform-origin: bottom center;
+  animation: cake-bob 3.4s ease-in-out infinite;
+}
+.cake3d.is-rect .cake3d__obj {
+  width: calc(var(--w) * 0.98 * var(--scale));
+}
+@keyframes cake-bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-1.4deg);
+  }
+  50% {
+    transform: translateY(-4px) rotate(1.4deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cake3d__obj {
+    animation: none;
+  }
+}
+/* soft ground shadow */
+.cake3d__obj::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -9px;
+  width: 104%;
+  height: 15px;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.22), transparent 68%);
+  border-radius: 50%;
+}
+/* sponge body */
+.cake3d__body {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 62%;
+  background-color: var(--sponge);
+  background-image: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.2),
+    rgba(255, 255, 255, 0.22) 30%,
+    rgba(255, 255, 255, 0.04) 56%,
+    rgba(0, 0, 0, 0.2)
+  );
+  border-radius: 6px 6px 10px 10px;
+  overflow: hidden;
+  box-shadow: inset 0 -7px 9px rgba(0, 0, 0, 0.14);
+}
+.cake3d.is-round .cake3d__body {
+  border-radius: 44% 44% 12px 12px / 20% 20% 12px 12px;
+}
+/* filling stripe through the sponge */
+.cake3d__body::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 42%;
+  height: 15%;
+  background: var(--fill);
+  box-shadow:
+    0 -1px 0 rgba(0, 0, 0, 0.12),
+    0 1px 0 rgba(0, 0, 0, 0.12);
+}
+/* frosting top */
+.cake3d__top {
+  position: absolute;
+  left: -5%;
+  right: -5%;
+  top: 4%;
+  height: 46%;
+  background: var(--frost);
+  background-image: radial-gradient(ellipse at 38% 30%, rgba(255, 255, 255, 0.55), transparent 60%);
+  border-radius: 50%;
+  box-shadow:
+    inset 0 -9px 10px rgba(0, 0, 0, 0.12),
+    0 3px 5px rgba(0, 0, 0, 0.08);
+  z-index: 2;
+}
+.cake3d.is-square .cake3d__top {
+  border-radius: 16%;
+  left: -2%;
+  right: -2%;
+}
+.cake3d.is-rect .cake3d__top {
+  border-radius: 26% / 40%;
+}
+/* chocolate/ganache drip hanging off the frosting edge — a band whose
+   top is solid (joins the frosting) and whose bottom edge is a row of
+   rounded drip tongues (two mask layers, union-composited). */
+.cake3d__top::after {
+  content: "";
+  position: absolute;
+  left: 3%;
+  right: 3%;
+  top: 70%;
+  height: 42%;
+  background: var(--drip);
+  -webkit-mask:
+    linear-gradient(#000 0 0) 0 0 / 100% 40% no-repeat,
+    radial-gradient(circle 6px at 6px 5px, #000 95%, transparent 100%) 0 100% / 17px 62% repeat-x;
+  mask:
+    linear-gradient(#000 0 0) 0 0 / 100% 40% no-repeat,
+    radial-gradient(circle 6px at 6px 5px, #000 95%, transparent 100%) 0 100% / 17px 62% repeat-x;
+}
+/* topper (cherry / fruit / star, etc.) */
+.cake3d__topper {
+  position: absolute;
+  left: 50%;
+  top: -14%;
+  transform: translateX(-50%);
+  font-size: calc(var(--w) * 0.24);
+  line-height: 1;
+  z-index: 3;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.2));
+}
+
+/* Live-update transitions on the persistent cake (color/shape morph). */
+#liveCake .cake3d__top,
+#liveCake .cake3d__body {
+  transition:
+    background-color 0.55s ease,
+    border-radius 0.55s ease;
+}
+#liveCake .cake3d__body::before {
+  transition: background-color 0.55s ease;
+}
+#liveCake .cake3d__obj {
+  transition:
+    width 0.5s cubic-bezier(0.34, 1.4, 0.5, 1),
+    height 0.5s cubic-bezier(0.34, 1.4, 0.5, 1);
+}
+.cake3d__topper.drop {
+  animation: topper-drop 0.5s cubic-bezier(0.34, 1.5, 0.5, 1);
+}
+@keyframes topper-drop {
+  0% {
+    transform: translateX(-50%) translateY(-16px) scale(0.4);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(-50%) translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+/* A springy "pop" when a choice changes the cake (overrides the idle bob). */
+#liveCake.is-pop .cake3d__obj {
+  animation: cake-pop 0.55s cubic-bezier(0.34, 1.5, 0.5, 1);
+}
+@keyframes cake-pop {
+  0% {
+    transform: scale(1);
+  }
+  35% {
+    transform: scale(1.09) translateY(-5px) rotate(1deg);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* =================================================================
+   CAKE STAGE + PEDESTAL — the persistent hero cake sits on a cake
+   stand; a soft turquoise spotlight glows behind it. Entrance: the
+   whole stage rises in and the cake drops onto the stand.
+   ================================================================= */
+.cake-stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  animation: stage-in 0.8s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+@keyframes stage-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.cake-glow {
+  position: absolute;
+  left: 50%;
+  top: 8%;
+  width: 78%;
+  aspect-ratio: 1;
+  transform: translateX(-50%);
+  background: radial-gradient(circle, rgba(176, 222, 217, 0.55), transparent 62%);
+  filter: blur(8px);
+  border-radius: 50%;
+  z-index: 0;
+  animation: glow-pulse 4s ease-in-out infinite;
+}
+@keyframes glow-pulse {
+  0%,
+  100% {
+    opacity: 0.75;
+    transform: translateX(-50%) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1.06);
+  }
+}
+.cake-drop {
+  position: relative;
+  z-index: 2;
+  animation: cake-drop 0.9s cubic-bezier(0.34, 1.3, 0.5, 1) both;
+  animation-delay: 0.15s;
+}
+@keyframes cake-drop {
+  from {
+    opacity: 0;
+    transform: translateY(-46px) scale(0.8);
+  }
+  60% {
+    opacity: 1;
+  }
+  to {
+    transform: none;
+  }
+}
+.pedestal {
+  position: relative;
+  z-index: 1;
+  width: 74%;
+  height: 52px;
+  margin-top: -10px;
+}
+.pedestal__plate {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  height: 18px;
+  background: linear-gradient(#ffffff, #e4e7ea);
+  border-radius: 50%;
+  box-shadow: 0 7px 12px rgba(0, 0, 0, 0.14);
+}
+.pedestal__stem {
+  position: absolute;
+  top: 13px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 17%;
+  height: 30px;
+  background: linear-gradient(90deg, #d3d6da, #f4f5f6 42%, #d3d6da);
+}
+.pedestal__foot {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50%;
+  height: 15px;
+  background: linear-gradient(#eceef0, #d0d3d7);
+  border-radius: 50%;
+  box-shadow: 0 7px 14px rgba(0, 0, 0, 0.16);
+}
+/* Config tabs — free navigation, sliding underline */
+.cake-tab {
+  position: relative;
+  padding: 8px 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #6f7276;
+  white-space: nowrap;
+  transition: color 0.2s ease;
+}
+.cake-tab:hover {
+  color: #182325;
+}
+.cake-tab.is-active {
+  color: #182325;
+}
+.cake-tab.is-active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2.5px;
+  border-radius: 2px;
+  background: #182325;
+}
+.cake-tab__check {
+  display: inline-grid;
+  place-items: center;
+  width: 15px;
+  height: 15px;
+  margin-inline-start: 5px;
+  border-radius: 50%;
+  background: #8cbab5;
+  color: #fff;
+  font-size: 9px;
+  vertical-align: middle;
+}
+/* Option panel slide-in on tab change */
+.cake-panel {
+  animation: myc-in 0.38s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
 /* Self-animating tile (special-cakes gallery + occasion cards) — a CSS
    keyframe entrance so JS-swapped cards always animate in without
    depending on the IntersectionObserver re-observing them. */
