@@ -1846,6 +1846,127 @@ body[data-purchased="true"] .review-gate-hint {
 }
 
 /* =================================================================
+   MAKE YOUR CAKE builder (make-your-cake.html) — a friendly stepper.
+   .myc-opt = selectable option card; .myc-step = stepper node; panels
+   ease in as you advance.
+   ================================================================= */
+.myc-opt {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 20px 16px;
+  border-radius: 16px;
+  border: 1.5px solid #dee2e6;
+  background: #fff;
+  cursor: pointer;
+  text-align: center;
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.18s ease;
+}
+.myc-opt:hover {
+  border-color: #8cbab5;
+  transform: translateY(-2px);
+}
+.myc-opt.is-active {
+  border-color: #182325;
+  box-shadow:
+    inset 0 0 0 1px #182325,
+    0 8px 20px rgba(24, 35, 37, 0.08);
+}
+.myc-opt.is-active::after {
+  content: "";
+  position: absolute;
+  top: 10px;
+  inset-inline-end: 10px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background:
+    #182325
+      url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>')
+      center / 12px no-repeat;
+}
+/* Stepper nodes */
+.myc-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+}
+.myc-step__dot {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1.5px solid #dee2e6;
+  background: #fff;
+  color: #6f7276;
+  font-size: 13px;
+  font-weight: 600;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+.myc-step.is-active .myc-step__dot {
+  background: #182325;
+  border-color: #182325;
+  color: #fff;
+}
+.myc-step.is-done .myc-step__dot {
+  background: #8cbab5;
+  border-color: #8cbab5;
+  color: #fff;
+}
+.myc-step__label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6f7276;
+  white-space: nowrap;
+}
+.myc-step.is-active .myc-step__label {
+  color: #182325;
+}
+.myc-step__line {
+  width: 24px;
+  height: 2px;
+  background: #dee2e6;
+  flex: none;
+}
+.myc-step.is-done + .myc-step__line,
+.myc-step__line.is-done {
+  background: #8cbab5;
+}
+/* Panel ease-in */
+.myc-panel[hidden] {
+  display: none;
+}
+.myc-panel {
+  animation: myc-in 0.42s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+@keyframes myc-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .myc-panel {
+    animation: none;
+  }
+}
+
+/* =================================================================
    LANG / COUNTRY OPTION (.lang-opt) — selectable tile in the header
    country/language modal. Resting = white + grey border; hover =
    turquoise border; .is-active = black ring + mint fill.

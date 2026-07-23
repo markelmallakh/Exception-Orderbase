@@ -181,6 +181,8 @@
       "/return-policy": "return-policy.html",
       "/blogs": "blogs.html",
       "/shop": "shop.html",
+      "/shop/make-your-cake": "make-your-cake.html",
+      "/shop/special-cakes": "special-cakes.html",
       "/cart": "cart.html",
       "/checkout": "checkout.html",
       "/thank-you": "thank-you.html",

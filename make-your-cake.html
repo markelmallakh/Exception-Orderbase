@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Make Your Cake — Exception</title>
+    <meta
+      name="description"
+      content="Design your dream cake step by step — pick the shape, size, flavour, filling, decoration and your message. Built fresh by Exception."
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="tw-config.js"></script>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <script defer src="scripts.js"></script>
+  </head>
+  <body data-page="make-your-cake" data-path="/shop/make-your-cake" class="antialiased bg-white">
+    <div id="site-header"></div>
+
+    <main class="overflow-x-hidden">
+      <!-- ============================ HERO ============================ -->
+      <section class="bg-gray-100 pt-8 lg:pt-12 pb-8">
+        <div class="container">
+          <nav aria-label="Breadcrumb" class="flex items-center gap-2 text-sm text-gray-700 mb-5">
+            <a href="index.html" class="hover:text-primaryDark transition-colors">Home</a>
+            <span class="text-gray-400">/</span>
+            <span class="text-primaryDark font-medium">Make Your Cake</span>
+          </nav>
+          <div class="flex flex-col items-center gap-3 text-center max-w-[640px] mx-auto">
+            <span class="eyebrow">Make Your Cake</span>
+            <h1 class="text-[30px] lg:text-[46px] font-semibold leading-[115%] text-textSecondary">Design Your <span class="text-primary">Dream Cake</span></h1>
+            <p class="text-sm lg:text-base text-gray-700 leading-[150%]">A few friendly steps and it's yours — pick the shape, size, flavour and the little details. We'll bake it fresh.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================ BUILDER ============================ -->
+      <section class="bg-gray-100 pb-16 lg:pb-24">
+        <div class="container">
+          <div class="mx-auto max-w-[900px] rounded-[24px] bg-white shadow-custom4 border border-gray-200 overflow-hidden" data-cake-builder>
+            <!-- Stepper -->
+            <div class="border-b border-gray-200 px-5 md:px-8 py-5 overflow-x-auto">
+              <div class="flex items-center gap-2 md:gap-3 w-max mx-auto" data-myc-stepper></div>
+            </div>
+
+            <!-- Panels -->
+            <div class="px-5 md:px-8 py-8 min-h-[340px]" data-myc-body></div>
+
+            <!-- Nav -->
+            <div class="flex items-center justify-between gap-3 border-t border-gray-200 px-5 md:px-8 py-4">
+              <button type="button" class="btn btn--secondary btn--md" data-myc-back>Back</button>
+              <div class="flex items-center gap-2 text-sm text-gray-500" data-myc-progress></div>
+              <button type="button" class="btn btn--primary btn--md" data-myc-next>Next</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="site-footer"></div>
+
+    <script>
+      (function () {
+        const builder = document.querySelector("[data-cake-builder]");
+        if (!builder) return;
+        const stepperEl = builder.querySelector("[data-myc-stepper]");
+        const bodyEl = builder.querySelector("[data-myc-body]");
+        const backBtn = builder.querySelector("[data-myc-back]");
+        const nextBtn = builder.querySelector("[data-myc-next]");
+        const progressEl = builder.querySelector("[data-myc-progress]");
+
+        // Simple square/circle/rectangle glyphs
+        const shapeSVG = (s) =>
+          s === "circle"
+            ? '<svg viewBox="0 0 48 48" class="w-12 h-12"><circle cx="24" cy="24" r="18" fill="none" stroke="currentColor" stroke-width="2.5"/></svg>'
+            : s === "square"
+              ? '<svg viewBox="0 0 48 48" class="w-12 h-12"><rect x="8" y="8" width="32" height="32" rx="4" fill="none" stroke="currentColor" stroke-width="2.5"/></svg>'
+              : '<svg viewBox="0 0 48 48" class="w-12 h-12"><rect x="5" y="13" width="38" height="22" rx="4" fill="none" stroke="currentColor" stroke-width="2.5"/></svg>';
+
+        const STEPS = [
+          {
+            key: "shape",
+            label: "Shape",
+            title: "What shape would you like?",
+            type: "single",
+            options: [
+              { id: "rectangle", name: "Rectangle", media: shapeSVG("rectangle") },
+              { id: "square", name: "Square", media: shapeSVG("square") },
+              { id: "circle", name: "Round", media: shapeSVG("circle") },
+            ],
+          },
+          {
+            key: "size",
+            label: "Size",
+            title: "How big should it be?",
+            type: "single",
+            options: [
+              { id: "30x40", name: "30 × 40", sub: "Serves ~20", media: "🍰" },
+              { id: "40x60", name: "40 × 60", sub: "Serves ~30", media: "🎂" },
+              { id: "60x80", name: "60 × 80", sub: "Serves ~40", media: "🎂" },
+              { id: "80x120", name: "80 × 120", sub: "Serves ~45", media: "🎉" },
+            ],
+          },
+          {
+            key: "flavour",
+            label: "Flavour",
+            title: "Pick your sponge flavour",
+            type: "single",
+            options: [
+              { id: "chocolate", name: "Chocolate", media: "🍫" },
+              { id: "vanilla", name: "Vanilla", media: "🌼" },
+              { id: "half", name: "Half & Half", sub: "Chocolate + Vanilla", media: "🍫🌼" },
+            ],
+          },
+          {
+            key: "filling",
+            label: "Filling",
+            title: "Choose a filling",
+            type: "single",
+            options: [
+              { id: "nuts", name: "Classic Nuts", sub: "Included", media: "🥜" },
+              { id: "fruit", name: "Fresh Fruit", media: "🍓" },
+              { id: "lotus", name: "Lotus", media: "🍪" },
+              { id: "nutella", name: "Nutella", media: "🍫" },
+            ],
+          },
+          {
+            key: "decoration",
+            label: "Decoration",
+            title: "How should we decorate it?",
+            type: "single",
+            options: [
+              { id: "classic", name: "Classic Cream", media: "🎨" },
+              { id: "fruits", name: "Fruit Topping", media: "🍒" },
+              { id: "chocolate", name: "Chocolate Drip", media: "🍫" },
+              { id: "themed", name: "3D Theme Cutout", sub: "From 170 EGP", media: "⭐" },
+            ],
+          },
+          {
+            key: "message",
+            label: "Message",
+            title: "Add a message on the cake",
+            type: "text",
+            placeholder: "e.g. Happy Birthday Mariam",
+            note: "Writing on the cake adds 30 EGP — leave it blank to skip.",
+          },
+          {
+            key: "review",
+            label: "Review",
+            title: "Here's your cake 🎂",
+            type: "review",
+          },
+        ];
+
+        const state = {};
+        let idx = 0;
+
+        function renderStepper() {
+          let html = "";
+          STEPS.forEach((s, i) => {
+            const cls = i === idx ? "is-active" : i < idx ? "is-done" : "";
+            html +=
+              '<div class="myc-step ' +
+              cls +
+              '"><span class="myc-step__dot">' +
+              (i < idx ? "✓" : i + 1) +
+              '</span><span class="myc-step__label hidden sm:inline">' +
+              s.label +
+              "</span></div>";
+            if (i < STEPS.length - 1)
+              html += '<span class="myc-step__line ' + (i < idx ? "is-done" : "") + '"></span>';
+          });
+          stepperEl.innerHTML = html;
+        }
+
+        function optionCard(step, o) {
+          const active = state[step.key] === o.id ? " is-active" : "";
+          const media = /^<svg/.test(o.media)
+            ? '<span class="text-primaryDark">' + o.media + "</span>"
+            : '<span class="text-3xl leading-none">' + o.media + "</span>";
+          return (
+            '<button type="button" class="myc-opt' +
+            active +
+            '" data-opt="' +
+            o.id +
+            '">' +
+            media +
+            '<span class="font-semibold text-sm text-textSecondary">' +
+            o.name +
+            "</span>" +
+            (o.sub ? '<span class="text-xs text-gray-500">' + o.sub + "</span>" : "") +
+            "</button>"
+          );
+        }
+
+        function renderBody() {
+          const step = STEPS[idx];
+          let inner = '<h2 class="text-xl md:text-2xl font-semibold text-textSecondary text-center mb-6">' + step.title + "</h2>";
+          if (step.type === "single") {
+            inner +=
+              '<div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 max-w-[640px] mx-auto">' +
+              step.options.map((o) => optionCard(step, o)).join("") +
+              "</div>";
+          } else if (step.type === "text") {
+            inner +=
+              '<div class="max-w-[460px] mx-auto flex flex-col gap-2">' +
+              '<input type="text" data-myc-text placeholder="' +
+              step.placeholder +
+              '" value="' +
+              (state.message || "") +
+              '" maxlength="40" class="h-12 w-full rounded-lg border border-customGrayMedium focus:border-primary px-4 text-sm text-textSecondary outline-none transition-colors" />' +
+              '<p class="text-xs text-gray-500 text-center mt-1">' +
+              step.note +
+              "</p></div>";
+          } else if (step.type === "review") {
+            const rows = [
+              ["Shape", labelFor("shape")],
+              ["Size", labelFor("size")],
+              ["Flavour", labelFor("flavour")],
+              ["Filling", labelFor("filling")],
+              ["Decoration", labelFor("decoration")],
+              ["Message", state.message ? '"' + state.message + '"' : "—"],
+            ];
+            inner +=
+              '<div class="max-w-[460px] mx-auto rounded-2xl border border-gray-200 bg-gray-50 overflow-hidden">' +
+              rows
+                .map(
+                  (r, i) =>
+                    '<div class="flex items-center justify-between px-5 py-3' +
+                    (i ? " border-t border-gray-200" : "") +
+                    '"><span class="text-sm text-gray-500">' +
+                    r[0] +
+                    '</span><span class="text-sm font-semibold text-textSecondary">' +
+                    (r[1] || "—") +
+                    "</span></div>",
+                )
+                .join("") +
+              "</div>" +
+              '<p class="text-center text-sm text-gray-600 mt-6">Looks good? Add it to your cart and we\'ll take it from there.</p>';
+          }
+          bodyEl.innerHTML = '<div class="myc-panel">' + inner + "</div>";
+        }
+
+        function labelFor(key) {
+          const step = STEPS.find((s) => s.key === key);
+          const o = step && step.options && step.options.find((x) => x.id === state[key]);
+          return o ? o.name : "—";
+        }
+
+        function render() {
+          renderStepper();
+          renderBody();
+          backBtn.style.visibility = idx === 0 ? "hidden" : "visible";
+          const step = STEPS[idx];
+          const isReview = step.type === "review";
+          nextBtn.textContent = isReview ? "Add to Cart" : "Next";
+          progressEl.textContent = "Step " + (idx + 1) + " of " + STEPS.length;
+          syncNextEnabled();
+        }
+
+        function syncNextEnabled() {
+          const step = STEPS[idx];
+          const need = step.type === "single";
+          const ok = !need || !!state[step.key];
+          nextBtn.disabled = !ok;
+          nextBtn.classList.toggle("opacity-50", !ok);
+          nextBtn.classList.toggle("pointer-events-none", !ok);
+        }
+
+        bodyEl.addEventListener("click", (e) => {
+          const opt = e.target.closest("[data-opt]");
+          if (!opt) return;
+          const step = STEPS[idx];
+          state[step.key] = opt.getAttribute("data-opt");
+          bodyEl.querySelectorAll(".myc-opt").forEach((b) => b.classList.toggle("is-active", b === opt));
+          syncNextEnabled();
+        });
+        bodyEl.addEventListener("input", (e) => {
+          const t = e.target.closest("[data-myc-text]");
+          if (t) state.message = t.value;
+        });
+
+        nextBtn.addEventListener("click", () => {
+          const step = STEPS[idx];
+          if (step.type === "review") {
+            // Bump every cart badge, then a friendly confirmation.
+            document.querySelectorAll("[data-cart-count]").forEach((b) => {
+              b.textContent = (parseInt(b.textContent, 10) || 0) + 1;
+              const cart = b.closest("[data-open='cart'], [data-floating-cart]");
+              if (cart) {
+                cart.classList.add("cart-bump");
+                setTimeout(() => cart.classList.remove("cart-bump"), 500);
+              }
+            });
+            nextBtn.textContent = "Added ✓";
+            nextBtn.disabled = true;
+            nextBtn.classList.add("opacity-60", "pointer-events-none");
+            progressEl.textContent = "Your cake is in the cart!";
+            return;
+          }
+          if (nextBtn.disabled) return;
+          if (idx < STEPS.length - 1) idx++;
+          render();
+        });
+        backBtn.addEventListener("click", () => {
+          if (idx > 0) idx--;
+          render();
+        });
+
+        render();
+      })();
+    </script>
+  </body>
+</html>
