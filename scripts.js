@@ -435,7 +435,7 @@
         checkout
           ? ""
           : `<div class="md:hidden block bg-backgroundLocationBar px-4 py-2">
-               <div class="mx-auto max-w-7xl bg-white shadow-custom-5 rounded-full px-[22px] py-1">
+               <div class="mx-auto max-w-7xl bg-white shadow-custom-5 rounded-[12px] px-[22px] py-1">
                  <button type="button" data-open="location" class="flex items-center gap-1 justify-between py-[10px] w-full text-primaryDark">
                    <span class="flex items-center gap-[5px]">
                      <span class="shrink-0"><img src="images/icons/delivery.webp" alt="" class="w-6 h-6 object-contain" /></span>
