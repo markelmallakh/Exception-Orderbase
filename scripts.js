@@ -325,11 +325,11 @@
     /* --- desktop primary nav --- */
     const nav = MAIN_MENU.map(desktopNavItem).join("");
 
-    /* flag + language (click toggles EN⇄AR, wired via data-lang-cycle) */
+    /* flag + language — opens the country/language modal (data-open="lang") */
     const langSelector = `
-      <button type="button" data-lang-cycle aria-label="Language" class="flex items-center gap-1.5 text-primaryDark shrink-0">
-        <img src="images/icons/egypt-flag-icon.svg" alt="Egypt" width="27" height="18" class="rounded-[2px] shrink-0" />
-        <span data-lang-label class="text-sm font-medium">En</span>
+      <button type="button" data-open="lang" aria-label="Country and language" class="flex items-center gap-1.5 text-primaryDark shrink-0">
+        <span data-lang-flag class="text-sm leading-none">🇪🇬</span>
+        <span data-lang-label class="text-[13px] font-medium">EN | Egy</span>
         <img src="images/icons/chevron-arrow-down.svg" alt="" width="14" height="14" class="shrink-0" />
       </button>`;
 
@@ -817,6 +817,35 @@
       </div>
     </div>
 
+    <!-- Country & Language modal (opened by the header lang button) -->
+    <div data-modal="lang" class="modal-shell">
+      <div class="flex w-full max-w-[440px] flex-col overflow-hidden rounded-2xl bg-white shadow-custom3" data-modal-box>
+        <div class="flex shrink-0 items-center justify-between border-b border-neutral-100 px-5 py-4">
+          <h2 class="font-semibold text-textSecondary text-lg">Country &amp; Language</h2>
+          <button type="button" data-close aria-label="Close" class="grid place-items-center w-8 h-8 rounded-full hover:bg-neutral-100 text-textSecondary">${ICON.close}</button>
+        </div>
+        <div class="flex flex-col gap-5 px-5 py-5">
+          <div class="flex flex-col gap-2">
+            <span class="label">Country</span>
+            <div class="grid grid-cols-2 gap-3">
+              <button type="button" data-country="egy" class="lang-opt"><span class="text-lg leading-none">🇪🇬</span> Egypt</button>
+              <button type="button" data-country="ksa" class="lang-opt"><span class="text-lg leading-none">🇸🇦</span> Saudi Arabia</button>
+            </div>
+          </div>
+          <div class="flex flex-col gap-2">
+            <span class="label">Language</span>
+            <div class="grid grid-cols-2 gap-3">
+              <button type="button" data-lang-pick="en" class="lang-opt">English</button>
+              <button type="button" data-lang-pick="ar" class="lang-opt" style="font-family: 'Noto Kufi Arabic', 'Google Sans Flex', sans-serif;">العربية</button>
+            </div>
+          </div>
+        </div>
+        <div class="shrink-0 border-t border-neutral-100 px-5 py-4">
+          <button type="button" data-lang-confirm class="btn btn--primary btn--md w-full justify-center">Choose</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Location bottom sheet -->
     <div data-sheet="location" class="bottom-sheet">
       <div class="mx-auto w-10 h-1 rounded-full bg-neutral-200 mb-4 md:hidden"></div>
@@ -892,6 +921,7 @@
     search: '[data-modal="search"]',
     location: '[data-sheet="location"]',
     review: '[data-sheet="review"]',
+    lang: '[data-modal="lang"]',
     storepicker: '[data-modal="storepicker"]',
     schedule: '[data-modal="schedule"]',
     voucher: '[data-modal="voucher"]',
@@ -2979,14 +3009,55 @@
       const src = img.getAttribute(lang === "ar" ? "data-logo-ar" : "data-logo-en");
       if (src && img.getAttribute("src") !== src) img.setAttribute("src", src);
     });
-    document.querySelectorAll("[data-lang-label]").forEach((el) => {
-      el.textContent = lang === "ar" ? "ع" : "En";
-    });
+    updateLangLabel();
   }
   window.kSetLang = applyLang;
 
   function currentLang() {
     return document.documentElement.getAttribute("dir") === "rtl" ? "ar" : "en";
+  }
+
+  /* Country/language selector state — the header label reads "EN | Egy". */
+  const COUNTRY = {
+    egy: { short: "Egy", flag: "🇪🇬" },
+    ksa: { short: "Ksa", flag: "🇸🇦" },
+  };
+  function currentCountry() {
+    try {
+      return localStorage.getItem("ex-country") === "ksa" ? "ksa" : "egy";
+    } catch (e) {
+      return "egy";
+    }
+  }
+  function applyCountry(country) {
+    country = country === "ksa" ? "ksa" : "egy";
+    try {
+      localStorage.setItem("ex-country", country);
+    } catch (e) {
+      /* storage unavailable */
+    }
+    updateLangLabel();
+  }
+  function updateLangLabel() {
+    const c = COUNTRY[currentCountry()] || COUNTRY.egy;
+    const langShort = currentLang() === "ar" ? "ع" : "EN";
+    document.querySelectorAll("[data-lang-label]").forEach((el) => {
+      el.textContent = langShort + " | " + c.short;
+    });
+    document.querySelectorAll("[data-lang-flag]").forEach((el) => {
+      el.textContent = c.flag;
+    });
+  }
+  /* Preselect the current country + language when the modal opens. */
+  function syncLangModal() {
+    const lang = currentLang();
+    const country = currentCountry();
+    document.querySelectorAll("[data-country]").forEach((b) => {
+      b.classList.toggle("is-active", b.getAttribute("data-country") === country);
+    });
+    document.querySelectorAll("[data-lang-pick]").forEach((b) => {
+      b.classList.toggle("is-active", b.getAttribute("data-lang-pick") === lang);
+    });
   }
 
   /* ---------------------------------------------------------------
@@ -3121,6 +3192,33 @@
         applyLang(currentLang() === "ar" ? "en" : "ar");
         return;
       }
+      // Country/Language modal: single-select within each group, then Choose applies
+      const countryOpt = e.target.closest("[data-country]");
+      if (countryOpt) {
+        e.preventDefault();
+        document
+          .querySelectorAll("[data-country]")
+          .forEach((b) => b.classList.toggle("is-active", b === countryOpt));
+        return;
+      }
+      const langPick = e.target.closest("[data-lang-pick]");
+      if (langPick) {
+        e.preventDefault();
+        document
+          .querySelectorAll("[data-lang-pick]")
+          .forEach((b) => b.classList.toggle("is-active", b === langPick));
+        return;
+      }
+      const langConfirm = e.target.closest("[data-lang-confirm]");
+      if (langConfirm) {
+        e.preventDefault();
+        const c = document.querySelector("[data-country].is-active");
+        const l = document.querySelector("[data-lang-pick].is-active");
+        applyCountry(c ? c.getAttribute("data-country") : currentCountry());
+        applyLang(l ? l.getAttribute("data-lang-pick") : currentLang());
+        closeOverlay();
+        return;
+      }
       // Pages dropdown: toggle on the button, close when clicking elsewhere
       const pagesToggle = e.target.closest("[data-pages-toggle]");
       if (pagesToggle) {
@@ -3169,7 +3267,9 @@
       const opener = e.target.closest("[data-open]");
       if (opener) {
         e.preventDefault();
-        openOverlay(opener.getAttribute("data-open"));
+        const key = opener.getAttribute("data-open");
+        openOverlay(key);
+        if (key === "lang") syncLangModal();
         return;
       }
       if (e.target.closest("[data-close]")) {
