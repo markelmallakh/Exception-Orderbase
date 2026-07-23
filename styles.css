@@ -1846,6 +1846,37 @@ body[data-purchased="true"] .review-gate-hint {
 }
 
 /* =================================================================
+   ORPHAN / WIDOW CONTROL (site-wide) — balance headline line lengths
+   and stop a single word wrapping alone on the last line of body copy.
+   Browsers cap `balance` at a few lines, so long text is unaffected.
+   ================================================================= */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  text-wrap: balance;
+}
+p,
+li,
+figcaption,
+blockquote {
+  text-wrap: pretty;
+}
+
+/* =================================================================
+   CONTACT TILES (contact-us.html) — the 3 colorful portrait cards
+   (Phone/Email/Address). Whole tile is a link; carries [data-tilt] so
+   it gets the same 3D cursor-tilt as the export product widgets
+   (initTiltCards). The base transform transition eases the settle-back
+   once the tilt releases; no drop shadow.
+   ================================================================= */
+.contact-tile {
+  transition: transform 0.25s ease;
+}
+
+/* =================================================================
    BRANCH CARDS (branches.html) — deliberately distinct from the
    OrderBase competitor layout: icon-led info rows (pin/clock/phone)
    and full-width Call/Directions actions at the BOTTOM, instead of

@@ -374,12 +374,16 @@
                          <p class="font-semibold text-primaryDark text-sm mb-3">Choose your delivery location</p>
                          <form data-location-form class="flex flex-col gap-3">
                            <label class="flex items-center gap-3">
-                             <span class="label w-12 shrink-0">City</span>
+                             <span class="label w-16 shrink-0">City</span>
                              <select class="placeholder-select flex-1 min-w-0 border border-gray-300 rounded-lg px-3 h-11 text-sm text-primaryDark"><option>Cairo</option><option>Giza</option><option>Alexandria</option></select>
                            </label>
                            <label class="flex items-center gap-3">
-                             <span class="label w-12 shrink-0">Area</span>
+                             <span class="label w-16 shrink-0">Area</span>
                              <select class="placeholder-select flex-1 min-w-0 border border-gray-300 rounded-lg px-3 h-11 text-sm text-primaryDark"><option>Maadi</option><option>New Cairo</option><option>Nasr City</option><option>Zamalek</option></select>
+                           </label>
+                           <label class="flex items-center gap-3">
+                             <span class="label w-16 shrink-0">District</span>
+                             <select class="placeholder-select flex-1 min-w-0 border border-gray-300 rounded-lg px-3 h-11 text-sm text-primaryDark"><option>First District</option><option>Second District</option><option>Third District</option><option>Fourth District</option></select>
                            </label>
                            <button type="submit" class="btn btn--primary btn--md mt-1 w-full justify-center">Confirm Location</button>
                          </form>
@@ -831,6 +835,12 @@
           <span class="label">Area</span>
           <select class="placeholder-select w-full border border-neutral-200 rounded-lg px-3 h-12 mt-1 text-textSecondary">
             <option>New Cairo</option><option>Nasr City</option><option>Maadi</option><option>Zamalek</option>
+          </select>
+        </label>
+        <label class="block">
+          <span class="label">District</span>
+          <select class="placeholder-select w-full border border-neutral-200 rounded-lg px-3 h-12 mt-1 text-textSecondary">
+            <option>First District</option><option>Second District</option><option>Third District</option><option>Fourth District</option>
           </select>
         </label>
         <button type="submit" class="btn btn--primary btn--md mt-2 w-full justify-center">Confirm Location</button>
@@ -3203,6 +3213,34 @@
   }
 
   /* ---------------------------------------------------------------
+     Auto section reveal — give EVERY top-level <section> a smooth
+     ease-in entrance site-wide, without hand-annotating every page.
+     Sections that already choreograph their own reveals (their own
+     [data-reveal] or any [data-reveal] descendant) are left alone so
+     we never double-animate. Sticky descendants break inside a
+     transformed ancestor, so those sections are skipped. Runs before
+     initReveal so the added attributes get observed. Reduced-motion:
+     no-op (content stays visible).
+     --------------------------------------------------------------- */
+  function initAutoReveal(scope) {
+    const root = scope || document;
+    const main = root.querySelector("main");
+    if (!main) return;
+    const reduce =
+      window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) return;
+    main
+      .querySelectorAll(
+        ":scope > section, :scope > div > section, :scope > div > div > section"
+      )
+      .forEach((sec) => {
+        if (sec.hasAttribute("data-reveal") || sec.querySelector("[data-reveal]")) return;
+        if (sec.querySelector('[class*="sticky"]')) return;
+        sec.setAttribute("data-reveal", "");
+      });
+  }
+
+  /* ---------------------------------------------------------------
      Tilt cards — vanilla port of React Bits <TiltedCard/> (no React/
      motion dependency). [data-tilt] elements tilt toward the cursor
      with a spring-like rAF lerp, plus a slight scale on hover.
@@ -3584,6 +3622,7 @@
     initCheckoutOptions(scope);
     initCountdown(scope);
     initPosts(scope);
+    initAutoReveal(scope);
     initReveal(scope);
     initTiltCards(scope);
     initScrollRevealText(scope);
