@@ -1943,6 +1943,19 @@ body[data-purchased="true"] .review-gate-hint {
 .myc-step__line.is-done {
   background: #8cbab5;
 }
+/* Self-animating tile (special-cakes gallery + occasion cards) — a CSS
+   keyframe entrance so JS-swapped cards always animate in without
+   depending on the IntersectionObserver re-observing them. */
+.sc-tile {
+  animation: myc-in 0.5s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  animation-delay: var(--d, 0s);
+}
+@media (prefers-reduced-motion: reduce) {
+  .sc-tile {
+    animation: none;
+  }
+}
+
 /* Panel ease-in */
 .myc-panel[hidden] {
   display: none;
