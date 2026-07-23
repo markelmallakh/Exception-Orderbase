@@ -1846,6 +1846,70 @@ body[data-purchased="true"] .review-gate-hint {
 }
 
 /* =================================================================
+   BRANCH CARDS (branches.html) — deliberately distinct from the
+   OrderBase competitor layout: icon-led info rows (pin/clock/phone)
+   and full-width Call/Directions actions at the BOTTOM, instead of
+   the competitor's tiny circular icons pinned top-right.
+   ================================================================= */
+.branch-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 16px;
+  padding: 20px;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+.branch-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(24, 35, 37, 0.1);
+  border-color: #b0ded9;
+}
+.branch-card__pin {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #e7fffc;
+  color: #182325;
+  flex: none;
+  transition:
+    background 0.25s ease,
+    color 0.25s ease;
+}
+.branch-card:hover .branch-card__pin {
+  background: #8cbab5;
+  color: #fff;
+}
+.branch-card__pin svg {
+  width: 22px;
+  height: 22px;
+}
+.branch-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.branch-row__ico {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  color: #8cbab5;
+  flex: none;
+  margin-top: 1px;
+}
+.branch-row__ico svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* =================================================================
    EYEBROW (.eyebrow) — the small pre-headline above a section title
    (Figma 6215:32009). Replaces the old handwritten Caveat script
    eyebrows site-wide: uppercase bold pink on a 20% pink chip.

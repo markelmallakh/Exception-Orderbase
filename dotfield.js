@@ -23,12 +23,13 @@
       dotSpacing: 14,
       cursorRadius: 320,
       bulgeStrength: 67,
-      glowRadius: 200,
+      glowRadius: 150,
+      glowMax: 0.42, // ceiling on the cursor glow's opacity — keep it faint so the DOT animation reads, not the wash
       sparkle: false,
       waveAmplitude: 0,
       gradientFrom: "rgba(176, 222, 217, 0.55)", // brand turquoise
       gradientTo: "rgba(140, 186, 181, 0.32)", // dark turquoise
-      glowColor: "rgba(231, 255, 252, 0.55)", // extra-light turquoise — brighter cursor glow
+      glowColor: "rgba(231, 255, 252, 0.26)", // extra-light turquoise — subtle cursor glow
     };
 
     const canvas = document.createElement("canvas");
@@ -174,7 +175,7 @@
       if (engagement < 0.001) engagement = 0;
       const eng = engagement;
 
-      glowOpacity += (eng - glowOpacity) * 0.08;
+      glowOpacity += (eng * (P.glowMax || 1) - glowOpacity) * 0.08;
       glow.setAttribute("cx", String(m.x));
       glow.setAttribute("cy", String(m.y));
       glow.style.opacity = String(glowOpacity);
