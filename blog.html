@@ -108,55 +108,8 @@
                 <svg width="19" height="12" viewBox="0 0 19 12" fill="none" class="text-primaryDark"><path d="M13.5 1L18 6M18 6L13.5 11M18 6H0" stroke="currentColor" stroke-width="1.5" /></svg>
               </a>
             </div>
-            <div class="gap-4 md:gap-[38px] grid grid-cols-1 lg:grid-cols-2 md:mx-0">
-              <!-- Related 1 -->
-              <div class="flex-none md:w-full">
-                <article class="group flex flex-col md:flex-row items-center gap-4 w-full md:max-w-[612px] md:h-[192px]" role="article">
-                  <a href="blog.html" class="block relative flex-none w-full md:w-[192px] h-[192px] rounded-[17.5px] overflow-hidden" aria-label='Read more about "Hosting the perfect celebration at home"'>
-                    <img src="dummy-images/chocolate%20cover.webp" alt='Image for the blog post titled "Hosting the perfect celebration at home"' loading="lazy" class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-all ease-in-out duration-300" />
-                  </a>
-                  <div class="flex flex-col items-start gap-4 w-full md:max-w-[469px]">
-                    <div class="flex flex-col items-start gap-2 w-full">
-                      <div class="flex justify-center items-center px-[10px] py-[2px] gap-[10px] bg-green-800 rounded-[2px]"><span class="font-normal text-[10px] leading-[140%] text-white uppercase">Event</span></div>
-                      <div class="flex flex-row items-center gap-[7px] w-full">
-                        <span class="font-medium text-[12px] leading-[140%] text-neutral-700">12 June 2025</span>
-                        <div class="w-[5px] h-[5px] bg-neutral-700 rounded-full"></div>
-                        <span class="font-medium text-[12px] leading-[140%] text-neutral-700">4 mins reading</span>
-                      </div>
-                    </div>
-                    <a href="blog.html" class="font-medium text-[18px] leading-[140%] text-black group-hover:underline line-clamp-2">Hosting the perfect celebration at home</a>
-                    <a href="blog.html" class="flex flex-row items-center gap-[10px] font-normal text-[16px] leading-[140%] text-primaryDark group-hover:text-accent-600" aria-label="Read more about Hosting the perfect celebration at home">
-                      Read More
-                      <span class="w-[19px] h-[12px] flex items-center justify-center"><svg width="19" height="12" viewBox="0 0 19 12" fill="none" class="w-full h-full"><path d="M13.5 1L18 6M18 6L13.5 11M18 6H0" stroke="currentColor" stroke-width="1.5" /></svg></span>
-                    </a>
-                  </div>
-                </article>
-              </div>
-
-              <!-- Related 2 -->
-              <div class="flex-none md:w-full">
-                <article class="group flex flex-col md:flex-row items-center gap-4 w-full md:max-w-[612px] md:h-[192px]" role="article">
-                  <a href="blog.html" class="block relative flex-none w-full md:w-[192px] h-[192px] rounded-[17.5px] overflow-hidden" aria-label='Read more about "Five cake flavours everyone will love"'>
-                    <img src="dummy-images/image-4.webp" alt='Image for the blog post titled "Five cake flavours everyone will love"' loading="lazy" class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-all ease-in-out duration-300" />
-                  </a>
-                  <div class="flex flex-col items-start gap-4 w-full md:max-w-[469px]">
-                    <div class="flex flex-col items-start gap-2 w-full">
-                      <div class="flex justify-center items-center px-[10px] py-[2px] gap-[10px] bg-green-800 rounded-[2px]"><span class="font-normal text-[10px] leading-[140%] text-white uppercase">Blog</span></div>
-                      <div class="flex flex-row items-center gap-[7px] w-full">
-                        <span class="font-medium text-[12px] leading-[140%] text-neutral-700">21 May 2025</span>
-                        <div class="w-[5px] h-[5px] bg-neutral-700 rounded-full"></div>
-                        <span class="font-medium text-[12px] leading-[140%] text-neutral-700">5 mins reading</span>
-                      </div>
-                    </div>
-                    <a href="blog.html" class="font-medium text-[18px] leading-[140%] text-black group-hover:underline line-clamp-2">Five cake flavours everyone will love</a>
-                    <a href="blog.html" class="flex flex-row items-center gap-[10px] font-normal text-[16px] leading-[140%] text-primaryDark group-hover:text-accent-600" aria-label="Read more about Five cake flavours everyone will love">
-                      Read More
-                      <span class="w-[19px] h-[12px] flex items-center justify-center"><svg width="19" height="12" viewBox="0 0 19 12" fill="none" class="w-full h-full"><path d="M13.5 1L18 6M18 6L13.5 11M18 6H0" stroke="currentColor" stroke-width="1.5" /></svg></span>
-                    </a>
-                  </div>
-                </article>
-              </div>
-            </div>
+            <!-- Global post-card widget (see initPosts / POSTS in scripts.js) -->
+            <div data-posts data-posts-limit="3" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"></div>
           </div>
         </section>
       </div>

@@ -1813,7 +1813,7 @@
           <img src="${p.img}" alt="${esc(p.title)}" loading="lazy" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
         </div>
         <h3 class="text-lg font-semibold leading-snug text-textSecondary group-hover:text-primaryDark">${p.title}</h3>
-        <span class="mt-auto inline-flex items-center gap-1.5 text-sm font-medium text-primary transition-all group-hover:gap-2.5">Read more <svg width="16" height="10" viewBox="0 0 19 12" fill="none" aria-hidden="true"><path d="M13.5 1L18 6M18 6L13.5 11M18 6H0" stroke="currentColor" stroke-width="1.5"/></svg></span>
+        <span class="mt-auto inline-flex items-center gap-1.5 text-sm font-medium text-primary transition-all group-hover:gap-2.5">Read more <svg width="14" height="14" viewBox="0 0 24 24" fill="none" class="text-primaryDark" aria-hidden="true"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       </a>`;
   }
   function initPosts(scope) {
