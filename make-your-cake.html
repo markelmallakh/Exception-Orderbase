@@ -62,7 +62,7 @@
 
             <!-- Config: tabs + options -->
             <div class="flex flex-col overflow-hidden rounded-[24px] border border-gray-200 bg-white shadow-custom4">
-              <div class="flex items-center gap-5 overflow-x-auto border-b border-gray-200 px-5 md:px-6" data-cake-tabs></div>
+              <div class="flex justify-center border-b border-gray-200 px-5 md:px-6 py-4" data-cake-tabs></div>
               <div class="flex-1 px-5 md:px-6 py-6" data-cake-panel></div>
               <div class="flex items-center gap-3 border-t border-gray-200 px-5 md:px-6 py-4">
                 <button type="button" class="btn btn--secondary btn--md whitespace-nowrap" data-surprise>🎲 Surprise Me</button>
@@ -180,11 +180,26 @@
           summaryEl.textContent = [nameFor("shape"), nameFor("flavour"), nameFor("filling")].filter(Boolean).join("  ·  ");
         }
 
-        function renderTabs() {
-          tabsEl.innerHTML = TABS.map((t, i) =>
-            '<button type="button" class="cake-tab' + (i === tab ? " is-active" : "") + '" data-tab="' + i + '">' +
-            t.label + (touched[t.key] ? '<span class="cake-tab__check">✓</span>' : "") + "</button>"
-          ).join("");
+        // Build the shared .segmented control ONCE (same toggle as FAQ /
+        // Media Center / homepage picks); initSegmented wires the sliding
+        // thumb. A reserved-space ✓ badge appears on finished steps.
+        function buildTabs() {
+          tabsEl.innerHTML =
+            '<div class="segmented-scroll no-scrollbar">' +
+            '<div class="segmented text-sm font-medium" data-segmented role="tablist">' +
+            '<span class="segmented__thumb" aria-hidden="true"></span>' +
+            TABS.map((t, i) =>
+              '<button type="button" class="tab-btn px-3.5 py-2 text-sm' + (i === 0 ? " is-active" : "") +
+              '" data-tab="' + i + '" role="tab"><span>' + t.label + '</span><span class="seg-check" aria-hidden="true">✓</span></button>'
+            ).join("") +
+            "</div></div>";
+        }
+        function syncTabs() {
+          tabsEl.querySelectorAll("[data-tab]").forEach((b) => {
+            const i = +b.getAttribute("data-tab");
+            b.classList.toggle("is-active", i === tab);
+            b.classList.toggle("is-done", !!touched[TABS[i].key]);
+          });
         }
         function renderPanel() {
           const t = TABS[tab];
@@ -213,7 +228,7 @@
           const b = e.target.closest("[data-tab]");
           if (!b) return;
           tab = +b.getAttribute("data-tab");
-          renderTabs();
+          syncTabs();
           renderPanel();
         });
         panelEl.addEventListener("click", (e) => {
@@ -223,12 +238,12 @@
           state[key] = opt.getAttribute("data-opt");
           touched[key] = true;
           panelEl.querySelectorAll(".myc-opt").forEach((x) => x.classList.toggle("is-active", x === opt));
-          renderTabs();
+          syncTabs();
           updateCake(true);
         });
         panelEl.addEventListener("input", (e) => {
           const t = e.target.closest("[data-cake-text]");
-          if (t) { state.message = t.value; touched.message = true; renderTabs(); }
+          if (t) { state.message = t.value; touched.message = true; syncTabs(); }
         });
 
         surpriseBtn.addEventListener("click", () => {
@@ -238,7 +253,7 @@
             state[t.key] = pick.id;
             touched[t.key] = true;
           });
-          renderTabs();
+          syncTabs();
           renderPanel();
           updateCake(true);
         });
@@ -260,7 +275,8 @@
           }, 1800);
         });
 
-        renderTabs();
+        buildTabs();
+        syncTabs();
         renderPanel();
         updateCake(false);
       })();
