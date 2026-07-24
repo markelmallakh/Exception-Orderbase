@@ -1953,152 +1953,163 @@ body[data-purchased="true"] .review-gate-hint {
 .cake3d {
   --w: 96px;
   --scale: 1;
+  --tilt: -29deg;
   --sponge: #efd9b4;
   --frost: #fff6ea;
   --fill: #c9a66b;
   --drip: transparent;
+  position: relative;
   width: var(--w);
   height: var(--w);
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  perspective: 500px;
+  perspective: 680px;
 }
-.cake3d__obj {
-  position: relative;
-  width: calc(var(--w) * 0.8 * var(--scale));
-  height: calc(var(--w) * 0.66 * var(--scale));
-  transform-origin: bottom center;
-  animation: cake-bob 3.4s ease-in-out infinite;
-}
-.cake3d.is-rect .cake3d__obj {
-  width: calc(var(--w) * 0.98 * var(--scale));
-}
-@keyframes cake-bob {
-  0%,
-  100% {
-    transform: translateY(0) rotate(-1.4deg);
-  }
-  50% {
-    transform: translateY(-4px) rotate(1.4deg);
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .cake3d__obj {
-    animation: none;
-  }
-}
-/* soft ground shadow */
-.cake3d__obj::after {
+/* soft ground shadow (flat, not in the 3D group) */
+.cake3d::before {
   content: "";
   position: absolute;
   left: 50%;
-  bottom: -9px;
-  width: 104%;
-  height: 15px;
+  bottom: 6px;
+  width: 66%;
+  height: 12px;
   transform: translateX(-50%);
   background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.22), transparent 68%);
   border-radius: 50%;
 }
-/* sponge body */
-.cake3d__body {
+/* the tilted 3D group — a front wall + a top surface folded onto it */
+.cake3d__tilt {
+  position: relative;
+  width: calc(var(--w) * 0.62 * var(--scale));
+  height: calc(var(--w) * 0.4 * var(--scale));
+  margin-bottom: calc(var(--w) * 0.04);
+  transform-style: preserve-3d;
+  transform: rotateX(var(--tilt));
+  animation: cake-bob 3.6s ease-in-out infinite;
+}
+.cake3d.is-rect .cake3d__tilt {
+  width: calc(var(--w) * 0.95 * var(--scale));
+}
+@keyframes cake-bob {
+  0%,
+  100% {
+    transform: rotateX(var(--tilt)) translateY(0);
+  }
+  50% {
+    transform: rotateX(var(--tilt)) translateY(-4px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cake3d__tilt {
+    animation: none;
+  }
+}
+/* front wall = sponge, with a frosting lip + filling stripe */
+.cake3d__side {
   position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 62%;
+  inset: 0;
   background-color: var(--sponge);
   background-image: linear-gradient(
     90deg,
-    rgba(0, 0, 0, 0.2),
-    rgba(255, 255, 255, 0.22) 30%,
-    rgba(255, 255, 255, 0.04) 56%,
-    rgba(0, 0, 0, 0.2)
+    rgba(0, 0, 0, 0.24),
+    rgba(255, 255, 255, 0.2) 30%,
+    rgba(255, 255, 255, 0.02) 60%,
+    rgba(0, 0, 0, 0.26)
   );
-  border-radius: 6px 6px 10px 10px;
+  border-radius: 3px 3px 7px 7px;
+  box-shadow: inset 0 -6px 8px rgba(0, 0, 0, 0.16);
   overflow: hidden;
-  box-shadow: inset 0 -7px 9px rgba(0, 0, 0, 0.14);
 }
-.cake3d.is-round .cake3d__body {
-  border-radius: 44% 44% 12px 12px / 20% 20% 12px 12px;
+.cake3d.is-round .cake3d__side {
+  border-radius: 10% 10% 46% 46% / 5% 5% 26% 26%;
 }
-/* filling stripe through the sponge */
-.cake3d__body::before {
+.cake3d__side::after {
   content: "";
   position: absolute;
   left: 0;
   right: 0;
-  top: 42%;
+  top: 0;
+  height: 30%;
+  background: var(--frost);
+  box-shadow: inset 0 -4px 5px rgba(0, 0, 0, 0.08);
+}
+.cake3d__side::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 58%;
   height: 15%;
   background: var(--fill);
   box-shadow:
     0 -1px 0 rgba(0, 0, 0, 0.12),
     0 1px 0 rgba(0, 0, 0, 0.12);
 }
-/* frosting top */
-.cake3d__top {
+/* ganache drip hanging under the frosting lip */
+.cake3d__drip {
   position: absolute;
-  left: -5%;
-  right: -5%;
-  top: 4%;
-  height: 46%;
-  background: var(--frost);
-  background-image: radial-gradient(ellipse at 38% 30%, rgba(255, 255, 255, 0.55), transparent 60%);
-  border-radius: 50%;
-  box-shadow:
-    inset 0 -9px 10px rgba(0, 0, 0, 0.12),
-    0 3px 5px rgba(0, 0, 0, 0.08);
+  left: 2%;
+  right: 2%;
+  top: 26%;
+  height: 34%;
   z-index: 2;
-}
-.cake3d.is-square .cake3d__top {
-  border-radius: 16%;
-  left: -2%;
-  right: -2%;
-}
-.cake3d.is-rect .cake3d__top {
-  border-radius: 26% / 40%;
-}
-/* chocolate/ganache drip hanging off the frosting edge — a band whose
-   top is solid (joins the frosting) and whose bottom edge is a row of
-   rounded drip tongues (two mask layers, union-composited). */
-.cake3d__top::after {
-  content: "";
-  position: absolute;
-  left: 3%;
-  right: 3%;
-  top: 70%;
-  height: 42%;
   background: var(--drip);
   -webkit-mask:
-    linear-gradient(#000 0 0) 0 0 / 100% 40% no-repeat,
-    radial-gradient(circle 6px at 6px 5px, #000 95%, transparent 100%) 0 100% / 17px 62% repeat-x;
+    linear-gradient(#000 0 0) 0 0 / 100% 32% no-repeat,
+    radial-gradient(circle 5px at 5px 4px, #000 95%, transparent 100%) 0 100% / 14px 66% repeat-x;
   mask:
-    linear-gradient(#000 0 0) 0 0 / 100% 40% no-repeat,
-    radial-gradient(circle 6px at 6px 5px, #000 95%, transparent 100%) 0 100% / 17px 62% repeat-x;
+    linear-gradient(#000 0 0) 0 0 / 100% 32% no-repeat,
+    radial-gradient(circle 5px at 5px 4px, #000 95%, transparent 100%) 0 100% / 14px 66% repeat-x;
 }
-/* topper (cherry / fruit / star, etc.) */
+/* TOP surface — a horizontal plane folded up onto the wall's top edge.
+   Its outline (ellipse vs square vs long rectangle) is what makes the
+   chosen SHAPE unmistakable. */
+.cake3d__topface {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: calc(var(--w) * 0.52 * var(--scale));
+  background: var(--frost);
+  background-image: radial-gradient(ellipse at 42% 36%, rgba(255, 255, 255, 0.6), transparent 62%);
+  transform-origin: center top;
+  transform: translateY(calc(var(--w) * 0.03)) rotateX(-90deg);
+  box-shadow: inset 0 8px 12px rgba(0, 0, 0, 0.06);
+}
+.cake3d.is-round .cake3d__topface {
+  border-radius: 50%;
+}
+.cake3d.is-square .cake3d__topface {
+  border-radius: 12%;
+  height: calc(var(--w) * 0.66 * var(--scale));
+}
+.cake3d.is-rect .cake3d__topface {
+  border-radius: 7%;
+  height: calc(var(--w) * 0.4 * var(--scale));
+}
+/* topper (cherry / fruit / star) — upright, standing on the cake top */
 .cake3d__topper {
   position: absolute;
   left: 50%;
-  top: -14%;
+  bottom: calc(var(--w) * 0.46 * var(--scale));
+  z-index: 6;
   transform: translateX(-50%);
-  font-size: calc(var(--w) * 0.24);
+  font-size: calc(var(--w) * 0.2);
   line-height: 1;
-  z-index: 3;
-  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.2));
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.22));
 }
 
-/* Live-update transitions on the persistent cake (color/shape morph). */
-#liveCake .cake3d__top,
-#liveCake .cake3d__body {
+/* Live-update transitions on the persistent cake (colour/shape morph). */
+#liveCake .cake3d__side,
+#liveCake .cake3d__topface,
+#liveCake .cake3d__side::after,
+#liveCake .cake3d__side::before {
   transition:
     background-color 0.55s ease,
     border-radius 0.55s ease;
 }
-#liveCake .cake3d__body::before {
-  transition: background-color 0.55s ease;
-}
-#liveCake .cake3d__obj {
+#liveCake .cake3d__tilt {
   transition:
     width 0.5s cubic-bezier(0.34, 1.4, 0.5, 1),
     height 0.5s cubic-bezier(0.34, 1.4, 0.5, 1);
@@ -2116,19 +2127,19 @@ body[data-purchased="true"] .review-gate-hint {
     opacity: 1;
   }
 }
-/* A springy "pop" when a choice changes the cake (overrides the idle bob). */
-#liveCake.is-pop .cake3d__obj {
+/* A springy "pop" when a choice changes the cake (keeps the tilt). */
+#liveCake.is-pop .cake3d__tilt {
   animation: cake-pop 0.55s cubic-bezier(0.34, 1.5, 0.5, 1);
 }
 @keyframes cake-pop {
   0% {
-    transform: scale(1);
+    transform: rotateX(var(--tilt)) scale(1);
   }
   35% {
-    transform: scale(1.09) translateY(-5px) rotate(1deg);
+    transform: rotateX(var(--tilt)) scale(1.08) translateY(-5px);
   }
   100% {
-    transform: scale(1);
+    transform: rotateX(var(--tilt)) scale(1);
   }
 }
 

@@ -43,11 +43,11 @@
               <div class="cake-stage w-full" style="min-height:360px">
                 <div class="cake-glow"></div>
                 <div class="cake-drop">
-                  <div class="cake3d is-round" id="liveCake" style="--w:clamp(160px,40vw,230px)">
-                    <div class="cake3d__obj">
-                      <span class="cake3d__topper" data-live-topper></span>
-                      <div class="cake3d__top"></div>
-                      <div class="cake3d__body"></div>
+                  <div class="cake3d is-round" id="liveCake" style="--w:clamp(170px,42vw,240px)">
+                    <span class="cake3d__topper" data-live-topper></span>
+                    <div class="cake3d__tilt">
+                      <div class="cake3d__topface"></div>
+                      <div class="cake3d__side"><div class="cake3d__drip"></div></div>
                     </div>
                   </div>
                 </div>
@@ -128,9 +128,9 @@
             "--w:" + (w || 84) + "px;--scale:" + (c.scale || 1) + ";--sponge:" + c.sponge +
             ";--frost:" + c.frost + ";--fill:" + c.fill + ";--drip:" + (c.drip || "transparent") + ";";
           return (
-            '<div class="cake3d ' + cls + '" style="' + style + '"><div class="cake3d__obj">' +
+            '<div class="cake3d ' + cls + '" style="' + style + '">' +
             (c.topper ? '<span class="cake3d__topper">' + c.topper + "</span>" : "") +
-            '<div class="cake3d__top"></div><div class="cake3d__body"></div></div></div>'
+            '<div class="cake3d__tilt"><div class="cake3d__topface"></div><div class="cake3d__side"><div class="cake3d__drip"></div></div></div></div>'
           );
         }
         function cakeFor(key, id) {
