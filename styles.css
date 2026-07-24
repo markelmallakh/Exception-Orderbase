@@ -915,6 +915,16 @@ body[data-purchased="true"] .review-gate-hint {
   border-color: #dee2e6;
 }
 
+/* WhatsApp CTA — official WhatsApp green, white icon/text. */
+.btn--whatsapp {
+  background: #25d366;
+  color: #ffffff;
+}
+.btn--whatsapp:hover {
+  background: #1ebe5b;
+  color: #ffffff;
+}
+
 .btn:disabled,
 .btn[aria-disabled="true"] {
   opacity: 0.5;
