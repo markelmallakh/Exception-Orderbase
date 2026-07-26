@@ -99,6 +99,37 @@
                   </div>
                 </div>
 
+                <!-- ---- Send as a gift ---- -->
+                <div class="flex flex-col gap-4 border-b border-primaryLight pb-5" data-checkout-step="1" data-gift>
+                  <label class="wallet-toggle">
+                    <img src="images/icons/account%20icons/send-gift.webp" alt="" class="wallet-toggle__icon" />
+                    <span class="wallet-toggle__label">Send as a Gift</span>
+                    <input type="checkbox" class="wallet-toggle__input" data-gift-input aria-label="Send as a gift" />
+                    <span class="wallet-toggle__switch" aria-hidden="true"></span>
+                  </label>
+                  <ul class="gift-notes">
+                    <li>When sending as a gift, prices will be removed from the invoice.</li>
+                    <li>Your order will be delivered to the selected address.</li>
+                    <li>Cash on Delivery is not available for gift orders.</li>
+                  </ul>
+                  <div class="flex flex-wrap items-start gap-5 [&>div]:w-full lg:[&>div]:w-[calc(50%-10px)]" data-gift-fields hidden>
+                    <div class="flex flex-col gap-y-2">
+                      <label class="text-gray-700 after:ps-1 after:content-['*']">Recipient name</label>
+                      <input type="text" placeholder="Recipient's full name" class="h-11 px-2.5 py-4 border border-customGrayMedium focus:border-primary-400 rounded-md text-textSecondary transition-colors text-sm font-medium outline-none" />
+                    </div>
+                    <div class="flex flex-col gap-y-2">
+                      <label class="text-gray-700 after:ps-1 after:content-['*']">Recipient phone number</label>
+                      <div class="flex items-center h-11 px-2.5 border border-customGrayMedium focus-within:border-primary-400 rounded-md text-textSecondary transition-colors text-sm font-medium">
+                        <div class="relative mr-3 flex h-[30px] items-center gap-2 border-r border-[#979BA0] pr-3.5">
+                          <span class="text-sm font-normal text-[#182325]">🇪🇬 +20</span>
+                          <svg viewBox="0 0 24 24" fill="none" class="h-[14px] w-[14px] text-gray-500"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
+                        <input type="tel" placeholder="100 123 4567" class="flex-1 h-full bg-transparent outline-none" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
                 <!-- ---- Shipping type + address + date ---- -->
                 <div class="flex flex-col gap-4 md:gap-5 relative">
                   <!-- ShippingType (delivery / pickup switch) -->

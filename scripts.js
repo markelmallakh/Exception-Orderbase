@@ -2126,6 +2126,68 @@
   }
 
   /* ---------------------------------------------------------------
+     Send as a gift (checkout) — toggling on reveals the recipient
+     fields and rules out the options gifts can't use: "Pickup from
+     store" (meta swaps to an unavailable notice) and "Cash on
+     delivery" (auto-moves the selection to card). Toggling off
+     restores both, including whatever the pickup meta said before.
+     --------------------------------------------------------------- */
+  function initGiftToggle(scope) {
+    scope.querySelectorAll("[data-gift]").forEach((root) => {
+      if (root.dataset.giftReady) return;
+      root.dataset.giftReady = "1";
+      const input = root.querySelector("[data-gift-input]");
+      const fields = root.querySelector("[data-gift-fields]");
+      if (!input) return;
+      let prevPickupMeta = "";
+      input.addEventListener("change", () => {
+        const on = input.checked;
+        if (fields) {
+          fields.hidden = !on;
+          if (on) {
+            fields.classList.remove("sc-tile");
+            void fields.offsetWidth;
+            fields.classList.add("sc-tile");
+          }
+        }
+        /* Pickup from store — not available for gift orders */
+        const pickup = document.querySelector('[data-optgroup="shiptype"] [data-opt="pickup"]');
+        const pickupMeta = pickup && pickup.querySelector("[data-opt-meta]");
+        if (pickup) {
+          if (on) {
+            if (pickup.classList.contains("is-selected")) {
+              const deliver = document.querySelector('[data-optgroup="shiptype"] [data-opt="deliver"]');
+              if (deliver) deliver.click();
+            }
+            if (pickupMeta) {
+              prevPickupMeta = pickupMeta.textContent;
+              pickupMeta.textContent = "Not available for gift orders";
+            }
+          } else if (pickupMeta) {
+            pickupMeta.textContent = prevPickupMeta || "Choose Store";
+          }
+          pickup.classList.toggle("is-disabled", on);
+          pickup.disabled = on;
+        }
+        /* Cash on delivery — not available for gift orders */
+        const cod = document.querySelector('input[name="payment"][value="cod"]');
+        const codRow = cod && cod.closest(".optrow");
+        if (codRow) {
+          codRow.classList.toggle("is-disabled", on);
+          cod.disabled = on;
+          if (on && cod.checked) {
+            const cc = document.querySelector('input[name="payment"][value="cc"]');
+            if (cc) {
+              cc.checked = true;
+              cc.dispatchEvent(new Event("change", { bubbles: true }));
+            }
+          }
+        }
+      });
+    });
+  }
+
+  /* ---------------------------------------------------------------
      Order note — a pink link that expands into a compose form, then
      collapses into a saved white card with a remove control.
      Drop a placeholder anywhere: <div data-order-note></div>
@@ -3716,6 +3778,7 @@
     initPromo(scope);
     initOrderNote(scope);
     initWalletToggle(scope);
+    initGiftToggle(scope);
     initTierBadge(scope);
     initVouchers(scope);
     syncWalletBalance(scope);

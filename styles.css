@@ -3422,6 +3422,48 @@ blockquote {
    switch — the switch itself is a 46px target, too small to be the
    only hit area on mobile.
    --------------------------------------------------------------- */
+/* =================================================================
+   SEND AS A GIFT (checkout) — reuses the .wallet-toggle switch card;
+   .gift-notes = the checklist under it; recipient fields reveal via
+   [data-gift-fields]. When active, initGiftToggle dims "Pickup from
+   store" + "Cash on delivery" with .optrow.is-disabled.
+   ================================================================= */
+.gift-notes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.gift-notes li {
+  position: relative;
+  padding-inline-start: 26px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #6f7276;
+}
+.gift-notes li::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  top: 1px;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  background:
+    #e2f7f2
+      url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23209b34" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>')
+      center / 10px no-repeat;
+}
+/* An option that the current configuration rules out (gift orders) —
+   still visible so the user learns WHY, but clearly not pressable. */
+.optrow.is-disabled {
+  opacity: 0.55;
+  filter: grayscale(0.5);
+  pointer-events: none;
+}
+.optrow.is-disabled .optrow__meta--prompt {
+  color: #d83434; /* brand Error — reads as "unavailable", not a CTA */
+}
+
 .wallet-toggle {
   display: flex;
   align-items: center;
