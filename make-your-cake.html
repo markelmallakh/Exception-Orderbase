@@ -65,6 +65,27 @@
 
     <div id="site-footer"></div>
 
+    <!-- Themed-topper picker. A .modal-shell so the shared plumbing closes it:
+         [data-close] and backdrop clicks are handled globally in scripts.js. -->
+    <div data-modal="themes" class="modal-shell">
+      <div class="flex w-full max-w-[560px] max-h-[85vh] flex-col overflow-hidden rounded-2xl bg-white shadow-custom3">
+        <div class="flex shrink-0 items-center justify-between border-b border-neutral-100 px-5 py-4">
+          <div>
+            <h2 class="font-semibold text-textSecondary text-lg">Choose Your Themes</h2>
+            <p class="text-xs text-gray-500">Hand-made sugar-paste figures — add up to four.</p>
+          </div>
+          <button type="button" data-close aria-label="Close" class="grid place-items-center w-8 h-8 rounded-full hover:bg-neutral-100 text-textSecondary">
+            <svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+        <div class="flex-1 overflow-y-auto px-5 py-4" data-themes-body></div>
+        <div class="flex shrink-0 items-center gap-3 border-t border-neutral-100 px-5 py-4">
+          <span class="text-sm text-gray-600" data-themes-count>0 / 4 selected</span>
+          <button type="button" class="btn btn--primary btn--md ms-auto" data-themes-confirm>Add Themes</button>
+        </div>
+      </div>
+    </div>
+
     <script>
       (function () {
         const builder = document.querySelector("[data-cake-builder]");
@@ -128,6 +149,31 @@
           { id: "drip", name: "Chocolate Drip" },
           { id: "themed", name: "Themed Topper" },
         ];
+        /* Sugar-paste figures placed on top. Two tiers, matching the live
+           configurator's cutouts (large 250 EGP / small 170 EGP, max 4).
+           Names + emoji stand in for the real photographed catalogue. */
+        const THEME_MAX = 4;
+        const THEMES = [
+          { id: "dino", name: "Dinosaur", emoji: "🦕", tier: "large" },
+          { id: "shark", name: "Shark", emoji: "🦈", tier: "large" },
+          { id: "unicorn", name: "Unicorn", emoji: "🦄", tier: "large" },
+          { id: "safari", name: "Safari Animals", emoji: "🦁", tier: "large" },
+          { id: "racecar", name: "Race Car", emoji: "🏎️", tier: "large" },
+          { id: "princess", name: "Princess Castle", emoji: "🏰", tier: "large" },
+          { id: "space", name: "Rocket & Space", emoji: "🚀", tier: "large" },
+          { id: "teddy", name: "Teddy Bear", emoji: "🧸", tier: "large" },
+          { id: "football", name: "Football", emoji: "⚽", tier: "small" },
+          { id: "balloons", name: "Balloons", emoji: "🎈", tier: "small" },
+          { id: "flowers", name: "Flowers", emoji: "🌸", tier: "small" },
+          { id: "stars", name: "Stars", emoji: "⭐", tier: "small" },
+          { id: "hearts", name: "Hearts", emoji: "💛", tier: "small" },
+          { id: "crown", name: "Crown", emoji: "👑", tier: "small" },
+          { id: "music", name: "Music Notes", emoji: "🎵", tier: "small" },
+          { id: "graduation", name: "Graduation Cap", emoji: "🎓", tier: "small" },
+        ];
+        const THEME_PRICE = { large: 250, small: 170 };
+        const THEME_MAP = {};
+        THEMES.forEach((t) => (THEME_MAP[t.id] = t));
         /* The live configurator's 14 colours, tuned to pastry-friendly tones. */
         const COLOURS = [
           { id: "white", name: "White", hex: "#fff6ea" },
@@ -155,7 +201,7 @@
         const state = {
           shape: "circle", type: "sponge", size: "28", height: "8",
           flavour: "vanilla", nuts: "0", fruits: "0",
-          style: "classic", colour: "white", message: "",
+          style: "classic", colour: "white", themes: [], message: "",
         };
         const touched = {};
         let tab = 0;
@@ -277,7 +323,18 @@
           root.style.setProperty("--fruH", AMOUNT_H[s.fruits] + "px");
           rec.word.textContent = s.message || "";
           rec.word.style.color = lum(frost) > 0.55 ? "#7a4a2a" : "#fff6ea";
-          rec.topper.textContent = s.style === "fruits" ? "🍓" : s.style === "themed" ? "⭐" : "";
+          /* Topper: chosen sugar-paste figures stand on the cake; falls back
+             to a single star until the user picks any. */
+          let top = "";
+          if (s.style === "fruits") top = "🍓";
+          else if (s.style === "themed") {
+            const picked = (s.themes || []).map((id) => THEME_MAP[id] && THEME_MAP[id].emoji).filter(Boolean);
+            top = picked.length ? picked.join("") : "⭐";
+          }
+          rec.topper.textContent = top;
+          /* Several figures side by side need to shrink so they stay on the cake. */
+          const n = (s.style === "themed" && (s.themes || []).length) || 1;
+          rec.topper.style.fontSize = n > 2 ? "calc(var(--topFs) * 0.58)" : n > 1 ? "calc(var(--topFs) * 0.78)" : "";
         }
         /* Mini preview: a static snapshot of the current cake with overrides. */
         function miniCake(overrides) {
@@ -319,6 +376,8 @@
           ];
           if (state.nuts !== "0") bits.push("Nuts " + state.nuts + "g");
           if (state.fruits !== "0") bits.push("Fruits " + state.fruits + "g");
+          if (state.style === "themed" && state.themes.length)
+            bits.push(state.themes.length + (state.themes.length > 1 ? " themes" : " theme"));
           summaryEl.textContent = bits.join("  ·  ");
         }
 
@@ -443,6 +502,29 @@
               addMini(c, { style: o.id, message: "" });
             });
             panel.appendChild(g);
+            if (state.style === "themed") {
+              const row = el("mb-6 flex flex-wrap items-center gap-2 rounded-[14px] border border-gray-200 bg-gray-50 p-3");
+              if (state.themes.length) {
+                state.themes.forEach((id) => {
+                  const t = THEME_MAP[id];
+                  if (!t) return;
+                  const chip = el("inline-flex items-center gap-1.5 rounded-full bg-white border border-gray-200 px-3 py-1.5 text-sm text-textSecondary");
+                  chip.innerHTML = '<span class="text-base leading-none">' + t.emoji + "</span>" + t.name;
+                  row.appendChild(chip);
+                });
+              } else {
+                const hint = el("text-sm text-gray-500");
+                hint.textContent = "No figures chosen yet.";
+                row.appendChild(hint);
+              }
+              const edit = document.createElement("button");
+              edit.type = "button";
+              edit.className = "btn btn--secondary btn--sm ms-auto";
+              edit.setAttribute("data-open-themes", "");
+              edit.textContent = state.themes.length ? "Edit Themes" : "Choose Themes";
+              row.appendChild(edit);
+              panel.appendChild(row);
+            }
             panel.appendChild(groupHead("Frosting colour"));
             const sw = el("flex flex-wrap gap-2.5 mb-2");
             COLOURS.forEach((o) => {
@@ -502,7 +584,75 @@
           renderPanel();
         });
 
+        /* ---- Themed-topper picker ---- */
+        const themesModal = document.querySelector('[data-modal="themes"]');
+        const themesBody = themesModal.querySelector("[data-themes-body]");
+        const themesCount = themesModal.querySelector("[data-themes-count]");
+        const themesConfirm = themesModal.querySelector("[data-themes-confirm]");
+        let draftThemes = [];
+
+        function themeTile(t) {
+          const on = draftThemes.indexOf(t.id) > -1;
+          const full = draftThemes.length >= THEME_MAX && !on;
+          return (
+            '<button type="button" class="myc-opt' + (on ? " is-active" : "") + (full ? " is-full" : "") +
+            '" data-theme="' + t.id + '"' + (full ? " disabled" : "") + ">" +
+            '<span class="text-3xl leading-none pointer-events-none">' + t.emoji + "</span>" +
+            '<span class="font-semibold text-sm text-textSecondary pointer-events-none">' + t.name + "</span>" +
+            '<span class="text-xs text-gray-500 pointer-events-none">' + THEME_PRICE[t.tier] + " EGP</span>" +
+            "</button>"
+          );
+        }
+        function renderThemes() {
+          const group = (tier, label) =>
+            '<div class="mb-3 flex items-baseline justify-between gap-3"><span class="text-sm font-semibold text-textSecondary">' + label +
+            '</span><span class="text-xs text-gray-500">' + THEME_PRICE[tier] + ' EGP each</span></div>' +
+            '<div class="mb-5 grid grid-cols-2 sm:grid-cols-4 gap-3">' +
+            THEMES.filter((t) => t.tier === tier).map(themeTile).join("") + "</div>";
+          themesBody.innerHTML = group("large", "Large figures") + group("small", "Small figures");
+          const total = draftThemes.reduce((sum, id) => sum + (THEME_MAP[id] ? THEME_PRICE[THEME_MAP[id].tier] : 0), 0);
+          themesCount.textContent =
+            draftThemes.length + " / " + THEME_MAX + " selected" + (total ? "  ·  +" + total + " EGP" : "");
+          themesConfirm.disabled = false;
+        }
+        function openThemes() {
+          draftThemes = state.themes.slice();
+          renderThemes();
+          themesModal.classList.add("is-open");
+          const backdrop = document.querySelector("[data-backdrop]");
+          if (backdrop) backdrop.classList.add("is-open");
+          document.body.classList.add("no-scroll");
+        }
+        function closeThemes() {
+          themesModal.classList.remove("is-open");
+          const backdrop = document.querySelector("[data-backdrop]");
+          if (backdrop) backdrop.classList.remove("is-open");
+          document.body.classList.remove("no-scroll");
+        }
+        themesBody.addEventListener("click", (e) => {
+          const b = e.target.closest("[data-theme]");
+          if (!b) return;
+          const id = b.getAttribute("data-theme");
+          const i = draftThemes.indexOf(id);
+          if (i > -1) draftThemes.splice(i, 1);
+          else if (draftThemes.length < THEME_MAX) draftThemes.push(id);
+          renderThemes();
+        });
+        themesConfirm.addEventListener("click", () => {
+          state.themes = draftThemes.slice();
+          state.style = "themed";
+          touched.style = true;
+          closeThemes();
+          renderPanel();
+          syncTabs();
+          updateCake(true);
+        });
+
         panelEl.addEventListener("click", (e) => {
+          if (e.target.closest("[data-open-themes]")) {
+            openThemes();
+            return;
+          }
           const opt = e.target.closest("[data-pick]");
           if (!opt) return;
           const key = opt.getAttribute("data-pick");
@@ -522,6 +672,8 @@
           renderPanel();
           syncTabs();
           updateCake(true);
+          /* Picking "Themed Topper" opens the figure picker straight away. */
+          if (key === "style" && val === "themed") openThemes();
         });
 
         panelEl.addEventListener("input", (e) => {
@@ -545,6 +697,16 @@
           state.fruits = AMOUNTS[Math.floor(seededRand() * 4)].id;
           state.style = STYLES[Math.floor(seededRand() * 4)].id;
           state.colour = COLOURS[Math.floor(seededRand() * COLOURS.length)].id;
+          if (state.style === "themed") {
+            state.themes = [];
+            const many = 1 + Math.floor(seededRand() * 2);
+            while (state.themes.length < many) {
+              const pick = THEMES[Math.floor(seededRand() * THEMES.length)].id;
+              if (state.themes.indexOf(pick) < 0) state.themes.push(pick);
+            }
+          } else {
+            state.themes = [];
+          }
           ["shape", "type", "size", "height", "flavour", "nuts", "fruits", "style", "colour"].forEach((k) => (touched[k] = true));
           renderPanel();
           syncTabs();

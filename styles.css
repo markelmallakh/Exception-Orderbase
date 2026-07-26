@@ -1888,6 +1888,15 @@ body[data-purchased="true"] .review-gate-hint {
     inset 0 0 0 1px #182325,
     0 8px 20px rgba(24, 35, 37, 0.08);
 }
+/* Max selection reached — the remaining tiles read as out of reach. */
+.myc-opt.is-full {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.myc-opt.is-full:hover {
+  border-color: #dee2e6;
+  transform: none;
+}
 .myc-opt.is-active::after {
   content: "";
   position: absolute;
