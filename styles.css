@@ -2485,6 +2485,55 @@ blockquote {
 }
 
 /* =================================================================
+   PDP ABOVE-THE-FOLD (product.html) — the Add-to-cart CTA must land
+   inside the first viewport. Tall screens keep the roomy rhythm; on
+   short laptop heights the info column tightens step by step instead
+   of pushing the CTA below the fold. Height-based, so it never
+   affects the (scroll-anyway) mobile layout.
+   ================================================================= */
+/* Doubled class selectors (0,2,0) so these beat the Tailwind CDN
+   utilities, which are injected AFTER this file and would otherwise win
+   the cascade at equal specificity. */
+@media (min-width: 768px) and (max-height: 840px) {
+  .pdp-top.pdp-top {
+    padding-top: 14px;
+  }
+  .pdp-info.pdp-info {
+    gap: 10px;
+  }
+  .pdp-info.pdp-info > .flex.flex-col {
+    gap: 6px;
+  }
+  .pdp-vars.pdp-vars,
+  .pdp-actions.pdp-actions {
+    gap: 8px;
+  }
+}
+@media (min-width: 768px) and (max-height: 730px) {
+  .pdp-top.pdp-top {
+    padding-top: 8px;
+  }
+  .pdp-info.pdp-info {
+    gap: 8px;
+  }
+  .pdp-vars.pdp-vars,
+  .pdp-actions.pdp-actions {
+    gap: 6px;
+  }
+  .pdp-info.pdp-info > .flex.flex-col {
+    gap: 4px;
+  }
+  /* Trim the intro to its first lines — the full copy still lives in
+     the Description tab below, so nothing is lost. */
+  .pdp-info .wysiwyg-product {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+/* =================================================================
    CONTACT TILES (contact-us.html) — the 3 colorful portrait cards
    (Phone/Email/Address). Whole tile is a link; carries [data-tilt] so
    it gets the same 3D cursor-tilt as the export product widgets

@@ -27,7 +27,7 @@
       <!-- ============================ PRODUCT DETAIL ============================
            Source: products/[slug]/page.tsx → section pt-7 md:pt-14 > Container >
            Breadcrumbs + [ProductImageGallery | ProductInfo]. -->
-      <section class="pt-7 md:pt-14">
+      <section class="pdp-top pt-5 md:pt-8">
         <div class="mx-auto w-full max-w-[1512px] px-6 lg:px-[60px]">
           <!-- Desktop breadcrumb -->
           <div class="mb-6 lg:mb-[32px] hidden md:block">
@@ -51,11 +51,11 @@
           </div>
 
           <div class="flex flex-col gap-6 md:gap-14 xl:gap-0">
-            <div class="flex lg:flex-row flex-col xl:justify-between justify-center gap-6 md:gap-14">
+            <div class="flex lg:flex-row flex-col xl:justify-between justify-center gap-6 lg:gap-8 xl:gap-10">
               <!-- ==================== PRODUCT IMAGE GALLERY ====================
                    Sticky on desktop: self-start lets it take its natural height so the
                    taller info column scrolls past while the gallery holds under the nav. -->
-              <div class="flex flex-col items-start gap-3 xl:gap-[60px] overflow-hidden xl:w-full !max-w-[698px] lg:sticky lg:top-[100px] lg:self-start">
+              <div class="flex flex-col items-start gap-3 xl:gap-[60px] overflow-hidden xl:w-full !max-w-[560px] xl:!max-w-[600px] lg:sticky lg:top-[100px] lg:self-start">
                 <div class="flex flex-col lg:flex-row-reverse items-start gap-3 w-full">
                   <!-- Main image -->
                   <figure class="relative bg-black-901 bg-opacity-10 w-full aspect-square rounded-xl overflow-hidden flex-1">
@@ -91,10 +91,10 @@
               </div>
 
               <!-- ==================== PRODUCT INFO ==================== -->
-              <div class="md:w-[calc(50%-28px)] w-full">
-                <div class="flex flex-col gap-5 mb-2 pb-2 lg:pb-[18px]">
+              <div class="w-full lg:flex-1 lg:min-w-0">
+                <div class="pdp-info flex flex-col gap-3.5 mb-2 pb-2 lg:pb-[18px]">
                   <!-- Category + name + reviews/servings badges (tight cluster) -->
-                  <div class="flex flex-col gap-2.5">
+                  <div class="flex flex-col gap-2">
                     <!-- Category (small badge) -->
                     <a href="shop-category.html" class="self-start inline-flex items-center -rotate-[2deg] bg-cta text-white text-[11px] leading-none px-1.5 py-0.5 rounded-[4px] hover:opacity-90 transition-opacity">Cakes</a>
 
@@ -134,11 +134,13 @@
 
                   <!-- Short description -->
                   <div class="text-gray-700 text-xs md:text-sm wysiwyg-product">
-                    <p>A rich, moist Belgian chocolate sponge layered with silky chocolate fudge and finished with a glossy ganache. Baked fresh to order and perfect for birthdays, anniversaries and every sweet celebration.</p>
+                    <!-- Keep this to ~2 lines so the Add-to-cart CTA stays above the
+                         fold; the full story lives in the Description tab below. -->
+                    <p>Moist Belgian chocolate sponge layered with silky fudge and finished with a glossy ganache — baked fresh to order.</p>
                   </div>
 
                   <!-- Variations -->
-                  <div class="flex flex-col gap-4">
+                  <div class="pdp-vars flex flex-col gap-3">
                     <div class="flex flex-col gap-2" data-variation-group>
                       <label class="font-semibold text-textSecondary text-base capitalize">Size</label>
                       <div class="flex flex-wrap gap-3">
@@ -158,7 +160,7 @@
                   </div>
 
                   <!-- Purchase actions: counter on its own line, then Add-to-cart + favorite -->
-                  <div class="flex flex-col gap-4">
+                  <div class="pdp-actions flex flex-col gap-3">
                     <!-- Quantity counter (its own line) -->
                     <div data-stepper class="counter counter--lg self-start">
                       <button type="button" data-step="-1" class="counter__btn" aria-label="Decrease quantity"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
