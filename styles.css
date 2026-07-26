@@ -2015,7 +2015,7 @@ body[data-purchased="true"] .review-gate-hint {
 .c3__pos {
   position: absolute;
   left: 50%;
-  top: 71%;
+  top: 74%;
   width: 0;
   height: 0;
   transform-style: preserve-3d;
@@ -2063,7 +2063,7 @@ body[data-purchased="true"] .review-gate-hint {
 .c3__shadow {
   position: absolute;
   left: 50%;
-  top: 71%;
+  top: 74%;
   width: var(--shw);
   height: calc(var(--shw) * 0.24);
   transform: translate(-50%, calc(var(--chh) * 0.38));
@@ -2193,7 +2193,7 @@ body[data-purchased="true"] .review-gate-hint {
 .c3__topper {
   position: absolute;
   left: 50%;
-  top: 71%;
+  top: 74%;
   z-index: 6;
   transform: translate(-50%, calc(var(--chh) * -0.62 - 30px));
   font-size: var(--topFs, 30px);
@@ -2270,15 +2270,48 @@ body[data-purchased="true"] .review-gate-hint {
     transform: none;
   }
 }
+/* Perspective-matched GROUND — a foreshortened floor ellipse under the
+   cake, squashed to the same ¾ top-right camera as the cake's own top
+   (no pedestal; the cake reads as sitting on a seamless studio table). */
+.cake-stage::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -3%;
+  width: 108%;
+  height: 30%;
+  transform: translateX(-50%);
+  background: radial-gradient(
+    closest-side,
+    rgba(140, 186, 181, 0.35),
+    rgba(176, 222, 217, 0.18) 56%,
+    transparent 74%
+  );
+  border-radius: 50%;
+  z-index: 0;
+}
+/* brighter pool right where the cake sits */
+.cake-stage::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 6%;
+  width: 56%;
+  height: 13%;
+  transform: translateX(-50%);
+  background: radial-gradient(closest-side, rgba(255, 255, 255, 0.85), transparent 78%);
+  border-radius: 50%;
+  z-index: 0;
+}
 .cake-glow {
   position: absolute;
   left: 50%;
-  top: 8%;
-  width: 78%;
-  aspect-ratio: 1;
+  top: 4%;
+  width: 70%;
+  aspect-ratio: 1.4;
   transform: translateX(-50%);
-  background: radial-gradient(circle, rgba(176, 222, 217, 0.55), transparent 62%);
-  filter: blur(8px);
+  background: radial-gradient(circle, rgba(176, 222, 217, 0.42), transparent 62%);
+  filter: blur(10px);
   border-radius: 50%;
   z-index: 0;
   animation: glow-pulse 4s ease-in-out infinite;
@@ -2311,44 +2344,6 @@ body[data-purchased="true"] .review-gate-hint {
   to {
     transform: none;
   }
-}
-.pedestal {
-  position: relative;
-  z-index: 1;
-  width: 74%;
-  height: 52px;
-  margin-top: -10px;
-}
-.pedestal__plate {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  height: 18px;
-  background: linear-gradient(#ffffff, #e4e7ea);
-  border-radius: 50%;
-  box-shadow: 0 7px 12px rgba(0, 0, 0, 0.14);
-}
-.pedestal__stem {
-  position: absolute;
-  top: 13px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 17%;
-  height: 30px;
-  background: linear-gradient(90deg, #d3d6da, #f4f5f6 42%, #d3d6da);
-}
-.pedestal__foot {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 50%;
-  height: 15px;
-  background: linear-gradient(#eceef0, #d0d3d7);
-  border-radius: 50%;
-  box-shadow: 0 7px 14px rgba(0, 0, 0, 0.16);
 }
 /* Config tabs — free navigation, sliding underline */
 .cake-tab {
