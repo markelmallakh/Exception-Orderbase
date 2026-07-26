@@ -1901,6 +1901,35 @@ body[data-purchased="true"] .review-gate-hint {
       url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>')
       center / 12px no-repeat;
 }
+/* Top-view footprint glyph on the Size cards — proportions mirror the
+   real cm dimensions so relative size differences read at a glance. */
+.myc-foot {
+  background: linear-gradient(145deg, #e7fffc, #b0ded9);
+  border: 1.5px solid #8cbab5;
+  box-shadow: inset 0 -3px 6px rgba(24, 35, 37, 0.08);
+}
+/* Frosting colour swatch */
+.myc-swatch {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 2px solid rgba(24, 35, 37, 0.12);
+  cursor: pointer;
+  transition:
+    transform 0.16s ease,
+    box-shadow 0.16s ease,
+    border-color 0.16s ease;
+}
+.myc-swatch:hover {
+  transform: scale(1.12);
+}
+.myc-swatch.is-active {
+  border-color: #182325;
+  box-shadow:
+    0 0 0 2px #fff,
+    0 0 0 4px #182325;
+}
+
 /* Stepper nodes */
 .myc-step {
   display: flex;
@@ -1954,203 +1983,268 @@ body[data-purchased="true"] .review-gate-hint {
   background: #8cbab5;
 }
 /* =================================================================
-   CSS 3D CAKE (.cake3d) — a lightweight rendered cake mockup used on
-   the Make Your Cake option cards + review, so users can picture the
-   shape / size / flavour / filling / decoration they pick. Driven by
-   CSS vars: --sponge, --frost, --fill, --drip, --scale; shape via the
-   .is-round / .is-square / .is-rect modifiers. Gentle idle bob.
+   TRUE-3D CAKE (.c3) — a real CSS-3D cake used as the live preview
+   AND the mini option previews on Make Your Cake. Geometry = 4 walls
+   + a top plane (box shapes) or 20 wall segments + a disc (round),
+   built by buildCake() in the page JS, which also paints per-face
+   lighting (front brightest, right lit, left/back shaded) and
+   half-&-half flavours. Size/height/coating live in CSS vars so a
+   new selection MORPHS fluidly instead of swapping artwork:
+     --cw/--cd box footprint px · --cr cylinder radius px
+     --chh wall height px · --lipH frosting coat (26% cream lip,
+     100% = sugar-paste fondant) · --nutsH/--fruH filling stripes
+   The rig views the cake from the FRONT with a top-right ¾ angle
+   (rotateX(-24) rotateY(-30)) and a slow sway, so the top surface
+   is always in sight.
    ================================================================= */
-.cake3d {
-  --w: 96px;
-  --scale: 1;
-  --tilt: -29deg;
-  --sponge: #efd9b4;
-  --frost: #fff6ea;
-  --fill: #c9a66b;
-  --drip: transparent;
+.c3 {
+  --cw: 120px;
+  --cd: 90px;
+  --cr: 60px;
+  --chh: 52px;
+  --lipH: 26%;
+  --nutsH: 0px;
+  --fruH: 0px;
+  --shw: 150px;
   position: relative;
-  width: var(--w);
-  height: var(--w);
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  perspective: 680px;
+  width: 100%;
+  height: 100%;
+  perspective: 950px;
+  perspective-origin: 50% 24%;
 }
-/* soft ground shadow (flat, not in the 3D group) */
-.cake3d::before {
-  content: "";
+.c3__pos {
   position: absolute;
   left: 50%;
-  bottom: 6px;
-  width: 66%;
-  height: 12px;
-  transform: translateX(-50%);
-  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.22), transparent 68%);
-  border-radius: 50%;
-}
-/* the tilted 3D group — a front wall + a top surface folded onto it */
-.cake3d__tilt {
-  position: relative;
-  width: calc(var(--w) * 0.62 * var(--scale));
-  height: calc(var(--w) * 0.4 * var(--scale));
-  margin-bottom: calc(var(--w) * 0.04);
+  top: 71%;
+  width: 0;
+  height: 0;
   transform-style: preserve-3d;
-  transform: rotateX(var(--tilt));
-  animation: cake-bob 3.6s ease-in-out infinite;
 }
-.cake3d.is-rect .cake3d__tilt {
-  width: calc(var(--w) * 0.95 * var(--scale));
+.c3.is-pop .c3__pos {
+  animation: c3-pop 0.55s cubic-bezier(0.34, 1.5, 0.5, 1);
 }
-@keyframes cake-bob {
+@keyframes c3-pop {
   0%,
   100% {
-    transform: rotateX(var(--tilt)) translateY(0);
+    transform: scale(1);
+  }
+  35% {
+    transform: scale(1.07) translateY(-6px);
+  }
+}
+.c3__rig {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+  transform: rotateX(-24deg) rotateY(-30deg);
+}
+.c3--live .c3__rig {
+  animation: c3-sway 11s ease-in-out infinite;
+}
+@keyframes c3-sway {
+  0%,
+  100% {
+    transform: rotateX(-24deg) rotateY(-24deg);
   }
   50% {
-    transform: rotateX(var(--tilt)) translateY(-4px);
+    transform: rotateX(-21deg) rotateY(-37deg);
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .cake3d__tilt {
+  .c3--live .c3__rig,
+  .c3.is-pop .c3__pos {
     animation: none;
   }
 }
-/* front wall = sponge, with a frosting lip + filling stripe */
-.cake3d__side {
-  position: absolute;
-  inset: 0;
-  background-color: var(--sponge);
-  background-image: linear-gradient(
-    90deg,
-    rgba(0, 0, 0, 0.24),
-    rgba(255, 255, 255, 0.2) 30%,
-    rgba(255, 255, 255, 0.02) 60%,
-    rgba(0, 0, 0, 0.26)
-  );
-  border-radius: 3px 3px 7px 7px;
-  box-shadow: inset 0 -6px 8px rgba(0, 0, 0, 0.16);
-  overflow: hidden;
-}
-.cake3d.is-round .cake3d__side {
-  border-radius: 10% 10% 46% 46% / 5% 5% 26% 26%;
-}
-.cake3d__side::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  height: 30%;
-  background: var(--frost);
-  box-shadow: inset 0 -4px 5px rgba(0, 0, 0, 0.08);
-}
-.cake3d__side::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 58%;
-  height: 15%;
-  background: var(--fill);
-  box-shadow:
-    0 -1px 0 rgba(0, 0, 0, 0.12),
-    0 1px 0 rgba(0, 0, 0, 0.12);
-}
-/* ganache drip hanging under the frosting lip */
-.cake3d__drip {
-  position: absolute;
-  left: 2%;
-  right: 2%;
-  top: 26%;
-  height: 34%;
-  z-index: 2;
-  background: var(--drip);
-  -webkit-mask:
-    linear-gradient(#000 0 0) 0 0 / 100% 32% no-repeat,
-    radial-gradient(circle 5px at 5px 4px, #000 95%, transparent 100%) 0 100% / 14px 66% repeat-x;
-  mask:
-    linear-gradient(#000 0 0) 0 0 / 100% 32% no-repeat,
-    radial-gradient(circle 5px at 5px 4px, #000 95%, transparent 100%) 0 100% / 14px 66% repeat-x;
-}
-/* TOP surface — a horizontal plane folded up onto the wall's top edge.
-   Its outline (ellipse vs square vs long rectangle) is what makes the
-   chosen SHAPE unmistakable. */
-.cake3d__topface {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: calc(var(--w) * 0.52 * var(--scale));
-  background: var(--frost);
-  background-image: radial-gradient(ellipse at 42% 36%, rgba(255, 255, 255, 0.6), transparent 62%);
-  transform-origin: center top;
-  transform: translateY(calc(var(--w) * 0.03)) rotateX(-90deg);
-  box-shadow: inset 0 8px 12px rgba(0, 0, 0, 0.06);
-}
-.cake3d.is-round .cake3d__topface {
-  border-radius: 50%;
-}
-.cake3d.is-square .cake3d__topface {
-  border-radius: 12%;
-  height: calc(var(--w) * 0.66 * var(--scale));
-}
-.cake3d.is-rect .cake3d__topface {
-  border-radius: 7%;
-  height: calc(var(--w) * 0.4 * var(--scale));
-}
-/* topper (cherry / fruit / star) — upright, standing on the cake top */
-.cake3d__topper {
+/* ground shadow — flat, under the 3D group */
+.c3__shadow {
   position: absolute;
   left: 50%;
-  bottom: calc(var(--w) * 0.46 * var(--scale));
+  top: 71%;
+  width: var(--shw);
+  height: calc(var(--shw) * 0.24);
+  transform: translate(-50%, calc(var(--chh) * 0.38));
+  background: radial-gradient(ellipse at center, rgba(24, 35, 37, 0.26), transparent 66%);
+  border-radius: 50%;
+}
+/* ---- faces ---- */
+.c3f,
+.c3s {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: hidden;
+  backface-visibility: hidden;
+}
+/* box walls */
+.c3f--front,
+.c3f--back {
+  width: var(--cw);
+  height: var(--chh);
+}
+.c3f--left,
+.c3f--right {
+  width: var(--cd);
+  height: var(--chh);
+}
+.c3f--front {
+  transform: translate(-50%, -50%) translateZ(calc(var(--cd) / 2));
+}
+.c3f--back {
+  transform: translate(-50%, -50%) rotateY(180deg) translateZ(calc(var(--cd) / 2));
+}
+.c3f--right {
+  transform: translate(-50%, -50%) rotateY(90deg) translateZ(calc(var(--cw) / 2));
+}
+.c3f--left {
+  transform: translate(-50%, -50%) rotateY(-90deg) translateZ(calc(var(--cw) / 2));
+}
+/* box top plane */
+.c3f--top {
+  width: var(--cw);
+  height: var(--cd);
+  transform: translate(-50%, -50%) rotateX(90deg) translateZ(calc(var(--chh) / 2));
+  border-radius: 4px;
+}
+/* cylinder segments (rotateY set per-segment via --a) + top disc */
+.c3s {
+  width: calc(var(--cr) * 0.34);
+  height: var(--chh);
+  transform: translate(-50%, -50%) rotateY(var(--a, 0deg)) translateZ(var(--cr));
+}
+.c3f--disc {
+  width: calc(var(--cr) * 2.02);
+  height: calc(var(--cr) * 2.02);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) rotateX(90deg) translateZ(calc(var(--chh) / 2));
+}
+/* vertical ambient light + bottom occlusion on every wall */
+.c3f::after,
+.c3s::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.1), transparent 32%, rgba(0, 0, 0, 0.12) 88%);
+}
+.c3f--top::after,
+.c3f--disc::after {
+  background: radial-gradient(ellipse at 38% 32%, rgba(255, 255, 255, 0.5), transparent 62%);
+}
+/* ---- wall layers (painted by JS, sized by vars) ---- */
+.c3-lip,
+.c3-nut,
+.c3-fru,
+.c3-drip {
+  position: absolute;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+}
+.c3-lip {
+  top: 0;
+  height: var(--lipH);
+  box-shadow: inset 0 -3px 4px rgba(0, 0, 0, 0.07);
+}
+.c3-nut {
+  top: 58%;
+  height: var(--nutsH);
+}
+.c3-fru {
+  top: calc(58% + var(--nutsH));
+  height: var(--fruH);
+}
+.c3-nut,
+.c3-fru {
+  box-shadow:
+    0 -1px 0 rgba(0, 0, 0, 0.1),
+    0 1px 0 rgba(0, 0, 0, 0.1);
+}
+/* ganache drip hanging under the coat */
+.c3-drip {
+  top: 22%;
+  height: 34%;
+  background: transparent;
+  -webkit-mask:
+    linear-gradient(#000 0 0) 0 0 / 100% 30% no-repeat,
+    radial-gradient(circle 5px at 5px 4px, #000 95%, transparent 100%) 0 100% / 13px 64% repeat-x;
+  mask:
+    linear-gradient(#000 0 0) 0 0 / 100% 30% no-repeat,
+    radial-gradient(circle 5px at 5px 4px, #000 95%, transparent 100%) 0 100% / 13px 64% repeat-x;
+}
+/* message piped on the top surface */
+.c3-word {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 10%;
+  text-align: center;
+  font-weight: 700;
+  font-size: var(--wordFs, 15px);
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  overflow: hidden;
+}
+/* topper emoji floating above the cake (screen-space billboard) */
+.c3__topper {
+  position: absolute;
+  left: 50%;
+  top: 71%;
   z-index: 6;
-  transform: translateX(-50%);
-  font-size: calc(var(--w) * 0.2);
+  transform: translate(-50%, calc(var(--chh) * -0.62 - 30px));
+  font-size: var(--topFs, 30px);
   line-height: 1;
   filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.22));
 }
-
-/* Live-update transitions on the persistent cake (colour/shape morph). */
-#liveCake .cake3d__side,
-#liveCake .cake3d__topface,
-#liveCake .cake3d__side::after,
-#liveCake .cake3d__side::before {
-  transition:
-    background-color 0.55s ease,
-    border-radius 0.55s ease;
-}
-#liveCake .cake3d__tilt {
-  transition:
-    width 0.5s cubic-bezier(0.34, 1.4, 0.5, 1),
-    height 0.5s cubic-bezier(0.34, 1.4, 0.5, 1);
-}
-.cake3d__topper.drop {
+.c3__topper.drop {
   animation: topper-drop 0.5s cubic-bezier(0.34, 1.5, 0.5, 1);
 }
 @keyframes topper-drop {
   0% {
-    transform: translateX(-50%) translateY(-16px) scale(0.4);
+    transform: translate(-50%, calc(var(--chh) * -0.62 - 46px)) scale(0.4);
     opacity: 0;
   }
   100% {
-    transform: translateX(-50%) translateY(0) scale(1);
+    transform: translate(-50%, calc(var(--chh) * -0.62 - 30px)) scale(1);
     opacity: 1;
   }
 }
-/* A springy "pop" when a choice changes the cake (keeps the tilt). */
-#liveCake.is-pop .cake3d__tilt {
-  animation: cake-pop 0.55s cubic-bezier(0.34, 1.5, 0.5, 1);
+/* fluid morphs on the LIVE cake only (minis are static snapshots) */
+.c3--live .c3f,
+.c3--live .c3s {
+  transition:
+    width 0.55s cubic-bezier(0.34, 1.2, 0.5, 1),
+    height 0.55s cubic-bezier(0.34, 1.2, 0.5, 1),
+    transform 0.55s cubic-bezier(0.34, 1.2, 0.5, 1),
+    background-color 0.5s ease,
+    background 0.5s ease;
 }
-@keyframes cake-pop {
-  0% {
-    transform: rotateX(var(--tilt)) scale(1);
-  }
-  35% {
-    transform: rotateX(var(--tilt)) scale(1.08) translateY(-5px);
-  }
-  100% {
-    transform: rotateX(var(--tilt)) scale(1);
-  }
+.c3--live .c3-lip {
+  transition:
+    height 0.5s ease,
+    background-color 0.5s ease;
+}
+.c3--live .c3-nut,
+.c3--live .c3-fru {
+  transition:
+    height 0.45s ease,
+    top 0.45s ease,
+    background-color 0.45s ease;
+}
+.c3--live .c3-drip {
+  transition: background-color 0.45s ease;
+}
+.c3--live .c3__shadow {
+  transition:
+    width 0.55s ease,
+    transform 0.55s ease;
+}
+.c3--live .c3__topper {
+  transition: transform 0.55s ease;
 }
 
 /* =================================================================

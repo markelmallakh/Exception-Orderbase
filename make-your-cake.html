@@ -6,7 +6,7 @@
     <title>Make Your Cake — Exception</title>
     <meta
       name="description"
-      content="Play cake designer — build your own Exception cake live on a pedestal: shape, size, flavour, filling and decoration, updated as you go."
+      content="Play cake designer — build your own Exception cake live in 3D: shape, size, height, flavour, filling, decoration and colour, updated as you go."
     />
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="tw-config.js"></script>
@@ -29,7 +29,7 @@
           <div class="flex flex-col items-center gap-3 text-center max-w-[640px] mx-auto">
             <span class="eyebrow">Make Your Cake</span>
             <h1 class="text-[30px] lg:text-[46px] font-semibold leading-[115%] text-textSecondary">Play Cake <span class="text-primary">Designer</span></h1>
-            <p class="text-sm lg:text-base text-gray-700 leading-[150%]">Build your cake live — tap around the tabs and watch it come together on the stand. When it's perfect, add it to your cart.</p>
+            <p class="text-sm lg:text-base text-gray-700 leading-[150%]">Build your cake live in 3D — every choice reshapes it right on the stand. When it's perfect, add it to your cart.</p>
           </div>
         </div>
       </section>
@@ -37,19 +37,13 @@
       <!-- ============================ BUILDER ============================ -->
       <section class="bg-gray-100 pb-16 lg:pb-24">
         <div class="container">
-          <div class="mx-auto max-w-[1040px] grid gap-6 lg:grid-cols-2 lg:items-stretch" data-cake-builder>
-            <!-- Live cake on a pedestal -->
+          <div class="mx-auto max-w-[1080px] grid gap-6 lg:grid-cols-2 lg:items-stretch" data-cake-builder>
+            <!-- Live 3D cake on a pedestal -->
             <div class="relative overflow-hidden rounded-[24px] border border-gray-200 bg-gradient-to-b from-white to-primary-light/40 shadow-custom4 p-6 flex flex-col items-center justify-center">
-              <div class="cake-stage w-full" style="min-height:360px">
+              <div class="cake-stage w-full" style="min-height:380px">
                 <div class="cake-glow"></div>
-                <div class="cake-drop">
-                  <div class="cake3d is-round" id="liveCake" style="--w:clamp(170px,42vw,240px)">
-                    <span class="cake3d__topper" data-live-topper></span>
-                    <div class="cake3d__tilt">
-                      <div class="cake3d__topface"></div>
-                      <div class="cake3d__side"><div class="cake3d__drip"></div></div>
-                    </div>
-                  </div>
+                <div class="cake-drop w-full" style="height:300px">
+                  <div class="c3 c3--live" id="liveCake"></div>
                 </div>
                 <div class="pedestal">
                   <div class="pedestal__plate"></div>
@@ -63,7 +57,7 @@
             <!-- Config: tabs + options -->
             <div class="flex flex-col overflow-hidden rounded-[24px] border border-gray-200 bg-white shadow-custom4">
               <div class="flex justify-center border-b border-gray-200 px-5 md:px-6 py-4" data-cake-tabs></div>
-              <div class="flex-1 px-5 md:px-6 py-6" data-cake-panel></div>
+              <div class="flex-1 px-5 md:px-6 py-6 overflow-y-auto" style="max-height:520px" data-cake-panel></div>
               <div class="flex items-center gap-3 border-t border-gray-200 px-5 md:px-6 py-4">
                 <button type="button" class="btn btn--secondary btn--md whitespace-nowrap" data-surprise>🎲 Surprise Me</button>
                 <button type="button" class="btn btn--primary btn--md flex-1 justify-center" data-add>Add to Cart</button>
@@ -84,111 +78,413 @@
         const panelEl = builder.querySelector("[data-cake-panel]");
         const summaryEl = builder.querySelector("[data-cake-summary]");
         const liveCake = document.getElementById("liveCake");
-        const liveTopper = liveCake.querySelector("[data-live-topper]");
         const addBtn = builder.querySelector("[data-add]");
         const surpriseBtn = builder.querySelector("[data-surprise]");
 
-        // ---- Cake config maps (see .cake3d in styles.css) ----
-        const CAKE_BASE = { shape: "circle", sponge: "#efd9b4", frost: "#fff6ea", fill: "#c9a66b", drip: "transparent", topper: "", scale: 1 };
-        const SHAPE_CLASS = { rectangle: "is-rect", square: "is-square", circle: "is-round" };
-        const FLAV = {
-          chocolate: { sponge: "#5c3a24", frost: "#6f4a2f" },
-          vanilla: { sponge: "#efd9b4", frost: "#fff6ea" },
-          half: { sponge: "#efd9b4", frost: "#6f4a2f" },
-        };
-        const FILLC = { nuts: "#c9a66b", fruit: "#e26d8a", lotus: "#b06b3a", nutella: "#5a3a22" };
-        const DECO = { classic: {}, fruits: { topper: "🍓" }, chocolate: { drip: "#4a2e1a" }, themed: { topper: "⭐" } };
-        const SIZE_SCALE = { "30x40": 0.72, "40x60": 0.86, "60x80": 1, "80x120": 1.18 };
-
-        const TABS = [
-          { key: "shape", label: "Shape", title: "What shape would you like?", options: [
-            { id: "rectangle", name: "Rectangle" }, { id: "square", name: "Square" }, { id: "circle", name: "Round" } ] },
-          { key: "size", label: "Size", title: "How big should it be?", options: [
-            { id: "30x40", name: "30 × 40", sub: "Serves ~20" }, { id: "40x60", name: "40 × 60", sub: "Serves ~30" },
-            { id: "60x80", name: "60 × 80", sub: "Serves ~40" }, { id: "80x120", name: "80 × 120", sub: "Serves ~45" } ] },
-          { key: "flavour", label: "Flavour", title: "Pick your sponge flavour", options: [
-            { id: "chocolate", name: "Chocolate" }, { id: "vanilla", name: "Vanilla" }, { id: "half", name: "Half & Half" } ] },
-          { key: "filling", label: "Filling", title: "Choose a filling", options: [
-            { id: "nuts", name: "Classic Nuts" }, { id: "fruit", name: "Fresh Fruit" }, { id: "lotus", name: "Lotus" }, { id: "nutella", name: "Nutella" } ] },
-          { key: "decoration", label: "Decoration", title: "How should we decorate it?", options: [
-            { id: "classic", name: "Classic Cream" }, { id: "fruits", name: "Fruit Topping" }, { id: "chocolate", name: "Chocolate Drip" }, { id: "themed", name: "Themed Topper" } ] },
-          { key: "message", label: "Message", title: "Add a message on the cake", type: "text",
-            placeholder: "e.g. Happy Birthday Mariam", note: "Writing on the cake adds 30 EGP — leave it blank to skip." },
+        /* ================= Reference data (exception-group.com/custom-cakes) ================= */
+        const SHAPES = [
+          { id: "rectangle", name: "Rectangle" },
+          { id: "square", name: "Square" },
+          { id: "circle", name: "Round" },
         ];
+        const TYPES = [
+          { id: "sponge", name: "Sponge Cake", sub: "Cream-coated · 8 cm" },
+          { id: "sugar", name: "Sugar Cake", sub: "Fondant · up to 22 cm tall" },
+        ];
+        /* Sizes depend on the chosen shape (live-site data). w/d in cm; circle = diameter. */
+        const SIZES = {
+          rectangle: [
+            { id: "30*40", name: "30 × 40", serves: 20, w: 40, d: 30 },
+            { id: "40*60", name: "40 × 60", serves: 30, w: 60, d: 40 },
+            { id: "60*80", name: "60 × 80", serves: 35, w: 80, d: 60 },
+            { id: "80*120", name: "80 × 120", serves: 45, w: 120, d: 80 },
+          ],
+          square: [
+            { id: "25*25", name: "25 × 25", serves: 10, w: 25, d: 25 },
+            { id: "30*30", name: "30 × 30", serves: 15, w: 30, d: 30 },
+            { id: "40*40", name: "40 × 40", serves: 25, w: 40, d: 40 },
+          ],
+          circle: [
+            { id: "20", name: "Ø 20", serves: 4, r: 20 },
+            { id: "24", name: "Ø 24", serves: 8, r: 24 },
+            { id: "26", name: "Ø 26", serves: 10, r: 26 },
+            { id: "28", name: "Ø 28", serves: 12, r: 28 },
+            { id: "30", name: "Ø 30", serves: 15, r: 30 },
+            { id: "40", name: "Ø 40", serves: 20, r: 40 },
+            { id: "50", name: "Ø 50", serves: 25, r: 50 },
+          ],
+        };
+        /* Heights depend on the cake type (sponge is always 8 cm). */
+        const HEIGHTS = { sponge: ["8"], sugar: ["8", "12", "16", "22"] };
+        const FLAVOURS = [
+          { id: "chocolate", name: "Chocolate" },
+          { id: "vanilla", name: "Vanilla" },
+          { id: "half", name: "Half & Half" },
+        ];
+        const AMOUNTS = [
+          { id: "0", name: "Without" },
+          { id: "100", name: "100 gm" },
+          { id: "200", name: "200 gm" },
+          { id: "300", name: "300 gm" },
+        ];
+        const STYLES = [
+          { id: "classic", name: "Classic Cream" },
+          { id: "fruits", name: "Fruit Topping" },
+          { id: "drip", name: "Chocolate Drip" },
+          { id: "themed", name: "Themed Topper" },
+        ];
+        /* The live configurator's 14 colours, tuned to pastry-friendly tones. */
+        const COLOURS = [
+          { id: "white", name: "White", hex: "#fff6ea" },
+          { id: "pink", name: "Pink", hex: "#f6bcc9" },
+          { id: "fuchsia", name: "Fuchsia", hex: "#d63384" },
+          { id: "red", name: "Red", hex: "#d95252" },
+          { id: "orange", name: "Orange", hex: "#f0954f" },
+          { id: "yellow", name: "Yellow", hex: "#f2d55c" },
+          { id: "gold", name: "Gold", hex: "#d9b04c" },
+          { id: "green", name: "Green", hex: "#8fbc7a" },
+          { id: "babyblue", name: "Baby Blue", hex: "#a8d3e8" },
+          { id: "blue", name: "Blue", hex: "#5b8ed6" },
+          { id: "purple", name: "Purple", hex: "#a37ec9" },
+          { id: "silver", name: "Silver", hex: "#cfd4da" },
+          { id: "brown", name: "Brown", hex: "#8a5a3b" },
+          { id: "black", name: "Black", hex: "#3c3c40" },
+        ];
+        const SPONGE = { chocolate: "#5c3a24", vanilla: "#efd9b4" };
+        const NUT_C = "#c9a66b";
+        const FRU_C = "#e26d8a";
+        const DRIP_C = "#4a2e1a";
+        const AMOUNT_H = { "0": 0, "100": 6, "200": 11, "300": 16 }; /* stripe px on the live cake */
 
-        // Pre-seeded so the cake always looks complete; `touched` tracks real picks.
-        const state = { shape: "circle", size: "40x60", flavour: "vanilla", filling: "nuts", decoration: "classic", message: "" };
+        /* ================= State ================= */
+        const state = {
+          shape: "circle", type: "sponge", size: "28", height: "8",
+          flavour: "vanilla", nuts: "0", fruits: "0",
+          style: "classic", colour: "white", message: "",
+        };
         const touched = {};
         let tab = 0;
 
-        function cakeVisual(cfg, w) {
-          const c = Object.assign({}, CAKE_BASE, cfg);
-          const cls = SHAPE_CLASS[c.shape] || "is-round";
-          const style =
-            "--w:" + (w || 84) + "px;--scale:" + (c.scale || 1) + ";--sponge:" + c.sponge +
-            ";--frost:" + c.frost + ";--fill:" + c.fill + ";--drip:" + (c.drip || "transparent") + ";";
-          return (
-            '<div class="cake3d ' + cls + '" style="' + style + '">' +
-            (c.topper ? '<span class="cake3d__topper">' + c.topper + "</span>" : "") +
-            '<div class="cake3d__tilt"><div class="cake3d__topface"></div><div class="cake3d__side"><div class="cake3d__drip"></div></div></div></div>'
-          );
+        /* ================= 3D engine ================= */
+        const SEGS = 20;
+        function hx(h) { h = h.replace("#", ""); return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)]; }
+        function shade(hex, k) {
+          const c = hx(hex).map((v) => (k <= 1 ? v * k : v + (255 - v) * (k - 1)));
+          return "rgb(" + c.map((v) => Math.round(Math.max(0, Math.min(255, v)))).join(",") + ")";
         }
-        function cakeFor(key, id) {
-          if (key === "shape") return { shape: id };
-          if (key === "size") return { scale: SIZE_SCALE[id] || 1 };
-          if (key === "flavour") return FLAV[id] || {};
-          if (key === "filling") return { fill: FILLC[id] || CAKE_BASE.fill };
-          if (key === "decoration") return DECO[id] || {};
-          return {};
+        function lum(hex) { const c = hx(hex); return (0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2]) / 255; }
+        function el(cls) { const d = document.createElement("div"); d.className = cls; return d; }
+        function layers(face) {
+          face.appendChild(el("c3-lip"));
+          face.appendChild(el("c3-nut"));
+          face.appendChild(el("c3-fru"));
+          face.appendChild(el("c3-drip"));
         }
-        function composed() {
-          const cfg = Object.assign({}, CAKE_BASE);
-          cfg.shape = state.shape;
-          Object.assign(cfg, FLAV[state.flavour] || {});
-          cfg.fill = FILLC[state.filling] || CAKE_BASE.fill;
-          Object.assign(cfg, DECO[state.decoration] || {});
-          cfg.scale = Math.min(1.15, (SIZE_SCALE[state.size] || 1) + 0.08);
-          return cfg;
+        /* Wall lighting: light comes from the front-top-right (matches the ¾ view). */
+        const BOX_K = { front: 1.0, right: 0.86, left: 0.6, back: 0.55 };
+        const RIGS = new WeakMap();
+        function buildCake(root, shape) {
+          root.innerHTML = "";
+          const shadow = el("c3__shadow");
+          const pos = el("c3__pos");
+          const rig = el("c3__rig");
+          pos.appendChild(rig);
+          const topper = el("c3__topper");
+          root.appendChild(shadow);
+          root.appendChild(pos);
+          root.appendChild(topper);
+          const rec = { shape, walls: [], top: null, word: null, topper };
+          if (shape === "circle") {
+            for (let i = 0; i < SEGS; i++) {
+              const a = i * (360 / SEGS);
+              const s = el("c3s");
+              s.style.setProperty("--a", a + "deg");
+              /* brightness follows the light direction; +30° matches the view angle */
+              const k = 0.6 + 0.42 * Math.max(0, Math.cos(((a - 30) * Math.PI) / 180));
+              layers(s);
+              rec.walls.push({ el: s, k, a });
+              rig.appendChild(s);
+            }
+            const disc = el("c3f c3f--disc");
+            rec.top = disc;
+            rig.appendChild(disc);
+          } else {
+            [["front", "c3f--front"], ["right", "c3f--right"], ["left", "c3f--left"], ["back", "c3f--back"]].forEach(([side, cls]) => {
+              const w = el("c3f " + cls);
+              layers(w);
+              rec.walls.push({ el: w, k: BOX_K[side], side });
+              rig.appendChild(w);
+            });
+            const top = el("c3f c3f--top");
+            rec.top = top;
+            rig.appendChild(top);
+          }
+          const word = el("c3-word");
+          rec.word = word;
+          rec.top.appendChild(word);
+          RIGS.set(root, rec);
+          return rec;
         }
-        function nameFor(key) {
-          const t = TABS.find((x) => x.key === key);
-          const o = t && t.options && t.options.find((x) => x.id === state[key]);
-          return o ? o.name : "";
+        /* Geometry px from real cm (live scale; minis pass mini=true). */
+        function setGeometry(root, s, mini) {
+          const size = SIZES[s.shape].find((x) => x.id === s.size) || SIZES[s.shape][0];
+          const hCm = parseInt(s.height, 10) || 8;
+          const K = mini ? 0.42 : 1;
+          const chh = (16 + hCm * 4.6) * K;
+          let shw;
+          if (s.shape === "circle") {
+            const cr = (24 + (size.r || 26) * 1.32) * K;
+            root.style.setProperty("--cr", cr + "px");
+            shw = cr * 2.35;
+          } else {
+            const cw = (26 + size.w * 1.45) * K;
+            const cd = (26 + size.d * 1.45) * K;
+            root.style.setProperty("--cw", cw + "px");
+            root.style.setProperty("--cd", cd + "px");
+            shw = cw * 1.32;
+          }
+          root.style.setProperty("--chh", chh + "px");
+          root.style.setProperty("--shw", shw + "px");
+          root.style.setProperty("--wordFs", (mini ? 6 : 15) + "px");
+          root.style.setProperty("--topFs", (mini ? 15 : 30) + "px");
+        }
+        function paintCake(root, s) {
+          const rec = RIGS.get(root);
+          if (!rec) return;
+          const frost = (COLOURS.find((c) => c.id === s.colour) || COLOURS[0]).hex;
+          const choc = SPONGE.chocolate, van = SPONGE.vanilla;
+          rec.walls.forEach((w) => {
+            let base;
+            if (s.flavour === "half") {
+              if (rec.shape === "circle") {
+                /* split the cylinder left/right as seen from the camera */
+                base = ((w.a + 115) % 360) < 180 ? choc : van;
+              } else if (w.side === "left") base = choc;
+              else if (w.side === "right") base = van;
+              else base = null; /* front/back get a split gradient */
+            } else {
+              base = s.flavour === "chocolate" ? choc : van;
+            }
+            if (base) {
+              w.el.style.background = shade(base, w.k);
+            } else {
+              w.el.style.background = "linear-gradient(90deg," + shade(choc, w.k) + " 0 50%," + shade(van, w.k) + " 50% 100%)";
+            }
+            const kids = w.el.children;
+            kids[0].style.background = shade(frost, w.k); /* lip / fondant coat */
+            kids[1].style.background = shade(NUT_C, w.k);
+            kids[2].style.background = shade(FRU_C, w.k);
+            kids[3].style.background = s.style === "drip" ? shade(DRIP_C, Math.min(1, w.k + 0.06)) : "transparent";
+          });
+          rec.top.style.background = shade(frost, 1.1);
+          root.style.setProperty("--lipH", s.type === "sugar" ? "100%" : "26%");
+          root.style.setProperty("--nutsH", AMOUNT_H[s.nuts] + "px");
+          root.style.setProperty("--fruH", AMOUNT_H[s.fruits] + "px");
+          rec.word.textContent = s.message || "";
+          rec.word.style.color = lum(frost) > 0.55 ? "#7a4a2a" : "#fff6ea";
+          rec.topper.textContent = s.style === "fruits" ? "🍓" : s.style === "themed" ? "⭐" : "";
+        }
+        /* Mini preview: a static snapshot of the current cake with overrides. */
+        function miniCake(overrides) {
+          const s = Object.assign({}, state, overrides);
+          const holder = el("c3");
+          holder.style.width = "84px";
+          holder.style.height = "84px";
+          buildCake(holder, s.shape);
+          setGeometry(holder, s, true);
+          paintCake(holder, s);
+          return holder;
         }
 
+        /* ================= Live cake updates ================= */
+        let liveShape = null;
         function updateCake(pop) {
-          const c = composed();
-          liveCake.className = "cake3d " + (SHAPE_CLASS[c.shape] || "is-round");
-          liveCake.style.setProperty("--sponge", c.sponge);
-          liveCake.style.setProperty("--frost", c.frost);
-          liveCake.style.setProperty("--fill", c.fill);
-          liveCake.style.setProperty("--drip", c.drip || "transparent");
-          liveCake.style.setProperty("--scale", c.scale);
-          if (c.topper) {
-            liveTopper.textContent = c.topper;
-            liveTopper.classList.remove("drop");
-            void liveTopper.offsetWidth;
-            liveTopper.classList.add("drop");
-          } else {
-            liveTopper.textContent = "";
+          if (liveShape !== state.shape) {
+            liveShape = state.shape;
+            buildCake(liveCake, state.shape);
+          }
+          setGeometry(liveCake, state, false);
+          paintCake(liveCake, state);
+          const rec = RIGS.get(liveCake);
+          if (pop && rec.topper.textContent) {
+            rec.topper.classList.remove("drop");
+            void rec.topper.offsetWidth;
+            rec.topper.classList.add("drop");
           }
           if (pop) {
             liveCake.classList.remove("is-pop");
             void liveCake.offsetWidth;
             liveCake.classList.add("is-pop");
           }
-          summaryEl.textContent = [nameFor("shape"), nameFor("flavour"), nameFor("filling")].filter(Boolean).join("  ·  ");
+          const size = SIZES[state.shape].find((x) => x.id === state.size);
+          const bits = [
+            SHAPES.find((x) => x.id === state.shape).name + (size ? " " + size.name : ""),
+            state.height + " cm",
+            FLAVOURS.find((x) => x.id === state.flavour).name,
+          ];
+          if (state.nuts !== "0") bits.push("Nuts " + state.nuts + "g");
+          if (state.fruits !== "0") bits.push("Fruits " + state.fruits + "g");
+          summaryEl.textContent = bits.join("  ·  ");
         }
 
-        // Build the shared .segmented control ONCE (same toggle as FAQ /
-        // Media Center / homepage picks); initSegmented wires the sliding
-        // thumb. A reserved-space ✓ badge appears on finished steps.
+        /* ================= Steps ================= */
+        const STEPS = [
+          { key: "shapeStep", label: "Shape", done: () => touched.shape && touched.type },
+          { key: "sizeStep", label: "Size", done: () => touched.size && touched.height },
+          { key: "flavourStep", label: "Flavour", done: () => touched.flavour },
+          { key: "fillingStep", label: "Filling", done: () => touched.nuts && touched.fruits },
+          { key: "decoStep", label: "Decoration", done: () => touched.style && touched.colour },
+          { key: "messageStep", label: "Message", done: () => touched.message },
+        ];
+
+        function groupHead(txt, sub) {
+          const h = el("flex items-baseline justify-between gap-3 mb-3");
+          h.innerHTML =
+            '<span class="text-sm font-semibold text-textSecondary">' + txt + "</span>" +
+            (sub ? '<span class="text-xs text-gray-500">' + sub + "</span>" : "");
+          return h;
+        }
+        function optGrid(cols) {
+          return el("grid gap-3 mb-6 " + (cols || "grid-cols-2 sm:grid-cols-3"));
+        }
+        function optCard(key, id, active, inner, name, sub) {
+          const b = document.createElement("button");
+          b.type = "button";
+          b.className = "myc-opt" + (active ? " is-active" : "");
+          b.setAttribute("data-pick", key);
+          b.setAttribute("data-val", id);
+          b.innerHTML =
+            (inner ? '<span class="grid place-items-center h-[84px] w-full pointer-events-none" data-mini></span>' : "") +
+            '<span class="font-semibold text-sm text-textSecondary pointer-events-none">' + name + "</span>" +
+            (sub ? '<span class="text-xs text-gray-500 pointer-events-none">' + sub + "</span>" : "");
+          return b;
+        }
+        function addMini(card, overrides) {
+          card.querySelector("[data-mini]").appendChild(miniCake(overrides));
+        }
+        function footprint(size, shape) {
+          const f = el("myc-foot pointer-events-none");
+          if (shape === "circle") {
+            const d = 18 + (size.r || 20) * 0.6;
+            f.style.width = d + "px"; f.style.height = d + "px"; f.style.borderRadius = "50%";
+          } else {
+            f.style.width = 12 + size.w * 0.32 + "px"; f.style.height = 12 + size.d * 0.32 + "px"; f.style.borderRadius = "4px";
+          }
+          const wrap = el("grid place-items-center h-[64px] w-full pointer-events-none");
+          wrap.appendChild(f);
+          return wrap;
+        }
+
+        function renderPanel() {
+          panelEl.innerHTML = "";
+          const panel = el("cake-panel");
+          const stepKey = STEPS[tab].key;
+
+          if (stepKey === "shapeStep") {
+            panel.appendChild(groupHead("What shape would you like?"));
+            let g = optGrid("grid-cols-3");
+            SHAPES.forEach((o) => {
+              const c = optCard("shape", o.id, state.shape === o.id, true, o.name);
+              g.appendChild(c);
+              addMini(c, { shape: o.id, size: SIZES[o.id][Math.min(1, SIZES[o.id].length - 1)].id, height: "8", message: "" });
+            });
+            panel.appendChild(g);
+            panel.appendChild(groupHead("Cake type", "Sugar paste unlocks tall cakes"));
+            g = optGrid("grid-cols-2");
+            TYPES.forEach((o) => {
+              const c = optCard("type", o.id, state.type === o.id, true, o.name, o.sub);
+              g.appendChild(c);
+              addMini(c, { type: o.id, height: "8", message: "" });
+            });
+            panel.appendChild(g);
+          } else if (stepKey === "sizeStep") {
+            panel.appendChild(groupHead("How big should it be?", "Sizes follow the shape"));
+            let g = optGrid(state.shape === "circle" ? "grid-cols-3 sm:grid-cols-4" : "grid-cols-2 sm:grid-cols-4");
+            SIZES[state.shape].forEach((o) => {
+              const c = optCard("size", o.id, state.size === o.id, false, o.name, "Serves ~" + o.serves);
+              c.insertBefore(footprint(o, state.shape), c.firstChild);
+              g.appendChild(c);
+            });
+            panel.appendChild(g);
+            const hs = HEIGHTS[state.type];
+            panel.appendChild(groupHead("How tall?", state.type === "sponge" ? "Sponge cakes come 8 cm — pick Sugar Cake for tall tiers" : "Fondant holds up to 22 cm"));
+            g = optGrid("grid-cols-2 sm:grid-cols-4");
+            hs.forEach((h) => {
+              const c = optCard("height", h, state.height === h, true, h + " cm");
+              g.appendChild(c);
+              addMini(c, { height: h, message: "" });
+            });
+            panel.appendChild(g);
+          } else if (stepKey === "flavourStep") {
+            panel.appendChild(groupHead("Pick your sponge flavour"));
+            const g = optGrid("grid-cols-3");
+            FLAVOURS.forEach((o) => {
+              const c = optCard("flavour", o.id, state.flavour === o.id, true, o.name);
+              g.appendChild(c);
+              addMini(c, { flavour: o.id, type: "sponge", message: "" });
+            });
+            panel.appendChild(g);
+          } else if (stepKey === "fillingStep") {
+            panel.appendChild(groupHead("Extra nuts", "The tart already has a base nut filling"));
+            let g = optGrid("grid-cols-2 sm:grid-cols-4");
+            AMOUNTS.forEach((o) => {
+              const c = optCard("nuts", o.id, state.nuts === o.id, false, o.name, o.id === "0" ? " " : "🥜".repeat(o.id / 100));
+              g.appendChild(c);
+            });
+            panel.appendChild(g);
+            panel.appendChild(groupHead("Extra fruits"));
+            g = optGrid("grid-cols-2 sm:grid-cols-4");
+            AMOUNTS.forEach((o) => {
+              const c = optCard("fruits", o.id, state.fruits === o.id, false, o.name, o.id === "0" ? " " : "🍓".repeat(o.id / 100));
+              g.appendChild(c);
+            });
+            panel.appendChild(g);
+          } else if (stepKey === "decoStep") {
+            panel.appendChild(groupHead("Decoration style"));
+            const g = optGrid("grid-cols-2 sm:grid-cols-4");
+            STYLES.forEach((o) => {
+              const c = optCard("style", o.id, state.style === o.id, true, o.name);
+              g.appendChild(c);
+              addMini(c, { style: o.id, message: "" });
+            });
+            panel.appendChild(g);
+            panel.appendChild(groupHead("Frosting colour"));
+            const sw = el("flex flex-wrap gap-2.5 mb-2");
+            COLOURS.forEach((o) => {
+              const b = document.createElement("button");
+              b.type = "button";
+              b.title = o.name;
+              b.className = "myc-swatch" + (state.colour === o.id ? " is-active" : "");
+              b.style.background = o.hex;
+              b.setAttribute("data-pick", "colour");
+              b.setAttribute("data-val", o.id);
+              sw.appendChild(b);
+            });
+            panel.appendChild(sw);
+          } else {
+            panel.appendChild(groupHead("Add a message on the cake", "Piped by hand — free"));
+            const inp = document.createElement("input");
+            inp.type = "text";
+            inp.maxLength = 24;
+            inp.placeholder = "e.g. Happy Birthday Mariam";
+            inp.value = state.message;
+            inp.setAttribute("data-cake-text", "");
+            inp.className = "h-12 w-full rounded-lg border border-customGrayMedium focus:border-primary px-4 text-sm text-textSecondary outline-none transition-colors";
+            panel.appendChild(inp);
+            const note = el("text-xs text-gray-500 mt-2");
+            note.textContent = "Watch it appear on the cake as you type. Want it on the base instead? +30 EGP at checkout.";
+            panel.appendChild(note);
+          }
+          panelEl.appendChild(panel);
+        }
+
+        /* ================= Tabs (shared segmented control) ================= */
         function buildTabs() {
           tabsEl.innerHTML =
             '<div class="segmented-scroll no-scrollbar">' +
             '<div class="segmented text-sm font-medium" data-segmented role="tablist">' +
             '<span class="segmented__thumb" aria-hidden="true"></span>' +
-            TABS.map((t, i) =>
+            STEPS.map((t, i) =>
               '<button type="button" class="tab-btn px-3.5 py-2 text-sm' + (i === 0 ? " is-active" : "") +
               '" data-tab="' + i + '" role="tab"><span>' + t.label + '</span><span class="seg-check" aria-hidden="true">✓</span></button>'
             ).join("") +
@@ -198,32 +494,11 @@
           tabsEl.querySelectorAll("[data-tab]").forEach((b) => {
             const i = +b.getAttribute("data-tab");
             b.classList.toggle("is-active", i === tab);
-            b.classList.toggle("is-done", !!touched[TABS[i].key]);
+            b.classList.toggle("is-done", !!STEPS[i].done());
           });
         }
-        function renderPanel() {
-          const t = TABS[tab];
-          let inner = '<h2 class="text-lg md:text-xl font-semibold text-textSecondary mb-5">' + t.title + "</h2>";
-          if (t.type === "text") {
-            inner +=
-              '<input type="text" data-cake-text maxlength="40" placeholder="' + t.placeholder + '" value="' + (state.message || "") +
-              '" class="h-12 w-full rounded-lg border border-customGrayMedium focus:border-primary px-4 text-sm text-textSecondary outline-none transition-colors" />' +
-              '<p class="text-xs text-gray-500 mt-2">' + t.note + "</p>";
-          } else {
-            inner +=
-              '<div class="grid grid-cols-2 gap-3 sm:grid-cols-3">' +
-              t.options.map((o) =>
-                '<button type="button" class="myc-opt' + (state[t.key] === o.id ? " is-active" : "") + '" data-opt="' + o.id + '">' +
-                '<span class="grid place-items-center h-[86px]">' + cakeVisual(cakeFor(t.key, o.id), 78) + "</span>" +
-                '<span class="font-semibold text-sm text-textSecondary">' + o.name + "</span>" +
-                (o.sub ? '<span class="text-xs text-gray-500">' + o.sub + "</span>" : "") +
-                "</button>"
-              ).join("") +
-              "</div>";
-          }
-          panelEl.innerHTML = '<div class="cake-panel">' + inner + "</div>";
-        }
 
+        /* ================= Interactions ================= */
         tabsEl.addEventListener("click", (e) => {
           const b = e.target.closest("[data-tab]");
           if (!b) return;
@@ -231,34 +506,56 @@
           syncTabs();
           renderPanel();
         });
+
         panelEl.addEventListener("click", (e) => {
-          const opt = e.target.closest("[data-opt]");
+          const opt = e.target.closest("[data-pick]");
           if (!opt) return;
-          const key = TABS[tab].key;
-          state[key] = opt.getAttribute("data-opt");
+          const key = opt.getAttribute("data-pick");
+          const val = opt.getAttribute("data-val");
+          state[key] = val;
           touched[key] = true;
-          panelEl.querySelectorAll(".myc-opt").forEach((x) => x.classList.toggle("is-active", x === opt));
+          if (key === "shape") {
+            /* sizes follow the shape — reset to that shape's middle size */
+            const list = SIZES[val];
+            state.size = list[Math.floor((list.length - 1) / 2)].id;
+            delete touched.size;
+          }
+          if (key === "type" && !HEIGHTS[val].includes(state.height)) {
+            state.height = "8";
+            delete touched.height;
+          }
+          renderPanel();
           syncTabs();
           updateCake(true);
         });
+
         panelEl.addEventListener("input", (e) => {
           const t = e.target.closest("[data-cake-text]");
-          if (t) { state.message = t.value; touched.message = true; syncTabs(); }
+          if (!t) return;
+          state.message = t.value.trim();
+          touched.message = true;
+          syncTabs();
+          updateCake(false);
         });
 
         surpriseBtn.addEventListener("click", () => {
-          TABS.forEach((t) => {
-            if (t.type === "text") return;
-            const pick = t.options[Math.floor(seededRand() * t.options.length)];
-            state[t.key] = pick.id;
-            touched[t.key] = true;
-          });
-          syncTabs();
+          state.shape = SHAPES[Math.floor(seededRand() * 3)].id;
+          state.type = TYPES[Math.floor(seededRand() * 2)].id;
+          const list = SIZES[state.shape];
+          state.size = list[Math.floor(seededRand() * list.length)].id;
+          const hs = HEIGHTS[state.type];
+          state.height = hs[Math.floor(seededRand() * hs.length)];
+          state.flavour = FLAVOURS[Math.floor(seededRand() * 3)].id;
+          state.nuts = AMOUNTS[Math.floor(seededRand() * 4)].id;
+          state.fruits = AMOUNTS[Math.floor(seededRand() * 4)].id;
+          state.style = STYLES[Math.floor(seededRand() * 4)].id;
+          state.colour = COLOURS[Math.floor(seededRand() * COLOURS.length)].id;
+          ["shape", "type", "size", "height", "flavour", "nuts", "fruits", "style", "colour"].forEach((k) => (touched[k] = true));
           renderPanel();
+          syncTabs();
           updateCake(true);
         });
-        // tiny deterministic-ish shuffle without Math.random dependency issues
-        let seed = 7;
+        let seed = 11;
         function seededRand() { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; }
 
         addBtn.addEventListener("click", () => {
