@@ -2551,6 +2551,9 @@ blockquote {
   }
   .pdp-details.pdp-details {
     grid-area: details;
+    /* Clear separation between the tab card and the FAQ block below it —
+       they are two distinct reading zones, not one continuous list. */
+    gap: 40px;
   }
   .pdp-buy.pdp-buy {
     grid-area: buy;
