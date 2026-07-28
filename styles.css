@@ -3478,7 +3478,9 @@ blockquote {
   flex: none;
   background: #ffffff;
   border: 1px solid #dee2e6; /* gray-3 light grey */
-  border-radius: 8px;
+  /* Matches the .btn radius so the wishlist button and the Add-to-cart
+     CTA read as one control pair wherever they sit side by side. */
+  border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
   color: #6f7276; /* resting heart outline */
   cursor: pointer;
