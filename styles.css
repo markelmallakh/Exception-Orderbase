@@ -2485,6 +2485,108 @@ blockquote {
 }
 
 /* =================================================================
+   PDP 3-COLUMN LAYOUT (product.html) — gallery | content | buy box.
+   DOM order is gallery → head → buy → details so the MOBILE stack
+   reads image, title, price/CTA, then the long content. On desktop
+   grid areas lift the buy box into its own right column spanning
+   both rows, and the two outer columns stick while the middle
+   column (title, description, tabs, FAQ) scrolls past them.
+   align-items:start is what lets a row-spanning grid item stick.
+   ================================================================= */
+@media (min-width: 1024px) {
+  .pdp-grid.pdp-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr) 340px;
+    grid-template-areas:
+      "gallery head    buy"
+      "gallery details buy";
+    grid-template-rows: auto 1fr;
+    align-items: start;
+    column-gap: 32px;
+    row-gap: 22px;
+  }
+  .pdp-gallery.pdp-gallery {
+    grid-area: gallery;
+    position: sticky;
+    top: 100px;
+    gap: 10px;
+  }
+  /* Breadcrumb rides at the top of the sticky column — compact, so it
+     labels the product without stealing height from the image. */
+  .pdp-crumb.pdp-crumb {
+    margin-bottom: 2px;
+    opacity: 0.85;
+  }
+  .pdp-head.pdp-head {
+    grid-area: head;
+  }
+  .pdp-details.pdp-details {
+    grid-area: details;
+  }
+  .pdp-buy.pdp-buy {
+    grid-area: buy;
+    position: sticky;
+    top: 100px;
+    padding: 18px;
+    border: 1px solid #dee2e6;
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(24, 35, 37, 0.05);
+  }
+  /* Trust callouts stack in the narrow buy column instead of squeezing
+     into the 2-up grid they use at full width. */
+  .pdp-buy .pdp-callouts {
+    grid-template-columns: 1fr;
+  }
+
+  /* Compact buy box: the sticky column reads as one neat block, so the
+     controls step down a size from their full-width defaults. */
+  .pdp-buy.pdp-buy {
+    gap: 12px;
+    padding: 16px;
+  }
+  .pdp-buy .pdp-vars.pdp-vars {
+    gap: 10px;
+  }
+  .pdp-buy .pdp-vars label {
+    font-size: 13px;
+  }
+  .pdp-buy .pdp-vars .flex-wrap {
+    gap: 6px;
+  }
+  .pdp-buy .variation-pill.variation-pill {
+    padding: 6px 12px;
+    font-size: 12.5px;
+  }
+  .pdp-buy .counter--lg {
+    --c-h: 40px;
+    --c-btn: 36px;
+    --c-qty: 38px;
+    --c-icon: 15px;
+    --c-font: 0.9rem;
+  }
+  .pdp-buy .btn--lg {
+    height: 46px !important;
+    font-size: 15px;
+  }
+  .pdp-buy .btn--lg span {
+    font-size: 15px;
+  }
+  .pdp-buy [data-fav] {
+    width: 46px;
+  }
+  .pdp-buy .pdp-callouts {
+    gap: 6px;
+  }
+}
+@media (min-width: 1280px) {
+  .pdp-grid.pdp-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr) 372px;
+    column-gap: 40px;
+  }
+}
+
+/* =================================================================
    PDP ABOVE-THE-FOLD (product.html) — the Add-to-cart CTA must land
    inside the first viewport. Tall screens keep the roomy rhythm; on
    short laptop heights the info column tightens step by step instead
@@ -3323,6 +3425,10 @@ blockquote {
 [data-reveal].reveal-in {
   opacity: 1;
   transform: none;
+  /* Release the compositor hint once the entrance has played — a
+     lingering will-change:transform makes this a containing block and
+     silently breaks position:sticky inside the section. */
+  will-change: auto;
 }
 /* Directional variants — set the attribute VALUE, e.g. data-reveal="left".
    .reveal-in (transform:none) clears every variant the same way. */
