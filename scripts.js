@@ -3371,7 +3371,17 @@
         const track = document.querySelector("[data-catnav-track]");
         if (track) {
           const dir = catArrow.hasAttribute("data-catnav-prev") ? -1 : 1;
-          track.scrollBy({ left: dir * 320, behavior: "smooth" });
+          /* Loop: past either end the strip wraps to the other side, so the
+             arrows keep cycling the whole category list instead of dead-ending.
+             RTL reports scrollLeft as negative, hence the abs()/sign handling. */
+          const max = track.scrollWidth - track.clientWidth;
+          const cur = Math.abs(track.scrollLeft);
+          const sign = track.scrollLeft < 0 ? -1 : 1;
+          const step = 320;
+          let next = cur + dir * step;
+          if (next > max - 2) next = dir > 0 && cur >= max - 2 ? 0 : Math.min(next, max);
+          else if (next < 0) next = cur <= 2 ? max : 0;
+          track.scrollTo({ left: sign * next, behavior: "smooth" });
         }
         return;
       }

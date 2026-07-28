@@ -1065,6 +1065,17 @@ body[data-purchased="true"] .review-gate-hint {
    ================================================================= */
 .catnav-item {
   position: relative;
+  /* Labels range from "CAKES" to "CAKES & GATEAUX", so packing them by text
+     width makes the rhythm look random. A shared minimum footprint (plus a
+     cap so the longest label doesn't stretch the row) evens the spacing out
+     while each item still hugs its own icon. */
+  min-width: 104px;
+  max-width: 132px;
+  text-align: center;
+}
+.catnav-item span {
+  display: block;
+  width: 100%;
 }
 .catnav-item.is-current {
   background: #b0ded9; /* primary turquoise — the current category fills solid, no underline */
