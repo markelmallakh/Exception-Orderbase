@@ -2582,6 +2582,11 @@ blockquote {
     font-weight: 400;
     color: #6f7276;
   }
+  /* Pull each label tight to the pills it names, so the two groups read
+     as "label + options" pairs rather than four evenly-spaced rows. */
+  .pdp-buy .pdp-vars [data-variation-group] {
+    gap: 3px;
+  }
   /* The CTA is the one loud element here — let it breathe away from the
      quantity stepper above it. */
   .pdp-buy .pdp-actions > .flex.items-stretch {
