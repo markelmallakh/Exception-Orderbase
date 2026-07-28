@@ -2513,6 +2513,69 @@ blockquote {
   font-weight: 600;
 }
 
+
+
+/* Card details form (checkout) — stacked fields that slide in when the
+   card method is picked. */
+.card-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 14px;
+  padding: 16px;
+  border: 1px solid #dee2e6;
+  border-radius: 12px;
+  background: #f9fafb;
+}
+.card-form[hidden] {
+  display: none;
+}
+.card-form.is-in {
+  animation: card-form-in 0.32s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+@keyframes card-form-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .card-form.is-in {
+    animation: none;
+  }
+}
+
+/* =================================================================
+   ORDER SUCCESS MARK (thank-you.html) — the check illustration pops
+   in as the confetti fires, so the two read as one moment.
+   ================================================================= */
+.success-mark {
+  animation: success-pop 0.62s cubic-bezier(0.34, 1.45, 0.5, 1) both;
+}
+@keyframes success-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.35) rotate(-12deg);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.12) rotate(3deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .success-mark {
+    animation: none;
+  }
+}
+
 /* =================================================================
    PDP 3-COLUMN LAYOUT (product.html) — gallery | content | buy box.
    DOM order is gallery → head → buy → details so the MOBILE stack
@@ -2553,7 +2616,7 @@ blockquote {
     grid-area: details;
     /* Clear separation between the tab card and the FAQ block below it —
        they are two distinct reading zones, not one continuous list. */
-    gap: 40px;
+    gap: 64px;
   }
   .pdp-buy.pdp-buy {
     grid-area: buy;

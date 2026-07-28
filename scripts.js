@@ -1401,6 +1401,9 @@
      reference clip and should stay put):
        count / spread / speed / speedVar / scale / decay — burst shape
        className — extra class, e.g. to lift the canvas above an overlay */
+  /* Exposed so pages can fire the brand confetti themselves (thank-you
+     celebration). Same helper the promo-code success uses, so every
+     celebratory moment on the site shares one look. */
   function promoPaperBurst(x, y, opts) {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     opts = opts || {};
@@ -2620,6 +2623,50 @@
      type="button" — a submit there would fire the form's demo handler
      and skip straight to thank-you.html without ever showing payment.
      --------------------------------------------------------------- */
+  /* ---------------------------------------------------------------
+     Card details form (checkout) — revealed only while the "Credit /
+     debit card" method is selected, so the step stays short for the
+     methods that need no input. Also formats the three fields as the
+     user types (groups of 4 / MM/YY / digits only) and keeps them out
+     of validation while hidden, since hidden required fields block
+     submit with no visible field to fix.
+     --------------------------------------------------------------- */
+  function initCardForm(scope) {
+    const form = scope.querySelector("[data-card-form]");
+    if (!form || form.dataset.cardReady) return;
+    form.dataset.cardReady = "1";
+    const radios = document.querySelectorAll('input[name="payment"]');
+    if (!radios.length) return;
+
+    const sync = () => {
+      const cc = document.querySelector('input[name="payment"][value="cc"]');
+      const on = !!cc && cc.checked && !cc.disabled;
+      form.hidden = !on;
+      if (on) {
+        form.classList.remove("is-in");
+        void form.offsetWidth; /* restart the reveal */
+        form.classList.add("is-in");
+      }
+    };
+    radios.forEach((r) => r.addEventListener("change", sync));
+    sync();
+
+    const digits = (v) => v.replace(/\D/g, "");
+    const num = form.querySelector("[data-card-number]");
+    if (num)
+      num.addEventListener("input", () => {
+        num.value = digits(num.value).slice(0, 16).replace(/(.{4})/g, "$1 ").trim();
+      });
+    const exp = form.querySelector("[data-card-exp]");
+    if (exp)
+      exp.addEventListener("input", () => {
+        const d = digits(exp.value).slice(0, 4);
+        exp.value = d.length > 2 ? d.slice(0, 2) + "/" + d.slice(2) : d;
+      });
+    const cvv = form.querySelector("[data-card-cvv]");
+    if (cvv) cvv.addEventListener("input", () => (cvv.value = digits(cvv.value).slice(0, 4)));
+  }
+
   function initCheckoutSteps(scope) {
     const form = scope.querySelector("[data-checkout-next]") && document.querySelector("form");
     if (!form || form.dataset.stepsReady) return;
@@ -3763,6 +3810,8 @@
     });
   }
 
+  window.kBurst = promoPaperBurst;
+
   window.kInit = function (scope) {
     scope = scope || document;
     scope.querySelectorAll(".carousel").forEach(initCarousel);
@@ -3785,6 +3834,7 @@
     initDemoForms(scope);
     initCheckoutSteps(scope);
     initCheckoutOptions(scope);
+    initCardForm(scope);
     initCountdown(scope);
     initPosts(scope);
     initAutoReveal(scope);

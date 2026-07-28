@@ -17,11 +17,11 @@
     <div id="site-header"></div>
 
     <main class="overflow-x-hidden">
-      <section class="flex flex-col items-center justify-start min-h-screen bg-gradient-to-b from-lightBlue to-white py-[60px] gap-8">
+      <section class="flex flex-col items-center justify-start min-h-screen bg-white py-[60px] gap-8">
         <!-- Success header -->
         <div class="flex flex-col items-center gap-2 w-full max-w-[1200px] px-4">
-          <div class="relative w-[42px] h-[42px] flex items-center justify-center">
-            <svg viewBox="0 0 24 24" fill="none" class="w-[42px] h-[42px] text-success"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.8"/><path d="m8 12 2.5 2.5L16 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div class="relative w-[84px] h-[84px] flex items-center justify-center" data-success-mark>
+            <img src="images/icons/success%20check.webp" alt="" class="success-mark w-full h-full object-contain" />
           </div>
           <h1 class="text-[28px] font-semibold text-success text-center leading-[120%]">Thank You, Mariam</h1>
           <p class="text-[16px] text-textSecondary text-center font-normal leading-[140%]">Your order has been placed successfully</p>
@@ -36,7 +36,7 @@
               <h2 class="text-[24px] font-semibold text-success leading-[120%]">Order #12345</h2>
               <div class="flex items-center gap-4">
                 <div class="relative w-[50px] h-[50px] md:w-[76px] md:h-[76px]">
-                  <img src="images/icons/delivery-scooter.webp" alt="Order confirmed" class="w-full h-full object-contain" />
+                  <img src="images/icons/preparing.webp" alt="Order confirmed" class="w-full h-full object-contain" />
                 </div>
                 <span class="text-[18px] font-medium capitalize text-accent-yellow">Preparing</span>
               </div>
@@ -225,5 +225,24 @@
 
     <!-- Shared footer is injected here by scripts.js -->
     <div id="site-footer"></div>
+
+    <!-- Order-placed celebration: brand confetti from the success mark. -->
+    <script>
+      (function () {
+        function celebrate() {
+          const mark = document.querySelector("[data-success-mark]");
+          if (!mark || typeof window.kBurst !== "function") return;
+          const r = mark.getBoundingClientRect();
+          const x = r.left + r.width / 2;
+          const y = r.top + r.height / 2;
+          window.kBurst(x, y, { count: 90, spread: 360, speed: 3.2, speedVar: 3 });
+          setTimeout(() => window.kBurst(x - 140, y + 30, { count: 45, spread: 300 }), 220);
+          setTimeout(() => window.kBurst(x + 140, y + 30, { count: 45, spread: 300 }), 380);
+        }
+        // scripts.js is deferred, so wait for it before firing.
+        if (document.readyState === "complete") celebrate();
+        else window.addEventListener("load", () => setTimeout(celebrate, 120));
+      })();
+    </script>
   </body>
 </html>

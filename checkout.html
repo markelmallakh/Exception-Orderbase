@@ -259,7 +259,7 @@
                       <!-- Cash on delivery -->
                       <label class="optrow">
                         <input type="radio" name="payment" value="cod" checked class="sr-only" />
-                        <span class="optrow__icon"><img src="images/payments/cash-on-delivery.png" alt=""  /></span>
+                        <span class="optrow__icon"><img src="images/icons/COD.webp" alt=""  /></span>
                         <span class="optrow__body">
                           <span class="optrow__title">Cash on delivery</span>
                         </span>
@@ -267,7 +267,7 @@
                       <!-- Credit / debit card -->
                       <label class="optrow">
                         <input type="radio" name="payment" value="cc" class="sr-only" />
-                        <span class="optrow__icon"><img src="images/payments/credit-card.png" alt=""  /></span>
+                        <span class="optrow__icon"><img src="images/icons/credit-card.webp" alt="" style="--icon-crop: 1" /></span>
                         <span class="optrow__body">
                           <span class="optrow__title">Credit / debit card</span>
                         </span>
@@ -279,8 +279,35 @@
                         <span class="optrow__body">
                           <span class="optrow__title">Wallet balance</span>
                         </span>
-                          <span class="optrow__meta">EGP 500</span>
+                          <span class="wallet-toggle__amount">EGP 500</span>
                       </label>
+                    </div>
+
+                    <!-- Card details — revealed only while "Credit / debit card"
+                         is the selected method (initCardForm in scripts.js). -->
+                    <div class="card-form" data-card-form hidden>
+                      <div class="flex flex-col gap-y-2">
+                        <label class="text-gray-700 after:ps-1 after:content-['*']">Card number</label>
+                        <input type="text" inputmode="numeric" autocomplete="cc-number" maxlength="19" placeholder="0000 0000 0000 0000" data-card-number class="h-11 px-2.5 py-4 border border-customGrayMedium focus:border-primary-400 rounded-[10px] text-textSecondary transition-colors text-sm font-medium outline-none" />
+                      </div>
+                      <div class="flex flex-col gap-y-2">
+                        <label class="text-gray-700 after:ps-1 after:content-['*']">Name on card</label>
+                        <input type="text" autocomplete="cc-name" placeholder="Mariam Hassan" class="h-11 px-2.5 py-4 border border-customGrayMedium focus:border-primary-400 rounded-[10px] text-textSecondary transition-colors text-sm font-medium outline-none" />
+                      </div>
+                      <div class="grid grid-cols-2 gap-4">
+                        <div class="flex flex-col gap-y-2">
+                          <label class="text-gray-700 after:ps-1 after:content-['*']">Expiry date</label>
+                          <input type="text" inputmode="numeric" autocomplete="cc-exp" maxlength="5" placeholder="MM/YY" data-card-exp class="h-11 px-2.5 py-4 border border-customGrayMedium focus:border-primary-400 rounded-[10px] text-textSecondary transition-colors text-sm font-medium outline-none" />
+                        </div>
+                        <div class="flex flex-col gap-y-2">
+                          <label class="text-gray-700 after:ps-1 after:content-['*']">CVV</label>
+                          <input type="text" inputmode="numeric" autocomplete="cc-csc" maxlength="4" placeholder="123" data-card-cvv class="h-11 px-2.5 py-4 border border-customGrayMedium focus:border-primary-400 rounded-[10px] text-textSecondary transition-colors text-sm font-medium outline-none" />
+                        </div>
+                      </div>
+                      <p class="flex items-center gap-1.5 text-xs text-gray-500">
+                        <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4 shrink-0"><path d="M12 3l7 3v6c0 4.4-3 8.3-7 9-4-0.7-7-4.6-7-9V6l7-3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="m9 12 2 2 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        Your card details are encrypted and never stored.
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -388,8 +415,17 @@
 
               <span class="inline-block border-primary-400 border-b border-opacity-20 w-full h-[1px]"></span>
 
+              <!-- Promo code → global component (promoFieldHTML/initPromo).
+                   data-checkout-step="1": anything that can change the total
+                   lives on the shipping step only — by the payment step the
+                   amount is fixed. initCheckoutSteps toggles [hidden]. -->
+              <div data-promo data-checkout-step="1" class="mt-2"></div>
+
               <!-- Order note → global component (orderNoteHTML/.ordernote in scripts.js) -->
               <div data-order-note class="mt-1.5"></div>
+
+              <!-- Wallet balance → global component (walletCardHTML/initWalletToggle) -->
+              <div data-wallet-toggle data-checkout-step="1" class="mt-1.5"></div>
 
               <!-- Totals -->
               <div class="flex flex-col items-start gap-2 w-full py-2.5">
