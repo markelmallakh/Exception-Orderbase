@@ -93,7 +93,8 @@
               <!-- Category + name + reviews/servings badges (tight cluster) -->
               <div class="flex flex-col gap-2">
                 <!-- Category (small badge) -->
-                <a href="shop-category.html" class="self-start inline-flex items-center -rotate-[2deg] bg-cta text-white text-[11px] leading-none px-1.5 py-0.5 rounded-[4px] hover:opacity-90 transition-opacity">Cakes</a>
+                <!-- Status label (not the category) — swap the text per product: Limited, New, Best Seller… -->
+                  <span class="self-start inline-flex items-center -rotate-[2deg] bg-cta text-white text-[11px] font-semibold uppercase tracking-wide leading-none px-1.5 py-0.5 rounded-[4px]">Limited</span>
 
                 <!-- Product name + reviews / servings badges -->
                 <div class="flex items-center gap-3 flex-wrap">
@@ -200,24 +201,56 @@
                     <span class="goo-thumb" data-goo-thumb></span>
                   </div>
                   <div class="goo-labels">
-                    <button type="button" class="goo-tab is-active" data-goo-tab="ingredients">Ingredients</button>
+                    <button type="button" class="goo-tab is-active" data-goo-tab="specs">Specs</button>
                     <button type="button" class="goo-tab" data-goo-tab="desc">Description</button>
                     <button type="button" class="goo-tab" data-goo-tab="delivery">Delivery &amp; storage</button>
                   </div>
                   <div class="goo-content-wrap px-5 py-5 md:px-6 md:py-6">
-                    <div class="goo-content wysiwyg-product text-gray-700 text-sm md:text-base" data-goo-content="ingredients">
-                      <h3>What's Inside</h3>
-                      <p>We use only premium ingredients, sourced fresh every day.</p>
-                      <ul>
-                        <li>Belgian dark chocolate (54% cocoa)</li>
-                        <li>Fresh dairy cream and butter</li>
-                        <li>Free-range eggs</li>
-                        <li>Unbleached wheat flour</li>
-                        <li>Natural vanilla and cocoa powder</li>
-                      </ul>
-                      <p><strong>Allergens:</strong> contains gluten, eggs, dairy and may contain traces of nuts.</p>
-                    </div>
-                    <div class="goo-content wysiwyg-product text-gray-700 text-sm md:text-base" data-goo-content="desc" hidden>
+                    <div class="goo-content text-gray-700" data-goo-content="specs">
+                          <dl class="m-0 flex flex-col">
+                            <div class="flex flex-col gap-0.5 border-b border-customGray py-2.5 last:border-0 sm:flex-row sm:gap-4">
+                              <dt class="shrink-0 text-xs font-semibold uppercase tracking-wide text-gray-500 sm:w-[132px]">Net weight</dt>
+                              <dd class="m-0 text-sm text-textSecondary">1 Kg (per selected size)</dd>
+                            </div>
+                            <div class="flex flex-col gap-0.5 border-b border-customGray py-2.5 last:border-0 sm:flex-row sm:gap-4">
+                              <dt class="shrink-0 text-xs font-semibold uppercase tracking-wide text-gray-500 sm:w-[132px]">Serves</dt>
+                              <dd class="m-0 text-sm text-textSecondary">8–10 people</dd>
+                            </div>
+                            <div class="flex flex-col gap-0.5 border-b border-customGray py-2.5 last:border-0 sm:flex-row sm:gap-4">
+                              <dt class="shrink-0 text-xs font-semibold uppercase tracking-wide text-gray-500 sm:w-[132px]">Sponge</dt>
+                              <dd class="m-0 text-sm text-textSecondary">Belgian dark chocolate, 54% cocoa</dd>
+                            </div>
+                            <div class="flex flex-col gap-0.5 border-b border-customGray py-2.5 last:border-0 sm:flex-row sm:gap-4">
+                              <dt class="shrink-0 text-xs font-semibold uppercase tracking-wide text-gray-500 sm:w-[132px]">Filling</dt>
+                              <dd class="m-0 text-sm text-textSecondary">Silky chocolate fudge</dd>
+                            </div>
+                            <div class="flex flex-col gap-0.5 border-b border-customGray py-2.5 last:border-0 sm:flex-row sm:gap-4">
+                              <dt class="shrink-0 text-xs font-semibold uppercase tracking-wide text-gray-500 sm:w-[132px]">Finish</dt>
+                              <dd class="m-0 text-sm text-textSecondary">Hand-poured mirror-glaze ganache</dd>
+                            </div>
+                            <div class="flex flex-col gap-0.5 border-b border-customGray py-2.5 last:border-0 sm:flex-row sm:gap-4">
+                              <dt class="shrink-0 text-xs font-semibold uppercase tracking-wide text-gray-500 sm:w-[132px]">Key ingredients</dt>
+                              <dd class="m-0 text-sm text-textSecondary">Dark chocolate, fresh dairy cream, butter, free-range eggs, unbleached wheat flour, natural vanilla</dd>
+                            </div>
+                            <div class="flex flex-col gap-0.5 border-b border-customGray py-2.5 last:border-0 sm:flex-row sm:gap-4">
+                              <dt class="shrink-0 text-xs font-semibold uppercase tracking-wide text-gray-500 sm:w-[132px]">Allergens</dt>
+                              <dd class="m-0 text-sm text-textSecondary">Gluten, eggs and dairy — may contain traces of nuts</dd>
+                            </div>
+                            <div class="flex flex-col gap-0.5 border-b border-customGray py-2.5 last:border-0 sm:flex-row sm:gap-4">
+                              <dt class="shrink-0 text-xs font-semibold uppercase tracking-wide text-gray-500 sm:w-[132px]">Storage</dt>
+                              <dd class="m-0 text-sm text-textSecondary">Keep refrigerated at 2–5°C</dd>
+                            </div>
+                            <div class="flex flex-col gap-0.5 border-b border-customGray py-2.5 last:border-0 sm:flex-row sm:gap-4">
+                              <dt class="shrink-0 text-xs font-semibold uppercase tracking-wide text-gray-500 sm:w-[132px]">Best within</dt>
+                              <dd class="m-0 text-sm text-textSecondary">3 days of delivery</dd>
+                            </div>
+                            <div class="flex flex-col gap-0.5 border-b border-customGray py-2.5 last:border-0 sm:flex-row sm:gap-4">
+                              <dt class="shrink-0 text-xs font-semibold uppercase tracking-wide text-gray-500 sm:w-[132px]">Preparation</dt>
+                              <dd class="m-0 text-sm text-textSecondary">Baked fresh to order</dd>
+                            </div>
+                          </dl>
+                        </div>
+                        <div class="goo-content wysiwyg-product text-gray-700" data-goo-content="desc" hidden>
                       <h3>The Exception Signature</h3>
                       <p>Our Chocolate Fudge Cake is built on three layers of deeply moist Belgian chocolate sponge, brushed with sugar syrup and generously filled with a velvety chocolate fudge. Every cake is finished by hand with a mirror-glaze ganache and delicate chocolate shavings.</p>
                       <p>Made fresh to order in our Cairo kitchens using the same family recipe we have perfected over the decades.</p>
@@ -228,7 +261,7 @@
                         <li>No artificial preservatives</li>
                       </ul>
                     </div>
-                    <div class="goo-content wysiwyg-product text-gray-700 text-sm md:text-base" data-goo-content="delivery" hidden>
+                    <div class="goo-content wysiwyg-product text-gray-700" data-goo-content="delivery" hidden>
                       <h3>Delivery &amp; Storage</h3>
                       <p>Same-day delivery is available across Greater Cairo for orders placed before 4:00 PM. Nationwide delivery arrives within 1–2 business days in insulated packaging.</p>
                       <ul>

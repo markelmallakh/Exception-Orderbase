@@ -2484,6 +2484,35 @@ blockquote {
   text-wrap: pretty;
 }
 
+
+/* Panel copy sits in the narrow middle column — keep it small and calm
+   so the buy box stays the loudest thing on the page. ONE body size
+   across all three tabs (Specs / Description / Delivery) so switching
+   tabs never changes the text scale; only headings step up. */
+.goo-content.goo-content {
+  font-size: 13px;
+  line-height: 1.65;
+}
+.goo-content.goo-content p,
+.goo-content.goo-content li,
+.goo-content.goo-content dd,
+.goo-content.goo-content span {
+  font-size: 13px;
+}
+/* Titles: one step up and clearly bolder than the body they lead. */
+.goo-content.goo-content h3,
+.goo-content.goo-content h4 {
+  font-size: 15px;
+  font-weight: 700;
+  color: #182325;
+  margin-bottom: 8px;
+}
+/* Spec keys stay a small uppercase label, but share the body colour scale. */
+.goo-content.goo-content dt {
+  font-size: 11px;
+  font-weight: 600;
+}
+
 /* =================================================================
    PDP 3-COLUMN LAYOUT (product.html) — gallery | content | buy box.
    DOM order is gallery → head → buy → details so the MOBILE stack
@@ -2549,7 +2578,14 @@ blockquote {
     gap: 10px;
   }
   .pdp-buy .pdp-vars label {
-    font-size: 13px;
+    font-size: 12.5px;
+    font-weight: 400;
+    color: #6f7276;
+  }
+  /* The CTA is the one loud element here — let it breathe away from the
+     quantity stepper above it. */
+  .pdp-buy .pdp-actions > .flex.items-stretch {
+    margin-top: 6px;
   }
   .pdp-buy .pdp-vars .flex-wrap {
     gap: 6px;
@@ -3310,7 +3346,9 @@ blockquote {
   white-space: nowrap;
   cursor: pointer;
   font-weight: 500;
-  font-size: 0.875rem;
+  /* Small by design — the tabs label the panel, they don't compete
+     with the product title or the buy box beside them. */
+  font-size: 0.8125rem;
   color: #6b7280;
   transition: color 0.25s ease;
   padding: 0 8px;
@@ -3343,7 +3381,7 @@ blockquote {
     --goo-tab-h: 52px;
   }
   .goo-tab {
-    font-size: 1rem;
+    font-size: 0.8125rem;
   }
 }
 @media (prefers-reduced-motion: reduce) {
