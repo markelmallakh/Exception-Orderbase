@@ -3497,6 +3497,29 @@ blockquote {
   --c-icon: 14px;
   --c-font: 0.9rem;
 }
+/* Cart line items. Deliberately smaller than --lg: here the stepper
+   sits directly beside the product title in the row, and at --lg it
+   ate the space the title needed and pushed right up against it.
+   (--lg still belongs on the product page, where it's sized to sit
+   alongside the Add-to-cart CTA.) */
+.counter--cart {
+  --c-h: 40px;
+  --c-btn: 36px;
+  --c-radius: 10px;
+  --c-qty: 40px;
+  --c-icon: 16px;
+  --c-font: 0.95rem;
+}
+@media (min-width: 768px) {
+  .counter--cart {
+    --c-h: 44px;
+    --c-btn: 40px;
+    --c-radius: 10px;
+    --c-qty: 44px;
+    --c-icon: 18px;
+    --c-font: 1rem;
+  }
+}
 
 /* =================================================================
    GOOEY PRODUCT TABS — vanilla port of the shadcn "gooey-filter tabs"
