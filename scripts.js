@@ -3832,9 +3832,10 @@
 
        Creative — the shots as designed, mint image beds and the
                   turquoise add-to-cart controls
-       White BG — packshots, and the whole product widget turns into
-                  a plain white tile with a grey-2 hairline so the
-                  white photography reads as one continuous surface
+       White BG — packshots on a plain white tile with a grey-2
+                  hairline, so the white photography reads as one
+                  continuous surface. The add-to-cart controls keep
+                  their brand turquoise in both modes.
 
      The choice is remembered across pages, so the site can be walked
      end to end in one style and then the other.

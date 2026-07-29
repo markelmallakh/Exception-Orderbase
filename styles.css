@@ -1999,17 +1999,10 @@ body.shot-white a.group\/card {
 body.shot-white a.group\/card .aspect-square {
   background: #fff;
 }
-/* the add button, the "variable" chevron, the counter and its + —
-   all four use brand turquoise fills, all four go white here */
-body.shot-white a.group\/card .bg-primary-200,
-body.shot-white a.group\/card [data-counter],
-body.shot-white a.group\/card [data-inc],
-body.shot-white a.group\/card [data-add-btn]:hover,
-body.shot-white a.group\/card [data-inc]:hover {
-  background: #fff;
-  border: 1px solid #f3f4f6;
-  color: #182325;
-}
+/* The add-to-cart controls deliberately KEEP their brand turquoise in
+   this mode — they're the one piece of colour on the tile, and white
+   buttons on a white card lost the call to action entirely. Only the
+   surfaces change here, never the controls. */
 /* line-item thumbs on cart/checkout/drawer lose their tinted bed too */
 body.shot-white [data-shot-img] {
   background: #fff;
