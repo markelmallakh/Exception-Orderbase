@@ -1937,17 +1937,28 @@ body[data-purchased="true"] .review-gate-hint {
   text-transform: uppercase;
   color: #a8abaf;
 }
-.shot-toggle {
+/* One sticky dock, bottom-left, on every page that shows products.
+   Sits above the page but below drawers/modals so it never blocks a
+   flow the client is being walked through. */
+.shot-dock {
+  position: fixed;
+  inset-inline-start: 16px;
+  bottom: 16px;
+  z-index: 60;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
   gap: 4px;
-  margin: 0 0 10px;
+  padding: 6px 8px;
+  border: 1px solid #dee2e6;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 16px rgba(24, 35, 37, 0.12);
 }
-.shot-toggle .shot-label {
+.shot-dock .shot-label {
   margin-inline-end: 2px;
 }
-.shot-toggle button {
+.shot-dock button {
   padding: 2px 8px;
   border: 1px solid #dee2e6;
   border-radius: 4px;
@@ -1962,14 +1973,46 @@ body[data-purchased="true"] .review-gate-hint {
     border-color 0.15s ease,
     color 0.15s ease;
 }
-.shot-toggle button:hover {
+.shot-dock button:hover {
   border-color: #a8abaf;
   color: #182325;
 }
-.shot-toggle button.is-active {
+.shot-dock button.is-active {
   background: #182325;
   border-color: #182325;
   color: #fff;
+}
+
+/* ---- White-packshot mode -------------------------------------------
+   The whole product widget turns into a plain white tile with a grey-2
+   hairline: white image bed, white surface behind the price and title,
+   and white add-to-cart controls. Against white photography the card
+   then reads as one continuous surface instead of a mint bed with a
+   turquoise button sitting on it. Text colours are untouched — the
+   pink price and dark title still have to be readable. */
+body.shot-white a.group\/card {
+  background: #fff;
+  border: 1px solid #f3f4f6;
+  border-radius: 16px;
+  padding: 10px 10px 16px;
+}
+body.shot-white a.group\/card .aspect-square {
+  background: #fff;
+}
+/* the add button, the "variable" chevron, the counter and its + —
+   all four use brand turquoise fills, all four go white here */
+body.shot-white a.group\/card .bg-primary-200,
+body.shot-white a.group\/card [data-counter],
+body.shot-white a.group\/card [data-inc],
+body.shot-white a.group\/card [data-add-btn]:hover,
+body.shot-white a.group\/card [data-inc]:hover {
+  background: #fff;
+  border: 1px solid #f3f4f6;
+  color: #182325;
+}
+/* line-item thumbs on cart/checkout/drawer lose their tinted bed too */
+body.shot-white [data-shot-img] {
+  background: #fff;
 }
 /* Photo tile on an option card (the themed-topper figures). Sits inset
    from the card's own padding with a softer radius than the card, so it

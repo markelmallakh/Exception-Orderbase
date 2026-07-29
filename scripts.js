@@ -612,7 +612,7 @@
       .map(
         (it) => `
       <div class="flex gap-3 py-4 border-b border-neutral-100" data-cart-row data-unit-price="${it.price}">
-        <img src="${it.img}" alt="${esc(it.name)}" class="w-[72px] h-[72px] rounded-lg object-cover bg-primary-light" />
+        <img data-shot-img="ui" src="${it.img}" alt="${esc(it.name)}" class="w-[72px] h-[72px] rounded-lg object-cover bg-primary-light" />
         <!-- Text column and counter sit side-by-side (counter no longer stacks
              below the price), so the row is only as tall as the thumbnail. -->
         <div class="flex flex-1 items-start gap-2 min-w-0">
@@ -653,7 +653,7 @@
       <div>
         <div class="relative">
           <div class="rounded-[10px] aspect-square overflow-hidden bg-primary-light">
-            <img src="${it.img}" alt="${esc(it.name)}" class="w-full h-full object-cover" />
+            <img data-shot-img="ui" src="${it.img}" alt="${esc(it.name)}" class="w-full h-full object-cover" />
           </div>
           <span class="absolute end-1.5 -bottom-2.5 z-10" data-add-widget data-type="simple">
             <button type="button" data-add-btn aria-label="Add ${esc(it.name)} to cart" class="grid place-items-center bg-primary-200 text-primaryDark rounded-[6px] size-[24px] shadow-custom-5 hover:bg-primary-300 transition-colors">
@@ -3826,16 +3826,23 @@
      PHOTO-STYLE COMPARE — presentation aid, not a shipping feature.
 
      The client is deciding between creative/lifestyle product shots
-     and plain white-background packshots. This drops a tiny toggle
-     above every product carousel and grid on the site and swaps all
-     the card images between the two sets, so the same page can be
-     seen either way. The choice is remembered across pages so the
-     whole site can be browsed in one style then the other.
+     and plain white-background packshots. ONE sticky toggle sits at
+     the bottom-left of every page that shows product imagery, and
+     flips the whole site between the two directions:
+
+       Creative — the shots as designed, mint image beds and the
+                  turquoise add-to-cart controls
+       White BG — packshots, and the whole product widget turns into
+                  a plain white tile with a grey-2 hairline so the
+                  white photography reads as one continuous surface
+
+     The choice is remembered across pages, so the site can be walked
+     end to end in one style and then the other.
 
      TO REMOVE once the decision is made: delete this block, the
-     initShotCompare() call in kInit, the .shot-toggle/.shot-label
-     rules in styles.css, and the two labelled thumbnail groups in
-     product.html's gallery.
+     initShotCompare() call in kInit, the PHOTO-STYLE COMPARE rules in
+     styles.css, the data-shot-img attributes on the cart/checkout line
+     items, and the two labelled thumbnail groups in product.html.
      --------------------------------------------------------------- */
   const SHOT_KEY = "ex-shot-mode";
   const WHITE_SHOTS = [
@@ -3864,12 +3871,18 @@
     for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
     return h;
   }
-  /* ONLY the product photo — every card also carries add-to-cart glyphs
+  /* ONLY product photos — every card also carries add-to-cart glyphs
      (bag, trash, minus, plus) as <img>, and those must never be swapped.
-     All five card templates wrap the photo in the same aspect-square box. */
-  const SHOT_IMG_SEL = "a.group\\/card .aspect-square > img";
+     All five card templates wrap the photo in the same aspect-square box;
+     cart/checkout/drawer line items opt in with data-shot-img. */
+  const SHOT_IMG_SEL = "a.group\\/card .aspect-square > img, [data-shot-img]";
+  /* Cart-drawer imagery is marked data-shot-img="ui" so it still swaps
+     but doesn't, on its own, put the dock on a page with no products
+     (the drawer is injected into every page, including About/Contact). */
+  const SHOT_PAGE_SEL = 'a.group\\/card, [data-shot-img=""]';
   function applyShots() {
     const white = shotMode() === "white";
+    document.body.classList.toggle("shot-white", white);
     document.querySelectorAll(SHOT_IMG_SEL).forEach((im) => {
       if (!im.dataset.shotCreative) {
         im.dataset.shotCreative = im.getAttribute("src") || "";
@@ -3883,35 +3896,23 @@
       b.classList.toggle("is-active", b.getAttribute("data-shot") === shotMode());
     });
   }
-  /* One toggle per visual group: a carousel, a whole tabbed panel set
-     (all three panels share a parent, so they share one toggle), or a
-     plain grid. */
-  function shotGroupRoot(card) {
-    const panel = card.closest("[data-panel]");
-    return card.closest(".carousel") || (panel && panel.parentElement) || card.parentElement;
-  }
-  function mountShotToggles() {
-    const roots = new Set();
-    document.querySelectorAll("a.group\\/card").forEach((c) => {
-      const r = shotGroupRoot(c);
-      if (r && r.parentNode) roots.add(r);
-    });
-    roots.forEach((root) => {
-      const prev = root.previousElementSibling;
-      if (prev && prev.hasAttribute && prev.hasAttribute("data-shot-toggle")) return;
-      const bar = document.createElement("div");
-      bar.setAttribute("data-shot-toggle", "");
-      bar.className = "shot-toggle";
-      bar.innerHTML =
-        '<span class="shot-label">Photo style</span>' +
-        '<button type="button" data-shot="creative">Creative</button>' +
-        '<button type="button" data-shot="white">White BG</button>';
-      root.parentNode.insertBefore(bar, root);
-    });
+  /* A single sticky dock, bottom-left, on any page that actually shows
+     products — homepage, listings, product, cart, checkout, favourites. */
+  function mountShotDock() {
+    if (document.querySelector("[data-shot-toggle]")) return;
+    if (!document.querySelector(SHOT_PAGE_SEL)) return;
+    const dock = document.createElement("div");
+    dock.setAttribute("data-shot-toggle", "");
+    dock.className = "shot-dock";
+    dock.innerHTML =
+      '<span class="shot-label">Photo style</span>' +
+      '<button type="button" data-shot="creative">Creative</button>' +
+      '<button type="button" data-shot="white">White BG</button>';
+    document.body.appendChild(dock);
   }
   let shotBooted = false;
   function initShotCompare() {
-    mountShotToggles();
+    mountShotDock();
     applyShots();
     if (shotBooted) return;
     shotBooted = true;
@@ -3930,7 +3931,7 @@
     new MutationObserver(() => {
       clearTimeout(t);
       t = setTimeout(() => {
-        mountShotToggles();
+        mountShotDock();
         applyShots();
       }, 60);
     }).observe(document.body, { childList: true, subtree: true });
