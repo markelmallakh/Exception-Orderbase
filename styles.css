@@ -1950,26 +1950,24 @@ body[data-purchased="true"] .review-gate-hint {
     0 0 0 4px #182325;
 }
 
-/* Stepper — the row scrolls on narrow screens rather than wrapping, so
-   the sequence always reads left-to-right. */
+/* Stepper — NEVER scrolls. The six nodes are sized to fit the panel at
+   every width: the dots + labels are fixed, the connector lines are the
+   only flexible part, so they absorb whatever room is left. Below 640px
+   there isn't room for six labels, so only the ACTIVE step is labelled. */
 .myc-stepper {
   display: flex;
   align-items: center;
-  gap: 6px;
-  max-width: 100%;
-  overflow-x: auto;
-  scrollbar-width: none;
-  padding-bottom: 2px;
-}
-.myc-stepper::-webkit-scrollbar {
-  display: none;
+  gap: 4px;
+  width: 100%;
+  min-width: 0;
 }
 /* Stepper nodes */
 .myc-step {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
   flex: none;
+  min-width: 0;
   background: none;
   border: 0;
   padding: 0;
@@ -1998,13 +1996,14 @@ body[data-purchased="true"] .review-gate-hint {
 .myc-step__dot {
   display: grid;
   place-items: center;
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
+  flex: none;
   border-radius: 50%;
   border: 1.5px solid #dee2e6;
   background: #fff;
   color: #6f7276;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   transition:
     background 0.2s ease,
@@ -2022,7 +2021,7 @@ body[data-purchased="true"] .review-gate-hint {
   color: #fff;
 }
 .myc-step__label {
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 600;
   color: #6f7276;
   white-space: nowrap;
@@ -2030,15 +2029,53 @@ body[data-purchased="true"] .review-gate-hint {
 .myc-step.is-active .myc-step__label {
   color: #182325;
 }
+/* the ONLY flexible part — the lines soak up the leftover width so the
+   row always spans the panel exactly, with no overflow and no scroll */
 .myc-step__line {
-  width: 24px;
+  flex: 1 1 0;
+  min-width: 6px;
   height: 2px;
   background: #dee2e6;
-  flex: none;
 }
 .myc-step.is-done + .myc-step__line,
 .myc-step__line.is-done {
   background: #8cbab5;
+}
+/* The stepper must NEVER scroll, at any width. fitStepper() in the page
+   JS measures the row and steps down this ladder until it fits, each
+   rung narrower than the last:
+     1. default — dot + label side by side, all six labelled
+     2. .is-stacked — labels drop UNDER their dots; all six still read
+     3. .is-compact — only the current step keeps its label
+     4. .is-bare — numbered dots alone */
+.myc-stepper.is-stacked {
+  align-items: flex-start;
+}
+.myc-stepper.is-stacked .myc-step {
+  flex-direction: column;
+  gap: 6px;
+}
+/* hold the connectors level with the dot centres, not the labels */
+.myc-stepper.is-stacked .myc-step__line {
+  margin-top: 13px;
+}
+.myc-stepper.is-compact .myc-step__label {
+  display: none;
+}
+/* The one surviving label may shrink rather than vanish, so every step
+   keeps a name even on the narrowest phone. */
+.myc-stepper.is-compact .myc-step.is-active {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+.myc-stepper.is-compact .myc-step.is-active .myc-step__label {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.myc-stepper.is-bare .myc-step__label {
+  display: none;
 }
 /* =================================================================
    TRUE-3D CAKE (.c3) — a real CSS-3D cake used as the live preview
@@ -2064,16 +2101,26 @@ body[data-purchased="true"] .review-gate-hint {
   --nutsH: 0px;
   --fruH: 0px;
   --shw: 150px;
+  /* where the cake's body sits inside its box. The minis hang low in
+     their tile; the LIVE cake is centred (see .c3--live below). */
+  --cy: 74%;
   position: relative;
   width: 100%;
   height: 100%;
   perspective: 950px;
   perspective-origin: 50% 24%;
 }
+/* Live preview: centre the model in its area rather than parking it at
+   the bottom — the stage is a plain box now, so there's no floor to
+   sit on and a low cake just read as off-centre. Measured against the
+   real face boxes so the gap above and below the cake match. */
+.c3--live {
+  --cy: 50.5%;
+}
 .c3__pos {
   position: absolute;
   left: 50%;
-  top: 74%;
+  top: var(--cy);
   width: 0;
   height: 0;
   transform-style: preserve-3d;
@@ -2121,7 +2168,7 @@ body[data-purchased="true"] .review-gate-hint {
 .c3__shadow {
   position: absolute;
   left: 50%;
-  top: 74%;
+  top: var(--cy);
   width: var(--shw);
   height: calc(var(--shw) * 0.24);
   transform: translate(-50%, calc(var(--chh) * 0.38));
@@ -2251,7 +2298,7 @@ body[data-purchased="true"] .review-gate-hint {
 .c3__topper {
   position: absolute;
   left: 50%;
-  top: 74%;
+  top: var(--cy);
   z-index: 6;
   transform: translate(-50%, calc(var(--chh) * -0.62 - 30px));
   font-size: var(--topFs, 30px);
@@ -2306,16 +2353,19 @@ body[data-purchased="true"] .review-gate-hint {
 }
 
 /* =================================================================
-   CAKE STAGE + PEDESTAL — the persistent hero cake sits on a cake
-   stand; a soft turquoise spotlight glows behind it. Entrance: the
-   whole stage rises in and the cake drops onto the stand.
+   CAKE STAGE — a plain white studio box. Deliberately NO backdrop:
+   the turquoise spotlight + blurred glow that used to sit behind the
+   cake were removed (they washed out the cake's own contrast and read
+   as a blurry smudge on the white card). The cake's contact shadow
+   (.c3__shadow) is the only thing grounding it now. Entrance: the
+   stage rises in and the cake drops onto it.
    ================================================================= */
 .cake-stage {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: center;
   animation: stage-in 0.8s cubic-bezier(0.22, 0.61, 0.36, 1) both;
 }
 @keyframes stage-in {
@@ -2326,63 +2376,6 @@ body[data-purchased="true"] .review-gate-hint {
   to {
     opacity: 1;
     transform: none;
-  }
-}
-/* Perspective-matched GROUND — a foreshortened floor ellipse under the
-   cake, squashed to the same ¾ top-right camera as the cake's own top
-   (no pedestal; the cake reads as sitting on a seamless studio table). */
-.cake-stage::before {
-  content: "";
-  position: absolute;
-  left: 50%;
-  bottom: -3%;
-  width: 108%;
-  height: 30%;
-  transform: translateX(-50%);
-  background: radial-gradient(
-    closest-side,
-    rgba(140, 186, 181, 0.35),
-    rgba(176, 222, 217, 0.18) 56%,
-    transparent 74%
-  );
-  border-radius: 50%;
-  z-index: 0;
-}
-/* brighter pool right where the cake sits */
-.cake-stage::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  bottom: 6%;
-  width: 56%;
-  height: 13%;
-  transform: translateX(-50%);
-  background: radial-gradient(closest-side, rgba(255, 255, 255, 0.85), transparent 78%);
-  border-radius: 50%;
-  z-index: 0;
-}
-.cake-glow {
-  position: absolute;
-  left: 50%;
-  top: 4%;
-  width: 70%;
-  aspect-ratio: 1.4;
-  transform: translateX(-50%);
-  background: radial-gradient(circle, rgba(176, 222, 217, 0.42), transparent 62%);
-  filter: blur(10px);
-  border-radius: 50%;
-  z-index: 0;
-  animation: glow-pulse 4s ease-in-out infinite;
-}
-@keyframes glow-pulse {
-  0%,
-  100% {
-    opacity: 0.75;
-    transform: translateX(-50%) scale(1);
-  }
-  50% {
-    opacity: 1;
-    transform: translateX(-50%) scale(1.06);
   }
 }
 .cake-drop {

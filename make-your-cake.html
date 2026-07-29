@@ -37,12 +37,11 @@
       <!-- ============================ BUILDER ============================ -->
       <section class="bg-gray-100 pb-16 lg:pb-24">
         <div class="container">
-          <div class="mx-auto max-w-[1080px] grid gap-6 lg:grid-cols-2 lg:items-stretch" data-cake-builder>
+          <div class="mx-auto max-w-[1220px] grid gap-6 lg:grid-cols-[minmax(0,0.86fr)_minmax(0,1.14fr)] lg:items-stretch" data-cake-builder>
             <!-- Live 3D cake on the studio floor -->
-            <div class="relative overflow-hidden rounded-[24px] border border-gray-200 bg-gradient-to-b from-white to-primary-light/40 shadow-custom4 p-6 flex flex-col items-center justify-center">
+            <div class="relative overflow-hidden rounded-[24px] border border-gray-300 bg-white p-6 flex flex-col items-center justify-center">
               <div class="cake-stage w-full" style="min-height:380px">
-                <div class="cake-glow"></div>
-                <div class="cake-drop w-full" style="height:330px">
+                <div class="cake-drop w-full" style="height:340px">
                   <div class="c3 c3--live" id="liveCake"></div>
                 </div>
               </div>
@@ -50,10 +49,10 @@
             </div>
 
             <!-- Config: tabs + options -->
-            <div class="flex flex-col overflow-hidden rounded-[24px] border border-gray-200 bg-white shadow-custom4">
-              <div class="flex justify-center border-b border-gray-200 px-5 md:px-6 py-4" data-cake-tabs></div>
+            <div class="flex flex-col overflow-hidden rounded-[24px] border border-gray-300 bg-white">
+              <div class="border-b border-gray-300 px-4 md:px-5 py-4" data-cake-tabs></div>
               <div class="flex-1 px-5 md:px-6 py-6 overflow-y-auto" style="max-height:520px" data-cake-panel></div>
-              <div class="flex items-center gap-3 border-t border-gray-200 px-5 md:px-6 py-4">
+              <div class="flex items-center gap-3 border-t border-gray-300 px-5 md:px-6 py-4">
                 <button type="button" class="btn btn--secondary btn--md whitespace-nowrap" data-back>Back</button>
                 <button type="button" class="btn btn--primary btn--md flex-1 justify-center" data-next>Next</button>
                 <button type="button" class="btn btn--primary btn--md flex-1 justify-center" data-add hidden>Add to Cart</button>
@@ -145,7 +144,10 @@
           { id: "200", name: "200 gm" },
           { id: "300", name: "300 gm" },
         ];
+        /* Decoration is optional, so "Without" leads the list — same
+           pattern as the Filling amounts and the Message step. */
         const STYLES = [
+          { id: "none", name: "Without Decoration" },
           { id: "classic", name: "Classic Cream" },
           { id: "fruits", name: "Fruit Topping" },
           { id: "drip", name: "Chocolate Drip" },
@@ -200,12 +202,18 @@
         const AMOUNT_H = { "0": 0, "100": 6, "200": 11, "300": 16 }; /* stripe px on the live cake */
 
         /* ================= State ================= */
+        /* These values only DRIVE THE 3D PREVIEW — they are not choices.
+           Apart from Shape (step 1), nothing shows as selected until the
+           customer actually picks it; `touched` is what marks a real
+           choice, and the option cards read their active state from it. */
         const state = {
           shape: "circle", type: "sponge", size: "28", height: "8",
           flavour: "vanilla", nuts: "0", fruits: "0",
-          style: "classic", colour: "white", themes: [], message: "",
+          style: "classic", colour: "white", themes: [], message: "", msgOn: "",
         };
         const touched = {};
+        /* an option is highlighted only once the customer has chosen it */
+        const sel = (key, val) => !!touched[key] && state[key] === val;
         let tab = 0;
 
         /* ================= 3D engine ================= */
@@ -389,7 +397,9 @@
           { key: "sizeStep", label: "Size", done: () => touched.size && touched.height },
           { key: "flavourStep", label: "Flavour", done: () => touched.flavour },
           { key: "fillingStep", label: "Filling", done: () => touched.nuts && touched.fruits },
-          { key: "decoStep", label: "Decoration", done: () => touched.style && touched.colour },
+          /* "Without Decoration" completes the step on its own — there's
+             no frosting colour to pick when there's no decoration. */
+          { key: "decoStep", label: "Decoration", done: () => touched.style && (state.style === "none" || touched.colour) },
           { key: "messageStep", label: "Message", done: () => touched.message },
         ];
 
@@ -457,7 +467,7 @@
             panel.appendChild(groupHead("How big should it be?", "Sizes follow the shape"));
             let g = optGrid(state.shape === "circle" ? "grid-cols-3 sm:grid-cols-4" : "grid-cols-2 sm:grid-cols-4");
             SIZES[state.shape].forEach((o) => {
-              const c = optCard("size", o.id, state.size === o.id, false, o.name, "Serves ~" + o.serves);
+              const c = optCard("size", o.id, sel("size", o.id), false, o.name, "Serves ~" + o.serves);
               c.insertBefore(footprint(o, state.shape), c.firstChild);
               g.appendChild(c);
             });
@@ -466,7 +476,7 @@
             panel.appendChild(groupHead("How tall?", state.type === "sponge" ? "Sponge cakes come 8 cm — pick Sugar Cake for tall tiers" : "Fondant holds up to 22 cm"));
             g = optGrid("grid-cols-2 sm:grid-cols-4");
             hs.forEach((h) => {
-              const c = optCard("height", h, state.height === h, true, h + " cm");
+              const c = optCard("height", h, sel("height", h), true, h + " cm");
               g.appendChild(c);
               addMini(c, { height: h, message: "" });
             });
@@ -475,33 +485,34 @@
             panel.appendChild(groupHead("Pick your sponge flavour"));
             const g = optGrid("grid-cols-3");
             FLAVOURS.forEach((o) => {
-              const c = optCard("flavour", o.id, state.flavour === o.id, true, o.name);
+              const c = optCard("flavour", o.id, sel("flavour", o.id), true, o.name);
               g.appendChild(c);
               addMini(c, { flavour: o.id, type: "sponge", message: "" });
             });
             panel.appendChild(g);
           } else if (stepKey === "fillingStep") {
-            panel.appendChild(groupHead("Extra nuts", "The tart already has a base nut filling"));
-            let g = optGrid("grid-cols-2 sm:grid-cols-4");
-            AMOUNTS.forEach((o) => {
-              const c = optCard("nuts", o.id, state.nuts === o.id, false, o.name, o.id === "0" ? " " : "🥜".repeat(o.id / 100));
-              g.appendChild(c);
-            });
-            panel.appendChild(g);
-            panel.appendChild(groupHead("Extra fruits"));
-            g = optGrid("grid-cols-2 sm:grid-cols-4");
-            AMOUNTS.forEach((o) => {
-              const c = optCard("fruits", o.id, state.fruits === o.id, false, o.name, o.id === "0" ? " " : "🍓".repeat(o.id / 100));
-              g.appendChild(c);
-            });
-            panel.appendChild(g);
+            /* Filling is optional — "Without <topic>" leads each group. */
+            const amountGrid = (key, topic, emoji) => {
+              const g = optGrid("grid-cols-2 sm:grid-cols-4");
+              AMOUNTS.forEach((o) => {
+                const zero = o.id === "0";
+                g.appendChild(
+                  optCard(key, o.id, sel(key, o.id), false, zero ? "Without " + topic : o.name, zero ? " " : emoji.repeat(o.id / 100))
+                );
+              });
+              return g;
+            };
+            panel.appendChild(groupHead("Extra nuts", "Optional — the sponge already has its own filling"));
+            panel.appendChild(amountGrid("nuts", "Nuts", "🥜"));
+            panel.appendChild(groupHead("Extra fruits", "Optional"));
+            panel.appendChild(amountGrid("fruits", "Fruits", "🍓"));
           } else if (stepKey === "decoStep") {
-            panel.appendChild(groupHead("Decoration style"));
+            panel.appendChild(groupHead("Decoration style", "Optional"));
             const g = optGrid("grid-cols-2 sm:grid-cols-4");
             STYLES.forEach((o) => {
-              const c = optCard("style", o.id, state.style === o.id, true, o.name);
+              const c = optCard("style", o.id, sel("style", o.id), true, o.name);
               g.appendChild(c);
-              addMini(c, { style: o.id, message: "" });
+              addMini(c, { style: o.id, colour: o.id === "none" ? "white" : state.colour, message: "" });
             });
             panel.appendChild(g);
             if (state.style === "themed") {
@@ -527,13 +538,19 @@
               row.appendChild(edit);
               panel.appendChild(row);
             }
+            /* "Without Decoration" means a plain cake — there's no
+               frosting to colour, so the swatches step aside. */
+            if (state.style === "none") {
+              panelEl.appendChild(panel);
+              return;
+            }
             panel.appendChild(groupHead("Frosting colour"));
             const sw = el("flex flex-wrap gap-2.5 mb-2");
             COLOURS.forEach((o) => {
               const b = document.createElement("button");
               b.type = "button";
               b.title = o.name;
-              b.className = "myc-swatch" + (state.colour === o.id ? " is-active" : "");
+              b.className = "myc-swatch" + (sel("colour", o.id) ? " is-active" : "");
               b.style.background = o.hex;
               b.setAttribute("data-pick", "colour");
               b.setAttribute("data-val", o.id);
@@ -541,18 +558,27 @@
             });
             panel.appendChild(sw);
           } else {
-            panel.appendChild(groupHead("Add a message on the cake", "Piped by hand — free"));
-            const inp = document.createElement("input");
-            inp.type = "text";
-            inp.maxLength = 24;
-            inp.placeholder = "e.g. Happy Birthday Mariam";
-            inp.value = state.message;
-            inp.setAttribute("data-cake-text", "");
-            inp.className = "h-12 w-full rounded-lg border border-customGrayMedium focus:border-primary px-4 text-sm text-textSecondary outline-none transition-colors";
-            panel.appendChild(inp);
-            const note = el("text-xs text-gray-500 mt-2");
-            note.textContent = "Watch it appear on the cake as you type. Want it on the base instead? +30 EGP at checkout.";
-            panel.appendChild(note);
+            /* The message is optional, so it opens with the same
+               Without / With choice the other optional steps use — the
+               text field only appears once "With" is picked. */
+            panel.appendChild(groupHead("A message on the cake?", "Optional — piped by hand, free"));
+            const g = optGrid("grid-cols-2");
+            g.appendChild(optCard("msgOn", "0", sel("msgOn", "0"), false, "Without Message", "Leave the cake plain"));
+            g.appendChild(optCard("msgOn", "1", sel("msgOn", "1"), false, "With Message", "Up to 24 characters"));
+            panel.appendChild(g);
+            if (state.msgOn === "1") {
+              const inp = document.createElement("input");
+              inp.type = "text";
+              inp.maxLength = 24;
+              inp.placeholder = "e.g. Happy Birthday Mariam";
+              inp.value = state.message;
+              inp.setAttribute("data-cake-text", "");
+              inp.className = "h-12 w-full rounded-lg border border-customGrayMedium focus:border-primary px-4 text-sm text-textSecondary outline-none transition-colors";
+              panel.appendChild(inp);
+              const note = el("text-xs text-gray-500 mt-2");
+              note.textContent = "Watch it appear on the cake as you type. Want it on the base instead? +30 EGP at checkout.";
+              panel.appendChild(note);
+            }
           }
           panelEl.appendChild(panel);
         }
@@ -563,7 +589,10 @@
            Steps ahead of the furthest unlocked one stay disabled so the
            flow can't be skipped. */
         const LAST = STEPS.length - 1;
-        const REQUIRED = STEPS.slice(0, LAST); /* the Message step is optional */
+        /* Only Shape, Size and Flavour describe a cake we can actually
+           bake — Filling, Decoration and Message are all optional, so
+           Add to Cart doesn't wait on them. */
+        const REQUIRED = STEPS.slice(0, 3);
         const allRequiredDone = () => REQUIRED.every((st) => st.done());
         let maxReached = 0; /* furthest step actually visited — unlocks the stepper dots */
         const furthest = () => {
@@ -588,6 +617,21 @@
             ).join("") +
             "</div>";
         }
+        /* Keep the six steps inside the panel at every width — the row
+           must never scroll. Walk down the fallback ladder (see the
+           .myc-stepper rules in styles.css) until the row fits. */
+        const FIT_MODES = ["is-stacked", "is-compact", "is-bare"];
+        function fitStepper() {
+          const row = tabsEl.querySelector(".myc-stepper");
+          if (!row) return;
+          const over = () => row.scrollWidth > row.clientWidth + 1;
+          row.classList.remove.apply(row.classList, FIT_MODES);
+          for (let i = 0; i < FIT_MODES.length && over(); i++) {
+            row.classList.remove.apply(row.classList, FIT_MODES);
+            row.classList.add(FIT_MODES[i]);
+          }
+        }
+
         function syncStepper() {
           const reach = Math.max(tab, furthest());
           tabsEl.querySelectorAll("[data-cake-step]").forEach((b) => {
@@ -616,8 +660,16 @@
           addBtn.disabled = !ready;
           addBtn.classList.toggle("opacity-40", !ready);
           addBtn.classList.toggle("pointer-events-none", !ready);
-          addBtn.title = ready ? "" : "Finish every step to add your cake to the cart";
+          addBtn.title = ready ? "" : "Choose a shape, size and flavour to add your cake to the cart";
+          /* the active step's label is the only one shown once compact,
+             so re-fit whenever the current step changes */
+          fitStepper();
         }
+        /* Label widths shift when the web font swaps in, and the panel
+           width changes with the viewport — re-measure on both. */
+        window.addEventListener("resize", fitStepper);
+        window.addEventListener("load", fitStepper);
+        if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitStepper);
         /* one name for the rest of the file */
         const syncTabs = syncStepper;
 
@@ -725,6 +777,17 @@
           if (key === "type" && !HEIGHTS[val].includes(state.height)) {
             state.height = "8";
             delete touched.height;
+          }
+          if (key === "style" && val === "none") {
+            /* a plain cake carries no topper and no frosting colour */
+            state.themes = [];
+            state.colour = "white";
+            delete touched.colour;
+          }
+          if (key === "msgOn") {
+            /* either answer settles the (optional) Message step */
+            touched.message = true;
+            if (val === "0") state.message = "";
           }
           renderPanel();
           syncTabs();
