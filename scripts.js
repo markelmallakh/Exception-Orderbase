@@ -4019,6 +4019,31 @@
       s.id = "dotfield-script";
       document.body.appendChild(s);
     }
+
+    /* Bugger feedback widget (Mitchdesigns) — review tool, not a site
+       feature. Injected here so all 33 static pages carry it from one
+       place. The supplied snippet is a Next.js <Script strategy=
+       "lazyOnload">; with no build step the equivalent is to append it
+       after the load event so it never competes with the page's own
+       assets. bottom-right is free — the floating cart sits top-right
+       and the photo-style dock bottom-left. */
+    if (!document.getElementById("bugger-widget")) {
+      const mountBugger = () => {
+        if (document.getElementById("bugger-widget")) return;
+        const s = document.createElement("script");
+        s.id = "bugger-widget";
+        s.src = "https://feedback-widget.mitchdesigns.workers.dev/widget.js";
+        s.async = true;
+        s.setAttribute("data-ingest-key", "pk_8a0eaf1e691f00315550778c50dedc38");
+        s.setAttribute("data-endpoint", "https://bugger-worker.mitchdesigns.workers.dev/functions/v1/ingest-feedback");
+        s.setAttribute("data-position", "bottom-right");
+        s.setAttribute("data-button-text", "Feedback");
+        s.setAttribute("data-accent", "#4f46e5");
+        document.body.appendChild(s);
+      };
+      if (document.readyState === "complete") mountBugger();
+      else window.addEventListener("load", mountBugger);
+    }
   }
 
   /* Footer entrance: play forward when the footer enters the viewport,
