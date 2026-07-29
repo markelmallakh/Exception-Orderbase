@@ -3843,7 +3843,7 @@
      TO REMOVE once the decision is made: delete this block, the
      initShotCompare() call in kInit, the PHOTO-STYLE COMPARE rules in
      styles.css, the data-shot-img attributes on the cart/checkout line
-     items, and the two labelled thumbnail groups in product.html.
+     items, and the packshot thumbnails in product.html's gallery.
      --------------------------------------------------------------- */
   const SHOT_KEY = "ex-shot-mode";
   const WHITE_SHOTS = [
