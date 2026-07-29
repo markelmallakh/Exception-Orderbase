@@ -1973,15 +1973,15 @@ body[data-purchased="true"] .review-gate-hint {
 }
 
 /* ---- White-packshot mode -------------------------------------------
-   The whole product widget turns into a plain white tile with a grey-2
-   hairline: white image bed, white surface behind the price and title,
-   and white add-to-cart controls. Against white photography the card
-   then reads as one continuous surface instead of a mint bed with a
-   turquoise button sitting on it. Text colours are untouched — the
-   pink price and dark title still have to be readable. */
+   The whole product widget turns into a plain white tile with a grey-3
+   stroke: white image bed and a white surface behind the price and
+   title. Against white photography the card then reads as one
+   continuous surface instead of a mint bed with a turquoise button
+   sitting on it. Text colours are untouched — the pink price and dark
+   title still have to be readable. */
 body.shot-white a.group\/card {
   background: #fff;
-  border: 1px solid #f3f4f6;
+  border: 1.5px solid #dee2e6;
   border-radius: 16px;
   padding: 10px 10px 16px;
 }
