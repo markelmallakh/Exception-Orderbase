@@ -1923,20 +1923,12 @@ body[data-purchased="true"] .review-gate-hint {
 }
 /* =================================================================
    PHOTO-STYLE COMPARE (temporary presentation aid) — a very small
-   toggle above every product carousel/grid that flips the card images
-   between creative shots and white-background packshots, plus the
-   labels on the product page's two thumbnail groups. Deliberately
+   sticky toggle, bottom-left, that flips product imagery between
+   creative shots and white-background packshots. Deliberately
    understated: it is a review tool sitting on top of the real design,
    so it must never read as part of the storefront UI.
    Remove together with initShotCompare() in scripts.js.
    ================================================================= */
-.shot-label {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: #a8abaf;
-}
 /* One sticky dock, bottom-left, on every page that shows products.
    Sits above the page but below drawers/modals so it never blocks a
    flow the client is being walked through. */
@@ -1954,9 +1946,6 @@ body[data-purchased="true"] .review-gate-hint {
   background: rgba(255, 255, 255, 0.94);
   backdrop-filter: blur(8px);
   box-shadow: 0 4px 16px rgba(24, 35, 37, 0.12);
-}
-.shot-dock .shot-label {
-  margin-inline-end: 2px;
 }
 .shot-dock button {
   padding: 2px 8px;

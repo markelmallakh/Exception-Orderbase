@@ -3906,7 +3906,6 @@
     dock.setAttribute("data-shot-toggle", "");
     dock.className = "shot-dock";
     dock.innerHTML =
-      '<span class="shot-label">Photo style</span>' +
       '<button type="button" data-shot="creative">Creative</button>' +
       '<button type="button" data-shot="white">White BG</button>';
     document.body.appendChild(dock);
