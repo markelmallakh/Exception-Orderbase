@@ -54,8 +54,9 @@
               <div class="flex justify-center border-b border-gray-200 px-5 md:px-6 py-4" data-cake-tabs></div>
               <div class="flex-1 px-5 md:px-6 py-6 overflow-y-auto" style="max-height:520px" data-cake-panel></div>
               <div class="flex items-center gap-3 border-t border-gray-200 px-5 md:px-6 py-4">
-                <button type="button" class="btn btn--secondary btn--md whitespace-nowrap" data-surprise>🎲 Surprise Me</button>
-                <button type="button" class="btn btn--primary btn--md flex-1 justify-center" data-add>Add to Cart</button>
+                <button type="button" class="btn btn--secondary btn--md whitespace-nowrap" data-back>Back</button>
+                <button type="button" class="btn btn--primary btn--md flex-1 justify-center" data-next>Next</button>
+                <button type="button" class="btn btn--primary btn--md flex-1 justify-center" data-add hidden>Add to Cart</button>
               </div>
             </div>
           </div>
@@ -95,7 +96,8 @@
         const summaryEl = builder.querySelector("[data-cake-summary]");
         const liveCake = document.getElementById("liveCake");
         const addBtn = builder.querySelector("[data-add]");
-        const surpriseBtn = builder.querySelector("[data-surprise]");
+        const backBtn = builder.querySelector("[data-back]");
+        const nextBtn = builder.querySelector("[data-next]");
 
         /* ================= Reference data (exception-group.com/custom-cakes) ================= */
         const SHAPES = [
@@ -555,32 +557,81 @@
           panelEl.appendChild(panel);
         }
 
-        /* ================= Tabs (shared segmented control) ================= */
-        function buildTabs() {
+        /* ================= Stepper =================
+           Sequential, but every finished step stays editable: click any
+           completed step (or the current one) to go back and change it.
+           Steps ahead of the furthest unlocked one stay disabled so the
+           flow can't be skipped. */
+        const LAST = STEPS.length - 1;
+        const REQUIRED = STEPS.slice(0, LAST); /* the Message step is optional */
+        const allRequiredDone = () => REQUIRED.every((st) => st.done());
+        const furthest = () => {
+          /* the first unfinished step is as far as the user may jump */
+          for (let i = 0; i < STEPS.length; i++) if (!STEPS[i].done()) return i;
+          return LAST;
+        };
+
+        function buildStepper() {
           tabsEl.innerHTML =
-            '<div class="segmented-scroll no-scrollbar">' +
-            '<div class="segmented text-sm font-medium" data-segmented role="tablist">' +
-            '<span class="segmented__thumb" aria-hidden="true"></span>' +
+            '<div class="myc-stepper">' +
             STEPS.map((t, i) =>
-              '<button type="button" class="tab-btn px-3.5 py-2 text-sm' + (i === 0 ? " is-active" : "") +
-              '" data-tab="' + i + '" role="tab"><span>' + t.label + '</span><span class="seg-check" aria-hidden="true">✓</span></button>'
+              '<button type="button" class="myc-step" data-cake-step="' + i + '">' +
+              '<span class="myc-step__dot"><span class="myc-step__num">' + (i + 1) + '</span>' +
+              '<svg class="myc-step__check" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+              '</span><span class="myc-step__label">' + t.label + "</span></button>" +
+              (i < LAST ? '<span class="myc-step__line"></span>' : "")
             ).join("") +
-            "</div></div>";
+            "</div>";
         }
-        function syncTabs() {
-          tabsEl.querySelectorAll("[data-tab]").forEach((b) => {
-            const i = +b.getAttribute("data-tab");
+        function syncStepper() {
+          const reach = Math.max(tab, furthest());
+          tabsEl.querySelectorAll("[data-cake-step]").forEach((b) => {
+            const i = +b.getAttribute("data-cake-step");
+            const done = !!STEPS[i].done();
             b.classList.toggle("is-active", i === tab);
-            b.classList.toggle("is-done", !!STEPS[i].done());
+            b.classList.toggle("is-done", done && i !== tab);
+            const locked = i > reach;
+            b.classList.toggle("is-locked", locked);
+            b.disabled = locked;
           });
+          tabsEl.querySelectorAll(".myc-step__line").forEach((l, i) => {
+            l.classList.toggle("is-done", !!STEPS[i].done());
+          });
+          /* footer: Back / Next until the end, then the gated Add to Cart */
+          backBtn.disabled = tab === 0;
+          backBtn.classList.toggle("opacity-40", tab === 0);
+          const onLast = tab === LAST;
+          nextBtn.hidden = onLast;
+          addBtn.hidden = !onLast;
+          nextBtn.disabled = !STEPS[tab].done();
+          nextBtn.classList.toggle("opacity-40", nextBtn.disabled);
+          nextBtn.classList.toggle("pointer-events-none", nextBtn.disabled);
+          const ready = allRequiredDone();
+          addBtn.disabled = !ready;
+          addBtn.classList.toggle("opacity-40", !ready);
+          addBtn.classList.toggle("pointer-events-none", !ready);
+          addBtn.title = ready ? "" : "Finish every step to add your cake to the cart";
         }
+        /* one name for the rest of the file */
+        const syncTabs = syncStepper;
 
         /* ================= Interactions ================= */
         tabsEl.addEventListener("click", (e) => {
-          const b = e.target.closest("[data-tab]");
-          if (!b) return;
-          tab = +b.getAttribute("data-tab");
-          syncTabs();
+          const b = e.target.closest("[data-cake-step]");
+          if (!b || b.disabled) return;
+          tab = +b.getAttribute("data-cake-step");
+          syncStepper();
+          renderPanel();
+        });
+        backBtn.addEventListener("click", () => {
+          if (tab > 0) tab--;
+          syncStepper();
+          renderPanel();
+        });
+        nextBtn.addEventListener("click", () => {
+          if (nextBtn.disabled) return;
+          if (tab < LAST) tab++;
+          syncStepper();
           renderPanel();
         });
 
@@ -685,36 +736,6 @@
           updateCake(false);
         });
 
-        surpriseBtn.addEventListener("click", () => {
-          state.shape = SHAPES[Math.floor(seededRand() * 3)].id;
-          state.type = TYPES[Math.floor(seededRand() * 2)].id;
-          const list = SIZES[state.shape];
-          state.size = list[Math.floor(seededRand() * list.length)].id;
-          const hs = HEIGHTS[state.type];
-          state.height = hs[Math.floor(seededRand() * hs.length)];
-          state.flavour = FLAVOURS[Math.floor(seededRand() * 3)].id;
-          state.nuts = AMOUNTS[Math.floor(seededRand() * 4)].id;
-          state.fruits = AMOUNTS[Math.floor(seededRand() * 4)].id;
-          state.style = STYLES[Math.floor(seededRand() * 4)].id;
-          state.colour = COLOURS[Math.floor(seededRand() * COLOURS.length)].id;
-          if (state.style === "themed") {
-            state.themes = [];
-            const many = 1 + Math.floor(seededRand() * 2);
-            while (state.themes.length < many) {
-              const pick = THEMES[Math.floor(seededRand() * THEMES.length)].id;
-              if (state.themes.indexOf(pick) < 0) state.themes.push(pick);
-            }
-          } else {
-            state.themes = [];
-          }
-          ["shape", "type", "size", "height", "flavour", "nuts", "fruits", "style", "colour"].forEach((k) => (touched[k] = true));
-          renderPanel();
-          syncTabs();
-          updateCake(true);
-        });
-        let seed = 11;
-        function seededRand() { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; }
-
         addBtn.addEventListener("click", () => {
           document.querySelectorAll("[data-cart-count]").forEach((b) => {
             b.textContent = (parseInt(b.textContent, 10) || 0) + 1;
@@ -729,8 +750,8 @@
           }, 1800);
         });
 
-        buildTabs();
-        syncTabs();
+        buildStepper();
+        syncStepper();
         renderPanel();
         updateCake(false);
       })();

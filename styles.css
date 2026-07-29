@@ -1950,12 +1950,50 @@ body[data-purchased="true"] .review-gate-hint {
     0 0 0 4px #182325;
 }
 
+/* Stepper — the row scrolls on narrow screens rather than wrapping, so
+   the sequence always reads left-to-right. */
+.myc-stepper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 2px;
+}
+.myc-stepper::-webkit-scrollbar {
+  display: none;
+}
 /* Stepper nodes */
 .myc-step {
   display: flex;
   align-items: center;
   gap: 8px;
   flex: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+/* A finished step stays clickable — that's how you go back and edit it. */
+.myc-step:not(.is-locked):hover .myc-step__label {
+  color: #182325;
+}
+.myc-step.is-locked {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+/* number ↔ check swap */
+.myc-step__check {
+  display: none;
+  width: 15px;
+  height: 15px;
+}
+.myc-step.is-done .myc-step__check {
+  display: block;
+}
+.myc-step.is-done .myc-step__num {
+  display: none;
 }
 .myc-step__dot {
   display: grid;
