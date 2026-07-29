@@ -565,10 +565,15 @@
         const LAST = STEPS.length - 1;
         const REQUIRED = STEPS.slice(0, LAST); /* the Message step is optional */
         const allRequiredDone = () => REQUIRED.every((st) => st.done());
+        let maxReached = 0; /* furthest step actually visited — unlocks the stepper dots */
         const furthest = () => {
-          /* the first unfinished step is as far as the user may jump */
-          for (let i = 0; i < STEPS.length; i++) if (!STEPS[i].done()) return i;
-          return LAST;
+          /* everything up to the first unfinished step is reachable, plus
+             wherever the user has already walked with Next */
+          let firstOpen = LAST;
+          for (let i = 0; i < STEPS.length; i++) {
+            if (!STEPS[i].done()) { firstOpen = i; break; }
+          }
+          return Math.max(firstOpen, maxReached);
         };
 
         function buildStepper() {
@@ -603,9 +608,10 @@
           const onLast = tab === LAST;
           nextBtn.hidden = onLast;
           addBtn.hidden = !onLast;
-          nextBtn.disabled = !STEPS[tab].done();
-          nextBtn.classList.toggle("opacity-40", nextBtn.disabled);
-          nextBtn.classList.toggle("pointer-events-none", nextBtn.disabled);
+          /* Next is always live — browsing the steps shouldn't be blocked.
+             Only Add to Cart waits for every required choice. */
+          nextBtn.disabled = false;
+          nextBtn.classList.remove("opacity-40", "pointer-events-none");
           const ready = allRequiredDone();
           addBtn.disabled = !ready;
           addBtn.classList.toggle("opacity-40", !ready);
@@ -629,8 +635,8 @@
           renderPanel();
         });
         nextBtn.addEventListener("click", () => {
-          if (nextBtn.disabled) return;
           if (tab < LAST) tab++;
+          maxReached = Math.max(maxReached, tab);
           syncStepper();
           renderPanel();
         });
