@@ -59,20 +59,41 @@
                 <figure class="relative bg-black-901 bg-opacity-10 w-full aspect-square rounded-xl overflow-hidden flex-1">
                   <img id="pdp-main" src="dummy-images/image-7.webp" alt="Chocolate Fudge Cake" class="w-full h-full object-cover" />
                 </figure>
-                <!-- Thumbnail strip (horizontal on mobile, vertical on desktop). Click swaps main image. -->
-                <div class="flex flex-row flex-wrap gap-2 w-full">
-                  <button type="button" onclick="swapMain(this)" data-src="dummy-images/image-7.webp" class="pdp-thumb relative aspect-square w-12 md:w-14 shrink-0 overflow-hidden rounded-md border-2 border-primaryColor transition-all">
-                    <img src="dummy-images/image-7.webp" alt="Chocolate Fudge Cake view 1" class="w-full h-full object-cover" />
-                  </button>
-                  <button type="button" onclick="swapMain(this)" data-src="dummy-images/image-2.webp" class="pdp-thumb relative aspect-square w-12 md:w-14 shrink-0 overflow-hidden rounded-md border-2 border-transparent opacity-50 transition-all">
-                    <img src="dummy-images/image-2.webp" alt="Chocolate Fudge Cake view 2" class="w-full h-full object-cover" />
-                  </button>
-                  <button type="button" onclick="swapMain(this)" data-src="dummy-images/image-7.webp" class="pdp-thumb relative aspect-square w-12 md:w-14 shrink-0 overflow-hidden rounded-md border-2 border-transparent opacity-50 transition-all">
-                    <img src="dummy-images/image-7.webp" alt="Chocolate Fudge Cake view 3" class="w-full h-full object-cover" />
-                  </button>
-                  <button type="button" onclick="swapMain(this)" data-src="dummy-images/special-cake.webp" class="pdp-thumb relative aspect-square w-12 md:w-14 shrink-0 overflow-hidden rounded-md border-2 border-transparent opacity-50 transition-all">
-                    <img src="dummy-images/special-cake.webp" alt="Chocolate Fudge Cake view 4" class="w-full h-full object-cover" />
-                  </button>
+                <!-- Thumbnail strip. Click swaps main image.
+                     PRESENTATION AID: the gallery deliberately carries BOTH
+                     photo directions at once — 3 creative shots and 3 plain
+                     white-background packshots — so the style decision can be
+                     made from the real product page rather than a moodboard.
+                     Collapse back to one unlabelled strip once it's decided. -->
+                <div class="flex flex-col gap-3 w-full">
+                  <div class="flex flex-col gap-1.5">
+                    <span class="shot-label">Creative shots</span>
+                    <div class="flex flex-row flex-wrap gap-2">
+                      <button type="button" onclick="swapMain(this)" data-src="dummy-images/image-7.webp" class="pdp-thumb relative aspect-square w-12 md:w-14 shrink-0 overflow-hidden rounded-md border-2 border-primaryColor transition-all">
+                        <img src="dummy-images/image-7.webp" alt="Chocolate Fudge Cake, creative shot 1" class="w-full h-full object-cover" />
+                      </button>
+                      <button type="button" onclick="swapMain(this)" data-src="dummy-images/image-2.webp" class="pdp-thumb relative aspect-square w-12 md:w-14 shrink-0 overflow-hidden rounded-md border-2 border-transparent opacity-50 transition-all">
+                        <img src="dummy-images/image-2.webp" alt="Chocolate Fudge Cake, creative shot 2" class="w-full h-full object-cover" />
+                      </button>
+                      <button type="button" onclick="swapMain(this)" data-src="dummy-images/special-cake.webp" class="pdp-thumb relative aspect-square w-12 md:w-14 shrink-0 overflow-hidden rounded-md border-2 border-transparent opacity-50 transition-all">
+                        <img src="dummy-images/special-cake.webp" alt="Chocolate Fudge Cake, creative shot 3" class="w-full h-full object-cover" />
+                      </button>
+                    </div>
+                  </div>
+                  <div class="flex flex-col gap-1.5">
+                    <span class="shot-label">White background</span>
+                    <div class="flex flex-row flex-wrap gap-2">
+                      <button type="button" onclick="swapMain(this)" data-src="dummy-images/transparent/transparent-product-01.webp" class="pdp-thumb relative aspect-square w-12 md:w-14 shrink-0 overflow-hidden rounded-md border-2 border-transparent opacity-50 transition-all">
+                        <img src="dummy-images/transparent/transparent-product-01.webp" alt="Chocolate Fudge Cake, white-background packshot 1" class="w-full h-full object-cover" />
+                      </button>
+                      <button type="button" onclick="swapMain(this)" data-src="dummy-images/transparent/transparent-product-02.webp" class="pdp-thumb relative aspect-square w-12 md:w-14 shrink-0 overflow-hidden rounded-md border-2 border-transparent opacity-50 transition-all">
+                        <img src="dummy-images/transparent/transparent-product-02.webp" alt="Chocolate Fudge Cake, white-background packshot 2" class="w-full h-full object-cover" />
+                      </button>
+                      <button type="button" onclick="swapMain(this)" data-src="dummy-images/transparent/nt-product-03.webp" class="pdp-thumb relative aspect-square w-12 md:w-14 shrink-0 overflow-hidden rounded-md border-2 border-transparent opacity-50 transition-all">
+                        <img src="dummy-images/transparent/nt-product-03.webp" alt="Chocolate Fudge Cake, white-background packshot 3" class="w-full h-full object-cover" />
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

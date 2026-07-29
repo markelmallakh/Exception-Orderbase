@@ -3822,6 +3822,120 @@
 
   window.kBurst = promoPaperBurst;
 
+  /* ---------------------------------------------------------------
+     PHOTO-STYLE COMPARE — presentation aid, not a shipping feature.
+
+     The client is deciding between creative/lifestyle product shots
+     and plain white-background packshots. This drops a tiny toggle
+     above every product carousel and grid on the site and swaps all
+     the card images between the two sets, so the same page can be
+     seen either way. The choice is remembered across pages so the
+     whole site can be browsed in one style then the other.
+
+     TO REMOVE once the decision is made: delete this block, the
+     initShotCompare() call in kInit, the .shot-toggle/.shot-label
+     rules in styles.css, and the two labelled thumbnail groups in
+     product.html's gallery.
+     --------------------------------------------------------------- */
+  const SHOT_KEY = "ex-shot-mode";
+  const WHITE_SHOTS = [
+    "dummy-images/transparent/transparent-product-01.webp",
+    "dummy-images/transparent/transparent-product-02.webp",
+    "dummy-images/transparent/nt-product-03.webp",
+    "dummy-images/transparent/nt-product-04.webp",
+    "dummy-images/transparent/nt-product-05.webp",
+  ];
+  function shotMode() {
+    try {
+      return localStorage.getItem(SHOT_KEY) === "white" ? "white" : "creative";
+    } catch (e) {
+      return "creative";
+    }
+  }
+  function setShotMode(m) {
+    try {
+      localStorage.setItem(SHOT_KEY, m);
+    } catch (e) {}
+  }
+  /* Stable per-product pick, so a given card keeps the same packshot
+     when its grid re-renders (tab switches) and across pages. */
+  function shotHash(s) {
+    let h = 0;
+    for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+    return h;
+  }
+  /* ONLY the product photo — every card also carries add-to-cart glyphs
+     (bag, trash, minus, plus) as <img>, and those must never be swapped.
+     All five card templates wrap the photo in the same aspect-square box. */
+  const SHOT_IMG_SEL = "a.group\\/card .aspect-square > img";
+  function applyShots() {
+    const white = shotMode() === "white";
+    document.querySelectorAll(SHOT_IMG_SEL).forEach((im) => {
+      if (!im.dataset.shotCreative) {
+        im.dataset.shotCreative = im.getAttribute("src") || "";
+        const key = im.getAttribute("alt") || im.dataset.shotCreative;
+        im.dataset.shotWhite = WHITE_SHOTS[shotHash(key) % WHITE_SHOTS.length];
+      }
+      const want = white ? im.dataset.shotWhite : im.dataset.shotCreative;
+      if (im.getAttribute("src") !== want) im.setAttribute("src", want);
+    });
+    document.querySelectorAll("[data-shot-toggle] [data-shot]").forEach((b) => {
+      b.classList.toggle("is-active", b.getAttribute("data-shot") === shotMode());
+    });
+  }
+  /* One toggle per visual group: a carousel, a whole tabbed panel set
+     (all three panels share a parent, so they share one toggle), or a
+     plain grid. */
+  function shotGroupRoot(card) {
+    const panel = card.closest("[data-panel]");
+    return card.closest(".carousel") || (panel && panel.parentElement) || card.parentElement;
+  }
+  function mountShotToggles() {
+    const roots = new Set();
+    document.querySelectorAll("a.group\\/card").forEach((c) => {
+      const r = shotGroupRoot(c);
+      if (r && r.parentNode) roots.add(r);
+    });
+    roots.forEach((root) => {
+      const prev = root.previousElementSibling;
+      if (prev && prev.hasAttribute && prev.hasAttribute("data-shot-toggle")) return;
+      const bar = document.createElement("div");
+      bar.setAttribute("data-shot-toggle", "");
+      bar.className = "shot-toggle";
+      bar.innerHTML =
+        '<span class="shot-label">Photo style</span>' +
+        '<button type="button" data-shot="creative">Creative</button>' +
+        '<button type="button" data-shot="white">White BG</button>';
+      root.parentNode.insertBefore(bar, root);
+    });
+  }
+  let shotBooted = false;
+  function initShotCompare() {
+    mountShotToggles();
+    applyShots();
+    if (shotBooted) return;
+    shotBooted = true;
+    document.addEventListener("click", (e) => {
+      const b = e.target.closest && e.target.closest("[data-shot-toggle] [data-shot]");
+      if (!b) return;
+      e.preventDefault();
+      setShotMode(b.getAttribute("data-shot"));
+      applyShots();
+    });
+    /* Card grids are rendered by each page's own inline script and
+       re-rendered on tab switches, so watch for new cards rather than
+       assuming they exist at init. Swapping src only changes an
+       attribute, so this can't feed itself. */
+    let t = null;
+    new MutationObserver(() => {
+      clearTimeout(t);
+      t = setTimeout(() => {
+        mountShotToggles();
+        applyShots();
+      }, 60);
+    }).observe(document.body, { childList: true, subtree: true });
+  }
+
   window.kInit = function (scope) {
     scope = scope || document;
     scope.querySelectorAll(".carousel").forEach(initCarousel);
@@ -3854,6 +3968,7 @@
     initVision(scope);
     initReferralCopy(scope);
     initHScroll(scope);
+    initShotCompare();
   };
 
   /* ---------------------------------------------------------------
