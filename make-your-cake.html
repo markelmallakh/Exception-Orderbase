@@ -155,25 +155,29 @@
         ];
         /* Sugar-paste figures placed on top. Two tiers, matching the live
            configurator's cutouts (large 250 EGP / small 170 EGP, max 4).
-           Names + emoji stand in for the real photographed catalogue. */
+           `img` is the tile photo; `emoji` still drives the little
+           billboard that stands on the 3D cake. The photos are stand-ins
+           from the existing Exception shoot until the real figure
+           catalogue is shot — swap `img` only, nothing else reads it. */
         const THEME_MAX = 4;
+        const TH_IMG = "dummy-images/special-cakes/";
         const THEMES = [
-          { id: "dino", name: "Dinosaur", emoji: "🦕", tier: "large" },
-          { id: "shark", name: "Shark", emoji: "🦈", tier: "large" },
-          { id: "unicorn", name: "Unicorn", emoji: "🦄", tier: "large" },
-          { id: "safari", name: "Safari Animals", emoji: "🦁", tier: "large" },
-          { id: "racecar", name: "Race Car", emoji: "🏎️", tier: "large" },
-          { id: "princess", name: "Princess Castle", emoji: "🏰", tier: "large" },
-          { id: "space", name: "Rocket & Space", emoji: "🚀", tier: "large" },
-          { id: "teddy", name: "Teddy Bear", emoji: "🧸", tier: "large" },
-          { id: "football", name: "Football", emoji: "⚽", tier: "small" },
-          { id: "balloons", name: "Balloons", emoji: "🎈", tier: "small" },
-          { id: "flowers", name: "Flowers", emoji: "🌸", tier: "small" },
-          { id: "stars", name: "Stars", emoji: "⭐", tier: "small" },
-          { id: "hearts", name: "Hearts", emoji: "💛", tier: "small" },
-          { id: "crown", name: "Crown", emoji: "👑", tier: "small" },
-          { id: "music", name: "Music Notes", emoji: "🎵", tier: "small" },
-          { id: "graduation", name: "Graduation Cap", emoji: "🎓", tier: "small" },
+          { id: "dino", name: "Dinosaur", emoji: "🦕", tier: "large", img: TH_IMG + "kids-1.webp" },
+          { id: "shark", name: "Shark", emoji: "🦈", tier: "large", img: TH_IMG + "kids-2.webp" },
+          { id: "unicorn", name: "Unicorn", emoji: "🦄", tier: "large", img: TH_IMG + "kids-3.webp" },
+          { id: "safari", name: "Safari Animals", emoji: "🦁", tier: "large", img: TH_IMG + "kids-4.webp" },
+          { id: "racecar", name: "Race Car", emoji: "🏎️", tier: "large", img: TH_IMG + "kids-5.webp" },
+          { id: "princess", name: "Princess Castle", emoji: "🏰", tier: "large", img: TH_IMG + "kids-6.webp" },
+          { id: "space", name: "Rocket & Space", emoji: "🚀", tier: "large", img: TH_IMG + "kids-7.webp" },
+          { id: "teddy", name: "Teddy Bear", emoji: "🧸", tier: "large", img: TH_IMG + "kids-8.webp" },
+          { id: "football", name: "Football", emoji: "⚽", tier: "small", img: TH_IMG + "kids-9.webp" },
+          { id: "balloons", name: "Balloons", emoji: "🎈", tier: "small", img: TH_IMG + "kids-10.webp" },
+          { id: "flowers", name: "Flowers", emoji: "🌸", tier: "small", img: TH_IMG + "engagement-1.webp" },
+          { id: "stars", name: "Stars", emoji: "⭐", tier: "small", img: TH_IMG + "birthday-1.webp" },
+          { id: "hearts", name: "Hearts", emoji: "💛", tier: "small", img: TH_IMG + "engagement-2.webp" },
+          { id: "crown", name: "Crown", emoji: "👑", tier: "small", img: TH_IMG + "birthday-2.webp" },
+          { id: "music", name: "Music Notes", emoji: "🎵", tier: "small", img: TH_IMG + "birthday-3.webp" },
+          { id: "graduation", name: "Graduation Cap", emoji: "🎓", tier: "small", img: TH_IMG + "graduation-1.webp" },
         ];
         const THEME_PRICE = { large: 250, small: 170 };
         const THEME_MAP = {};
@@ -212,6 +216,13 @@
           style: "classic", colour: "white", themes: [], message: "", msgOn: "",
         };
         const touched = {};
+        /* Step 1 ships with Round + Sponge already highlighted, so they
+           ARE choices — mark them taken. Without this the step could
+           never complete: re-clicking a card that already looks selected
+           left the other one untouched, so the check never appeared and
+           Add to Cart stayed dimmed. */
+        touched.shape = true;
+        touched.type = true;
         /* an option is highlighted only once the customer has chosen it */
         const sel = (key, val) => !!touched[key] && state[key] === val;
         let tab = 0;
@@ -413,7 +424,10 @@
         function optGrid(cols) {
           return el("grid gap-3 mb-6 " + (cols || "grid-cols-2 sm:grid-cols-3"));
         }
-        function optCard(key, id, active, inner, name, sub) {
+        /* Every option card reads the same way top-to-bottom: artwork
+           first (a 3D mini, a size footprint or an emoji), then the
+           label, then any sub-line. Nothing puts its icon under text. */
+        function optCard(key, id, active, inner, name, sub, icon) {
           const b = document.createElement("button");
           b.type = "button";
           b.className = "myc-opt" + (active ? " is-active" : "");
@@ -421,6 +435,7 @@
           b.setAttribute("data-val", id);
           b.innerHTML =
             (inner ? '<span class="grid place-items-center h-[84px] w-full pointer-events-none" data-mini></span>' : "") +
+            (icon ? '<span class="grid place-items-center h-[40px] w-full text-xl leading-none pointer-events-none">' + icon + "</span>" : "") +
             '<span class="font-semibold text-sm text-textSecondary pointer-events-none">' + name + "</span>" +
             (sub ? '<span class="text-xs text-gray-500 pointer-events-none">' + sub + "</span>" : "");
           return b;
@@ -496,9 +511,13 @@
               const g = optGrid("grid-cols-2 sm:grid-cols-4");
               AMOUNTS.forEach((o) => {
                 const zero = o.id === "0";
-                g.appendChild(
-                  optCard(key, o.id, sel(key, o.id), false, zero ? "Without " + topic : o.name, zero ? " " : emoji.repeat(o.id / 100))
-                );
+                /* icon above the label, like every other option card —
+                   "Without" keeps the slot with a faded glyph so the
+                   four cards stay the same height. */
+                const icon = zero
+                  ? '<span class="opacity-25 grayscale">' + emoji + "</span>"
+                  : emoji.repeat(o.id / 100);
+                g.appendChild(optCard(key, o.id, sel(key, o.id), false, zero ? "Without " + topic : o.name, "", icon));
               });
               return g;
             };
@@ -521,8 +540,9 @@
                 state.themes.forEach((id) => {
                   const t = THEME_MAP[id];
                   if (!t) return;
-                  const chip = el("inline-flex items-center gap-1.5 rounded-full bg-white border border-gray-200 px-3 py-1.5 text-sm text-textSecondary");
-                  chip.innerHTML = '<span class="text-base leading-none">' + t.emoji + "</span>" + t.name;
+                  const chip = el("inline-flex items-center gap-1.5 rounded-full bg-white border border-gray-200 py-1.5 pe-3 ps-1.5 text-sm text-textSecondary");
+                  /* same photo as the picker tile, just thumbnail-sized */
+                  chip.innerHTML = '<img src="' + t.img + '" alt="" class="w-6 h-6 rounded-full object-cover">' + t.name;
                   row.appendChild(chip);
                 });
               } else {
@@ -563,8 +583,14 @@
                text field only appears once "With" is picked. */
             panel.appendChild(groupHead("A message on the cake?", "Optional — piped by hand, free"));
             const g = optGrid("grid-cols-2");
-            g.appendChild(optCard("msgOn", "0", sel("msgOn", "0"), false, "Without Message", "Leave the cake plain"));
-            g.appendChild(optCard("msgOn", "1", sel("msgOn", "1"), false, "With Message", "Up to 24 characters"));
+            /* same 3D mini the other steps use, so this step reads the
+               same way — and it previews the piping at a glance */
+            const off = optCard("msgOn", "0", sel("msgOn", "0"), true, "Without Message", "Leave the cake plain");
+            const on = optCard("msgOn", "1", sel("msgOn", "1"), true, "With Message", "Up to 24 characters");
+            g.appendChild(off);
+            g.appendChild(on);
+            addMini(off, { message: "" });
+            addMini(on, { message: state.message || "Mariam" });
             panel.appendChild(g);
             if (state.msgOn === "1") {
               const inp = document.createElement("input");
@@ -706,7 +732,7 @@
           return (
             '<button type="button" class="myc-opt' + (on ? " is-active" : "") + (full ? " is-full" : "") +
             '" data-theme="' + t.id + '"' + (full ? " disabled" : "") + ">" +
-            '<span class="text-3xl leading-none pointer-events-none">' + t.emoji + "</span>" +
+            '<span class="myc-opt__img pointer-events-none"><img src="' + t.img + '" alt="" loading="lazy"></span>' +
             '<span class="font-semibold text-sm text-textSecondary pointer-events-none">' + t.name + "</span>" +
             '<span class="text-xs text-gray-500 pointer-events-none">' + THEME_PRICE[t.tier] + " EGP</span>" +
             "</button>"
