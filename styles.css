@@ -431,6 +431,11 @@ select {
 [dir="rtl"] .carousel-btn svg {
   transform: scaleX(-1);
 }
+/* Checkout step-2 "Back" link above the page title — its chevron
+   mirrors in Arabic, same as the carousel arrows above. */
+[dir="rtl"] .checkout-back svg {
+  transform: scaleX(-1);
+}
 
 /* =====================================================================
    Drawers / overlays — cart drawer, mobile menu, bottom sheet, modals.

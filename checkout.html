@@ -50,7 +50,16 @@
 
         <!-- data-demo-form: intercepts submit and shows a toast instead of hitting a backend -->
         <form data-demo-form="Order placed! Redirecting…" data-redirect="thank-you.html" data-reset="false" class="flex flex-col gap-6 w-full max-w-[1120px] mt-8 md:mt-14 px-4 2xl:px-0 mx-auto">
-          <div class="flex items-center w-fit gap-3">
+          <div class="flex flex-col items-start w-fit gap-1.5">
+            <!-- Step 2 only. initCheckoutSteps() already looks for
+                 [data-checkout-back]: it toggles the hidden ATTRIBUTE per
+                 step and wires the click back to step 1, so the markup is
+                 all that was missing. Don't add a Tailwind `hidden` class
+                 here — it would survive the JS un-hiding the button. -->
+            <button type="button" data-checkout-back hidden class="checkout-back inline-flex items-center gap-1.5 text-sm font-semibold text-gray-700 transition-colors hover:text-primaryDark">
+              <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4" aria-hidden="true"><path d="m15 6-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Back
+            </button>
             <h2 class="capitalize text-[28px] md:leading-[50px] font-semibold text-textSecondary w-fit hidden md:block">Shipping Information</h2>
           </div>
 
