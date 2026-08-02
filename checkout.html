@@ -49,7 +49,7 @@
         </div>
 
         <!-- data-demo-form: intercepts submit and shows a toast instead of hitting a backend -->
-        <form data-demo-form="Order placed! Redirecting…" data-redirect="thank-you.html" data-reset="false" class="flex flex-col gap-6 w-full max-w-[1100px] mt-8 md:mt-14 px-4 2xl:px-0 mx-auto">
+        <form data-demo-form="Order placed! Redirecting…" data-redirect="thank-you.html" data-reset="false" class="flex flex-col gap-6 w-full max-w-[1088px] mt-8 md:mt-14 px-4 2xl:px-0 mx-auto">
           <div class="flex flex-col items-start w-fit gap-1.5">
             <!-- Step 2 only. initCheckoutSteps() already looks for
                  [data-checkout-back]: it toggles the hidden ATTRIBUTE per
@@ -66,13 +66,13 @@
           <!-- gap-8 is the STACKED (mobile) vertical rhythm; lg/xl are the
                gap between the form and the sticky summary once they sit
                side by side, deliberately tighter than the old 40/48. -->
-          <div class="relative flex flex-col-reverse gap-8 lg:gap-7 xl:gap-8 lg:flex-row lg:justify-center">
+          <div class="relative flex flex-col-reverse gap-8 lg:gap-5 xl:gap-5 lg:flex-row lg:justify-center">
             <!-- ============ LEFT: delivery details ============ -->
             <div class="flex w-full flex-col gap-y-5 lg:w-[670px]">
               <div class="flex flex-col gap-8 bg-white border border-gray-300 rounded-[20px] px-4 py-[32px] xl:p-8">
 
                 <!-- ---- Personal information ---- -->
-                <div class="flex flex-col gap-y-5 border-b border-primaryLight pb-8" data-checkout-step="1">
+                <div class="flex flex-col gap-y-5 border-b border-border-light pb-8" data-checkout-step="1">
                   <div class="flex flex-wrap items-center justify-between gap-4">
                     <h3 class="capitalize text-lg md:text-[20px] md:leading-[38px] font-semibold text-textSecondary">Personal Information</h3>
                     <a href="login.html" class="btn btn--secondary btn--sm gap-1">
@@ -112,7 +112,7 @@
                 </div>
 
                 <!-- ---- Send as a gift ---- -->
-                <div class="flex flex-col gap-4 border-b border-primaryLight pb-5" data-checkout-step="1" data-gift>
+                <div class="flex flex-col gap-4 border-b border-border-light pb-5" data-checkout-step="1" data-gift>
                   <label class="wallet-toggle">
                     <img src="images/icons/account%20icons/send-gift.webp" alt="" class="wallet-toggle__icon" />
                     <span class="wallet-toggle__label">Send as a Gift</span>
@@ -145,7 +145,7 @@
                 <!-- ---- Shipping type + address + date ---- -->
                 <div class="flex flex-col gap-4 md:gap-5 relative">
                   <!-- ShippingType (delivery / pickup switch) -->
-                  <div class="flex flex-col gap-4 border-b border-primaryLight pb-5 md:gap-5" data-checkout-step="1">
+                  <div class="flex flex-col gap-4 border-b border-border-light pb-5 md:gap-5" data-checkout-step="1">
                     <div class="text-xl font-semibold text-primaryDark">Shipping type</div>
                     <div class="optrow-group" data-optgroup="shiptype">
                       <button type="button" class="optrow is-selected" data-opt="deliver">
@@ -168,7 +168,7 @@
                   </div>
 
                   <!-- ShippingAddressForm (guest) -->
-                  <div class="border-b border-primaryLight pb-5" data-checkout-step="1">
+                  <div class="border-b border-border-light pb-5" data-checkout-step="1">
                     <div class="mb-5 text-xl font-semibold text-primaryDark">Shipping address</div>
                     <div class="flex flex-col gap-y-5">
                       <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
@@ -238,7 +238,9 @@
                   </div>
 
                   <!-- ShippingDate (delivery time) -->
-                  <div class="flex flex-col gap-5 border-b border-primaryLight pb-5" data-checkout-step="1">
+                  <!-- No trailing divider: this is the last step-1 section,
+                       so a rule under it closed off nothing. -->
+                  <div class="flex flex-col gap-5" data-checkout-step="1">
                     <div class="text-xl font-semibold text-primaryDark">Shipping date</div>
                     <div class="optrow-group" data-optgroup="shipdate">
                       <button type="button" class="optrow is-selected" data-opt="asap">
