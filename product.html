@@ -613,40 +613,24 @@
         </div>
       </section>
 
-      <!-- ============================ CATEGORY ROW — BANNER: Cakes and Gateaux ============================
-           Full Category Row component (see index.html "CATEGORY ROW"), not the
-           No-Banner variant used above for Related Products. The banner tile
-           uses a fixed "Explore More in" cap instead of the index.html
-           pattern's category-name cap + starting price, since this is a
-           single-category promo rather than a shop-wide teaser. -->
+      <!-- ============================ PREVIOUSLY VIEWED ============================
+           Same No-Banner Category Row variant as Related Products above, so the
+           two rows on this page read as one pair: heading + View All, then a
+           full-width carousel. In a real build this list comes from the
+           customer's own browsing history. -->
       <section class="bg-gray-200 pt-2 pb-10 md:pb-14">
         <div class="mx-auto max-w-[1392px] px-4">
           <div class="rounded-[20px] bg-white border border-gray-200 p-4 md:p-8">
             <div class="mb-6 flex items-center justify-between gap-4">
-              <h2 class="text-xl font-semibold text-primaryDark md:text-[28px]">Cakes and Gateaux</h2>
-              <a href="shop-category.html" class="inline-flex shrink-0 items-center gap-2.5 rounded-[4px] bg-gray-200 px-2 py-1.5 text-sm font-medium text-[#6F7276] transition-colors hover:bg-gray-300">View All <svg viewBox="0 0 24 24" fill="none" class="h-4 w-4"><path d="M4 12h16M14 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+              <h2 class="text-xl font-semibold text-primaryDark md:text-[28px]">Previously Viewed</h2>
+              <a href="shop.html" class="inline-flex shrink-0 items-center gap-2.5 rounded-[4px] bg-gray-200 px-2 py-1.5 text-sm font-medium text-[#6F7276] transition-colors hover:bg-gray-300">View All <svg viewBox="0 0 24 24" fill="none" class="h-4 w-4"><path d="M4 12h16M14 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
             </div>
-            <div class="flex items-stretch gap-4 md:gap-8">
-              <div class="shrink-0 self-stretch">
-                <a href="shop-category.html" class="relative block h-full w-[240px] overflow-hidden rounded-[20px] md:w-[480px]">
-                  <img src="images/cakes-and-gateaux-category.webp" alt="Cakes and Gateaux" class="absolute inset-0 h-full w-full object-cover" />
-                  <div class="absolute inset-y-0 start-5 flex flex-col justify-center md:start-[30px]">
-                    <div class="inline-flex flex-col overflow-hidden rounded-[20px] text-center shadow-custom-5">
-                      <div class="bg-cta px-5 py-2.5 text-lg font-semibold text-white md:px-6 md:py-3 md:text-2xl">Explore More in</div>
-                      <div class="flex flex-col gap-1.5 bg-white px-5 py-4 text-primaryDark md:gap-2.5 md:p-6">
-                        <p class="text-xl font-semibold leading-tight md:text-[28px]">Cakes and Gateaux</p>
-                      </div>
-                    </div>
-                  </div>
-                </a>
-              </div>
-              <div class="carousel relative min-w-0 flex-1" data-loop data-align-arrows style="--carousel-gap: 16px">
-                <div class="carousel-track items-start" data-cakes-gateaux-track></div>
-                <div data-fade="start" class="pointer-events-none absolute inset-y-0 start-0 z-[1] w-10 bg-gradient-to-r from-white to-transparent opacity-0 transition-opacity duration-200"></div>
-                <div data-fade="end" class="pointer-events-none absolute inset-y-0 end-0 z-[1] w-10 bg-gradient-to-l from-white to-transparent transition-opacity duration-200"></div>
-                <button type="button" class="carousel-btn carousel-prev !rounded-[8px]" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" class="h-5 w-5"><path d="m15 6-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-                <button type="button" class="carousel-btn carousel-next !rounded-[8px]" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" class="h-5 w-5"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-              </div>
+            <div class="carousel relative min-w-0" data-loop data-align-arrows style="--carousel-gap: 16px">
+              <div class="carousel-track items-start" data-viewed-track></div>
+              <div data-fade="start" class="pointer-events-none absolute inset-y-0 start-0 z-[1] w-10 bg-gradient-to-r from-white to-transparent opacity-0 transition-opacity duration-200"></div>
+              <div data-fade="end" class="pointer-events-none absolute inset-y-0 end-0 z-[1] w-10 bg-gradient-to-l from-white to-transparent transition-opacity duration-200"></div>
+              <button type="button" class="carousel-btn carousel-prev !rounded-[8px]" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" class="h-5 w-5"><path d="m15 6-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+              <button type="button" class="carousel-btn carousel-next !rounded-[8px]" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" class="h-5 w-5"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
             </div>
           </div>
         </div>
@@ -749,26 +733,27 @@
         // would otherwise clobber card()'s `imgs = IMGS` default parameter.
         if (track) track.innerHTML = PRODUCTS.map((p, i) => card(p, i)).join("");
 
-        // Cakes and Gateaux category row — reuses the same card() renderer,
-        // with its own product list and a separate image pool so the two
-        // carousels on this page don't repeat photos.
-        const GATEAUX_IMGS = [
+        // Previously Viewed row — reuses the same card() renderer, with its
+        // own product list and a separate image pool so the two carousels on
+        // this page don't repeat photos. Stand-in data: a real build would
+        // read the customer's browsing history here.
+        const VIEWED_IMGS = [
           "dummy-images/image-6.webp",
           "dummy-images/image-7.webp",
           "dummy-images/image-8.webp",
           "dummy-images/image-9.webp",
           "dummy-images/image-10.webp",
         ];
-        const GATEAUX_PRODUCTS = [
+        const VIEWED_PRODUCTS = [
           ["Mille-Feuille Slice", 180, 0],
           ["Classic English Cake", 320, 0],
           ["Cupcake Trio", 210, 240],
           ["Lemon Drizzle Gateau", 350, 0],
           ["Pistachio Cheesecake", 480, 0],
         ];
-        const gateauxTrack = document.querySelector("[data-cakes-gateaux-track]");
-        if (gateauxTrack) {
-          gateauxTrack.innerHTML = GATEAUX_PRODUCTS.map((p, i) => card(p, i, GATEAUX_IMGS)).join("");
+        const viewedTrack = document.querySelector("[data-viewed-track]");
+        if (viewedTrack) {
+          viewedTrack.innerHTML = VIEWED_PRODUCTS.map((p, i) => card(p, i, VIEWED_IMGS)).join("");
         }
         // scripts.js runs its kInit(document) on DOMContentLoaded (after this inline
         // script), so the freshly-populated .carousel is picked up automatically.
