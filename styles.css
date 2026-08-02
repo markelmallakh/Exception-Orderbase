@@ -4469,9 +4469,22 @@ input[type="checkbox"]:not(.wallet-toggle__input):checked::after {
   color: #182325;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.16);
   cursor: pointer;
+  /* Tied to the open state. From 520px up this button is a tab hanging
+     48px OUTSIDE the panel (see the media query below), but a closed
+     drawer only translates 110% of its OWN width — not far enough to
+     also carry the tab off-screen, so a sliver of it sat against the
+     page edge with the drawer shut. pointer-events must go with the
+     opacity, or an invisible button keeps eating clicks at that edge. */
+  opacity: 0;
+  pointer-events: none;
   transition:
     background-color 0.18s ease,
-    transform 0.18s ease;
+    transform 0.18s ease,
+    opacity 0.2s ease;
+}
+.side-drawer.is-open > .side-drawer__close {
+  opacity: 1;
+  pointer-events: auto;
 }
 .side-drawer__close svg {
   width: 16px;
