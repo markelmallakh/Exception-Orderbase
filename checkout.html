@@ -270,20 +270,20 @@
                     <!-- Same .optrow treatment as the shipping type / date rows
                          above: black border when selected, grey when not. -->
                     <div class="optrow-group">
-                      <!-- Cash on delivery -->
-                      <label class="optrow">
-                        <input type="radio" name="payment" value="cod" checked class="sr-only" />
-                        <span class="optrow__icon"><img src="images/icons/COD.webp" alt=""  /></span>
-                        <span class="optrow__body">
-                          <span class="optrow__title">Cash on delivery</span>
-                        </span>
-                      </label>
                       <!-- Credit / debit card -->
                       <label class="optrow">
                         <input type="radio" name="payment" value="cc" class="sr-only" />
                         <span class="optrow__icon"><img src="images/icons/credit-card.webp" alt="" style="--icon-crop: 1" /></span>
                         <span class="optrow__body">
                           <span class="optrow__title">Credit / debit card</span>
+                        </span>
+                      </label>
+                      <!-- Cash on delivery — still the default selection -->
+                      <label class="optrow">
+                        <input type="radio" name="payment" value="cod" checked class="sr-only" />
+                        <span class="optrow__icon"><img src="images/icons/COD.webp" alt=""  /></span>
+                        <span class="optrow__body">
+                          <span class="optrow__title">Cash on delivery</span>
                         </span>
                       </label>
                       <!-- Wallet -->
