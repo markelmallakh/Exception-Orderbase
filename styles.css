@@ -4185,6 +4185,21 @@ input[type="checkbox"]:not(.wallet-toggle__input):checked::after {
   transform-origin: center;
 }
 
+/* Account dashboard quick-stat cards. They're links to the page behind
+   each number (points / wallet / orders), so they need to read as
+   clickable — the card itself was previously an inert <div>. */
+.stat-card {
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.18s ease;
+}
+.stat-card:hover {
+  border-color: #a8abaf;
+  box-shadow: 0 4px 14px rgba(24, 35, 37, 0.08);
+  transform: translateY(-2px);
+}
+
 /* ---------------------------------------------------------------
    TIER BADGE — membership tiers Golden / Silver / Platinum
    (Figma 6233-56907). Gradient pill + circular avatar + uppercase

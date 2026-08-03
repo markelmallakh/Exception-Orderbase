@@ -105,32 +105,25 @@
                 <h1 class="text-2xl md:text-[32px] font-semibold text-textSecondary">Welcome Back, Mariam</h1>
                 <p class="pt-1 text-sm text-gray-700 md:text-base">Here's what's happening with your Exception account.</p>
               </div>
-              <div class="flex gap-2">
-                <span class="h-12 w-12 md:h-16 md:w-16 shrink-0"><img src="images/icons/account%20icons/wallet.webp" alt="wallet" width="64" height="64" class="w-full h-full object-contain" /></span>
-                <div class="flex flex-col gap-1 text-start">
-                  <span class="text-textSecondary font-normal md:text-[18px]">Wallet balance</span>
-                  <span class="text-lg font-semibold text-success xl:text-[28px]" dir="ltr">EGP 350.00</span>
-                </div>
-              </div>
             </div>
 
-            <!-- Quick stats -->
+            <!-- Quick stats — each card links to the page behind the number -->
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-5">
-              <div class="flex items-center gap-4 rounded-[11.4px] border border-gray-300 bg-white p-5">
+              <a href="my-account-point.html" class="stat-card flex items-center gap-4 rounded-[11.4px] border border-gray-300 bg-white p-5">
                 <span class="h-12 w-12 shrink-0"><img src="images/icons/account%20icons/Points.webp" alt="points" width="48" height="48" class="w-full h-full object-contain" /></span>
                 <div class="flex flex-col">
                   <span class="text-sm text-gray-700">Loyalty points</span>
                   <span class="text-2xl font-semibold text-textSecondary">1,250 <span class="text-sm font-medium text-gray-700">pts</span></span>
                 </div>
-              </div>
-              <div class="flex items-center gap-4 rounded-[11.4px] border border-gray-300 bg-white p-5">
+              </a>
+              <a href="my-account-wallet.html" class="stat-card flex items-center gap-4 rounded-[11.4px] border border-gray-300 bg-white p-5">
                 <span class="h-12 w-12 shrink-0"><img src="images/icons/account%20icons/wallet.webp" alt="wallet" width="48" height="48" class="w-full h-full object-contain" /></span>
                 <div class="flex flex-col">
                   <span class="text-sm text-gray-700">Wallet balance</span>
                   <span class="text-2xl font-semibold text-success" dir="ltr">EGP 350<span class="text-sm">.00</span></span>
                 </div>
-              </div>
-              <div class="flex items-center gap-4 rounded-[11.4px] border border-gray-300 bg-white p-5">
+              </a>
+              <a href="my-account-orders.html" class="stat-card flex items-center gap-4 rounded-[11.4px] border border-gray-300 bg-white p-5">
                 <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary-light text-primaryDark">
                   <svg viewBox="0 0 24 24" fill="none" class="w-6 h-6"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4H6ZM3 6h18M16 10a4 4 0 0 1-8 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </span>
@@ -138,7 +131,7 @@
                   <span class="text-sm text-gray-700">Total orders</span>
                   <span class="text-2xl font-semibold text-textSecondary">12</span>
                 </div>
-              </div>
+              </a>
             </div>
 
             <!-- Refer a friend -->
