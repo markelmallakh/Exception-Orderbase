@@ -926,6 +926,7 @@
     schedule: '[data-modal="schedule"]',
     voucher: '[data-modal="voucher"]',
     redeem: '[data-modal="redeem"]',
+    address: '[data-modal="address"]',
   };
   let openEl = null;
 

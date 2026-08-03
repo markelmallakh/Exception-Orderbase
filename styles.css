@@ -4185,6 +4185,29 @@ input[type="checkbox"]:not(.wallet-toggle__input):checked::after {
   transform-origin: center;
 }
 
+/* The ⋯ button on a saved-address card — opens the address popup that
+   now owns edit, delete and set-as-default. */
+.addr-menu {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1.5px solid #dee2e6;
+  border-radius: 10px;
+  background: #fff;
+  color: #6f7276;
+  cursor: pointer;
+  transition:
+    border-color 0.16s ease,
+    color 0.16s ease,
+    background-color 0.16s ease;
+}
+.addr-menu:hover {
+  border-color: #a8abaf;
+  background: #f9fafb;
+  color: #182325;
+}
+
 /* Count / amount tag on an account-nav item (favourites, wallet,
    points, vouchers). ms-auto pushes it to the far edge in the sidebar;
    in the mobile pill row the anchor is content-sized so it just

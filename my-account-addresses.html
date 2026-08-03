@@ -188,11 +188,9 @@
                     <div class="flex flex-col gap-1"><span class="text-sm font-medium capitalize text-primaryText">City</span><span class="text-sm text-blackText md:text-base">Cairo</span></div>
                     <div class="flex flex-col gap-1"><span class="text-sm font-medium capitalize text-primaryText">Area</span><span class="text-sm text-blackText md:text-base">Maadi</span></div>
                   </div>
-                  <div class="flex items-center justify-between gap-2">
-                    <button type="button" class="btn btn--secondary btn--sm flex items-center gap-2 group">
-                      <svg viewBox="0 0 24 24" fill="none" class="h-4 w-4 md:h-5 md:w-5"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                      <span class="text-sm">Edit</span>
-                    </button>
+                  <div class="flex items-center justify-end">
+                    <button type="button" class="addr-menu" aria-label="Address options for Home"
+                      data-open="address" data-addr="{&quot;name&quot;: &quot;Home&quot;, &quot;line&quot;: &quot;14 Street 9 - Degla, Maadi, Cairo&quot;, &quot;fields&quot;: [[&quot;Floor&quot;, &quot;3&quot;], [&quot;Apartment&quot;, &quot;7&quot;], [&quot;City&quot;, &quot;Cairo&quot;], [&quot;Area&quot;, &quot;Maadi&quot;]], &quot;default&quot;: true}"><svg viewBox="0 0 24 24" fill="none" class="h-5 w-5" aria-hidden="true"><circle cx="5" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="19" cy="12" r="1.6" fill="currentColor"/></svg></button>
                   </div>
                 </div>
               </li>
@@ -204,7 +202,6 @@
                       <span class="h-4 w-4 md:h-5 md:w-5"><svg viewBox="0 0 24 24" fill="none" class="w-full"><path d="M3 10.5 12 3l9 7.5M5.5 9v11h13V9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
                       <span class="text-lg font-semibold capitalize">Work</span>
                     </div>
-                    <button type="button" class="text-sm font-medium capitalize text-primaryColor hover:underline">Set as Default</button>
                   </div>
                   <div class="flex flex-col gap-1">
                     <span class="text-sm font-medium capitalize text-primaryText">Address</span>
@@ -216,12 +213,9 @@
                     <div class="flex flex-col gap-1"><span class="text-sm font-medium capitalize text-primaryText">City</span><span class="text-sm text-blackText md:text-base">Cairo</span></div>
                     <div class="flex flex-col gap-1"><span class="text-sm font-medium capitalize text-primaryText">Area</span><span class="text-sm text-blackText md:text-base">New Cairo</span></div>
                   </div>
-                  <div class="flex items-center justify-between gap-2">
-                    <button type="button" class="btn btn--secondary btn--sm flex items-center gap-2 group">
-                      <svg viewBox="0 0 24 24" fill="none" class="h-4 w-4 md:h-5 md:w-5"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                      <span class="text-sm">Edit</span>
-                    </button>
-                    <button type="button" class="font-medium text-[#D83434] underline">Delete</button>
+                  <div class="flex items-center justify-end">
+                    <button type="button" class="addr-menu" aria-label="Address options for Work"
+                      data-open="address" data-addr="{&quot;name&quot;: &quot;Work&quot;, &quot;line&quot;: &quot;90th Street - 5th Settlement, New Cairo, Cairo&quot;, &quot;fields&quot;: [[&quot;Floor&quot;, &quot;12&quot;], [&quot;Apartment&quot;, &quot;1204&quot;], [&quot;City&quot;, &quot;Cairo&quot;], [&quot;Area&quot;, &quot;New Cairo&quot;]], &quot;default&quot;: false}"><svg viewBox="0 0 24 24" fill="none" class="h-5 w-5" aria-hidden="true"><circle cx="5" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="19" cy="12" r="1.6" fill="currentColor"/></svg></button>
                   </div>
                 </div>
               </li>
@@ -233,7 +227,6 @@
                       <span class="h-4 w-4 md:h-5 md:w-5"><svg viewBox="0 0 24 24" fill="none" class="w-full"><path d="M3 10.5 12 3l9 7.5M5.5 9v11h13V9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
                       <span class="text-lg font-semibold capitalize">Family house</span>
                     </div>
-                    <button type="button" class="text-sm font-medium capitalize text-primaryColor hover:underline">Set as Default</button>
                   </div>
                   <div class="flex flex-col gap-1">
                     <span class="text-sm font-medium capitalize text-primaryText">Address</span>
@@ -244,12 +237,9 @@
                     <div class="flex flex-col gap-1"><span class="text-sm font-medium capitalize text-primaryText">City</span><span class="text-sm text-blackText md:text-base">Giza</span></div>
                     <div class="flex flex-col gap-1"><span class="text-sm font-medium capitalize text-primaryText">Area</span><span class="text-sm text-blackText md:text-base">Sheikh Zayed</span></div>
                   </div>
-                  <div class="flex items-center justify-between gap-2">
-                    <button type="button" class="btn btn--secondary btn--sm flex items-center gap-2 group">
-                      <svg viewBox="0 0 24 24" fill="none" class="h-4 w-4 md:h-5 md:w-5"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                      <span class="text-sm">Edit</span>
-                    </button>
-                    <button type="button" class="font-medium text-[#D83434] underline">Delete</button>
+                  <div class="flex items-center justify-end">
+                    <button type="button" class="addr-menu" aria-label="Address options for Family house"
+                      data-open="address" data-addr="{&quot;name&quot;: &quot;Family house&quot;, &quot;line&quot;: &quot;7 El Nozha Street - Sheikh Zayed, 6th of October, Giza&quot;, &quot;fields&quot;: [[&quot;Villa&quot;, &quot;Villa 22&quot;], [&quot;City&quot;, &quot;Giza&quot;], [&quot;Area&quot;, &quot;Sheikh Zayed&quot;]], &quot;default&quot;: false}"><svg viewBox="0 0 24 24" fill="none" class="h-5 w-5" aria-hidden="true"><circle cx="5" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="19" cy="12" r="1.6" fill="currentColor"/></svg></button>
                   </div>
                 </div>
               </li>
@@ -263,6 +253,109 @@
 
     <!-- Shared footer is injected here by scripts.js -->
     <div id="site-footer"></div>
+
+    <!-- Address popup — one shell for every card. The ⋯ button carries the
+         address as JSON in data-addr; the script below renders it. Opened
+         through the shared overlay plumbing (data-open="address"). -->
+    <div data-modal="address" class="modal-shell">
+      <div class="flex w-full max-w-[440px] flex-col overflow-hidden rounded-2xl bg-white shadow-custom3" data-modal-box>
+        <div class="flex shrink-0 items-start justify-between gap-3 border-b border-gray-300 px-5 py-4">
+          <div class="flex items-center gap-2 text-primaryColor">
+            <span class="h-5 w-5"><svg viewBox="0 0 24 24" fill="none" class="w-full"><path d="M3 10.5 12 3l9 7.5M5.5 9v11h13V9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <h2 class="text-lg font-semibold capitalize" data-addr-name>Address</h2>
+          </div>
+          <button type="button" data-close aria-label="Close" class="grid h-8 w-8 place-items-center rounded-full text-textSecondary hover:bg-neutral-100">
+            <svg viewBox="0 0 24 24" fill="none" class="h-5 w-5"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+
+        <div class="flex flex-col gap-4 px-5 py-5">
+          <div class="flex flex-col gap-1">
+            <span class="text-sm font-medium capitalize text-primaryText">Address</span>
+            <span class="text-sm text-blackText md:text-base" data-addr-line></span>
+          </div>
+          <div class="grid grid-cols-2 gap-3" data-addr-fields></div>
+
+          <!-- set as default -->
+          <label class="mt-1 flex cursor-pointer items-center gap-3 rounded-[12px] border border-gray-300 px-4 py-3">
+            <span class="text-sm font-medium text-textSecondary">Set as default address</span>
+            <input type="checkbox" class="wallet-toggle__input sr-only" data-addr-default />
+            <span class="wallet-toggle__switch" aria-hidden="true"></span>
+          </label>
+          <p class="text-xs text-gray-600" data-addr-note hidden>This is already your default address.</p>
+        </div>
+
+        <div class="flex shrink-0 items-center justify-between gap-3 border-t border-gray-300 px-5 py-4">
+          <button type="button" class="font-medium text-[#D83434] underline" data-addr-delete>Delete this address</button>
+          <button type="button" class="btn btn--primary btn--md" data-close>Done</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      /* Renders whichever address card's ⋯ was clicked into the popup. */
+      (function () {
+        const modal = document.querySelector('[data-modal="address"]');
+        if (!modal) return;
+        const nameEl = modal.querySelector("[data-addr-name]");
+        const lineEl = modal.querySelector("[data-addr-line]");
+        const fieldsEl = modal.querySelector("[data-addr-fields]");
+        const toggle = modal.querySelector("[data-addr-default]");
+        const note = modal.querySelector("[data-addr-note]");
+        let card = null;
+
+        document.addEventListener("click", (e) => {
+          const btn = e.target.closest("[data-addr]");
+          if (!btn) return;
+          card = btn.closest("li");
+          let d = {};
+          try { d = JSON.parse(btn.getAttribute("data-addr")); } catch (err) { return; }
+          nameEl.textContent = d.name || "Address";
+          lineEl.textContent = d.line || "";
+          fieldsEl.innerHTML = (d.fields || [])
+            .map(
+              ([label, value]) =>
+                '<div class="flex flex-col gap-1"><span class="text-sm font-medium capitalize text-primaryText">' +
+                label +
+                '</span><span class="text-sm text-blackText md:text-base">' +
+                value +
+                "</span></div>"
+            )
+            .join("");
+          toggle.checked = !!d.default;
+          /* the current default can't be un-set — you promote another one */
+          toggle.disabled = !!d.default;
+          note.hidden = !d.default;
+        });
+
+        toggle.addEventListener("change", () => {
+          if (!toggle.checked || !card) return;
+          /* move the Default badge onto this card */
+          document.querySelectorAll("[data-addr]").forEach((b) => {
+            const li = b.closest("li");
+            const head = li.querySelector(".border-b");
+            const badge = head.querySelector(".rounded-full");
+            if (badge) badge.remove();
+            const data = JSON.parse(b.getAttribute("data-addr"));
+            data.default = li === card;
+            b.setAttribute("data-addr", JSON.stringify(data));
+            if (li === card) {
+              head.insertAdjacentHTML(
+                "beforeend",
+                '<span class="rounded-full bg-primaryColor/10 px-3 py-1 text-xs font-semibold capitalize text-primaryColor">Default</span>'
+              );
+            }
+          });
+          toggle.disabled = true;
+          note.hidden = false;
+        });
+
+        modal.querySelector("[data-addr-delete]").addEventListener("click", () => {
+          if (card) card.remove();
+          modal.querySelector("[data-close]").click();
+        });
+      })();
+    </script>
 
     <!-- Toggle the inline add-address form -->
     <script>
