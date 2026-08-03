@@ -4185,6 +4185,28 @@ input[type="checkbox"]:not(.wallet-toggle__input):checked::after {
   transform-origin: center;
 }
 
+/* Count / amount tag on an account-nav item (favourites, wallet,
+   points, vouchers). ms-auto pushes it to the far edge in the sidebar;
+   in the mobile pill row the anchor is content-sized so it just
+   trails the label. */
+.acct-count {
+  margin-inline-start: auto;
+  flex: none;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: #f3f4f6;
+  color: #6f7276;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 18px;
+  white-space: nowrap;
+}
+/* on the highlighted item the grey would disappear into the mint */
+[aria-current="page"] .acct-count {
+  background: #fff;
+  color: #182325;
+}
+
 /* Account dashboard quick-stat cards. They're links to the page behind
    each number (points / wallet / orders), so they need to read as
    clickable — the card itself was previously an inert <div>. */
