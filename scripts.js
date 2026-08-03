@@ -2075,7 +2075,7 @@
   function tierBadgeHTML(tier) {
     const key = TIERS[tier] ? tier : "golden";
     return `<span class="tier-badge tier-badge--${key}">
-        <span class="tier-badge__ico"><img src="images/icons/account%20icons/preparing.webp" alt="" /></span>
+        <span class="tier-badge__ico"><img src="images/icons/account%20icons/account.webp" alt="" /></span>
         <span class="tier-badge__label">${TIERS[key]}</span>
       </span>`;
   }
