@@ -927,6 +927,7 @@
     storepicker: '[data-modal="storepicker"]',
     schedule: '[data-modal="schedule"]',
     voucher: '[data-modal="voucher"]',
+    redeem: '[data-modal="redeem"]',
   };
   let openEl = null;
 

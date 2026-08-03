@@ -4201,6 +4201,216 @@ input[type="checkbox"]:not(.wallet-toggle__input):checked::after {
 }
 
 /* ---------------------------------------------------------------
+   EARN-POINTS CARDS (my-account-point.html) — illustration, name,
+   then the value as a pink pill. .is-earned greys a card the
+   customer has already collected and stamps a green tick on it.
+   --------------------------------------------------------------- */
+.earn-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 22px 14px 20px;
+  border: 1.5px solid #dee2e6;
+  border-radius: 14px;
+  background: #fff;
+  text-align: center;
+}
+.earn-card__art {
+  position: relative;
+  display: block;
+  width: 96px;
+  height: 96px;
+}
+.earn-card__art img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.earn-card__title {
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: #182325;
+}
+.earn-card__pill {
+  display: inline-block;
+  padding: 7px 14px;
+  border-radius: 8px;
+  background: #db336c;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+}
+/* already collected */
+.earn-card.is-earned {
+  background: #a8abaf;
+  border-color: #a8abaf;
+}
+.earn-card.is-earned .earn-card__title {
+  color: #1f2a37;
+}
+.earn-card.is-earned .earn-card__pill {
+  opacity: 0.6;
+}
+.earn-card__check {
+  position: absolute;
+  left: 50%;
+  bottom: -4px;
+  transform: translateX(-50%);
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #fff;
+  color: #209b34;
+  box-shadow: 0 2px 8px rgba(24, 35, 37, 0.18);
+}
+.earn-card__check svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* ---------------------------------------------------------------
+   REDEEM POINTS popup — balance pill + amount field with an
+   "All Points" shortcut, and the live EGP value underneath.
+   --------------------------------------------------------------- */
+.redeem-balance {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px 6px 8px;
+  border-radius: 9999px;
+  background: #e7fffc;
+  color: #182325;
+  font-size: 15px;
+  font-weight: 600;
+}
+.redeem-balance img {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+}
+.redeem-field {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 12px 12px 16px;
+  border: 1.5px solid #dee2e6;
+  border-radius: 12px;
+  background: #fff;
+  transition: border-color 0.18s ease;
+}
+.redeem-field:focus-within {
+  border-color: #8cbab5;
+}
+.redeem-field__label {
+  display: block;
+  font-size: 13px;
+  color: #6f7276;
+}
+.redeem-field input {
+  width: 100%;
+  border: 0;
+  outline: none;
+  background: transparent;
+  font-size: 22px;
+  font-weight: 600;
+  color: #182325;
+  font-variant-numeric: tabular-nums;
+}
+.redeem-field__all {
+  flex: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: #f3f4f6;
+  color: #182325;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+.redeem-field__all:hover {
+  background: #dee2e6;
+}
+
+/* ---------------------------------------------------------------
+   SPOTLIGHT — a one-step coach mark. Dims the page, lifts one
+   element above the veil and points a tooltip at it. Used after a
+   redeem to show where the credit landed.
+   --------------------------------------------------------------- */
+.spotlight__veil {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(16, 24, 32, 0.72);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.spotlight.is-on .spotlight__veil {
+  opacity: 1;
+}
+/* the lit element — raised over the veil and given its own halo */
+.is-spotlit {
+  position: relative;
+  z-index: 10002;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow:
+    0 0 0 4px rgba(255, 255, 255, 0.35),
+    0 12px 32px rgba(0, 0, 0, 0.35);
+}
+.spotlight__tip {
+  position: fixed;
+  z-index: 10003;
+  max-width: 260px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: #fff;
+  color: #182325;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
+  opacity: 0;
+  transform: translateY(-6px);
+  transition:
+    opacity 0.28s ease,
+    transform 0.28s ease;
+}
+.spotlight.is-on .spotlight__tip {
+  opacity: 1;
+  transform: none;
+}
+.spotlight__tip p {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+.spotlight__tip small {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 400;
+  color: #6f7276;
+}
+.spotlight__tip button {
+  margin-top: 10px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: #182325;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+@media (prefers-reduced-motion: reduce) {
+  .spotlight__veil,
+  .spotlight__tip {
+    transition: none;
+  }
+}
+
+/* ---------------------------------------------------------------
    TIER BADGE — membership tiers Golden / Silver / Platinum
    (Figma 6233-56907). Gradient pill + circular avatar + uppercase
    label. Rendered by tierBadgeHTML()/initTierBadge() in scripts.js
