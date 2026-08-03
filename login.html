@@ -46,46 +46,44 @@
               <div class="rounded-[20px] bg-white px-5 py-6 border border-gray-300 md:px-8 flex flex-col justify-stretch items-center gap-5">
                 <h2 class="pb-5 border-primaryLight border-b w-full font-medium text-textSecondary text-2xl text-center">Login</h2>
 
-                <!-- Demo form: prevented + toasts on submit (see scripts.js data-demo-form) -->
-                <form data-demo-form="Signed in successfully" data-redirect="my-account.html" class="flex w-full flex-col gap-y-6 py-5">
-                  <div class="flex flex-col gap-y-2">
-                    <label for="email-login" class="after:ps-1 text-gray-700 after:content-['*']">Email or phone</label>
-                    <input
-                      type="text"
-                      id="email-login"
-                      name="email"
-                      placeholder="you@example.com or +20 10 1234 5678"
-                      class="h-11 px-2.5 py-4 border border-primaryText focus:border-primary-400 rounded-md text-textSecondary transition-colors text-sm font-medium outline-none"
-                    />
+                <!-- Passwordless: mobile number, then a one-time code.
+                     initOtpAuth() in scripts.js drives both steps. -->
+                <div data-otp-flow data-otp-redirect="my-account.html" class="flex w-full flex-col gap-y-6 py-5">
+                  <!-- ── Step 1: the number ── -->
+                  <div data-otp-step="phone" class="flex flex-col gap-y-6">
+                    <div class="flex flex-col gap-y-2">
+                      <label for="phone-login" class="after:ps-1 text-gray-700 after:content-['*']">Mobile number</label>
+                      <div class="flex h-11 items-center rounded-[10px] border border-customGrayMedium px-2.5 text-sm font-medium text-textSecondary transition-colors focus-within:border-primary-400">
+                        <span class="me-3 flex h-[30px] items-center border-e border-[#979BA0] pe-3.5 text-sm font-normal text-[#182325]">🇪🇬 +20</span>
+                        <input type="tel" id="phone-login" name="phone" inputmode="numeric" autocomplete="tel" placeholder="100 123 4567" data-otp-phone class="h-full flex-1 bg-transparent outline-none" />
+                      </div>
+                      <p class="text-xs text-gray-600">We'll text you a 6-digit code — no password needed.</p>
+                      <p class="text-xs text-error" data-otp-error hidden></p>
+                    </div>
+                    <button type="button" data-otp-send class="btn btn--black btn--md w-full justify-center">Send Verification Code</button>
                   </div>
 
-                  <div class="flex flex-col gap-2">
-                    <label for="password-login" class="after:ps-1 after:content-['*'] text-gray-700 font-medium">Password</label>
-                    <div class="relative">
-                      <input
-                        type="password"
-                        id="password-login"
-                        name="password"
-                        class="h-11 w-full rounded-md border border-primaryText focus:border-primary-400 px-2.5 py-4 font-medium text-gray-700 outline-none transition-colors"
-                      />
-                      <button type="button" data-password-toggle class="absolute end-[13px] top-1/2 -translate-y-1/2 inline-flex text-primaryText" aria-label="Show password">
-                        <svg viewBox="0 0 24 24" fill="none" class="w-6 h-6"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/></svg>
-                      </button>
+                  <!-- ── Step 2: the code ── -->
+                  <div data-otp-step="code" hidden class="flex flex-col gap-y-5">
+                    <div class="flex flex-col items-center gap-2 text-center">
+                      <img src="images/icons/OTP.webp" alt="" width="96" height="96" class="h-[96px] w-[96px] object-contain" />
+                      <p class="text-sm text-gray-700">Enter the code we sent to <span class="font-semibold text-textSecondary" data-otp-target></span></p>
+                    </div>
+                    <div class="otp-boxes">
+                      <input type="text" inputmode="numeric" maxlength="1" aria-label="Digit 1" data-otp-box class="otp-box" />
+                      <input type="text" inputmode="numeric" maxlength="1" aria-label="Digit 2" data-otp-box class="otp-box" />
+                      <input type="text" inputmode="numeric" maxlength="1" aria-label="Digit 3" data-otp-box class="otp-box" />
+                      <input type="text" inputmode="numeric" maxlength="1" aria-label="Digit 4" data-otp-box class="otp-box" />
+                      <input type="text" inputmode="numeric" maxlength="1" aria-label="Digit 5" data-otp-box class="otp-box" />
+                      <input type="text" inputmode="numeric" maxlength="1" aria-label="Digit 6" data-otp-box class="otp-box" />
+                    </div>
+                    <button type="button" data-otp-verify class="btn btn--black btn--md w-full justify-center">Verify &amp; Sign In</button>
+                    <div class="flex items-center justify-between gap-3 text-sm">
+                      <button type="button" data-otp-back class="text-gray-700 underline">Change number</button>
+                      <button type="button" data-otp-resend class="font-medium text-primaryDark disabled:text-gray-500 disabled:no-underline underline"></button>
                     </div>
                   </div>
-
-                  <div class="flex items-center justify-between gap-4">
-                    <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer select-none">
-                      <input type="checkbox" name="remember" />
-                      Remember me
-                    </label>
-                    <a href="forget-password.html" class="text-sm text-primaryDark underline">Forgot password?</a>
-                  </div>
-
-                  <div class="flex flex-col items-center gap-5">
-                    <button type="submit" class="btn btn--black btn--md w-full justify-center focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primaryDark">Login</button>
-                  </div>
-                </form>
+                </div>
 
                 <!-- OR divider + social providers (AuthProviders) -->
                 <div class="flex flex-col items-center gap-4 w-full">

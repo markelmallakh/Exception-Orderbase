@@ -4337,6 +4337,44 @@ input[type="checkbox"]:not(.wallet-toggle__input):checked::after {
 }
 
 /* ---------------------------------------------------------------
+   PASSWORDLESS AUTH — the site signs in by mobile number + a
+   one-time code, so there are no password fields anywhere. These
+   are the six code boxes shared by login and register.
+   --------------------------------------------------------------- */
+.otp-boxes {
+  display: flex;
+  gap: 8px;
+  direction: ltr;
+}
+.otp-box {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 56px;
+  border: 1.5px solid #dee2e6;
+  border-radius: 10px;
+  background: #fff;
+  text-align: center;
+  font-size: 22px;
+  font-weight: 600;
+  color: #182325;
+  outline: none;
+  font-variant-numeric: tabular-nums;
+  transition:
+    border-color 0.16s ease,
+    box-shadow 0.16s ease;
+}
+.otp-box:focus {
+  border-color: #8cbab5;
+  box-shadow: 0 0 0 3px rgba(140, 186, 181, 0.25);
+}
+.otp-box.is-filled {
+  border-color: #182325;
+}
+.otp-boxes.is-error .otp-box {
+  border-color: #d83434;
+}
+
+/* ---------------------------------------------------------------
    SPOTLIGHT — a one-step coach mark. Dims the page, lifts one
    element above the veil and points a tooltip at it. Used after a
    redeem to show where the credit landed.

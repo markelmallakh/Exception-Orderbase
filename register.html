@@ -28,7 +28,9 @@
             <h1 class="mb-5 pb-5 border-primaryLight border-b font-medium text-primaryDark text-2xl text-center">Create Account</h1>
 
             <!-- Demo form: prevented + toasts on submit (see scripts.js data-demo-form) -->
-            <form data-demo-form="Account created!" data-redirect="my-account.html" class="flex flex-col gap-5 w-full">
+            <!-- Passwordless: details + number, then a one-time code (initOtpAuth) -->
+            <div data-otp-flow data-otp-redirect="my-account.html" class="flex flex-col gap-5 w-full">
+              <div data-otp-step="phone" class="flex flex-col gap-5">
               <!-- Full name -->
               <div class="grid xl:grid-cols-2 gap-4 md:gap-8">
                 <div class="flex flex-col gap-y-2">
@@ -63,29 +65,7 @@
                     </select>
                     <svg viewBox="0 0 24 24" fill="none" class="h-[14px] w-[14px] text-gray-500 pointer-events-none"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                   </div>
-                  <input type="tel" id="phone" name="phone" placeholder="10 1234 5678" class="h-full flex-1 min-w-0 bg-transparent text-base text-blackText outline-none" />
-                </div>
-              </div>
-
-              <!-- Password -->
-              <div class="flex flex-col gap-2">
-                <label for="password" class="after:ps-1 after:content-['*'] text-gray-700 font-medium">Password</label>
-                <div class="relative">
-                  <input type="password" id="password" name="password" class="h-11 w-full rounded-md border border-customGrayMedium focus:border-primary-400 px-2.5 py-4 font-medium text-gray-700 outline-none transition-colors" />
-                  <button type="button" data-password-toggle class="absolute end-[13px] top-1/2 -translate-y-1/2 inline-flex text-primaryText" aria-label="Show password">
-                    <svg viewBox="0 0 24 24" fill="none" class="w-6 h-6"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/></svg>
-                  </button>
-                </div>
-              </div>
-
-              <!-- Confirm password -->
-              <div class="flex flex-col gap-2">
-                <label for="confirmPassword" class="after:ps-1 after:content-['*'] text-gray-700 font-medium">Confirm Password</label>
-                <div class="relative">
-                  <input type="password" id="confirmPassword" name="confirmPassword" class="h-11 w-full rounded-md border border-customGrayMedium focus:border-primary-400 px-2.5 py-4 font-medium text-gray-700 outline-none transition-colors" />
-                  <button type="button" data-password-toggle class="absolute end-[13px] top-1/2 -translate-y-1/2 inline-flex text-primaryText" aria-label="Show password">
-                    <svg viewBox="0 0 24 24" fill="none" class="w-6 h-6"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/></svg>
-                  </button>
+                  <input type="tel" id="phone" name="phone" data-otp-phone placeholder="10 1234 5678" class="h-full flex-1 min-w-0 bg-transparent text-base text-blackText outline-none" />
                 </div>
               </div>
 
@@ -135,13 +115,36 @@
                 <span>I agree to the <a href="terms-conditions.html" class="text-primaryDark underline">Terms &amp; Conditions</a> and <a href="privacy-policy.html" class="text-primaryDark underline">Privacy Policy</a>.</span>
               </label>
 
-              <button type="submit" class="btn btn--black btn--md w-full justify-center focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primaryDark">Create Account</button>
+                <p class="text-xs text-error" data-otp-error hidden></p>
+                <button type="button" data-otp-send class="btn btn--black btn--md w-full justify-center">Send Verification Code</button>
+              </div>
+
+              <!-- Step 2: verify the number -->
+              <div data-otp-step="code" hidden class="flex flex-col gap-5">
+                <div class="flex flex-col items-center gap-2 text-center">
+                  <img src="images/icons/OTP.webp" alt="" width="96" height="96" class="h-[96px] w-[96px] object-contain" />
+                  <p class="text-sm text-gray-700">Enter the code we sent to <span class="font-semibold text-textSecondary" data-otp-target></span></p>
+                </div>
+                <div class="otp-boxes">
+                  <input type="text" inputmode="numeric" maxlength="1" aria-label="Digit 1" data-otp-box class="otp-box" />
+                  <input type="text" inputmode="numeric" maxlength="1" aria-label="Digit 2" data-otp-box class="otp-box" />
+                  <input type="text" inputmode="numeric" maxlength="1" aria-label="Digit 3" data-otp-box class="otp-box" />
+                  <input type="text" inputmode="numeric" maxlength="1" aria-label="Digit 4" data-otp-box class="otp-box" />
+                  <input type="text" inputmode="numeric" maxlength="1" aria-label="Digit 5" data-otp-box class="otp-box" />
+                  <input type="text" inputmode="numeric" maxlength="1" aria-label="Digit 6" data-otp-box class="otp-box" />
+                </div>
+                <button type="button" data-otp-verify class="btn btn--black btn--md w-full justify-center">Verify &amp; Create Account</button>
+                <div class="flex items-center justify-between gap-3 text-sm">
+                  <button type="button" data-otp-back class="text-gray-700 underline">Change number</button>
+                  <button type="button" data-otp-resend class="font-medium text-primaryDark underline disabled:text-gray-500 disabled:no-underline"></button>
+                </div>
+              </div>
 
               <p class="mb-5 text-primaryText text-sm text-center">
                 Already have an account?
                 <a href="login.html" class="pb-1 border-primaryColor border-b font-medium text-primaryColor">Login</a>
               </p>
-            </form>
+            </div>
 
             <!-- OR / social providers (AuthProviders) -->
             <div class="border-t border-t-gray-300 w-full">
@@ -166,18 +169,8 @@
     <!-- Shared footer is injected here by scripts.js -->
     <div id="site-footer"></div>
 
-    <!-- Page-only enhancements: password toggles + date-of-birth options -->
+    <!-- Page-only enhancement: date-of-birth options -->
     <script>
-      document.querySelectorAll("[data-password-toggle]").forEach(function (btn) {
-        btn.addEventListener("click", function () {
-          var input = btn.parentElement.querySelector("input");
-          if (!input) return;
-          var toText = input.type === "password";
-          input.type = toText ? "text" : "password";
-          btn.setAttribute("aria-label", toText ? "Hide password" : "Show password");
-          btn.classList.toggle("text-primaryDark", toText);
-        });
-      });
       (function () {
         function fill(id, count, start, pad) {
           var sel = document.getElementById(id);

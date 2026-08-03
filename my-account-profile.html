@@ -6,7 +6,7 @@
     <title>My Profile — Exception</title>
     <meta
       name="description"
-      content="Edit your Exception profile details and change your password."
+      content="Edit your Exception profile details."
     />
     <!-- Tailwind (Play CDN) + faithful port of the project's tailwind.config.ts -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -159,28 +159,7 @@
               </form>
             </div>
 
-            <!-- Change password form -->
-            <div class="flex flex-col gap-6 max-w-[538px] p-6 md:p-8 border border-gray-300 rounded-[12px] bg-white shadow-custom4">
-              <div class="flex flex-col gap-1">
-                <h2 class="text-xl font-semibold text-textSecondary">Change Password</h2>
-                <p class="text-sm text-gray-700">Keep your account secure with a strong password.</p>
-              </div>
-              <form data-demo-form="Password changed" class="flex flex-col gap-5">
-                <div class="flex flex-col gap-1.5">
-                  <label for="currentPassword" class="text-sm font-medium text-textSecondary">Current password</label>
-                  <input id="currentPassword" name="currentPassword" type="password" placeholder="Enter current password" class="w-full rounded-lg border border-border-light bg-white px-4 py-3 text-textSecondary outline-none transition-colors focus:border-primaryDark" />
-                </div>
-                <div class="flex flex-col gap-1.5">
-                  <label for="newPassword" class="text-sm font-medium text-textSecondary">New password</label>
-                  <input id="newPassword" name="newPassword" type="password" placeholder="Enter new password" class="w-full rounded-lg border border-border-light bg-white px-4 py-3 text-textSecondary outline-none transition-colors focus:border-primaryDark" />
-                </div>
-                <div class="flex flex-col gap-1.5">
-                  <label for="confirmPassword" class="text-sm font-medium text-textSecondary">Confirm password</label>
-                  <input id="confirmPassword" name="confirmPassword" type="password" placeholder="Re-enter new password" class="w-full rounded-lg border border-border-light bg-white px-4 py-3 text-textSecondary outline-none transition-colors focus:border-primaryDark" />
-                </div>
-                <button type="submit" class="btn btn--black btn--md w-full inline-flex items-center justify-center gap-2">Change Password</button>
-              </form>
-            </div>
+            
           </div>
         </div>
       </div>

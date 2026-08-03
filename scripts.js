@@ -188,8 +188,6 @@
       "/thank-you": "thank-you.html",
       "/login": "login.html",
       "/register": "register.html",
-      "/forget-password": "forget-password.html",
-      "/reset-password": "reset-password.html",
       "/store-closed": "store-closed.html",
       "/my-account": "my-account.html",
     };
@@ -3824,6 +3822,138 @@
   window.kBurst = promoPaperBurst;
 
   /* ---------------------------------------------------------------
+     PASSWORDLESS AUTH — mobile number + one-time code.
+
+     Drives any [data-otp-flow]: step 1 collects the number, step 2
+     the six-digit code. Shared by login and register so both behave
+     identically. Demo only — no code is really sent, and any six
+     digits verify; data-otp-redirect says where to land.
+     --------------------------------------------------------------- */
+  function initOtpAuth(scope) {
+    scope.querySelectorAll("[data-otp-flow]").forEach((flow) => {
+      if (flow.dataset.otpReady) return;
+      flow.dataset.otpReady = "1";
+
+      const stepPhone = flow.querySelector('[data-otp-step="phone"]');
+      const stepCode = flow.querySelector('[data-otp-step="code"]');
+      const phone = flow.querySelector("[data-otp-phone]");
+      const boxes = [...flow.querySelectorAll("[data-otp-box]")];
+      const wrap = flow.querySelector(".otp-boxes");
+      const target = flow.querySelector("[data-otp-target]");
+      const verifyBtn = flow.querySelector("[data-otp-verify]");
+      const resendBtn = flow.querySelector("[data-otp-resend]");
+      const errEl = flow.querySelector("[data-otp-error]");
+      let ticker = null;
+
+      const code = () => boxes.map((b) => b.value).join("");
+      const digits = (v) => String(v || "").replace(/[^\d]/g, "");
+
+      function show(step) {
+        stepPhone.hidden = step !== "phone";
+        stepCode.hidden = step !== "code";
+      }
+      function syncVerify() {
+        const ready = code().length === boxes.length;
+        verifyBtn.disabled = !ready;
+        verifyBtn.classList.toggle("opacity-40", !ready);
+        verifyBtn.classList.toggle("pointer-events-none", !ready);
+      }
+      function countdown() {
+        let left = 30;
+        clearInterval(ticker);
+        const tick = () => {
+          if (left > 0) {
+            resendBtn.disabled = true;
+            resendBtn.textContent = "Resend code in 0:" + String(left).padStart(2, "0");
+          } else {
+            resendBtn.disabled = false;
+            resendBtn.textContent = "Resend code";
+            clearInterval(ticker);
+          }
+          left--;
+        };
+        tick();
+        ticker = setInterval(tick, 1000);
+      }
+
+      /* ---- step 1 → send ---- */
+      flow.querySelector("[data-otp-send]").addEventListener("click", () => {
+        const n = digits(phone.value);
+        if (n.length < 8) {
+          phone.focus();
+          if (errEl) { errEl.textContent = "Enter your mobile number."; errEl.hidden = false; }
+          return;
+        }
+        if (errEl) errEl.hidden = true;
+        if (target) target.textContent = "+20 " + phone.value.trim();
+        show("code");
+        countdown();
+        boxes.forEach((b) => { b.value = ""; b.classList.remove("is-filled"); });
+        syncVerify();
+        setTimeout(() => boxes[0] && boxes[0].focus(), 60);
+      });
+
+      /* ---- step 2 → the six boxes ---- */
+      boxes.forEach((box, i) => {
+        box.addEventListener("input", () => {
+          box.value = digits(box.value).slice(-1);
+          box.classList.toggle("is-filled", !!box.value);
+          if (wrap) wrap.classList.remove("is-error");
+          if (box.value && boxes[i + 1]) boxes[i + 1].focus();
+          syncVerify();
+        });
+        box.addEventListener("keydown", (e) => {
+          if (e.key === "Backspace" && !box.value && boxes[i - 1]) {
+            boxes[i - 1].focus();
+            boxes[i - 1].value = "";
+            boxes[i - 1].classList.remove("is-filled");
+            syncVerify();
+            e.preventDefault();
+          }
+          if (e.key === "ArrowLeft" && boxes[i - 1]) boxes[i - 1].focus();
+          if (e.key === "ArrowRight" && boxes[i + 1]) boxes[i + 1].focus();
+        });
+        /* paste the whole code into any box */
+        box.addEventListener("paste", (e) => {
+          const text = digits((e.clipboardData || window.clipboardData).getData("text")).slice(0, boxes.length);
+          if (!text) return;
+          e.preventDefault();
+          boxes.forEach((b, j) => {
+            b.value = text[j] || "";
+            b.classList.toggle("is-filled", !!b.value);
+          });
+          (boxes[Math.min(text.length, boxes.length - 1)] || box).focus();
+          syncVerify();
+        });
+      });
+
+      resendBtn.addEventListener("click", () => {
+        if (resendBtn.disabled) return;
+        countdown();
+      });
+      const back = flow.querySelector("[data-otp-back]");
+      if (back)
+        back.addEventListener("click", () => {
+          clearInterval(ticker);
+          show("phone");
+          phone.focus();
+        });
+
+      verifyBtn.addEventListener("click", () => {
+        if (code().length !== boxes.length) return;
+        clearInterval(ticker);
+        verifyBtn.textContent = "Verified ✓";
+        verifyBtn.classList.add("pointer-events-none", "opacity-70");
+        const to = flow.getAttribute("data-otp-redirect") || "my-account.html";
+        setTimeout(() => (window.location.href = to), 700);
+      });
+
+      show("phone");
+      syncVerify();
+    });
+  }
+
+  /* ---------------------------------------------------------------
      PHOTO-STYLE COMPARE — presentation aid, not a shipping feature.
 
      The client is deciding between creative/lifestyle product shots
@@ -3970,6 +4100,7 @@
     initVision(scope);
     initReferralCopy(scope);
     initHScroll(scope);
+    initOtpAuth(scope);
     initShotCompare();
   };
 
