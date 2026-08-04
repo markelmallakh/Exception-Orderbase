@@ -266,24 +266,6 @@
   }
 
   /* ---------------------------------------------------------------
-     Language switcher (EN active, visual only in static build)
-     --------------------------------------------------------------- */
-  function languageSwitcher(mobile) {
-    const wrap = mobile
-      ? "bg-[#EAEBEC]"
-      : "bg-[#FFFFFF33]";
-    const w = mobile ? "122px" : "98px";
-    const h = mobile ? "29px" : "25px";
-    return `
-      <div class="inline-flex relative">
-        <div class="flex flex-row items-center gap-1 ${wrap} p-[2px_3px] rounded-[5px]" style="width:${w};height:${h}">
-          <button type="button" data-lang="en" class="flex justify-center items-center transition-all duration-200 bg-cta shadow-[0px_1px_2px_rgba(0,0,0,0.05)] rounded-[3px] text-white text-xs font-semibold" style="width:${mobile ? "60px" : "48px"};height:${mobile ? "25px" : "20px"}">EN</button>
-          <button type="button" data-lang="ar" class="flex justify-center items-center transition-all duration-200 bg-transparent rounded-[4px] text-white/80 text-xs font-semibold" style="width:${mobile ? "52px" : "40px"};height:${mobile ? "25px" : "20px"}">ع</button>
-        </div>
-      </div>`;
-  }
-
-  /* ---------------------------------------------------------------
      Header
      --------------------------------------------------------------- */
   function desktopNavItem(item) {
@@ -593,9 +575,21 @@
      Overlays: backdrop, cart drawer, mobile menu, search, location
      --------------------------------------------------------------- */
   function overlaysHTML() {
+    /* Menu drawer, top section: the shop categories — what people actually
+       came to browse — each with its own icon, at the drawer's headline size. */
+    const menuCategoryLinks = CATEGORY_NAV.map(
+      (c) =>
+        `<li><a href="${pageHref(c.url)}" class="flex items-center gap-3 text-primaryDark text-[22px] font-medium leading-none capitalize hover:text-cta transition-colors">
+          <img src="images/icons/${c.icon}" alt="" class="size-8 shrink-0 object-contain" />
+          <span>${esc(c.label.toLowerCase())}</span>
+        </a></li>`,
+    ).join("");
+
+    /* Bottom section: the secondary pages (About, FAQs, …) — still reachable,
+       deliberately quieter than the categories above them. */
     const menuSecondaryLinks = SUPPORT_MENU.map(
       (i) =>
-        `<li><a href="${pageHref(i.url)}" class="text-primaryDark text-[26px] font-medium leading-none hover:text-cta transition-colors">${esc(i.title)}</a></li>`,
+        `<li><a href="${pageHref(i.url)}" class="text-textSecondary text-[15px] font-medium leading-none hover:text-cta transition-colors">${esc(i.title)}</a></li>`,
     ).join("");
 
     const demoCartItems = DEMO_CART_ITEMS;
@@ -732,14 +726,22 @@
       <div class="px-6 pt-6">
         <button type="button" data-close aria-label="Close menu" class="grid place-items-center bg-white rounded-[14px] text-primaryDark shadow-custom-5 border border-gray-200 size-[52px]">${ICON.close2}</button>
       </div>
-      <nav class="flex-1 overflow-y-auto px-6 pt-8">
-        <ul class="flex flex-col gap-7">
+      <nav class="flex-1 overflow-y-auto px-6 pb-4 pt-8">
+        <ul class="flex flex-col gap-5">
+          ${menuCategoryLinks}
+        </ul>
+        <hr class="my-7 border-gray-200" />
+        <ul class="flex flex-col gap-4 pb-2">
           ${menuSecondaryLinks}
         </ul>
       </nav>
-      <div class="px-6 py-6 border-t border-gray-200 flex items-center gap-3">
-        <a href="login.html" class="btn btn--black btn--md flex-1 justify-center">Sign In</a>
-        ${languageSwitcher(true)}
+      <div class="flex flex-col gap-3 border-t border-gray-200 px-6 py-5">
+        <button type="button" data-open="lang" class="flex w-full items-center gap-2 rounded-[10px] border border-gray-200 px-3 py-2.5 text-primaryDark transition-colors hover:border-primaryDark">
+          <span data-lang-flag class="text-base leading-none">🇪🇬</span>
+          <span class="flex-1 text-start text-sm font-medium">Regional Settings</span>
+          <span data-lang-label class="text-[13px] font-medium text-textSecondary">EN | Egy</span>
+        </button>
+        <a href="login.html" class="btn btn--black btn--md w-full justify-center">Sign In</a>
       </div>
     </aside>
 
@@ -818,31 +820,30 @@
     </div>
 
     <!-- Country & Language modal (opened by the header lang button) -->
-    <div data-modal="lang" class="modal-shell">
-      <div class="flex w-full max-w-[440px] flex-col overflow-hidden rounded-2xl bg-white shadow-custom3" data-modal-box>
-        <div class="flex shrink-0 items-center justify-between border-b border-neutral-100 px-5 py-4">
-          <h2 class="font-semibold text-textSecondary text-lg">Country &amp; Language</h2>
-          <button type="button" data-close aria-label="Close" class="grid place-items-center w-8 h-8 rounded-full hover:bg-neutral-100 text-textSecondary">${ICON.close}</button>
-        </div>
-        <div class="flex flex-col gap-5 px-5 py-5">
-          <div class="flex flex-col gap-2">
-            <span class="label">Country</span>
-            <div class="grid grid-cols-2 gap-3">
-              <button type="button" data-country="egy" class="lang-opt"><span class="text-lg leading-none">🇪🇬</span> Egypt</button>
-              <button type="button" data-country="ksa" class="lang-opt"><span class="text-lg leading-none">🇸🇦</span> Saudi Arabia</button>
-            </div>
-          </div>
-          <div class="flex flex-col gap-2">
-            <span class="label">Language</span>
-            <div class="grid grid-cols-2 gap-3">
-              <button type="button" data-lang-pick="en" class="lang-opt">English</button>
-              <button type="button" data-lang-pick="ar" class="lang-opt" style="font-family: 'Noto Kufi Arabic', 'Google Sans Flex', sans-serif;">العربية</button>
-            </div>
+    <!-- Regional settings (Figma 6324-60291). A .bottom-sheet, not a
+         .modal-shell: it slides up from the bottom on phones and becomes a
+         centered popup at md+, which is exactly what the design asks for. -->
+    <div data-modal="lang" class="bottom-sheet !px-0 !pt-0">
+      <div class="flex items-center gap-2 px-4 py-4">
+        <button type="button" data-close aria-label="Close" class="grid shrink-0 place-items-center rounded-[6px] border border-[#dee2e6] bg-white text-primaryDark size-[32px]">${ICON.close}</button>
+        <h2 class="flex-1 pe-[32px] text-center text-[18px] font-semibold leading-[1.3] text-primaryDark">Regional Settings</h2>
+      </div>
+      <div class="flex flex-col gap-6 px-4 pb-2">
+        <div class="flex flex-col gap-2">
+          <span class="text-[12px] font-normal leading-[1.3] text-textSecondary">Choose Country*</span>
+          <div class="grid grid-cols-2 gap-2.5">
+            <button type="button" data-country="egy" class="lang-opt lang-opt--stacked"><span class="text-xl leading-none">🇪🇬</span> Egypt</button>
+            <button type="button" data-country="ksa" class="lang-opt lang-opt--stacked"><span class="text-xl leading-none">🇸🇦</span> KSA</button>
           </div>
         </div>
-        <div class="shrink-0 border-t border-neutral-100 px-5 py-4">
-          <button type="button" data-lang-confirm class="btn btn--primary btn--md w-full justify-center">Choose</button>
+        <div class="flex flex-col gap-2">
+          <span class="text-[12px] font-normal leading-[1.3] text-textSecondary">Choose Language*</span>
+          <div class="grid grid-cols-2 gap-2.5">
+            <button type="button" data-lang-pick="en" class="lang-opt lang-opt--stacked">English</button>
+            <button type="button" data-lang-pick="ar" class="lang-opt lang-opt--stacked" style="font-family: 'Noto Kufi Arabic', 'Google Sans Flex', sans-serif;">العربية</button>
+          </div>
         </div>
+        <button type="button" data-lang-confirm class="btn btn--primary btn--lg w-full justify-center">Select</button>
       </div>
     </div>
 
