@@ -1687,6 +1687,15 @@ body[data-purchased="true"] .review-gate-hint {
   color: #db336c; /* Secondary/Pink — reads as the actionable one */
   text-decoration: underline;
 }
+/* Mobile: a nowrap meta ("New Cairo, 5th Settlement") eats the row and
+   wraps the TITLE to three lines. Let the meta wrap instead — it's the
+   12px detail, so two small lines cost less than a broken title. */
+@media (max-width: 640px) {
+  .optrow__meta {
+    white-space: normal;
+    max-width: 40%;
+  }
+}
 
 /* --- Picker modals (store / schedule) --- */
 .pickchip {

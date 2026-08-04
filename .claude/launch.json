@@ -4,9 +4,8 @@
     {
       "name": "exception-static",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["serve", "/Users/markamir/Documents/GitHub/Exception - Redesign", "-l", "8901"],
-      "port": 8901,
-      "autoPort": true
+      "runtimeArgs": ["serve", "/Users/markamir/Documents/GitHub/Exception - Redesign", "-l", "3000"],
+      "port": 3000
     }
   ]
 }
