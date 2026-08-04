@@ -386,13 +386,30 @@
             "</div>";
           document.body.appendChild(wrap);
 
-          target.classList.add("is-spotlit");
+          /* Lift a CLONE, not the tab itself. The account sidebar is
+             position:sticky, which creates a stacking context, so any
+             z-index on the real link is trapped inside it and the tab
+             stayed under the veil. The clone is parented to <body>, so
+             nothing can trap it. */
+          const clone = target.cloneNode(true);
+          clone.classList.add("is-spotlit");
+          clone.removeAttribute("href");
+          clone.removeAttribute("data-wallet-tab");
+          clone.setAttribute("aria-hidden", "true");
+          clone.tabIndex = -1;
+          wrap.appendChild(clone);
+
           target.scrollIntoView({ block: "center", behavior: "smooth" });
 
           const tip = wrap.querySelector(".spotlight__tip");
           const place = () => {
             const t = target.getBoundingClientRect();
-            /* sit under the tab, clamped inside the viewport */
+            /* the clone sits exactly over the real tab */
+            clone.style.top = t.top + "px";
+            clone.style.left = t.left + "px";
+            clone.style.width = t.width + "px";
+            clone.style.height = t.height + "px";
+            /* tooltip sits under it, clamped inside the viewport */
             const top = Math.min(t.bottom + 12, innerHeight - tip.offsetHeight - 12);
             const left = Math.min(Math.max(12, t.left), innerWidth - tip.offsetWidth - 12);
             tip.style.top = top + "px";
@@ -405,11 +422,13 @@
           });
           addEventListener("resize", place);
           addEventListener("scroll", place, true);
+          /* smooth-scroll keeps moving after we place it once */
+          const settle = setInterval(place, 60);
+          setTimeout(() => clearInterval(settle), 1200);
 
           const dismiss = () => {
             removeEventListener("resize", place);
             removeEventListener("scroll", place, true);
-            target.classList.remove("is-spotlit");
             wrap.classList.remove("is-on");
             setTimeout(() => wrap.remove(), 320);
           };

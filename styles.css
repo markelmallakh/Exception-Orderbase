@@ -4435,14 +4435,19 @@ input[type="checkbox"]:not(.wallet-toggle__input):checked::after {
 .spotlight.is-on .spotlight__veil {
   opacity: 1;
 }
-/* The lit element — raised over the veil and actively glowing, not just
-   "the bit that isn't dimmed". Mint fill + a turquoise halo that breathes,
-   so the eye lands on it immediately. */
+/* The lit element. This is a CLONE of the real one, positioned over it
+   and parented straight to <body> — the account sidebar is
+   position:sticky, which creates a stacking context, so a z-index on the
+   real link could never rise above the veil and it stayed dimmed.
+   Fixed + opaque white so it reads as lit, never as "slightly less
+   dark", with a turquoise halo that breathes. */
 .is-spotlit {
-  position: relative;
+  position: fixed;
   z-index: 10002;
+  margin: 0;
   border-radius: 10px;
-  background: #e7fffc;
+  background: #fff;
+  pointer-events: none;
   animation: spotlit-pulse 1.9s ease-in-out infinite;
 }
 @keyframes spotlit-pulse {
