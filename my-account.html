@@ -107,6 +107,26 @@
               </div>
             </div>
 
+            <!-- Live order — only present while an order is in flight; drop
+                 the whole block when there's nothing to track. Status is
+                 driven by data-order-status ("preparing" | "on-the-way");
+                 the loader colour and the icon animation follow from it. -->
+            <div class="order-live" data-order-live data-order-status="preparing">
+              <span class="order-live__ring">
+                <svg viewBox="0 0 72 72" aria-hidden="true">
+                  <circle class="order-live__track" cx="36" cy="36" r="32" />
+                  <circle class="order-live__arc" cx="36" cy="36" r="32" />
+                </svg>
+                <img class="order-live__ico" data-order-ico src="images/icons/preparing.webp" alt="" width="40" height="40" />
+              </span>
+              <span class="order-live__body">
+                <span class="order-live__eyebrow">Order #100248</span>
+                <span class="order-live__status" data-order-title>Preparing your order</span>
+                <span class="order-live__meta" data-order-meta>Freshly baked to order — about 25 minutes to go.</span>
+              </span>
+              <a href="my-account-order.html" class="btn btn--secondary btn--sm">View Order</a>
+            </div>
+
             <!-- Quick stats — each card links to the page behind the number -->
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-5">
               <a href="my-account-point.html" class="stat-card flex items-center gap-4 rounded-[11.4px] border border-gray-300 bg-white p-5">

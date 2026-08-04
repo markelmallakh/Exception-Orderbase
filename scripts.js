@@ -3869,6 +3869,55 @@
   window.kBurst = promoPaperBurst;
 
   /* ---------------------------------------------------------------
+     LIVE ORDER WIDGET — swaps the dashboard card between the two
+     states. Everything visual hangs off data-order-status, so a real
+     build only has to set that attribute; the demo walks it forward
+     once so both states can be seen.
+     --------------------------------------------------------------- */
+  const ORDER_STATES = {
+    preparing: {
+      ico: "images/icons/preparing.webp",
+      accent: "#db336c",
+      title: "Preparing your order",
+      meta: "Freshly baked to order — about 25 minutes to go.",
+    },
+    "on-the-way": {
+      ico: "images/icons/delivery-scooter.webp",
+      accent: "#8cbab5",
+      title: "Your order is on its way",
+      meta: "Out for delivery — arriving in about 15 minutes.",
+    },
+  };
+  function setOrderState(el, key) {
+    const s = ORDER_STATES[key];
+    if (!s) return;
+    el.setAttribute("data-order-status", key);
+    const ico = el.querySelector("[data-order-ico]");
+    const title = el.querySelector("[data-order-title]");
+    const meta = el.querySelector("[data-order-meta]");
+    if (ico) ico.src = s.ico;
+    if (title) title.textContent = s.title;
+    if (meta) meta.textContent = s.meta;
+    /* Paint the arc via the SVG presentation attribute. A CSS `stroke`
+       on the circle was refusing to take here, and the attribute is the
+       one route that reliably wins for SVG geometry. */
+    const arc = el.querySelector(".order-live__arc");
+    if (arc) arc.setAttribute("stroke", s.accent);
+  }
+  function initOrderLive(scope) {
+    scope.querySelectorAll("[data-order-live]").forEach((el) => {
+      if (el.dataset.orderReady) return;
+      el.dataset.orderReady = "1";
+      setOrderState(el, el.getAttribute("data-order-status") || "preparing");
+      /* demo only: advance once so the second state is visible without
+         hand-editing the attribute. Delete for a real build. */
+      if (el.getAttribute("data-order-status") === "preparing") {
+        setTimeout(() => setOrderState(el, "on-the-way"), 9000);
+      }
+    });
+  }
+
+  /* ---------------------------------------------------------------
      PASSWORDLESS AUTH — mobile number + one-time code.
 
      Drives any [data-otp-flow]: step 1 collects the number, step 2
@@ -4148,6 +4197,7 @@
     initReferralCopy(scope);
     initHScroll(scope);
     initOtpAuth(scope);
+    initOrderLive(scope);
     initShotCompare();
   };
 

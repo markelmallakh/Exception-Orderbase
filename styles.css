@@ -4208,6 +4208,156 @@ input[type="checkbox"]:not(.wallet-toggle__input):checked::after {
   color: #182325;
 }
 
+/* ---------------------------------------------------------------
+   LIVE ORDER WIDGET (account dashboard) — only rendered while an
+   order is in flight. A circular loader turns around the status
+   icon: pink while the kitchen is preparing, dark turquoise once
+   it's on the way. The icon shakes during preparing so the card
+   catches the eye.
+   --------------------------------------------------------------- */
+.order-live {
+  /* one accent drives the loader; the status switches the value */
+  --order-accent: #db336c;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  border: 1px solid #dee2e6;
+  border-radius: 16px;
+  background: #fff;
+}
+.order-live__ring {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+}
+.order-live__ring svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+.order-live__track {
+  fill: none;
+  stroke: #f3f4f6;
+  stroke-width: 5;
+}
+.order-live__arc {
+  fill: none;
+  stroke: var(--order-accent);
+  stroke-width: 5;
+  stroke-linecap: round;
+  /* a quarter-ish arc that spins — reads as "working on it" without
+     pretending to know a real percentage */
+  stroke-dasharray: 56 145;
+  transform-origin: 50% 50%;
+  animation: order-live-spin 1.25s linear infinite;
+  transition: stroke 0.35s ease;
+}
+@keyframes order-live-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.order-live__ico {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+.order-live__body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+.order-live__eyebrow {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #a8abaf;
+}
+.order-live__status {
+  font-size: 17px;
+  font-weight: 600;
+  color: #182325;
+}
+.order-live__meta {
+  font-size: 13px;
+  color: #6f7276;
+}
+
+/* --- preparing: pink loader, icon shaking --- */
+.order-live[data-order-status="preparing"] {
+  --order-accent: #db336c;
+}
+.order-live[data-order-status="preparing"] .order-live__ico {
+  animation: order-live-shake 1.5s ease-in-out infinite;
+}
+@keyframes order-live-shake {
+  0%,
+  62%,
+  100% {
+    transform: rotate(0deg);
+  }
+  68% {
+    transform: rotate(-9deg);
+  }
+  74% {
+    transform: rotate(8deg);
+  }
+  80% {
+    transform: rotate(-6deg);
+  }
+  86% {
+    transform: rotate(4deg);
+  }
+  92% {
+    transform: rotate(-2deg);
+  }
+}
+
+/* --- on the way: dark-turquoise loader, icon travelling --- */
+.order-live[data-order-status="on-the-way"] {
+  --order-accent: #8cbab5;
+}
+.order-live[data-order-status="on-the-way"] .order-live__ico {
+  animation: order-live-ride 1.9s ease-in-out infinite;
+}
+@keyframes order-live-ride {
+  0%,
+  100% {
+    transform: translateX(-2px);
+  }
+  50% {
+    transform: translateX(2px) translateY(-1px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .order-live__arc,
+  .order-live__ico {
+    animation: none;
+  }
+}
+@media (max-width: 639px) {
+  .order-live {
+    flex-wrap: wrap;
+  }
+  .order-live__body {
+    flex: 1 1 auto;
+  }
+  .order-live .btn {
+    flex: 1 0 100%;
+    justify-content: center;
+  }
+}
+
 /* Count / amount tag on an account-nav item (favourites, wallet,
    points, vouchers). ms-auto pushes it to the far edge in the sidebar;
    in the mobile pill row the anchor is content-sized so it just
