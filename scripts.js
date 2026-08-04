@@ -1929,16 +1929,19 @@
     modal.querySelector("[data-voucher-confirm]").addEventListener("click", () => {
       if (!pending) return;
       const v = VOUCHERS.find((x) => String(x.id) === pending.dataset.voucherId);
+      let before = null;
       if (v && !v.used) {
+        before = walletBalance();
         v.used = true;
         v.usedOn = isoToday();
         addVoucherRedeemed(v.value);
-        syncWalletBalance(document);
       }
       pending = null;
       render();
       closeOverlay();
       celebrateVoucher();
+      /* after the modal is out of the way, so the balance is on screen */
+      if (before !== null) setTimeout(() => animateWalletCredit(before, walletBalance()), 260);
     });
 
     // Add by code → validates against the demo code table.
@@ -2067,6 +2070,49 @@
   function syncWalletBalance(scope) {
     (scope || document).querySelectorAll("[data-wallet-balance]").forEach((el) => {
       el.textContent = egp(walletBalance());
+    });
+  }
+
+  /* Counts every wallet figure from one balance to the next instead of
+     swapping the number, and floats the credited amount out of it — the
+     point of activating a voucher is watching the value land. */
+  function animateWalletCredit(from, to) {
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const targets = [...document.querySelectorAll("[data-wallet-balance]")];
+    if (!targets.length || to === from) return syncWalletBalance(document);
+    if (reduced) return syncWalletBalance(document);
+
+    const DUR = 1100;
+    const ease = (t) => 1 - Math.pow(1 - t, 3);
+
+    targets.forEach((el) => {
+      /* the +N pill floats out of the figure; needs a positioned anchor */
+      const host = el.offsetParent ? el : null;
+      if (host) {
+        const rect = el.getBoundingClientRect();
+        const pill = document.createElement("span");
+        pill.className = "wallet-credit__delta";
+        pill.textContent = "+" + egp(to - from);
+        pill.style.left = rect.left + rect.width / 2 + "px";
+        pill.style.top = rect.top - 6 + "px";
+        pill.style.position = "fixed";
+        pill.style.transform = "translateX(-50%)";
+        document.body.appendChild(pill);
+        setTimeout(() => pill.remove(), 1600);
+      }
+
+      el.classList.remove("wallet-credit");
+      void el.offsetWidth; /* restart the highlight if it's still running */
+      el.classList.add("wallet-credit");
+
+      const t0 = performance.now();
+      const step = (now) => {
+        const k = Math.min(1, (now - t0) / DUR);
+        el.textContent = egp(from + (to - from) * ease(k));
+        if (k < 1) requestAnimationFrame(step);
+        else el.textContent = egp(to);
+      };
+      requestAnimationFrame(step);
     });
   }
 

@@ -4718,8 +4718,10 @@ input[type="checkbox"]:not(.wallet-toggle__input):checked::after {
   gap: 14px;
   padding: 12px 16px;
   border-radius: 12px;
-  background: #fdecf1; /* accent-50 */
-  border: 1px solid #f3c2cd; /* accent-200 */
+  /* White on the site's grey-3 stroke, same surface as every other card
+     here. The pink now lives only in the title and the + control. */
+  background: #fff;
+  border: 1px solid #dee2e6;
 }
 .voucher__ico {
   position: relative;
@@ -4791,6 +4793,79 @@ input[type="checkbox"]:not(.wallet-toggle__input):checked::after {
   filter: grayscale(1);
   opacity: 0.65;
 }
+/* The wallet figure while a voucher's value counts into it — mint wash
+   and a lift, so the credit is seen landing rather than just appearing. */
+.wallet-credit {
+  display: inline-block;
+  border-radius: 8px;
+  animation: wallet-credit 1.5s ease-out;
+  font-variant-numeric: tabular-nums;
+}
+@keyframes wallet-credit {
+  0% {
+    transform: scale(1);
+    background: rgba(140, 186, 181, 0);
+    box-shadow: 0 0 0 0 rgba(140, 186, 181, 0);
+  }
+  18% {
+    transform: scale(1.06);
+    background: rgba(231, 255, 252, 0.95);
+    box-shadow: 0 0 0 8px rgba(231, 255, 252, 0.95);
+  }
+  70% {
+    transform: scale(1.03);
+    background: rgba(231, 255, 252, 0.8);
+    box-shadow: 0 0 0 8px rgba(231, 255, 252, 0.8);
+  }
+  100% {
+    transform: scale(1);
+    background: rgba(140, 186, 181, 0);
+    box-shadow: 0 0 0 0 rgba(140, 186, 181, 0);
+  }
+}
+/* the amount that just arrived, floating up out of the balance */
+.wallet-credit__delta {
+  position: absolute;
+  z-index: 5;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #209b34;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 18px;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: wallet-delta 1.5s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+@keyframes wallet-delta {
+  0% {
+    opacity: 0;
+    transform: translateY(4px) scale(0.9);
+  }
+  22% {
+    opacity: 1;
+    transform: translateY(-6px) scale(1);
+  }
+  70% {
+    opacity: 1;
+    transform: translateY(-16px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.96);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wallet-credit,
+  .wallet-credit__delta {
+    animation: none;
+  }
+  .wallet-credit__delta {
+    display: none;
+  }
+}
+
 .voucher-empty {
   padding: 18px;
   border: 1px dashed #dee2e6;
