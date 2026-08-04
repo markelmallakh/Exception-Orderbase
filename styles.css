@@ -4245,6 +4245,17 @@ input[type="checkbox"]:not(.wallet-toggle__input):checked::after {
   border-radius: 11.4px 100px 100px 11.4px;
   background: #fff;
   filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1));
+  /* the dashboard renders this as an <a> to the order; on the order page
+     itself it stays a plain div, so the styling has to suit both */
+  color: inherit;
+  text-decoration: none;
+  transition:
+    border-color 0.18s ease,
+    filter 0.18s ease;
+}
+a.ord-status__card:hover {
+  border-color: #a8abaf;
+  filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.14));
 }
 .ord-status__body {
   display: flex;
