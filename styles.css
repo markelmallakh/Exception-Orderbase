@@ -3402,7 +3402,7 @@ blockquote {
   display: inline-flex;
   align-items: center;
   padding: 4px;
-  border-radius: 6px;
+  border-radius: 999px; /* full pill — track and thumb both, all breakpoints */
   border: 0;
   background: #ffffff;
   box-shadow: 0 0 12px rgba(0, 0, 0, 0.12); /* even, low-Y — wraps the track */
@@ -3415,7 +3415,7 @@ blockquote {
   bottom: 4px;
   left: 0;
   width: 0;
-  border-radius: 4px;
+  border-radius: 999px;
   background: #182325; /* primaryDark */
   opacity: 0;
   transform: translateX(0);
@@ -3440,7 +3440,7 @@ blockquote {
   color: #6f7276; /* secondary text */
   cursor: pointer;
   white-space: nowrap;
-  border-radius: 4px;
+  border-radius: 999px;
   transition: color 0.25s ease;
 }
 .segmented > button:hover:not(.is-active) {

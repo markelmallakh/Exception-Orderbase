@@ -94,11 +94,16 @@
           <div class="flex flex-col items-center gap-6 md:gap-10" data-tabs>
             <div class="flex flex-col items-center gap-6 w-full">
               <h2 class="font-semibold text-[28px] md:text-[40px] text-textSecondary text-center">Perfect Picks for You</h2>
-              <div class="segmented text-sm font-medium" data-segmented role="tablist">
-                <span class="segmented__thumb" aria-hidden="true"></span>
-                <button type="button" class="tab-btn is-active px-4 md:px-5 py-2.5" data-tab="best" role="tab">Best Selling</button>
-                <button type="button" class="tab-btn px-4 md:px-5 py-2.5" data-tab="new" role="tab">New Arrivals</button>
-                <button type="button" class="tab-btn px-4 md:px-5 py-2.5" data-tab="rec" role="tab">Recommended</button>
+              <!-- Scroll wrapper: the three labels outrun a 375px screen, and
+                   .segmented is overflow:hidden for the thumb, so without this
+                   "Recommended" was clipped and unreachable on phones. -->
+              <div class="segmented-scroll no-scrollbar">
+                <div class="segmented text-sm font-medium" data-segmented role="tablist">
+                  <span class="segmented__thumb" aria-hidden="true"></span>
+                  <button type="button" class="tab-btn is-active px-4 md:px-5 py-2.5" data-tab="best" role="tab">Best Selling</button>
+                  <button type="button" class="tab-btn px-4 md:px-5 py-2.5" data-tab="new" role="tab">New Arrivals</button>
+                  <button type="button" class="tab-btn px-4 md:px-5 py-2.5" data-tab="rec" role="tab">Recommended</button>
+                </div>
               </div>
             </div>
 
