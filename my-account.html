@@ -112,11 +112,11 @@
                  driven by data-order-status ("preparing" | "on-the-way");
                  the loader colour and the icon animation follow from it. -->
             <!-- Live order (Figma 6182-34439). Present only while an order
-                 is in flight; data-order-status drives the whole card. -->
+                 is in flight, so the dashboard uses just the four live
+                 statuses: preparing | on-the-way | ready-to-pick |
+                 scheduled. "delivered" belongs on the order page, not
+                 here — a finished order isn't something to track. -->
             <div class="ord-status" data-order-status-widget data-order-status="preparing" data-ord-demo>
-              <button type="button" class="ord-status__cancel" data-ord-cancel aria-label="Dismiss">
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
-              </button>
               <div class="ord-status__card">
                 <div class="ord-status__body">
                   <span class="ord-status__pill" data-ord-pill>Preparing</span>

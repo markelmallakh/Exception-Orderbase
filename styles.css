@@ -4228,32 +4228,6 @@ input[type="checkbox"]:not(.wallet-toggle__input):checked::after {
   align-items: center;
   width: 100%;
 }
-/* the pink panel that sits behind the card on delivered / scheduled */
-.ord-status__cancel {
-  position: absolute;
-  inset-inline-end: 0;
-  top: 0;
-  bottom: 0;
-  display: none;
-  align-items: center;
-  justify-content: flex-end;
-  width: 127px;
-  padding-inline-end: 22px;
-  border-start-end-radius: 100px;
-  border-end-end-radius: 100px;
-  background: #db336c;
-  /* sits behind the card, so only its round right end is ever seen */
-  color: #fff;
-  cursor: pointer;
-}
-.ord-status__cancel svg {
-  width: 26px;
-  height: 26px;
-}
-.ord-status[data-order-status="delivered"] .ord-status__cancel,
-.ord-status[data-order-status="scheduled"] .ord-status__cancel {
-  display: flex;
-}
 /* the white card */
 .ord-status__card {
   position: relative;
@@ -4271,12 +4245,6 @@ input[type="checkbox"]:not(.wallet-toggle__input):checked::after {
   border-radius: 11.4px 100px 100px 11.4px;
   background: #fff;
   filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1));
-}
-/* delivered / scheduled stop short so the pink cancel strip shows
-   through on the right (62px, matching the design's 396/334 overlap) */
-.ord-status[data-order-status="delivered"] .ord-status__card,
-.ord-status[data-order-status="scheduled"] .ord-status__card {
-  margin-inline-end: 62px;
 }
 .ord-status__body {
   display: flex;

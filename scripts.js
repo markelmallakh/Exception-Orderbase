@@ -3952,9 +3952,6 @@
       if (el.dataset.ordReady) return;
       el.dataset.ordReady = "1";
       paintOrderStatus(el);
-      /* dismiss the finished / scheduled card from its pink end-cap */
-      const cancel = el.querySelector("[data-ord-cancel]");
-      if (cancel) cancel.addEventListener("click", () => el.remove());
       /* demo only: walk preparing -> on the way so both can be seen */
       if (el.hasAttribute("data-ord-demo") && el.getAttribute("data-order-status") === "preparing") {
         setTimeout(() => {

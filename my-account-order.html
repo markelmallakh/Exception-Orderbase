@@ -106,13 +106,12 @@
             </div>
 
             <!-- Order status (Figma 6182-34439) — the same widget the
-                 dashboard uses, sitting at the top of the order. Set
-                 data-order-status to preparing | on-the-way |
-                 ready-to-pick | delivered | scheduled. -->
+                 dashboard uses, and the ONLY status indicator here now:
+                 the old illustration hero and 4-step timeline were
+                 removed in favour of it. Set data-order-status to
+                 preparing | on-the-way | ready-to-pick | delivered |
+                 scheduled. -->
             <div class="ord-status" data-order-status-widget data-order-status="delivered">
-              <button type="button" class="ord-status__cancel" data-ord-cancel aria-label="Dismiss">
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
-              </button>
               <div class="ord-status__card">
                 <div class="ord-status__body">
                   <span class="ord-status__pill" data-ord-pill>Delivered</span>
@@ -136,45 +135,6 @@
             </div>
 
             <div class="flex w-full max-w-[760px] flex-col gap-8 rounded-xl bg-white p-6 shadow-[0px_0px_6px_rgba(0,0,0,0.08)] md:p-8">
-
-              <!-- Status hero + stepper -->
-              <div class="flex flex-col items-center gap-4">
-                <div class="relative h-[130px] w-[130px]">
-                  <img src="images/icons/delivery-scooter.webp" alt="Delivered" class="w-full h-full object-contain" />
-                </div>
-                <span class="text-lg font-medium text-success capitalize">Delivered</span>
-              </div>
-
-              <!-- Order status timeline / stepper -->
-              <div class="relative pt-2">
-                <!-- track -->
-                <div class="absolute top-[20px] left-[12.5%] right-[12.5%] h-0.5 bg-gray-200"></div>
-                <div class="absolute top-[20px] left-[12.5%] right-[12.5%] h-0.5 bg-success"></div>
-                <ol class="relative flex justify-between">
-                  <li class="flex w-1/4 flex-col items-center gap-2 text-center">
-                    <div class="z-10 flex h-9 w-9 items-center justify-center rounded-full bg-success text-white ring-4 ring-white"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="m5 13 4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-                    <span class="text-xs md:text-sm font-medium text-textSecondary">Order placed</span>
-                    <span class="text-[11px] text-gray-500">Jul 4</span>
-                  </li>
-                  <li class="flex w-1/4 flex-col items-center gap-2 text-center">
-                    <div class="z-10 flex h-9 w-9 items-center justify-center rounded-full bg-success text-white ring-4 ring-white"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="m5 13 4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-                    <span class="text-xs md:text-sm font-medium text-textSecondary">Preparing</span>
-                    <span class="text-[11px] text-gray-500">Jul 5</span>
-                  </li>
-                  <li class="flex w-1/4 flex-col items-center gap-2 text-center">
-                    <div class="z-10 flex h-9 w-9 items-center justify-center rounded-full bg-success text-white ring-4 ring-white"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="m5 13 4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-                    <span class="text-xs md:text-sm font-medium text-textSecondary">On the way</span>
-                    <span class="text-[11px] text-gray-500">Jul 6</span>
-                  </li>
-                  <li class="flex w-1/4 flex-col items-center gap-2 text-center">
-                    <div class="z-10 flex h-9 w-9 items-center justify-center rounded-full bg-success text-white ring-4 ring-white"><svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="m5 13 4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-                    <span class="text-xs md:text-sm font-medium text-success">Delivered</span>
-                    <span class="text-[11px] text-gray-500">Jul 6</span>
-                  </li>
-                </ol>
-              </div>
-
-              <div class="h-[2px] w-full bg-border-light"></div>
 
               <!-- Ordered items -->
               <div class="flex flex-col gap-4">
