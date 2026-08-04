@@ -4208,128 +4208,207 @@ input[type="checkbox"]:not(.wallet-toggle__input):checked::after {
   color: #182325;
 }
 
-/* ---------------------------------------------------------------
-   LIVE ORDER WIDGET (account dashboard) — only rendered while an
-   order is in flight. A circular loader turns around the status
-   icon: pink while the kitchen is preparing, dark turquoise once
-   it's on the way. The icon shakes during preparing so the card
-   catches the eye.
-   --------------------------------------------------------------- */
-.order-live {
-  /* one accent drives the loader; the status switches the value */
-  --order-accent: #db336c;
+/* =================================================================
+   ORDER STATUS WIDGET (Figma 6182-34439) — the live-order pill shown
+   on the dashboard and at the top of a single order.
+
+   Shape is the design's: 8px on the left corners, fully round on the
+   right, so the status badge reads as a cap on the end. Everything
+   is driven by data-order-status on the root; --ord-accent carries
+   the per-status colour.
+
+   Statuses: preparing · on-the-way · ready-to-pick · delivered ·
+   scheduled. The last two also reveal a pink cancel panel behind the
+   right edge.
+   ================================================================= */
+.ord-status {
+  --ord-accent: #db336c;
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 16px 20px;
-  border: 1px solid #dee2e6;
-  border-radius: 16px;
-  background: #fff;
+  width: 100%;
 }
-.order-live__ring {
+/* the pink panel that sits behind the card on delivered / scheduled */
+.ord-status__cancel {
+  position: absolute;
+  inset-inline-end: 0;
+  top: 0;
+  bottom: 0;
+  display: none;
+  align-items: center;
+  justify-content: flex-end;
+  width: 127px;
+  padding-inline-end: 22px;
+  border-start-end-radius: 100px;
+  border-end-end-radius: 100px;
+  background: #db336c;
+  color: #fff;
+  cursor: pointer;
+}
+.ord-status__cancel svg {
+  width: 26px;
+  height: 26px;
+}
+.ord-status[data-order-status="delivered"] .ord-status__cancel,
+.ord-status[data-order-status="scheduled"] .ord-status__cancel {
+  display: flex;
+}
+/* the white card */
+.ord-status__card {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 4px 4px 4px 8px;
+  border: 1px solid #dee2e6;
+  border-radius: 8px 100px 100px 8px;
+  background: #fff;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1));
+}
+/* delivered / scheduled stop short so the pink cancel strip shows
+   through on the right (62px, matching the design's 396/334 overlap) */
+.ord-status[data-order-status="delivered"] .ord-status__card,
+.ord-status[data-order-status="scheduled"] .ord-status__card {
+  margin-inline-end: 62px;
+}
+.ord-status__body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-start;
+  min-width: 0;
+}
+.ord-status__pill {
+  padding: 0 2px;
+  border-radius: 2px;
+  background: var(--ord-accent);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+.ord-status__when {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+.ord-status__when-label {
+  font-size: 12px;
+  color: #6f7276;
+}
+.ord-status__when-value {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: #182325;
+}
+/* points earned / on the way */
+.ord-status__points {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 16px;
+  padding-inline-end: 8px;
+  border-radius: 32px;
+  background: #e7fffc;
+  white-space: nowrap;
+}
+.ord-status__points img {
+  width: 30px;
+  height: 29px;
+  object-fit: contain;
+}
+.ord-status__points b {
+  font-size: 12px;
+  font-weight: 600;
+  color: #db336c;
+}
+.ord-status__points span {
+  font-size: 12px;
+  color: #6f7276;
+}
+/* --- the round badge on the end --- */
+.ord-status__badge {
   position: relative;
   flex: none;
   display: grid;
   place-items: center;
   width: 72px;
   height: 72px;
+  border-radius: 100px;
+  background: #dee2e6;
+  box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.4);
 }
-.order-live__ring svg {
+.ord-status__badge img {
+  width: 62px;
+  height: 62px;
+  object-fit: contain;
+}
+/* the loader ring drawn over the badge */
+.ord-status__ring {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   transform: rotate(-90deg);
+  pointer-events: none;
 }
-.order-live__track {
+.ord-status__ring circle {
   fill: none;
-  stroke: #f3f4f6;
-  stroke-width: 5;
-}
-.order-live__arc {
-  fill: none;
-  stroke: var(--order-accent);
-  stroke-width: 5;
+  stroke-width: 4;
   stroke-linecap: round;
-  /* a quarter-ish arc that spins — reads as "working on it" without
-     pretending to know a real percentage */
-  stroke-dasharray: 56 145;
-  transform-origin: 50% 50%;
-  animation: order-live-spin 1.25s linear infinite;
-  transition: stroke 0.35s ease;
 }
-@keyframes order-live-spin {
+/* delivered has no loader — it's finished, and the badge goes turquoise */
+.ord-status[data-order-status="delivered"] .ord-status__badge {
+  background: #b0ded9;
+  box-shadow: none;
+}
+.ord-status[data-order-status="delivered"] .ord-status__ring {
+  display: none;
+}
+/* spin only while something is actually in progress */
+.ord-status[data-order-status="preparing"] .ord-status__ring,
+.ord-status[data-order-status="on-the-way"] .ord-status__ring {
+  animation: ord-spin 1.3s linear infinite;
+}
+@keyframes ord-spin {
   to {
-    transform: rotate(360deg);
+    transform: rotate(270deg);
   }
 }
-.order-live__ico {
-  width: 40px;
-  height: 40px;
-  object-fit: contain;
+/* the icon shakes while the kitchen is working on it */
+.ord-status[data-order-status="preparing"] .ord-status__badge img {
+  animation: ord-shake 1.6s ease-in-out infinite;
 }
-.order-live__body {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-  flex: 1;
-}
-.order-live__eyebrow {
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-  color: #a8abaf;
-}
-.order-live__status {
-  font-size: 17px;
-  font-weight: 600;
-  color: #182325;
-}
-.order-live__meta {
-  font-size: 13px;
-  color: #6f7276;
-}
-
-/* --- preparing: pink loader, icon shaking --- */
-.order-live[data-order-status="preparing"] {
-  --order-accent: #db336c;
-}
-.order-live[data-order-status="preparing"] .order-live__ico {
-  animation: order-live-shake 1.5s ease-in-out infinite;
-}
-@keyframes order-live-shake {
+@keyframes ord-shake {
   0%,
-  62%,
+  60%,
   100% {
     transform: rotate(0deg);
   }
-  68% {
+  66% {
     transform: rotate(-9deg);
   }
-  74% {
+  73% {
     transform: rotate(8deg);
   }
   80% {
     transform: rotate(-6deg);
   }
-  86% {
-    transform: rotate(4deg);
-  }
-  92% {
-    transform: rotate(-2deg);
+  87% {
+    transform: rotate(3deg);
   }
 }
-
-/* --- on the way: dark-turquoise loader, icon travelling --- */
-.order-live[data-order-status="on-the-way"] {
-  --order-accent: #8cbab5;
+.ord-status[data-order-status="on-the-way"] .ord-status__badge img {
+  animation: ord-ride 1.9s ease-in-out infinite;
 }
-.order-live[data-order-status="on-the-way"] .order-live__ico {
-  animation: order-live-ride 1.9s ease-in-out infinite;
-}
-@keyframes order-live-ride {
+@keyframes ord-ride {
   0%,
   100% {
     transform: translateX(-2px);
@@ -4338,23 +4417,18 @@ input[type="checkbox"]:not(.wallet-toggle__input):checked::after {
     transform: translateX(2px) translateY(-1px);
   }
 }
-
 @media (prefers-reduced-motion: reduce) {
-  .order-live__arc,
-  .order-live__ico {
-    animation: none;
+  .ord-status__ring,
+  .ord-status__badge img {
+    animation: none !important;
   }
 }
-@media (max-width: 639px) {
-  .order-live {
-    flex-wrap: wrap;
+@media (max-width: 420px) {
+  .ord-status__when-value {
+    font-size: 13px;
   }
-  .order-live__body {
-    flex: 1 1 auto;
-  }
-  .order-live .btn {
-    flex: 1 0 100%;
-    justify-content: center;
+  .ord-status__points span {
+    font-size: 11px;
   }
 }
 

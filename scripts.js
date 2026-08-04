@@ -3869,53 +3869,102 @@
   window.kBurst = promoPaperBurst;
 
   /* ---------------------------------------------------------------
-     LIVE ORDER WIDGET — swaps the dashboard card between the two
-     states. Everything visual hangs off data-order-status, so a real
-     build only has to set that attribute; the demo walks it forward
-     once so both states can be seen.
+     ORDER STATUS WIDGET (Figma 6182-34439) — one component for the
+     dashboard's live order and the top of a single order page.
+
+     Everything hangs off data-order-status on [data-order-status-widget];
+     a real build just sets that attribute (and the data-* overrides for
+     time/points). Statuses: preparing · on-the-way · ready-to-pick ·
+     delivered · scheduled.
      --------------------------------------------------------------- */
-  const ORDER_STATES = {
+  const ORD_STATUS = {
     preparing: {
-      ico: "images/icons/preparing.webp",
+      label: "Preparing",
+      pill: "#db336c",
       accent: "#db336c",
-      title: "Preparing your order",
-      meta: "Freshly baked to order — about 25 minutes to go.",
+      ico: "images/icons/preparing.webp",
+      when: "Estimated Arrived At",
+      /* fraction of the ring the loader draws */
+      arc: 0.3,
     },
     "on-the-way": {
-      ico: "images/icons/delivery-scooter.webp",
+      label: "On It's Way",
+      pill: "#182325",
       accent: "#8cbab5",
-      title: "Your order is on its way",
-      meta: "Out for delivery — arriving in about 15 minutes.",
+      ico: "images/icons/delivery-scooter.webp",
+      when: "Estimated Arrived At",
+      arc: 0.72,
+    },
+    "ready-to-pick": {
+      label: "Ready to Pick",
+      pill: "#182325",
+      accent: "#8cbab5",
+      ico: "images/icons/Ready%20to%20pick.webp",
+      when: "Estimated Pickup At",
+      arc: 0.92,
+    },
+    delivered: {
+      label: "Delivered",
+      pill: "#209b34",
+      accent: "#209b34",
+      ico: "images/icons/Ready%20to%20pick.webp",
+      when: "Arrived At",
+      arc: 1,
+      earned: true,
+    },
+    scheduled: {
+      label: "Scheduled",
+      pill: "#db336c",
+      accent: "#db336c",
+      ico: "images/icons/Schedule.webp",
+      when: "Scheduled For",
+      arc: 0.18,
     },
   };
-  function setOrderState(el, key) {
-    const s = ORDER_STATES[key];
-    if (!s) return;
-    el.setAttribute("data-order-status", key);
-    const ico = el.querySelector("[data-order-ico]");
-    const title = el.querySelector("[data-order-title]");
-    const meta = el.querySelector("[data-order-meta]");
-    if (ico) ico.src = s.ico;
-    if (title) title.textContent = s.title;
-    if (meta) meta.textContent = s.meta;
-    /* Paint the arc via the SVG presentation attribute. A CSS `stroke`
-       on the circle was refusing to take here, and the attribute is the
-       one route that reliably wins for SVG geometry. */
-    const arc = el.querySelector(".order-live__arc");
-    if (arc) arc.setAttribute("stroke", s.accent);
+  const ORD_R = 34; /* ring radius inside the 72px badge */
+
+  function paintOrderStatus(el) {
+    const key = el.getAttribute("data-order-status");
+    const cfg = ORD_STATUS[key];
+    if (!cfg) return;
+    el.style.setProperty("--ord-accent", cfg.pill);
+
+    const set = (sel, fn) => {
+      const n = el.querySelector(sel);
+      if (n) fn(n);
+    };
+    set("[data-ord-pill]", (n) => (n.textContent = cfg.label));
+    set("[data-ord-when]", (n) => (n.textContent = el.getAttribute("data-when-label") || cfg.when));
+    set("[data-ord-ico]", (n) => (n.src = cfg.ico));
+    set("[data-ord-points-note]", (n) => {
+      n.textContent = cfg.earned ? "Points Earned" : "Points on their way to you";
+    });
+    /* the loader arc: stroke the fraction this status is through */
+    const circumference = 2 * Math.PI * ORD_R;
+    set("[data-ord-arc]", (n) => {
+      n.setAttribute("stroke", cfg.accent);
+      n.setAttribute("stroke-dasharray", circumference.toFixed(1));
+      n.setAttribute("stroke-dashoffset", (circumference * (1 - cfg.arc)).toFixed(1));
+    });
   }
-  function initOrderLive(scope) {
-    scope.querySelectorAll("[data-order-live]").forEach((el) => {
-      if (el.dataset.orderReady) return;
-      el.dataset.orderReady = "1";
-      setOrderState(el, el.getAttribute("data-order-status") || "preparing");
-      /* demo only: advance once so the second state is visible without
-         hand-editing the attribute. Delete for a real build. */
-      if (el.getAttribute("data-order-status") === "preparing") {
-        setTimeout(() => setOrderState(el, "on-the-way"), 9000);
+  function initOrderStatus(scope) {
+    scope.querySelectorAll("[data-order-status-widget]").forEach((el) => {
+      if (el.dataset.ordReady) return;
+      el.dataset.ordReady = "1";
+      paintOrderStatus(el);
+      /* dismiss the finished / scheduled card from its pink end-cap */
+      const cancel = el.querySelector("[data-ord-cancel]");
+      if (cancel) cancel.addEventListener("click", () => el.remove());
+      /* demo only: walk preparing -> on the way so both can be seen */
+      if (el.hasAttribute("data-ord-demo") && el.getAttribute("data-order-status") === "preparing") {
+        setTimeout(() => {
+          el.setAttribute("data-order-status", "on-the-way");
+          paintOrderStatus(el);
+        }, 9000);
       }
     });
   }
+  window.kOrderStatus = paintOrderStatus;
 
   /* ---------------------------------------------------------------
      PASSWORDLESS AUTH — mobile number + one-time code.
@@ -4197,7 +4246,7 @@
     initReferralCopy(scope);
     initHScroll(scope);
     initOtpAuth(scope);
-    initOrderLive(scope);
+    initOrderStatus(scope);
     initShotCompare();
   };
 
