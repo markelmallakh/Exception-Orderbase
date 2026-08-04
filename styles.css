@@ -4473,6 +4473,28 @@ input[type="checkbox"]:not(.wallet-toggle__input):checked::after {
       0 12px 32px rgba(0, 0, 0, 0.35);
   }
 }
+/* The tag lands on its final figure — a small pop marks the arrival, and
+   tabular figures stop the width jittering while it counts. */
+.is-spotlit .acct-count {
+  font-variant-numeric: tabular-nums;
+}
+.is-spotlit .acct-count.is-counted {
+  animation: spotlit-count-pop 0.42s cubic-bezier(0.34, 1.5, 0.5, 1);
+}
+@keyframes spotlit-count-pop {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  45% {
+    transform: scale(1.14);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .is-spotlit .acct-count.is-counted {
+    animation: none;
+  }
+}
 .spotlight__tip {
   position: fixed;
   z-index: 10003;

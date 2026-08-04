@@ -349,7 +349,7 @@
 
           const close = modal.querySelector("[data-close]");
           if (close) close.click();
-          setTimeout(() => spotlightWallet(pts, egp), 480);
+          setTimeout(() => spotlightWallet(pts, egp, state.wallet - egp, state.wallet), 480);
         });
 
         /* ---- balances ---- */
@@ -369,7 +369,7 @@
         }
 
         /* ---- spotlight: dim the page, light the Wallet tab, explain ---- */
-        function spotlightWallet(pts, egp) {
+        function spotlightWallet(pts, egp, walletFrom, walletTo) {
           const target =
             [...document.querySelectorAll("[data-wallet-tab]")].find((el) => el.offsetParent !== null) ||
             document.querySelector("[data-wallet-tab]");
@@ -416,9 +416,36 @@
             tip.style.left = left + "px";
           };
           place();
+
+          /* The tag starts on the OLD balance and counts up to the new one
+             once the spotlight is visible, so the credit is seen landing
+             rather than just being reported. The real tab underneath is
+             already on the new figure. */
+          const tag = clone.querySelector(".acct-count");
+          const money = (n) => "EGP " + group(Math.round(n));
+          if (tag) tag.textContent = money(walletFrom);
+          const countUp = () => {
+            if (!tag) return;
+            if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
+              tag.textContent = money(walletTo);
+              return;
+            }
+            const dur = 900;
+            const t0 = performance.now();
+            const ease = (t) => 1 - Math.pow(1 - t, 3);
+            const step = (now) => {
+              const k = Math.min(1, (now - t0) / dur);
+              tag.textContent = money(walletFrom + (walletTo - walletFrom) * ease(k));
+              if (k < 1) requestAnimationFrame(step);
+              else tag.classList.add("is-counted");
+            };
+            requestAnimationFrame(step);
+          };
+
           requestAnimationFrame(() => {
             place();
             wrap.classList.add("is-on");
+            setTimeout(countUp, 260);
           });
           addEventListener("resize", place);
           addEventListener("scroll", place, true);
