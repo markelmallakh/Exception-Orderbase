@@ -443,9 +443,9 @@
     const catItems = CATEGORY_NAV.map((c) => {
       const isCurrent = !!c.url && c.url === currentPath;
       return `
-        <a href="${pageHref(c.url)}" class="catnav-item flex flex-col items-center justify-center gap-0.5 px-2.5 py-1 rounded-[10px] shrink-0 hover:bg-primary-50 transition-colors${isCurrent ? " is-current" : ""}"${isCurrent ? ' aria-current="page"' : ""}>
-          <img src="images/icons/${c.icon}" alt="" width="40" height="40" class="size-10 shrink-0" />
-          <span class="text-primaryDark whitespace-nowrap ${c.big ? "text-xs font-medium" : "text-[11px] font-semibold"}">${esc(c.label)}</span>
+        <a href="${pageHref(c.url)}" class="catnav-item flex flex-col items-center justify-center gap-0.5 px-1.5 py-1 md:px-2.5 rounded-[10px] shrink-0 hover:bg-primary-50 transition-colors${isCurrent ? " is-current" : ""}"${isCurrent ? ' aria-current="page"' : ""}>
+          <img src="images/icons/${c.icon}" alt="" width="40" height="40" class="size-8 md:size-10 shrink-0" />
+          <span class="text-primaryDark whitespace-nowrap text-[9px] md:${c.big ? "text-xs" : "text-[11px]"} ${c.big ? "font-medium" : "font-semibold"}">${esc(c.label)}</span>
         </a>`;
     }).join("");
 
@@ -453,7 +453,7 @@
       ? ""
       : `<div data-navbar class="w-full bg-white shadow-[0px_4px_8px_rgba(0,0,0,0.08)] relative z-30">
            <div class="relative mx-auto max-w-[1512px]">
-             <div data-catnav-track class="flex items-center gap-5 px-[60px] py-2 overflow-x-auto no-scrollbar scroll-smooth">
+             <div data-catnav-track class="flex items-center gap-1.5 px-3 py-1.5 md:gap-5 md:px-[60px] md:py-2 overflow-x-auto no-scrollbar scroll-smooth">
                ${catItems}
              </div>
              <div class="pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 hidden md:flex items-center justify-between px-6">
@@ -907,9 +907,9 @@
     <!-- Floating cart — sticks directly under the category bar once scrolled.
          The dark box is masked (.cart-knockout) so the badge is subtracted
          from it; the badge itself is a sibling on top (unmasked). -->
-    <button type="button" data-open="cart" data-floating-cart aria-label="Cart" class="floating-cart fixed top-[100px] z-[80] size-[56px]">
+    <button type="button" data-open="cart" data-floating-cart aria-label="Cart" class="floating-cart fixed top-[100px] z-[80] size-[44px] md:size-[56px]">
       <img src="images/icons/cart-box.webp" alt="" class="w-full h-full object-contain drop-shadow-md" />
-      <span class="absolute -bottom-1 -end-1 grid place-items-center bg-primaryDark text-white text-[11px] font-semibold rounded-full size-[22px]" data-cart-count>4</span>
+      <span class="absolute -bottom-1 -end-1 grid place-items-center bg-primaryDark text-white text-[10px] md:text-[11px] font-semibold rounded-full size-[18px] md:size-[22px]" data-cart-count>4</span>
     </button>`;
   }
 

@@ -1098,6 +1098,15 @@ body[data-purchased="true"] .review-gate-hint {
   max-width: 132px;
   text-align: center;
 }
+/* Phones: that 104px floor fits barely three categories on a 375px screen,
+   so the row reads as a dead end rather than something to swipe. Shrink the
+   footprint (and the gap/padding in the track) to show ~5 and imply more. */
+@media (max-width: 767px) {
+  .catnav-item {
+    min-width: 56px;
+    max-width: 92px;
+  }
+}
 .catnav-item span {
   display: block;
   width: 100%;
@@ -5418,6 +5427,15 @@ a.ord-status__card:hover {
   width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
+  /* The track's shadow is a 12px blur with no offset, and a scroll container
+     clips to its padding box — with no padding it sheared the glow flat on
+     every side. Pad by the blur radius, then pull the box back by the same
+     amount so the surrounding rhythm is unchanged.
+     Vertical spacing lives on a PARENT wrapper, not here: Tailwind's margin
+     utilities load after this file and would win over margin-block, leaving
+     the padding uncancelled. */
+  padding: 14px;
+  margin: -14px;
 }
 /* display:flex (not the base inline-flex) so margin-inline:auto actually
    centres it — auto margins do nothing on an inline-level box. */
