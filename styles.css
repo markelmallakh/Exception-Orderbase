@@ -4420,31 +4420,52 @@ a.ord-status__card:hover {
    it cost. Facts are label/value pairs on a grey bed rather than the
    old full-width stacked sections, which ran very tall.
    ================================================================= */
+/* One white card holding both columns; a hairline splits them, and the
+   sections inside each column are separated by their own hairlines. */
 .ord-detail {
   display: grid;
-  gap: 20px;
   width: 100%;
-}
-@media (min-width: 1024px) {
-  .ord-detail {
-    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
-    gap: 24px;
-  }
+  border: 1px solid #dee2e6;
+  /* same radius as the status widget above and the dashboard's stat
+     cards, so every box on the account surface matches */
+  border-radius: 11.4px;
+  background: #fff;
+  overflow: hidden;
 }
 .ord-col {
   display: flex;
   flex-direction: column;
-  gap: 20px;
   min-width: 0;
+  padding: 20px 22px;
+}
+/* stacked: the divider runs across */
+.ord-col + .ord-col {
+  border-top: 1px solid #dee2e6;
+}
+@media (min-width: 1024px) {
+  .ord-detail {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  }
+  /* side by side: the divider stands up between them */
+  .ord-col + .ord-col {
+    border-top: 0;
+    border-inline-start: 1px solid #dee2e6;
+  }
 }
 .ord-block {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding: 18px;
-  border: 1px solid #dee2e6;
-  border-radius: 14px;
-  background: #fff;
+  padding: 18px 0;
+}
+.ord-block + .ord-block {
+  border-top: 1px solid #eef0f2;
+}
+.ord-col > .ord-block:first-child {
+  padding-top: 0;
+}
+.ord-col > .ord-block:last-child {
+  padding-bottom: 0;
 }
 .ord-block__title {
   font-size: 15px;
@@ -4509,37 +4530,21 @@ a.ord-status__card:hover {
   color: #6f7276;
 }
 
-/* ---- label / value facts on a grey bed ---- */
-.ord-facts {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 10px 12px;
-  border-radius: 10px;
-  background: #f9fafb;
+/* ---- a value with its detail in grey underneath, no table ---- */
+.ord-lead {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #182325;
 }
-.ord-facts > div {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 5px 0;
-}
-.ord-facts > div + div {
-  border-top: 1px solid #eef0f2;
-}
-.ord-facts dt {
-  flex: none;
-  font-size: 12px;
+.ord-sub {
+  font-size: 13px;
+  line-height: 1.45;
   color: #6f7276;
 }
-.ord-facts dd {
-  min-width: 0;
-  font-size: 13px;
-  font-weight: 500;
-  color: #182325;
-  text-align: end;
-  word-break: break-word;
+.ord-block > .ord-lead + .ord-sub,
+.ord-block > .ord-sub + .ord-sub {
+  margin-top: -8px; /* the block's 12px gap is too much between these */
 }
 
 /* ---- gift banner ---- */
