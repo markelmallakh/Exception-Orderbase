@@ -2032,6 +2032,57 @@ body.shot-white [data-shot-img] {
   height: 100%;
   object-fit: cover;
 }
+/* Secondary action inside an option card (Themed Topper → pick which
+   figures). Sits under the label and reads as a link, not a button, so
+   it doesn't compete with selecting the card itself. */
+.myc-opt__link {
+  font-size: 12px;
+  font-weight: 600;
+  color: #db336c;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+.myc-opt__link:hover {
+  color: #c22a5d;
+}
+
+/* Chosen sugar-paste figures, pinned over the model box's top-left. */
+.cake-picks {
+  position: absolute;
+  top: 14px;
+  inset-inline-start: 14px;
+  z-index: 3;
+  display: flex;
+  gap: 6px;
+}
+.cake-picks[hidden] {
+  display: none;
+}
+.cake-picks__item {
+  display: block;
+  width: 40px;
+  height: 40px;
+  overflow: hidden;
+  border: 1.5px solid #dee2e6;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(24, 35, 37, 0.12);
+}
+.cake-picks__item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Fruit topping — several pieces laid over the cake's top face. */
+.c3-fruit {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+}
+
 /* Top-view footprint glyph on the Size cards — proportions mirror the
    real cm dimensions so relative size differences read at a glance. */
 .myc-foot {

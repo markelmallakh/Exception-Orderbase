@@ -40,6 +40,8 @@
           <div class="mx-auto max-w-[1220px] grid gap-6 lg:grid-cols-[minmax(0,0.86fr)_minmax(0,1.14fr)] lg:items-stretch" data-cake-builder>
             <!-- Live 3D cake on the studio floor -->
             <div class="relative overflow-hidden rounded-[24px] border border-gray-300 bg-white p-6 flex flex-col items-center justify-center">
+              <!-- chosen sugar-paste figures, pinned to the stage corner -->
+              <div class="cake-picks" data-cake-picks hidden></div>
               <div class="cake-stage w-full" style="min-height:380px">
                 <div class="cake-drop w-full" style="height:340px">
                   <div class="c3 c3--live" id="liveCake"></div>
@@ -223,6 +225,14 @@
            Add to Cart stayed dimmed. */
         touched.shape = true;
         touched.type = true;
+        /* The optional steps default to their "Without ..." option, so the
+           flow can be walked with Next alone and nothing is left dangling. */
+        touched.nuts = true;
+        touched.fruits = true;
+        touched.style = true;
+        touched.msgOn = true;
+        state.style = "none";
+        state.msgOn = "0";
         /* an option is highlighted only once the customer has chosen it */
         const sel = (key, val) => !!touched[key] && state[key] === val;
         let tab = 0;
@@ -291,7 +301,8 @@
         function setGeometry(root, s, mini) {
           const size = SIZES[s.shape].find((x) => x.id === s.size) || SIZES[s.shape][0];
           const hCm = parseInt(s.height, 10) || 8;
-          const K = mini ? 0.42 : 1;
+          /* live cake sits a little larger than 1:1 so it reads as the hero */
+          const K = mini ? 0.42 : 1.18;
           const chh = (16 + hCm * 4.6) * K;
           let shw;
           if (s.shape === "circle") {
@@ -346,16 +357,34 @@
           rec.word.style.color = lum(frost) > 0.55 ? "#7a4a2a" : "#fff6ea";
           /* Topper: chosen sugar-paste figures stand on the cake; falls back
              to a single star until the user picks any. */
-          let top = "";
-          if (s.style === "fruits") top = "🍓";
-          else if (s.style === "themed") {
+          rec.topper.innerHTML = "";
+          rec.topper.style.fontSize = "";
+          if (s.style === "fruits") {
+            /* Scattered over the top rather than one piece in the middle —
+               laid out on the same squashed ellipse as the cake's top face
+               so they sit ON it, not in front of it. */
+            const SPOTS = [
+              [0, 0, 1],
+              [-0.62, -0.2, 0.8], [0.62, -0.2, 0.8],
+              [-0.36, 0.26, 0.9], [0.36, 0.26, 0.9],
+              [0, -0.44, 0.72],
+            ];
+            SPOTS.forEach(([x, y, sc]) => {
+              const f = document.createElement("span");
+              f.className = "c3-fruit";
+              f.textContent = "🍓";
+              f.style.transform =
+                "translate(calc(var(--cr) * " + x + "), calc(var(--cr) * " + y * 0.5 + ")) scale(" + sc + ")";
+              rec.topper.appendChild(f);
+            });
+            rec.topper.style.fontSize = "calc(var(--topFs) * 0.5)";
+          } else if (s.style === "themed") {
             const picked = (s.themes || []).map((id) => THEME_MAP[id] && THEME_MAP[id].emoji).filter(Boolean);
-            top = picked.length ? picked.join("") : "⭐";
+            rec.topper.textContent = picked.length ? picked.join("") : "⭐";
+            /* Several figures side by side need to shrink to stay on the cake. */
+            const n = picked.length || 1;
+            rec.topper.style.fontSize = n > 2 ? "calc(var(--topFs) * 0.58)" : n > 1 ? "calc(var(--topFs) * 0.78)" : "";
           }
-          rec.topper.textContent = top;
-          /* Several figures side by side need to shrink so they stay on the cake. */
-          const n = (s.style === "themed" && (s.themes || []).length) || 1;
-          rec.topper.style.fontSize = n > 2 ? "calc(var(--topFs) * 0.58)" : n > 1 ? "calc(var(--topFs) * 0.78)" : "";
         }
         /* Mini preview: a static snapshot of the current cake with overrides. */
         function miniCake(overrides) {
@@ -379,7 +408,7 @@
           setGeometry(liveCake, state, false);
           paintCake(liveCake, state);
           const rec = RIGS.get(liveCake);
-          if (pop && rec.topper.textContent) {
+          if (pop && rec.topper.childNodes.length) {
             rec.topper.classList.remove("drop");
             void rec.topper.offsetWidth;
             rec.topper.classList.add("drop");
@@ -389,6 +418,7 @@
             void liveCake.offsetWidth;
             liveCake.classList.add("is-pop");
           }
+          paintPicks();
           const size = SIZES[state.shape].find((x) => x.id === state.size);
           const bits = [
             SHAPES.find((x) => x.id === state.shape).name + (size ? " " + size.name : ""),
@@ -400,6 +430,22 @@
           if (state.style === "themed" && state.themes.length)
             bits.push(state.themes.length + (state.themes.length > 1 ? " themes" : " theme"));
           summaryEl.textContent = bits.join("  ·  ");
+        }
+
+        /* Thumbnails of the chosen figures, top-left of the model box. */
+        const picksEl = document.querySelector("[data-cake-picks]");
+        function paintPicks() {
+          if (!picksEl) return;
+          const on = state.style === "themed" && state.themes.length;
+          picksEl.hidden = !on;
+          if (!on) return;
+          picksEl.innerHTML = state.themes
+            .map((id) => {
+              const t = THEME_MAP[id];
+              if (!t) return "";
+              return '<span class="cake-picks__item" title="' + t.name + '"><img src="' + t.img + '" alt="' + t.name + '" /></span>';
+            })
+            .join("");
         }
 
         /* ================= Steps ================= */
@@ -527,9 +573,19 @@
             panel.appendChild(amountGrid("fruits", "Fruits", "🍓"));
           } else if (stepKey === "decoStep") {
             panel.appendChild(groupHead("Decoration style", "Optional"));
-            const g = optGrid("grid-cols-2 sm:grid-cols-4");
+            /* 5 styles: 3 on the first row, 2 on the second */
+            const g = optGrid("grid-cols-2 sm:grid-cols-3");
             STYLES.forEach((o) => {
               const c = optCard("style", o.id, sel("style", o.id), true, o.name);
+              /* Themed Topper needs a second action — pick WHICH figures —
+                 so the card carries its own Select link. */
+              if (o.id === "themed") {
+                const pick = document.createElement("span");
+                pick.className = "myc-opt__link";
+                pick.setAttribute("data-open-themes", "");
+                pick.textContent = state.themes.length ? "Change selection" : "Select";
+                c.appendChild(pick);
+              }
               g.appendChild(c);
               addMini(c, { style: o.id, colour: o.id === "none" ? "white" : state.colour, message: "" });
             });
