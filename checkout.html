@@ -339,23 +339,29 @@
                   </span>
                 </label>
 
-                <!-- Step 1 CTA: advances to payment. type="button" so it can't
-                     submit the form (which would jump straight to thank-you). -->
-                <button type="button" data-checkout-next class="btn btn--primary btn--lg w-full justify-center gap-2.5 !text-[18px]">
-                  <span class="text-center">Continue to Payment</span>
-                  <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </button>
+                <!-- Both CTAs live in one wrapper so initCheckoutMobileBar can
+                     relocate them into the fixed bottom bar on phones and put
+                     them back at lg. Keep them inside the <form> either way —
+                     the submit button only works from within it. -->
+                <div data-checkout-actions class="flex flex-col gap-2.5 w-full">
+                  <!-- Step 1 CTA: advances to payment. type="button" so it can't
+                       submit the form (which would jump straight to thank-you). -->
+                  <button type="button" data-checkout-next class="btn btn--primary btn--lg w-full justify-center gap-2.5 !text-[18px]">
+                    <span class="text-center">Continue to Payment</span>
+                    <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </button>
 
-                <!-- Step 2 CTA: the real submit -->
-                <button type="submit" data-checkout-submit hidden class="btn btn--primary btn--lg w-full justify-center gap-2.5 !text-[18px]">
-                  <span class="text-center">Place Order</span>
-                  <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </button>
+                  <!-- Step 2 CTA: the real submit -->
+                  <button type="submit" data-checkout-submit hidden class="btn btn--primary btn--lg w-full justify-center gap-2.5 !text-[18px]">
+                    <span class="text-center">Place Order</span>
+                    <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </button>
+                </div>
               </div>
             </div>
 
             <!-- ============ RIGHT: sticky order summary ============ -->
-            <div class="flex flex-col bg-white border border-gray-300 rounded-[20px] px-4 pb-4 pt-4 lg:p-5 gap-2.5 h-fit w-full lg:max-w-[460px] lg:sticky lg:top-6 self-start">
+            <div data-order-summary class="flex flex-col bg-white border border-gray-300 rounded-[20px] px-4 pb-4 pt-4 lg:p-5 gap-2.5 h-fit w-full lg:max-w-[460px] lg:sticky lg:top-6 self-start">
               <!-- Header -->
               <div class="flex items-center justify-between w-full">
                 <div class="flex items-center gap-2 pb-1">

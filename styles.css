@@ -1712,6 +1712,83 @@ body[data-purchased="true"] .review-gate-hint {
   }
 }
 
+/* =================================================================
+   CHECKOUT MOBILE BAR — the order summary docked to the bottom of the
+   screen on phones. Collapsed it's a total + "+"; tapping expands the
+   real summary card above it. Built by initCheckoutMobileBar(), which
+   MOVES the existing summary and CTA nodes in (never copies them).
+   z-index 70 keeps it under the overlay backdrop (90) and the
+   drawers/modals (100), so opening a picker still dims it.
+   ================================================================= */
+.checkout-bar {
+  display: none;
+}
+@media (max-width: 1023px) {
+  .checkout-bar {
+    display: block;
+    position: fixed;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 70;
+    background: #fff;
+    border-radius: 16px 16px 0 0;
+    box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.14);
+    padding: 8px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+  }
+  .checkout-bar__panel {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.32s ease;
+  }
+  .checkout-bar.is-open .checkout-bar__panel {
+    max-height: 58vh;
+    overflow-y: auto;
+    /* clears the summary's own bottom padding from the toggle row below */
+    margin-bottom: 4px;
+  }
+  /* The card supplies its own border + radius in the sidebar; inside the
+     bar the bar itself is the surface, so strip that chrome away. */
+  .checkout-bar__summary {
+    border: 0 !important;
+    border-radius: 0 !important;
+    padding-inline: 0 !important;
+    padding-top: 8px !important;
+  }
+  .checkout-bar__head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 6px 0 10px;
+  }
+  .checkout-bar__label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #6f7276;
+  }
+  .checkout-bar__total {
+    flex: 1;
+    text-align: end;
+    font-size: 18px;
+    font-weight: 600;
+    color: #182325;
+  }
+  .checkout-bar__plus {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid #dee2e6;
+    color: #182325;
+    transition: transform 0.32s ease;
+  }
+  .checkout-bar.is-open .checkout-bar__plus {
+    transform: rotate(45deg); /* + becomes × */
+  }
+}
+
 /* --- Picker modals (store / schedule) --- */
 .pickchip {
   flex: none;

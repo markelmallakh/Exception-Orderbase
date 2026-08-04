@@ -2808,6 +2808,103 @@
     "7:00 PM – 9:00 PM",
   ];
 
+  /* ---------------------------------------------------------------
+     Checkout mobile bar — on phones the order summary is a long card the
+     shopper has to scroll past to reach the CTA. Dock it to a fixed bar
+     at the bottom instead: collapsed it shows just the total and a +,
+     tapping expands the full summary, and the step CTA rides along.
+
+     The summary and the CTAs are MOVED, not duplicated — syncSummary()
+     resolves [data-summary-*] with querySelector, so a second copy would
+     silently stop updating. At lg they move back to the sticky sidebar.
+     --------------------------------------------------------------- */
+  function initCheckoutMobileBar(scope) {
+    const summary = scope.querySelector("[data-order-summary]");
+    const actions = scope.querySelector("[data-checkout-actions]");
+    const form = summary && summary.closest("form");
+    if (!summary || !actions || !form || form.dataset.barReady) return;
+    form.dataset.barReady = "1";
+
+    // Remember exactly where each block came from so lg puts it back.
+    const home = (el) => ({ parent: el.parentNode, next: el.nextSibling });
+    const summaryHome = home(summary);
+    const actionsHome = home(actions);
+
+    const bar = document.createElement("div");
+    bar.className = "checkout-bar";
+    bar.innerHTML = `
+      <div class="checkout-bar__panel" data-bar-panel></div>
+      <button type="button" class="checkout-bar__head" data-bar-toggle aria-expanded="false">
+        <span class="checkout-bar__label">Order Summary</span>
+        <span class="checkout-bar__total" data-bar-total></span>
+        <span class="checkout-bar__plus" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+        </span>
+      </button>
+      <div class="checkout-bar__actions" data-bar-actions></div>`;
+    form.appendChild(bar); // inside the form, so the submit button still submits
+
+    const panel = bar.querySelector("[data-bar-panel]");
+    const actionSlot = bar.querySelector("[data-bar-actions]");
+    const toggle = bar.querySelector("[data-bar-toggle]");
+    const totalOut = bar.querySelector("[data-bar-total]");
+    const totalSrc = scope.querySelector("[data-summary-total]");
+
+    /* Mirror the real total rather than adding a second [data-summary-total]:
+       an observer catches every write (promo, wallet, step change) without
+       syncSummary needing to know this bar exists. */
+    if (totalSrc) {
+      const mirror = () => (totalOut.textContent = totalSrc.textContent);
+      mirror();
+      new MutationObserver(mirror).observe(totalSrc, {
+        childList: true,
+        characterData: true,
+        subtree: true,
+      });
+    }
+
+    const mq = window.matchMedia("(max-width: 1023px)");
+    let docked = false;
+    let collapsedH = 0;
+
+    /* Pad the form by the COLLAPSED height only — measuring while the panel
+       is open would leave a viewport-sized gap under the page. */
+    function setPad() {
+      if (!mq.matches) {
+        form.style.paddingBottom = "";
+        return;
+      }
+      if (!bar.classList.contains("is-open")) collapsedH = bar.offsetHeight;
+      form.style.paddingBottom = collapsedH + 16 + "px";
+    }
+
+    function apply() {
+      if (mq.matches && !docked) {
+        panel.appendChild(summary);
+        actionSlot.appendChild(actions);
+        summary.classList.add("checkout-bar__summary");
+        docked = true;
+      } else if (!mq.matches && docked) {
+        summaryHome.parent.insertBefore(summary, summaryHome.next);
+        actionsHome.parent.insertBefore(actions, actionsHome.next);
+        summary.classList.remove("checkout-bar__summary");
+        bar.classList.remove("is-open");
+        toggle.setAttribute("aria-expanded", "false");
+        docked = false;
+      }
+      setPad();
+    }
+
+    toggle.addEventListener("click", () => {
+      const open = bar.classList.toggle("is-open");
+      toggle.setAttribute("aria-expanded", open ? "true" : "false");
+      setPad();
+    });
+    mq.addEventListener("change", apply);
+    window.addEventListener("resize", setPad, { passive: true });
+    apply();
+  }
+
   function initCheckoutOptions(scope) {
     const groups = scope.querySelectorAll("[data-optgroup]");
     if (!groups.length) return;
@@ -4232,6 +4329,7 @@
     syncWalletBalance(scope);
     initDemoForms(scope);
     initCheckoutSteps(scope);
+    initCheckoutMobileBar(scope);
     initCheckoutOptions(scope);
     initCardForm(scope);
     initCountdown(scope);

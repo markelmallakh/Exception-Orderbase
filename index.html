@@ -25,25 +25,38 @@
         <div class="mx-auto max-w-[1512px] px-4 lg:px-[60px]">
           <div class="flex flex-col lg:flex-row gap-2.5 items-stretch">
             <!-- Large: brand banner slider -->
-            <div class="relative w-full lg:flex-1 lg:min-w-0 aspect-[926/512] h-auto lg:aspect-auto lg:h-[512px] rounded-[20px] overflow-hidden">
+            <!-- Portrait on phones (4:5), landscape from lg. The CMS carries a
+                 separate mobile banner per slide; until it's populated each
+                 <source> below points at the desktop art, which object-cover
+                 crops to the taller frame. -->
+            <div class="relative w-full lg:flex-1 lg:min-w-0 aspect-[4/5] h-auto lg:aspect-auto lg:h-[512px] rounded-[20px] overflow-hidden">
               <div class="carousel hero-banners h-full" data-autoplay data-loop style="--carousel-gap: 0px">
                 <div class="carousel-track h-full !pb-0 rounded-[20px]">
                   <!-- Slide 1 -->
                   <a href="shop.html" class="carousel-slide w-full h-full">
                     <div class="w-full h-full overflow-hidden rounded-[20px]">
-                      <img src="images/hero-01.webp" alt="Premium baklava selection" class="w-full h-full object-cover" />
+                      <picture class="contents">
+                        <source media="(max-width: 1023px)" srcset="images/hero-01.webp" data-hero-mobile />
+                        <img src="images/hero-01.webp" alt="Premium baklava selection" class="w-full h-full object-cover" />
+                      </picture>
                     </div>
                   </a>
                   <!-- Slide 2 -->
                   <a href="shop-category.html" class="carousel-slide w-full h-full">
                     <div class="w-full h-full overflow-hidden rounded-[20px]">
-                      <img src="images/hero-02.webp" alt="Exception signature collection" class="w-full h-full object-cover" />
+                      <picture class="contents">
+                        <source media="(max-width: 1023px)" srcset="images/hero-02.webp" data-hero-mobile />
+                        <img src="images/hero-02.webp" alt="Exception signature collection" class="w-full h-full object-cover" />
+                      </picture>
                     </div>
                   </a>
                   <!-- Slide 3 -->
                   <a href="shop-category.html" class="carousel-slide w-full h-full">
                     <div class="w-full h-full overflow-hidden rounded-[20px]">
-                      <img src="images/hero-03.webp" alt="Seasonal offers" class="w-full h-full object-cover" />
+                      <picture class="contents">
+                        <source media="(max-width: 1023px)" srcset="images/hero-03.webp" data-hero-mobile />
+                        <img src="images/hero-03.webp" alt="Seasonal offers" class="w-full h-full object-cover" />
+                      </picture>
                     </div>
                   </a>
                 </div>
