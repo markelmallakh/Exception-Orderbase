@@ -73,8 +73,8 @@
       <div class="flex w-full max-w-[560px] max-h-[85vh] flex-col overflow-hidden rounded-2xl bg-white shadow-custom3">
         <div class="flex shrink-0 items-center justify-between border-b border-neutral-100 px-5 py-4">
           <div>
-            <h2 class="font-semibold text-textSecondary text-lg">Choose Your Themes</h2>
-            <p class="text-xs text-gray-500">Hand-made sugar-paste figures — add up to four.</p>
+            <h2 class="font-semibold text-textSecondary text-lg">Choose Your Figure</h2>
+            <p class="text-xs text-gray-500">Hand-made sugar-paste figures — pick one for the top.</p>
           </div>
           <button type="button" data-close aria-label="Close" class="grid place-items-center w-8 h-8 rounded-full hover:bg-neutral-100 text-textSecondary">
             <svg viewBox="0 0 24 24" fill="none" class="w-5 h-5"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -83,7 +83,7 @@
         <div class="flex-1 overflow-y-auto px-5 py-4" data-themes-body></div>
         <div class="flex shrink-0 items-center gap-3 border-t border-neutral-100 px-5 py-4">
           <span class="text-sm text-gray-600" data-themes-count>0 / 4 selected</span>
-          <button type="button" class="btn btn--primary btn--md ms-auto" data-themes-confirm>Add Themes</button>
+          <button type="button" class="btn btn--primary btn--md ms-auto" data-themes-confirm>Add Figure</button>
         </div>
       </div>
     </div>
@@ -161,7 +161,8 @@
            billboard that stands on the 3D cake. The photos are stand-ins
            from the existing Exception shoot until the real figure
            catalogue is shot — swap `img` only, nothing else reads it. */
-        const THEME_MAX = 4;
+        /* One figure per cake. */
+        const THEME_MAX = 1;
         const TH_IMG = "dummy-images/special-cakes/";
         const THEMES = [
           { id: "dino", name: "Dinosaur", emoji: "🦕", tier: "large", img: TH_IMG + "kids-1.webp" },
@@ -389,6 +390,13 @@
         /* Mini preview: a static snapshot of the current cake with overrides. */
         function miniCake(overrides) {
           const s = Object.assign({}, state, overrides);
+          /* A mini only shows a topper when the card is ABOUT decoration.
+             Otherwise the shape / size / height / flavour cards inherited
+             whatever figure was chosen and sprouted a stray emoji. */
+          if (!("style" in (overrides || {}))) {
+            s.style = "none";
+            s.themes = [];
+          }
           const holder = el("c3");
           holder.style.width = "84px";
           holder.style.height = "84px";
@@ -590,30 +598,6 @@
               addMini(c, { style: o.id, colour: o.id === "none" ? "white" : state.colour, message: "" });
             });
             panel.appendChild(g);
-            if (state.style === "themed") {
-              const row = el("mb-6 flex flex-wrap items-center gap-2 rounded-[14px] border border-gray-200 bg-gray-50 p-3");
-              if (state.themes.length) {
-                state.themes.forEach((id) => {
-                  const t = THEME_MAP[id];
-                  if (!t) return;
-                  const chip = el("inline-flex items-center gap-1.5 rounded-full bg-white border border-gray-200 py-1.5 pe-3 ps-1.5 text-sm text-textSecondary");
-                  /* same photo as the picker tile, just thumbnail-sized */
-                  chip.innerHTML = '<img src="' + t.img + '" alt="" class="w-6 h-6 rounded-full object-cover">' + t.name;
-                  row.appendChild(chip);
-                });
-              } else {
-                const hint = el("text-sm text-gray-500");
-                hint.textContent = "No figures chosen yet.";
-                row.appendChild(hint);
-              }
-              const edit = document.createElement("button");
-              edit.type = "button";
-              edit.className = "btn btn--secondary btn--sm ms-auto";
-              edit.setAttribute("data-open-themes", "");
-              edit.textContent = state.themes.length ? "Edit Themes" : "Choose Themes";
-              row.appendChild(edit);
-              panel.appendChild(row);
-            }
             /* "Without Decoration" means a plain cake — there's no
                frosting to colour, so the swatches step aside. */
             if (state.style === "none") {
@@ -784,7 +768,7 @@
 
         function themeTile(t) {
           const on = draftThemes.indexOf(t.id) > -1;
-          const full = draftThemes.length >= THEME_MAX && !on;
+          const full = false;
           return (
             '<button type="button" class="myc-opt' + (on ? " is-active" : "") + (full ? " is-full" : "") +
             '" data-theme="' + t.id + '"' + (full ? " disabled" : "") + ">" +
@@ -801,9 +785,10 @@
             '<div class="mb-5 grid grid-cols-2 sm:grid-cols-4 gap-3">' +
             THEMES.filter((t) => t.tier === tier).map(themeTile).join("") + "</div>";
           themesBody.innerHTML = group("large", "Large figures") + group("small", "Small figures");
-          const total = draftThemes.reduce((sum, id) => sum + (THEME_MAP[id] ? THEME_PRICE[THEME_MAP[id].tier] : 0), 0);
-          themesCount.textContent =
-            draftThemes.length + " / " + THEME_MAX + " selected" + (total ? "  ·  +" + total + " EGP" : "");
+          const chosen = THEME_MAP[draftThemes[0]];
+          themesCount.textContent = chosen
+            ? chosen.name + "  ·  +" + THEME_PRICE[chosen.tier] + " EGP"
+            : "Choose a figure";
           themesConfirm.disabled = false;
         }
         function openThemes() {
@@ -824,9 +809,9 @@
           const b = e.target.closest("[data-theme]");
           if (!b) return;
           const id = b.getAttribute("data-theme");
-          const i = draftThemes.indexOf(id);
-          if (i > -1) draftThemes.splice(i, 1);
-          else if (draftThemes.length < THEME_MAX) draftThemes.push(id);
+          /* single-select: tapping a tile replaces the choice, tapping the
+             chosen one clears it */
+          draftThemes = draftThemes[0] === id ? [] : [id];
           renderThemes();
         });
         themesConfirm.addEventListener("click", () => {
