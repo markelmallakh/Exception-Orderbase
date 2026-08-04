@@ -3907,7 +3907,7 @@
       label: "Delivered",
       pill: "#209b34",
       accent: "#209b34",
-      ico: "images/icons/Ready%20to%20pick.webp",
+      ico: "images/icons/delivery.webp",
       when: "Arrived At",
       arc: 1,
       earned: true,
