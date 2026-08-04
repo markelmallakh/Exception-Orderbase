@@ -4435,15 +4435,38 @@ input[type="checkbox"]:not(.wallet-toggle__input):checked::after {
 .spotlight.is-on .spotlight__veil {
   opacity: 1;
 }
-/* the lit element — raised over the veil and given its own halo */
+/* The lit element — raised over the veil and actively glowing, not just
+   "the bit that isn't dimmed". Mint fill + a turquoise halo that breathes,
+   so the eye lands on it immediately. */
 .is-spotlit {
   position: relative;
   z-index: 10002;
   border-radius: 10px;
-  background: #fff;
-  box-shadow:
-    0 0 0 4px rgba(255, 255, 255, 0.35),
-    0 12px 32px rgba(0, 0, 0, 0.35);
+  background: #e7fffc;
+  animation: spotlit-pulse 1.9s ease-in-out infinite;
+}
+@keyframes spotlit-pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 3px rgba(140, 186, 181, 0.55),
+      0 0 22px 4px rgba(140, 186, 181, 0.35),
+      0 12px 32px rgba(0, 0, 0, 0.35);
+  }
+  50% {
+    box-shadow:
+      0 0 0 4px rgba(140, 186, 181, 0.8),
+      0 0 36px 10px rgba(140, 186, 181, 0.6),
+      0 12px 32px rgba(0, 0, 0, 0.35);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .is-spotlit {
+    animation: none;
+    box-shadow:
+      0 0 0 4px rgba(140, 186, 181, 0.7),
+      0 12px 32px rgba(0, 0, 0, 0.35);
+  }
 }
 .spotlight__tip {
   position: fixed;

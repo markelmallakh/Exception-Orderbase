@@ -306,7 +306,7 @@
         if (!modal) return;
         const POINTS_PER_EGP = 20;
         /* live for the session: redeeming moves value from one to the other */
-        const state = { balance: 3200, wallet: 350 };
+        const state = { balance: 3200, wallet: 1500 };
         const input = modal.querySelector("[data-redeem-input]");
         const valueEl = modal.querySelector("[data-redeem-value]");
         const errEl = modal.querySelector("[data-redeem-error]");
@@ -358,6 +358,11 @@
           modal.querySelector("[data-redeem-balance]").textContent = group(state.balance);
           document.querySelectorAll("[data-points-egp]").forEach(
             (el) => (el.textContent = "EGP " + (state.balance / POINTS_PER_EGP).toFixed(2))
+          );
+          /* the Wallet nav tag is where the credit visibly lands, so it has
+             to move too -- otherwise the spotlight points at a stale figure */
+          document.querySelectorAll("[data-wallet-tab] .acct-count").forEach(
+            (el) => (el.textContent = "EGP " + group(Math.round(state.wallet)))
           );
           input.value = state.balance ? group(Math.min(parse() || state.balance, state.balance)) : "0";
           sync();
