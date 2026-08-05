@@ -137,7 +137,13 @@
             <div class="absolute inset-y-0 start-5 flex flex-col justify-center md:start-[30px]">
               <div class="inline-flex flex-col overflow-hidden rounded-[20px] text-center shadow-custom-5">
                 <div class="bg-cta px-6 py-3 text-xl font-semibold text-white md:text-2xl">Make Your Cake</div>
-                <div class="bg-white px-6 py-5 text-xl font-semibold leading-[1.25] text-primaryDark md:text-2xl">Customize Your<br />Tailored Cake</div>
+                <!-- The whole card is already the <a>, so the CTA is a styled
+                     span — a nested link/button inside an anchor is invalid
+                     and swallows the card's own click target. -->
+                <div class="flex flex-col items-center gap-3 bg-white px-6 py-5">
+                  <span class="text-xl font-semibold leading-[1.25] text-primaryDark md:text-2xl">Tailor Your Cake<br />in Minutes</span>
+                  <span class="btn btn--primary btn--sm px-4 py-2 group-hover:bg-primary-500 group-hover:text-white">Start Now</span>
+                </div>
               </div>
             </div>
           </a>
@@ -146,7 +152,10 @@
             <div class="absolute inset-y-0 start-5 flex flex-col justify-center md:start-[30px]">
               <div class="inline-flex flex-col overflow-hidden rounded-[20px] text-center shadow-custom-5">
                 <div class="bg-cta px-6 py-3 text-xl font-semibold text-white md:text-2xl">Special Cakes</div>
-                <div class="bg-white px-6 py-5 text-xl font-semibold leading-[1.25] text-primaryDark md:text-2xl">Print Your<br />Image on Cake</div>
+                <div class="flex flex-col items-center gap-3 bg-white px-6 py-5">
+                  <span class="text-xl font-semibold leading-[1.25] text-primaryDark md:text-2xl">Print Your<br />Image on Cake</span>
+                  <span class="btn btn--primary btn--sm px-4 py-2 group-hover:bg-primary-500 group-hover:text-white">Explore</span>
+                </div>
               </div>
             </div>
           </a>
