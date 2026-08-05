@@ -698,19 +698,28 @@
           }
         }
 
+        /* A step earns its check only once the customer has moved PAST it —
+           done() alone isn't enough, because the optional steps (Filling,
+           Decoration, Message) start pre-`touched` on their "Without …"
+           defaults, which used to paint checks on steps nobody had opened
+           yet. maxReached is the furthest step actually walked to, so
+           `i < maxReached` reads as "confirmed, either by accepting the
+           default or changing it". Everything from the current step on
+           keeps showing its number. */
+        const confirmed = (i) => !!STEPS[i].done() && i < maxReached;
+
         function syncStepper() {
           const reach = Math.max(tab, furthest());
           tabsEl.querySelectorAll("[data-cake-step]").forEach((b) => {
             const i = +b.getAttribute("data-cake-step");
-            const done = !!STEPS[i].done();
             b.classList.toggle("is-active", i === tab);
-            b.classList.toggle("is-done", done && i !== tab);
+            b.classList.toggle("is-done", confirmed(i) && i !== tab);
             const locked = i > reach;
             b.classList.toggle("is-locked", locked);
             b.disabled = locked;
           });
           tabsEl.querySelectorAll(".myc-step__line").forEach((l, i) => {
-            l.classList.toggle("is-done", !!STEPS[i].done());
+            l.classList.toggle("is-done", confirmed(i));
           });
           /* footer: Back / Next until the end, then the gated Add to Cart */
           backBtn.disabled = tab === 0;
