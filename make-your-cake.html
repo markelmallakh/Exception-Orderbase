@@ -21,11 +21,6 @@
       <!-- ============================ HERO ============================ -->
       <section class="bg-gray-100 pt-8 lg:pt-12 pb-6">
         <div class="container">
-          <nav aria-label="Breadcrumb" class="flex items-center gap-2 text-sm text-gray-700 mb-5">
-            <a href="index.html" class="hover:text-primaryDark transition-colors">Home</a>
-            <span class="text-gray-400">/</span>
-            <span class="text-primaryDark font-medium">Make Your Cake</span>
-          </nav>
           <div class="flex flex-col items-center gap-3 text-center max-w-[640px] mx-auto">
             <span class="eyebrow">Make Your Cake</span>
             <h1 class="text-[30px] lg:text-[46px] font-semibold leading-[115%] text-textSecondary">Play Cake <span class="text-primary">Designer</span></h1>
@@ -37,13 +32,15 @@
       <!-- ============================ BUILDER ============================ -->
       <section class="bg-gray-100 pb-16 lg:pb-24">
         <div class="container">
-          <div class="mx-auto max-w-[1220px] grid gap-6 lg:grid-cols-[minmax(0,0.86fr)_minmax(0,1.14fr)] lg:items-stretch" data-cake-builder>
+          <!-- The cake IS the hero: it takes the wider column, the options
+               sit beside it as a compact Walmart-style row list. -->
+          <div class="mx-auto max-w-[1220px] grid gap-6 lg:grid-cols-[minmax(0,1.16fr)_minmax(0,0.84fr)] lg:items-stretch" data-cake-builder>
             <!-- Live 3D cake on the studio floor -->
             <div class="relative overflow-hidden rounded-[24px] border border-gray-300 bg-white p-6 flex flex-col items-center justify-center">
               <!-- chosen sugar-paste figures, pinned to the stage corner -->
               <div class="cake-picks" data-cake-picks hidden></div>
-              <div class="cake-stage w-full" style="min-height:380px">
-                <div class="cake-drop w-full" style="height:340px">
+              <div class="cake-stage w-full" style="min-height:470px">
+                <div class="cake-drop w-full" style="height:430px">
                   <div class="c3 c3--live" id="liveCake"></div>
                 </div>
               </div>
@@ -53,7 +50,7 @@
             <!-- Config: tabs + options -->
             <div class="flex flex-col overflow-hidden rounded-[24px] border border-gray-300 bg-white">
               <div class="border-b border-gray-300 px-4 md:px-5 py-4" data-cake-tabs></div>
-              <div class="flex-1 px-5 md:px-6 py-6 overflow-y-auto" style="max-height:520px" data-cake-panel></div>
+              <div class="flex-1 px-4 md:px-5 py-5 overflow-y-auto" style="max-height:600px" data-cake-panel></div>
               <div class="flex items-center gap-3 border-t border-gray-300 px-5 md:px-6 py-4">
                 <button type="button" class="btn btn--secondary btn--md whitespace-nowrap" data-back>Back</button>
                 <button type="button" class="btn btn--primary btn--md flex-1 justify-center" data-next>Next</button>
@@ -256,8 +253,40 @@
         /* Wall lighting: light comes from the front-top-right (matches the ¾ view). */
         const BOX_K = { front: 1.0, right: 0.86, left: 0.6, back: 0.55 };
         const RIGS = new WeakMap();
-        function buildCake(root, shape) {
+        /* Cut-away (live round cake only, Walmart-style): a chord cut
+           facing front-right that exposes the sponge layers. The chord
+           sits at 45° (cake-local) so it reads right of centre through
+           the sway; the removed wall segments and the chord plane are
+           matched exactly — segments centred 18°–72° leave a hole from
+           9° to 81°, and a chord at cos(36°)=0.809·r with half-width
+           sin(36°)=0.588·r seals it edge to edge (.c3-cut in styles.css). */
+        const CUT_SKIP = { 18: 1, 36: 1, 54: 1, 72: 1 };
+        /* Scalloped paper cake board, drawn flat in screen space like the
+           shadow. A polygon whose radius breathes with |sin| makes the
+           doily scallops — bumps out, cusps in. */
+        function boardHTML() {
+          const pts = [];
+          const N = 36, R = 104, cx = 110, cy = 50, ry = 44;
+          for (let i = 0; i < 288; i++) {
+            const t = (i / 288) * Math.PI * 2;
+            const w = 0.952 + 0.048 * Math.abs(Math.sin((t * N) / 2));
+            pts.push((cx + R * w * Math.cos(t)).toFixed(1) + "," + (cy + ry * w * Math.sin(t)).toFixed(1));
+          }
+          return (
+            '<svg viewBox="0 0 220 100" preserveAspectRatio="none" aria-hidden="true">' +
+            '<defs><radialGradient id="cakeboard" cx="50%" cy="42%" r="62%">' +
+            '<stop offset="0" stop-color="#ffffff"/><stop offset="0.72" stop-color="#f6f5f1"/><stop offset="1" stop-color="#e6e5df"/>' +
+            "</radialGradient></defs>" +
+            '<polygon points="' + pts.join(" ") + '" fill="url(#cakeboard)" stroke="#dcdbd5" stroke-width="0.6"/></svg>'
+          );
+        }
+        function buildCake(root, shape, live) {
           root.innerHTML = "";
+          if (live) {
+            const board = el("c3__board");
+            board.innerHTML = boardHTML();
+            root.appendChild(board);
+          }
           const shadow = el("c3__shadow");
           const pos = el("c3__pos");
           const rig = el("c3__rig");
@@ -266,10 +295,15 @@
           root.appendChild(shadow);
           root.appendChild(pos);
           root.appendChild(topper);
-          const rec = { shape, walls: [], top: null, word: null, topper };
+          const rec = { shape, walls: [], top: null, word: null, topper, cutFace: null };
+          /* !! matters: an undefined `live` would turn toggle(force) into
+             a plain toggle and stamp c3--cut on every mini */
+          const withCut = !!(live && shape === "circle");
+          root.classList.toggle("c3--cut", withCut);
           if (shape === "circle") {
             for (let i = 0; i < SEGS; i++) {
               const a = i * (360 / SEGS);
+              if (withCut && CUT_SKIP[a]) continue;
               const s = el("c3s");
               s.style.setProperty("--a", a + "deg");
               /* brightness follows the light direction; +30° matches the view angle */
@@ -277,6 +311,18 @@
               layers(s);
               rec.walls.push({ el: s, k, a });
               rig.appendChild(s);
+            }
+            if (withCut) {
+              /* the exposed interior: sponge layers + cream line + fillings */
+              const cut = el("c3-cut");
+              cut.appendChild(el("c3-cut__fill"));
+              const n = el("c3-nut"), f = el("c3-fru");
+              cut.appendChild(n);
+              cut.appendChild(f);
+              rig.appendChild(cut);
+              rec.cutFace = cut;
+              rec.cutN = n;
+              rec.cutF = f;
             }
             const disc = el("c3f c3f--disc");
             rec.top = disc;
@@ -302,8 +348,11 @@
         function setGeometry(root, s, mini) {
           const size = SIZES[s.shape].find((x) => x.id === s.size) || SIZES[s.shape][0];
           const hCm = parseInt(s.height, 10) || 8;
-          /* live cake sits a little larger than 1:1 so it reads as the hero */
-          const K = mini ? 0.42 : 1.18;
+          /* live cake fills its stage (an auto-fit scale in updateCake
+             shrinks oversized combinations back into view); minis shrink
+             to sit inline in the option rows (0.27 keeps the biggest
+             sheet cake inside the 56px icon slot) */
+          const K = mini ? 0.27 : 2.0;
           const chh = (16 + hCm * 4.6) * K;
           let shw;
           if (s.shape === "circle") {
@@ -319,17 +368,33 @@
           }
           root.style.setProperty("--chh", chh + "px");
           root.style.setProperty("--shw", shw + "px");
-          root.style.setProperty("--wordFs", (mini ? 6 : 15) + "px");
-          root.style.setProperty("--topFs", (mini ? 15 : 30) + "px");
+          root.style.setProperty("--wordFs", (mini ? 5 : 17) + "px");
+          root.style.setProperty("--topFs", (mini ? 12 : 34) + "px");
         }
         function paintCake(root, s) {
           const rec = RIGS.get(root);
           if (!rec) return;
           const frost = (COLOURS.find((c) => c.id === s.colour) || COLOURS[0]).hex;
           const choc = SPONGE.chocolate, van = SPONGE.vanilla;
+          /* With a cut-away the OUTSIDE is all frosting — like a real
+             (Walmart-style) cake, the sponge flavour only shows through
+             the cut. Without one (minis, box cakes) the walls keep
+             carrying the flavour so the choice stays visible. */
+          const frostWalls = !!rec.cutFace;
+          /* Cylinder lighting, sampled at any angle: ambient + diffuse
+             + a narrow specular term that reads as the frosting's sheen.
+             Each segment paints a GRADIENT between its two edge angles,
+             so the shading is continuous across the seams and the drum
+             reads as one smooth surface instead of 20 facets. */
+          const kf = (ang) => {
+            const c = Math.max(0, Math.cos(((ang - 30) * Math.PI) / 180));
+            return 0.55 + 0.45 * c + 0.28 * Math.pow(c, 14);
+          };
           rec.walls.forEach((w) => {
             let base;
-            if (s.flavour === "half") {
+            if (frostWalls) {
+              base = frost;
+            } else if (s.flavour === "half") {
               if (rec.shape === "circle") {
                 /* split the cylinder left/right as seen from the camera */
                 base = ((w.a + 115) % 360) < 180 ? choc : van;
@@ -339,18 +404,45 @@
             } else {
               base = s.flavour === "chocolate" ? choc : van;
             }
-            if (base) {
-              w.el.style.background = shade(base, w.k);
-            } else {
-              w.el.style.background = "linear-gradient(90deg," + shade(choc, w.k) + " 0 50%," + shade(van, w.k) + " 50% 100%)";
-            }
             const kids = w.el.children;
-            kids[0].style.background = shade(frost, w.k); /* lip / fondant coat */
+            if (rec.shape === "circle") {
+              const kL = kf(w.a - 9), kR = kf(w.a + 9);
+              const smooth = (hex) => "linear-gradient(90deg," + shade(hex, kL) + "," + shade(hex, kR) + ")";
+              w.el.style.background = smooth(base || van);
+              kids[0].style.background = smooth(frost); /* lip / fondant coat */
+            } else {
+              if (base) {
+                w.el.style.background = shade(base, w.k);
+              } else {
+                w.el.style.background = "linear-gradient(90deg," + shade(choc, w.k) + " 0 50%," + shade(van, w.k) + " 50% 100%)";
+              }
+              kids[0].style.background = shade(frost, w.k); /* lip / fondant coat */
+            }
             kids[1].style.background = shade(NUT_C, w.k);
             kids[2].style.background = shade(FRU_C, w.k);
+            /* a 0-height stripe still paints its 1px box-shadow hairline —
+               hide the layer entirely when the amount is zero */
+            kids[1].style.visibility = s.nuts === "0" ? "hidden" : "visible";
+            kids[2].style.visibility = s.fruits === "0" ? "hidden" : "visible";
             kids[3].style.background = s.style === "drip" ? shade(DRIP_C, Math.min(1, w.k + 0.06)) : "transparent";
           });
           rec.top.style.background = shade(frost, 1.1);
+          /* Cut face: two sponge layers with a cream line between — Half &
+             Half reads Walmart-style as top chocolate / bottom vanilla.
+             The frosting shell shows its thickness as bordered edges. */
+          if (rec.cutFace) {
+            const topL = s.flavour === "vanilla" ? van : choc;
+            const botL = s.flavour === "chocolate" ? choc : van;
+            rec.cutFace.style.background =
+              "linear-gradient(to bottom," + shade(topL, 0.97) + " 0 50%," + shade(botL, 0.97) + " 50% 100%)";
+            rec.cutFace.style.borderTop = "4px solid " + shade(frost, 1.05);
+            rec.cutFace.style.borderLeft = "3px solid " + shade(frost, 0.88);
+            rec.cutFace.style.borderRight = "3px solid " + shade(frost, 0.88);
+            rec.cutN.style.background = shade(NUT_C, 0.95);
+            rec.cutF.style.background = shade(FRU_C, 0.95);
+            rec.cutN.style.visibility = s.nuts === "0" ? "hidden" : "visible";
+            rec.cutF.style.visibility = s.fruits === "0" ? "hidden" : "visible";
+          }
           root.style.setProperty("--lipH", s.type === "sugar" ? "100%" : "26%");
           root.style.setProperty("--nutsH", AMOUNT_H[s.nuts] + "px");
           root.style.setProperty("--fruH", AMOUNT_H[s.fruits] + "px");
@@ -398,11 +490,18 @@
             s.themes = [];
           }
           const holder = el("c3");
-          holder.style.width = "84px";
-          holder.style.height = "84px";
+          holder.style.width = "56px";
+          holder.style.height = "56px";
+          /* minis sit centred in their icon slot, not parked low like the
+             default --cy would have them */
+          holder.style.setProperty("--cy", "55%");
           buildCake(holder, s.shape);
           setGeometry(holder, s, true);
           paintCake(holder, s);
+          /* the live-scale filling bands would swallow a mini's wall —
+             rescale them to the mini's proportions */
+          holder.style.setProperty("--nutsH", Math.round(AMOUNT_H[s.nuts] * 0.4) + "px");
+          holder.style.setProperty("--fruH", Math.round(AMOUNT_H[s.fruits] * 0.4) + "px");
           return holder;
         }
 
@@ -411,10 +510,20 @@
         function updateCake(pop) {
           if (liveShape !== state.shape) {
             liveShape = state.shape;
-            buildCake(liveCake, state.shape);
+            buildCake(liveCake, state.shape, true);
           }
           setGeometry(liveCake, state, false);
           paintCake(liveCake, state);
+          /* Auto-fit: the hero scale (K=2) is tuned for the default cake;
+             the biggest sizes (or a narrow viewport) would spill out of
+             the stage, so scale the whole rendered scene back down until
+             the board fits with a small margin. */
+          const shw = parseFloat(liveCake.style.getPropertyValue("--shw")) || 0;
+          const needW = shw * 1.32 + 24; /* board width + margin */
+          const chh = parseFloat(liveCake.style.getPropertyValue("--chh")) || 0;
+          const needH = chh * 2.6 + 60; /* body + top ellipse + board drop */
+          const fit = Math.min(1, liveCake.clientWidth / needW, liveCake.clientHeight / needH);
+          liveCake.style.setProperty("--fit", fit.toFixed(3));
           const rec = RIGS.get(liveCake);
           if (pop && rec.topper.childNodes.length) {
             rec.topper.classList.remove("drop");
@@ -476,38 +585,29 @@
           return h;
         }
         function optGrid(cols) {
-          return el("grid gap-3 mb-6 " + (cols || "grid-cols-2 sm:grid-cols-3"));
+          return el("grid gap-2.5 mb-5 " + (cols || "grid-cols-1"));
         }
-        /* Every option card reads the same way top-to-bottom: artwork
-           first (a 3D mini, a size footprint or an emoji), then the
-           label, then any sub-line. Nothing puts its icon under text. */
+        /* Walmart-style option ROW: the artwork (a 3D mini, a size
+           footprint or an emoji) sits in a fixed square slot on the
+           left, with the label + sub-line beside it — compact, scannable
+           and consistent across every step. */
         function optCard(key, id, active, inner, name, sub, icon) {
           const b = document.createElement("button");
           b.type = "button";
-          b.className = "myc-opt" + (active ? " is-active" : "");
+          b.className = "myc-opt myc-opt--row" + (active ? " is-active" : "");
           b.setAttribute("data-pick", key);
           b.setAttribute("data-val", id);
           b.innerHTML =
-            (inner ? '<span class="grid place-items-center h-[84px] w-full pointer-events-none" data-mini></span>' : "") +
-            (icon ? '<span class="grid place-items-center h-[40px] w-full text-xl leading-none pointer-events-none">' + icon + "</span>" : "") +
-            '<span class="font-semibold text-sm text-textSecondary pointer-events-none">' + name + "</span>" +
-            (sub ? '<span class="text-xs text-gray-500 pointer-events-none">' + sub + "</span>" : "");
+            (inner ? '<span class="myc-opt__ico pointer-events-none" data-mini></span>' : "") +
+            (icon ? '<span class="myc-opt__ico myc-opt__ico--emoji pointer-events-none">' + icon + "</span>" : "") +
+            '<span class="myc-opt__txt pointer-events-none">' +
+            '<span class="font-semibold text-sm text-textSecondary">' + name + "</span>" +
+            (sub ? '<span class="text-xs text-gray-500">' + sub + "</span>" : "") +
+            "</span>";
           return b;
         }
         function addMini(card, overrides) {
           card.querySelector("[data-mini]").appendChild(miniCake(overrides));
-        }
-        function footprint(size, shape) {
-          const f = el("myc-foot pointer-events-none");
-          if (shape === "circle") {
-            const d = 18 + (size.r || 20) * 0.6;
-            f.style.width = d + "px"; f.style.height = d + "px"; f.style.borderRadius = "50%";
-          } else {
-            f.style.width = 12 + size.w * 0.32 + "px"; f.style.height = 12 + size.d * 0.32 + "px"; f.style.borderRadius = "4px";
-          }
-          const wrap = el("grid place-items-center h-[64px] w-full pointer-events-none");
-          wrap.appendChild(f);
-          return wrap;
         }
 
         function renderPanel() {
@@ -517,7 +617,7 @@
 
           if (stepKey === "shapeStep") {
             panel.appendChild(groupHead("What shape would you like?"));
-            let g = optGrid("grid-cols-3");
+            let g = optGrid();
             SHAPES.forEach((o) => {
               const c = optCard("shape", o.id, state.shape === o.id, true, o.name);
               g.appendChild(c);
@@ -525,7 +625,7 @@
             });
             panel.appendChild(g);
             panel.appendChild(groupHead("Cake type", "Sugar paste unlocks tall cakes"));
-            g = optGrid("grid-cols-2");
+            g = optGrid();
             TYPES.forEach((o) => {
               const c = optCard("type", o.id, state.type === o.id, true, o.name, o.sub);
               g.appendChild(c);
@@ -534,16 +634,17 @@
             panel.appendChild(g);
           } else if (stepKey === "sizeStep") {
             panel.appendChild(groupHead("How big should it be?", "Sizes follow the shape"));
-            let g = optGrid(state.shape === "circle" ? "grid-cols-3 sm:grid-cols-4" : "grid-cols-2 sm:grid-cols-4");
+            let g = optGrid("grid-cols-1 sm:grid-cols-2");
             SIZES[state.shape].forEach((o) => {
-              const c = optCard("size", o.id, sel("size", o.id), false, o.name, "Serves ~" + o.serves);
-              c.insertBefore(footprint(o, state.shape), c.firstChild);
+              const c = optCard("size", o.id, sel("size", o.id), true, o.name, "Serves ~" + o.serves);
               g.appendChild(c);
+              /* mini at that size — relative proportions read at a glance */
+              addMini(c, { size: o.id, message: "" });
             });
             panel.appendChild(g);
             const hs = HEIGHTS[state.type];
             panel.appendChild(groupHead("How tall?", state.type === "sponge" ? "Sponge cakes come 8 cm — pick Sugar Cake for tall tiers" : "Fondant holds up to 22 cm"));
-            g = optGrid("grid-cols-2 sm:grid-cols-4");
+            g = optGrid("grid-cols-1 sm:grid-cols-2");
             hs.forEach((h) => {
               const c = optCard("height", h, sel("height", h), true, h + " cm");
               g.appendChild(c);
@@ -552,7 +653,7 @@
             panel.appendChild(g);
           } else if (stepKey === "flavourStep") {
             panel.appendChild(groupHead("Pick your sponge flavour"));
-            const g = optGrid("grid-cols-3");
+            const g = optGrid();
             FLAVOURS.forEach((o) => {
               const c = optCard("flavour", o.id, sel("flavour", o.id), true, o.name);
               g.appendChild(c);
@@ -561,28 +662,29 @@
             panel.appendChild(g);
           } else if (stepKey === "fillingStep") {
             /* Filling is optional — "Without <topic>" leads each group. */
-            const amountGrid = (key, topic, emoji) => {
-              const g = optGrid("grid-cols-2 sm:grid-cols-4");
+            const amountGrid = (key, topic) => {
+              const g = optGrid("grid-cols-1 sm:grid-cols-2");
               AMOUNTS.forEach((o) => {
                 const zero = o.id === "0";
-                /* icon above the label, like every other option card —
-                   "Without" keeps the slot with a faded glyph so the
-                   four cards stay the same height. */
-                const icon = zero
-                  ? '<span class="opacity-25 grayscale">' + emoji + "</span>"
-                  : emoji.repeat(o.id / 100);
-                g.appendChild(optCard(key, o.id, sel(key, o.id), false, zero ? "Without " + topic : o.name, "", icon));
+                const c = optCard(key, o.id, sel(key, o.id), true, zero ? "Without " + topic : o.name);
+                g.appendChild(c);
+                /* same 3D mini as every other step — the band on the wall
+                   thickens with the amount; the other filling is zeroed so
+                   each row previews only its own choice */
+                const ov = { style: "none", message: "" };
+                ov.nuts = key === "nuts" ? o.id : "0";
+                ov.fruits = key === "fruits" ? o.id : "0";
+                addMini(c, ov);
               });
               return g;
             };
             panel.appendChild(groupHead("Extra nuts", "Optional — the sponge already has its own filling"));
-            panel.appendChild(amountGrid("nuts", "Nuts", "🥜"));
+            panel.appendChild(amountGrid("nuts", "Nuts"));
             panel.appendChild(groupHead("Extra fruits", "Optional"));
-            panel.appendChild(amountGrid("fruits", "Fruits", "🍓"));
+            panel.appendChild(amountGrid("fruits", "Fruits"));
           } else if (stepKey === "decoStep") {
             panel.appendChild(groupHead("Decoration style", "Optional"));
-            /* 5 styles: 3 on the first row, 2 on the second */
-            const g = optGrid("grid-cols-2 sm:grid-cols-3");
+            const g = optGrid();
             STYLES.forEach((o) => {
               const c = optCard("style", o.id, sel("style", o.id), true, o.name);
               /* Themed Topper needs a second action — pick WHICH figures —
@@ -622,7 +724,7 @@
                Without / With choice the other optional steps use — the
                text field only appears once "With" is picked. */
             panel.appendChild(groupHead("A message on the cake?", "Optional — piped by hand, free"));
-            const g = optGrid("grid-cols-2");
+            const g = optGrid();
             /* same 3D mini the other steps use, so this step reads the
                same way — and it previews the piping at a glance */
             const off = optCard("msgOn", "0", sel("msgOn", "0"), true, "Without Message", "Leave the cake plain");
@@ -899,6 +1001,8 @@
         syncStepper();
         renderPanel();
         updateCake(false);
+        /* the auto-fit scale depends on the stage's live width */
+        window.addEventListener("resize", () => updateCake(false));
       })();
     </script>
   </body>

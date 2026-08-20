@@ -86,7 +86,7 @@
   const CATEGORY_NAV = [
     { label: "OFFERS", icon: "Categories%20icons/offers.webp", url: "/shop/offers" },
     { label: "BOUGHT BEFORE", icon: "Categories%20icons/bought%20before.webp", url: "/shop/bought-before" },
-    { label: "MAKE YOUR CAKE", icon: "Categories%20icons/make%20your%20cake.webp", url: "/shop/make-your-cake" },
+    { label: "MAKE YOUR CAKE", icon: "Categories%20icons/make%20your%20cake.webp", url: "/shop/make-your-cake", badge: "TRY NOW" },
     { label: "SPECIAL CAKES", icon: "Categories%20icons/special%20cakes.webp", url: "/shop/special-cakes" },
     { label: "BAKERIES", icon: "Categories%20icons/image%201820.webp", url: "/shop/bakeries" },
     { label: "CHOCOLATES", icon: "Categories%20icons/chocolate.webp", url: "/shop/chocolate" },
@@ -350,10 +350,11 @@
                        <button type="button" data-loc-toggle class="relative flex items-center gap-1.5 bg-[#E7FFFC]/80 rounded-[5px] px-2.5 h-[34px] text-primaryDark min-w-0">
                          <span class="absolute -top-2 start-2 -rotate-[4deg] bg-cta text-white text-[11px] leading-none px-1.5 py-0.5 rounded-[4px]">Go To</span>
                          <span class="shrink-0"><img src="images/icons/delivery.webp" alt="" class="w-6 h-6 object-contain" /></span>
-                         <span class="text-xs whitespace-nowrap truncate"><span class="font-normal">Street 9</span> <span class="font-semibold">| Maadi, Cairo</span></span>
+                         <span class="text-xs whitespace-nowrap truncate"><span class="font-normal">Street 9</span> <span class="font-semibold" data-loc-place>| Maadi, Cairo</span></span>
                        </button>
                        <div class="loc-panel absolute top-full start-0 mt-2 bg-white rounded-[12px] p-4 shadow-custom3 z-[60] w-[320px] text-start">
                          <p class="font-semibold text-primaryDark text-sm mb-3">Choose your delivery location</p>
+                         <p class="loc-gate-only text-xs text-textSecondary leading-[150%] mb-3">Stock differs by branch — pick your area and we'll only show what we can actually deliver to you.</p>
                          <form data-location-form class="flex flex-col gap-3">
                            <label class="flex items-center gap-3">
                              <span class="label w-16 shrink-0">City</span>
@@ -427,7 +428,7 @@
                      <span class="shrink-0"><img src="images/icons/delivery.webp" alt="" class="w-6 h-6 object-contain" /></span>
                      <span class="flex items-center gap-1">
                        <span class="font-normal text-[10px] leading-[140%]">Go To</span>
-                       <span class="font-semibold text-[12px] leading-[140%]">Street 9 | Maadi, Cairo</span>
+                       <span class="font-semibold text-[12px] leading-[140%]">Street 9 <span data-loc-place>| Maadi, Cairo</span></span>
                      </span>
                    </span>
                    <span class="w-[13px] h-[13px]">${ICON.chevronDown}</span>
@@ -443,7 +444,8 @@
     const catItems = CATEGORY_NAV.map((c) => {
       const isCurrent = !!c.url && c.url === currentPath;
       return `
-        <a href="${pageHref(c.url)}" class="catnav-item flex flex-col items-center justify-center gap-0.5 px-1.5 py-1 md:px-2.5 rounded-[10px] shrink-0 hover:bg-primary-50 transition-colors${isCurrent ? " is-current" : ""}"${isCurrent ? ' aria-current="page"' : ""}>
+        <a href="${pageHref(c.url)}" class="catnav-item relative flex flex-col items-center justify-center gap-0.5 px-1.5 py-1 md:px-2.5 rounded-[10px] shrink-0 hover:bg-primary-50 transition-colors${isCurrent ? " is-current" : ""}"${isCurrent ? ' aria-current="page"' : ""}>
+          ${c.badge ? `<span class="catnav-badge">${esc(c.badge)}</span>` : ""}
           <img src="images/icons/${c.icon}" alt="" width="40" height="40" class="size-8 md:size-10 shrink-0" />
           <span class="text-primaryDark whitespace-nowrap text-[9px] md:${c.big ? "text-xs" : "text-[11px]"} ${c.big ? "font-medium" : "font-semibold"}">${esc(c.label)}</span>
         </a>`;
@@ -854,6 +856,7 @@
         <h2 class="font-semibold text-textSecondary text-lg">Choose Your Location</h2>
         <button type="button" data-close class="grid place-items-center w-8 h-8 rounded-full hover:bg-neutral-100 text-textSecondary">${ICON.close}</button>
       </div>
+      <p class="loc-gate-only text-xs text-textSecondary leading-[150%] -mt-2 mb-4">Stock differs by branch — pick your area and we'll only show what we can actually deliver to you.</p>
       <form data-location-form class="flex flex-col gap-3">
         <label class="block">
           <span class="label">City</span>
@@ -953,6 +956,92 @@
     if (backdrop) backdrop.classList.remove("is-open");
     document.body.classList.remove("no-scroll");
     openEl = null;
+    /* Any close path out of the first-visit gate (backdrop, Esc, X, "not
+       now") counts as "didn't choose" → fall back to the default area. A
+       confirmed pick calls commitLocation() first, which clears the gate
+       flag, so this can't overwrite a real choice. */
+    dismissLocationGate();
+  }
+
+  /* ---------------------------------------------------------------
+     Delivery location — the catalogue is inventory-scoped per area, so
+     the first visit must resolve to *some* area before browsing. The
+     picker opens over a dimmed page; dismissing it silently accepts
+     DEFAULT_LOCATION. The pick is remembered so the gate is one-time.
+     --------------------------------------------------------------- */
+  const LOCATION_KEY = "ex-location";
+  const DEFAULT_LOCATION = "Maadi, Cairo";
+
+  function storedLocation() {
+    try {
+      return localStorage.getItem(LOCATION_KEY) || "";
+    } catch (e) {
+      return "";
+    }
+  }
+
+  function paintLocation(place) {
+    document
+      .querySelectorAll("[data-loc-place]")
+      .forEach((el) => (el.textContent = "| " + place));
+  }
+
+  /* Persist + reflect a resolved area, and drop the gate. */
+  function commitLocation(place) {
+    document.body.classList.remove("loc-gate");
+    try {
+      localStorage.setItem(LOCATION_KEY, place);
+    } catch (e) {
+      /* private mode — the pick just won't survive a reload */
+    }
+    paintLocation(place);
+  }
+
+  /* Close the gate without a choice → default area. No-op otherwise. */
+  function dismissLocationGate() {
+    if (!document.body.classList.contains("loc-gate")) return;
+    document
+      .querySelectorAll("[data-locmenu].is-open")
+      .forEach((w) => w.classList.remove("is-open"));
+    const backdrop = document.querySelector("[data-backdrop]");
+    if (backdrop) backdrop.classList.remove("is-open");
+    document.body.classList.remove("no-scroll");
+    commitLocation(DEFAULT_LOCATION);
+  }
+
+  function initLocationGate() {
+    /* Review affordance: ?loc=1 replays the first-visit gate on a browser
+       that has already answered it. Without this, re-checking the flow
+       means hand-clearing localStorage every time. */
+    const force = /[?&]loc=1\b/.test(window.location.search);
+    if (force) {
+      try {
+        localStorage.removeItem(LOCATION_KEY);
+      } catch (e) {}
+    }
+    const saved = force ? "" : storedLocation();
+    if (saved) {
+      paintLocation(saved);
+      return;
+    }
+    paintLocation(DEFAULT_LOCATION);
+    // Checkout runs the minimal header — no location control to anchor to.
+    if (document.body.dataset.page === "checkout") return;
+
+    /* Let the page paint first: the gate reads as a deliberate prompt
+       rather than a flash of chrome during load. */
+    setTimeout(() => {
+      document.body.classList.add("loc-gate");
+      const wrap = document.querySelector("[data-locmenu]");
+      if (wrap && window.matchMedia("(min-width: 768px)").matches) {
+        wrap.classList.add("is-open");
+        const backdrop = document.querySelector("[data-backdrop]");
+        if (backdrop) backdrop.classList.add("is-open");
+        document.body.classList.add("no-scroll");
+      } else {
+        openOverlay("location"); // mobile: the bottom sheet, already above the backdrop
+      }
+    }, 400);
   }
 
   /* ---------------------------------------------------------------
@@ -3106,6 +3195,9 @@
     scope.querySelectorAll("[data-location-form]").forEach((f) =>
       f.addEventListener("submit", (e) => {
         e.preventDefault();
+        // Selects are ordered City, Area, District; the pill shows "Area, City".
+        const [city, area] = [...f.querySelectorAll("select")].map((s) => s.value);
+        commitLocation(area && city ? area + ", " + city : DEFAULT_LOCATION);
         closeOverlay();
         document
           .querySelectorAll("[data-locmenu].is-open")
@@ -3546,7 +3638,11 @@
       }
     });
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && openEl) closeOverlay();
+      // The desktop gate is a dropdown, not an overlay, so openEl is null —
+      // check the gate flag too or Esc would be dead while it's up.
+      if (e.key === "Escape" && (openEl || document.body.classList.contains("loc-gate"))) {
+        closeOverlay();
+      }
     });
   }
 
@@ -4385,6 +4481,7 @@
     // (and the floating cart's empty/full icon) to the real seeded count.
     setCartCount(cartCount);
     initFooterReveal();
+    initLocationGate();
 
     // Footer DotField background (plain canvas script).
     if (document.querySelector("[data-dotfield]") && !document.getElementById("dotfield-script")) {

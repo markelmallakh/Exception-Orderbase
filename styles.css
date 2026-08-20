@@ -621,6 +621,32 @@ body.no-scroll {
   display: block;
 }
 
+/* First-visit delivery-location gate.
+   The catalogue is inventory-scoped per area, so the first visit dims the
+   page and opens the picker. Desktop reuses the header dropdown, which
+   means the header has to clear the z-90 backdrop — hence lifting
+   #site-header into its own stacking context. Pointer events stay off
+   everywhere except the picker itself, so the gate is the only thing the
+   visitor can act on until they choose (or dismiss to the default area). */
+.loc-gate-only {
+  display: none;
+}
+body.loc-gate .loc-gate-only {
+  display: block;
+}
+body.loc-gate #site-header {
+  position: relative;
+  z-index: 95;
+  pointer-events: none;
+}
+body.loc-gate #site-header [data-locmenu] {
+  pointer-events: auto;
+}
+body.loc-gate [data-loc-toggle] {
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.9);
+  border-radius: 5px;
+}
+
 /* Floating cart — hidden until the header scrolls away */
 [data-floating-cart] {
   opacity: 0;
@@ -1110,6 +1136,36 @@ body[data-purchased="true"] .review-gate-hint {
 .catnav-item span {
   display: block;
   width: 100%;
+}
+/* Callout sticker on a category tab (Make Your Cake → "TRY NOW"):
+   a tiny light-pink tag perched on the top corner with a slight tilt,
+   same visual family as the "Go To" tag on the location pill. */
+.catnav-badge {
+  position: absolute;
+  top: -1px;
+  inset-inline-start: -2px;
+  z-index: 1;
+  padding: 2px 4px;
+  border-radius: 4px;
+  background: #fbdbe7;
+  color: #db336c;
+  font-size: 7px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  transform: rotate(-2deg);
+  pointer-events: none;
+  box-shadow: 0 1px 3px rgba(219, 51, 108, 0.18);
+}
+/* the is-current label rule (.catnav-item.is-current span) would repaint
+   the badge dark — keep the sticker pink on the active tab too */
+.catnav-item span.catnav-badge,
+.catnav-item.is-current span.catnav-badge {
+  display: inline-block;
+  width: auto;
+  color: #db336c;
+  font-weight: 700;
 }
 .catnav-item.is-current {
   background: #b0ded9; /* primary turquoise — the current category fills solid, no underline */
@@ -2041,6 +2097,47 @@ body[data-purchased="true"] .review-gate-hint {
       url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>')
       center / 12px no-repeat;
 }
+/* Compact row variant (Walmart-style): icon slot on the left, label +
+   sub beside it. Used for every step option on Make Your Cake; the
+   themed-figure modal keeps the stacked photo tiles. */
+.myc-opt--row {
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  padding: 8px 14px;
+  border-radius: 14px;
+  min-height: 64px;
+  text-align: start;
+}
+.myc-opt--row .myc-opt__txt {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+.myc-opt__ico {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  background: #f6f7f8;
+}
+.myc-opt__ico--emoji {
+  font-size: 24px;
+  line-height: 1;
+}
+.myc-opt--row.is-active::after {
+  top: 50%;
+  transform: translateY(-50%);
+  inset-inline-end: 12px;
+}
+.myc-opt--row .myc-opt__link {
+  margin-inline-start: auto;
+  padding-inline-end: 26px; /* clear the selected check */
+}
 /* =================================================================
    PHOTO-STYLE COMPARE (temporary presentation aid) — a very small
    sticky toggle, bottom-left, that flips product imagery between
@@ -2184,13 +2281,6 @@ body.shot-white [data-shot-img] {
   display: block;
 }
 
-/* Top-view footprint glyph on the Size cards — proportions mirror the
-   real cm dimensions so relative size differences read at a glance. */
-.myc-foot {
-  background: linear-gradient(145deg, #e7fffc, #b0ded9);
-  border: 1.5px solid #8cbab5;
-  box-shadow: inset 0 -3px 6px rgba(24, 35, 37, 0.08);
-}
 /* Frosting colour swatch */
 .myc-swatch {
   width: 34px;
@@ -2364,6 +2454,13 @@ body.shot-white [data-shot-img] {
   --nutsH: 0px;
   --fruH: 0px;
   --shw: 150px;
+  /* crumb speckle — brown-tinted turbulence noise, tiled. Overlaid at
+     low opacity on the walls (frosting grain) and stronger on the cut
+     face (sponge crumb). */
+  --crumb: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.30 0 0 0 0 0.20 0 0 0 0 0.12 0.9 0 0 0 0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+  /* air pockets scattered through the sponge — layered over the crumb
+     on the cut face only */
+  --pores: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cg fill='rgba(70,42,22,0.30)'%3E%3Ccircle cx='14' cy='22' r='1.7'/%3E%3Ccircle cx='38' cy='10' r='1.2'/%3E%3Ccircle cx='66' cy='26' r='2'/%3E%3Ccircle cx='95' cy='14' r='1.4'/%3E%3Ccircle cx='108' cy='44' r='1.8'/%3E%3Ccircle cx='84' cy='58' r='1.3'/%3E%3Ccircle cx='52' cy='48' r='1.9'/%3E%3Ccircle cx='22' cy='62' r='1.4'/%3E%3Ccircle cx='8' cy='92' r='1.9'/%3E%3Ccircle cx='36' cy='84' r='1.3'/%3E%3Ccircle cx='64' cy='96' r='2.1'/%3E%3Ccircle cx='90' cy='82' r='1.5'/%3E%3Ccircle cx='112' cy='104' r='1.2'/%3E%3Ccircle cx='48' cy='112' r='1.6'/%3E%3Ccircle cx='20' cy='108' r='1.2'/%3E%3Ccircle cx='76' cy='74' r='1.1'/%3E%3C/g%3E%3C/svg%3E");
   /* where the cake's body sits inside its box. The minis hang low in
      their tile; the LIVE cake is centred (see .c3--live below). */
   --cy: 74%;
@@ -2379,6 +2476,10 @@ body.shot-white [data-shot-img] {
    real face boxes so the gap above and below the cake match. */
 .c3--live {
   --cy: 50.5%;
+  /* auto-fit set by updateCake(): scales the whole rendered scene down
+     when the chosen size would spill out of the stage */
+  transform: scale(var(--fit, 1));
+  transition: transform 0.45s cubic-bezier(0.34, 1.2, 0.5, 1);
 }
 .c3__pos {
   position: absolute;
@@ -2409,34 +2510,32 @@ body.shot-white [data-shot-img] {
   transform-style: preserve-3d;
   transform: rotateX(-24deg) rotateY(-30deg);
 }
-.c3--live .c3__rig {
-  animation: c3-sway 11s ease-in-out infinite;
-}
-@keyframes c3-sway {
-  0%,
-  100% {
-    transform: rotateX(-24deg) rotateY(-24deg);
-  }
-  50% {
-    transform: rotateX(-21deg) rotateY(-37deg);
-  }
-}
+/* The live cake holds its pose — no idle sway, the model only moves
+   when a choice reshapes it (and pops briefly on selection). */
 @media (prefers-reduced-motion: reduce) {
-  .c3--live .c3__rig,
   .c3.is-pop .c3__pos {
     animation: none;
   }
 }
-/* ground shadow — flat, under the 3D group */
+/* ground shadow — a soft contact shadow hugging the cake's footprint.
+   One continuous falloff (not stacked rings) + a real blur so it reads
+   as light occlusion, not a painted ellipse. Nudged slightly left and
+   flattened: the light comes from the front-top-right. */
 .c3__shadow {
   position: absolute;
   left: 50%;
   top: var(--cy);
-  width: var(--shw);
-  height: calc(var(--shw) * 0.24);
-  transform: translate(-50%, calc(var(--chh) * 0.38));
-  background: radial-gradient(ellipse at center, rgba(24, 35, 37, 0.26), transparent 66%);
+  width: calc(var(--shw) * 0.78);
+  height: calc(var(--shw) * 0.15);
+  transform: translate(-52%, calc(var(--chh) * 0.40));
+  background: radial-gradient(
+    ellipse at 50% 50%,
+    rgba(24, 35, 37, 0.20),
+    rgba(24, 35, 37, 0.09) 36%,
+    transparent 56%
+  );
   border-radius: 50%;
+  filter: blur(3px);
 }
 /* ---- faces ---- */
 .c3f,
@@ -2489,6 +2588,18 @@ body.shot-white [data-shot-img] {
   border-radius: 50%;
   transform: translate(-50%, -50%) rotateX(90deg) translateZ(calc(var(--chh) / 2));
 }
+/* faint frosting/sponge grain on every face — sits under the layer
+   children (lip, stripes) so fondant coats stay smooth over it */
+.c3f::before,
+.c3s::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: var(--crumb);
+  background-size: 70px 70px;
+  opacity: 0.11;
+}
 /* vertical ambient light + bottom occlusion on every wall */
 .c3f::after,
 .c3s::after {
@@ -2500,7 +2611,11 @@ body.shot-white [data-shot-img] {
 }
 .c3f--top::after,
 .c3f--disc::after {
-  background: radial-gradient(ellipse at 38% 32%, rgba(255, 255, 255, 0.5), transparent 62%);
+  /* soft dome highlight + a darker rim so the top reads as a gently
+     rounded frosted surface instead of a flat disc */
+  background:
+    radial-gradient(ellipse at 38% 30%, rgba(255, 255, 255, 0.55), transparent 55%),
+    radial-gradient(ellipse at center, transparent 58%, rgba(24, 35, 37, 0.10) 92%, rgba(24, 35, 37, 0.16) 100%);
 }
 /* ---- wall layers (painted by JS, sized by vars) ---- */
 .c3-lip,
@@ -2542,6 +2657,89 @@ body.shot-white [data-shot-img] {
   mask:
     linear-gradient(#000 0 0) 0 0 / 100% 30% no-repeat,
     radial-gradient(circle 5px at 5px 4px, #000 95%, transparent 100%) 0 100% / 13px 64% repeat-x;
+}
+/* =================================================================
+   CUT-AWAY + CAKE BOARD (live round cake) — the Walmart-style reveal.
+   .c3-cut is a chord plane sealing the hole left by the removed wall
+   segments (see CUT_SKIP in make-your-cake.html): chord centred at 45°
+   cake-local, depth cos(36°)=0.809·r, width 2·sin(36°)=1.176·r, so its
+   edges land exactly on the neighbouring segments. It shows the sponge
+   layers (painted by JS), a cream line, the filling stripes, and the
+   frosting shell as bordered edges; ::after lays the crumb speckle on
+   top of everything so the interior reads as baked sponge.
+   ================================================================= */
+.c3-cut {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: calc(var(--cr) * 1.176);
+  height: var(--chh);
+  transform: translate(-50%, -50%) rotateY(45deg) translateZ(calc(var(--cr) * 0.809));
+  backface-visibility: hidden;
+  overflow: hidden;
+  border-radius: 2px;
+  /* recessed interior: soft top occlusion + a faint baked-crust ring
+     hugging the cut edges */
+  box-shadow:
+    inset 0 4px 10px rgba(0, 0, 0, 0.10),
+    inset 0 0 0 1px rgba(90, 55, 30, 0.16),
+    inset 0 0 8px rgba(90, 55, 30, 0.12);
+}
+.c3-cut::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    var(--pores) 0 0 / 64px 64px,
+    var(--crumb) 0 0 / 90px 90px;
+  opacity: 0.55;
+}
+/* cream line between the two sponge layers */
+.c3-cut__fill {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(50% - 2px);
+  height: 4px;
+  background: #fff7ec;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
+}
+/* the interior carries the filling stripes — the outside walls stay
+   clean, the way a real cake would look */
+.c3--cut .c3s .c3-nut,
+.c3--cut .c3s .c3-fru {
+  display: none;
+}
+.c3--live .c3-cut {
+  transition:
+    width 0.55s cubic-bezier(0.34, 1.2, 0.5, 1),
+    height 0.55s cubic-bezier(0.34, 1.2, 0.5, 1),
+    transform 0.55s cubic-bezier(0.34, 1.2, 0.5, 1),
+    background 0.5s ease;
+}
+/* scalloped paper board under the live cake — flat in screen space,
+   like the shadow, sized off the same vars so it morphs along */
+.c3__board {
+  position: absolute;
+  left: 50%;
+  top: var(--cy);
+  width: calc(var(--shw) * 1.32);
+  height: calc(var(--shw) * 0.37);
+  transform: translate(-50%, calc(var(--chh) * 0.28));
+  pointer-events: none;
+}
+.c3__board svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 3px 7px rgba(24, 35, 37, 0.10));
+}
+.c3--live .c3__board {
+  transition:
+    width 0.55s ease,
+    height 0.55s ease,
+    transform 0.55s ease;
 }
 /* message piped on the top surface */
 .c3-word {
@@ -2844,6 +3042,11 @@ blockquote {
 }
 .card-form[hidden] {
   display: none;
+}
+/* Nested under its own option row, the group's 10px gap already provides
+   the separation — the standalone margin would double it up. */
+.optrow-group > .card-form {
+  margin-top: 0;
 }
 .card-form.is-in {
   animation: card-form-in 0.32s cubic-bezier(0.22, 0.61, 0.36, 1) both;
