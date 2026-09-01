@@ -4434,9 +4434,36 @@
           }
         });
       },
-      { threshold: 0.15, rootMargin: "0px 0px -8% 0px" }
+      /* threshold MUST stay 0. It is a fraction of the TARGET's own area, so
+         an element taller than the viewport can never reach a percentage:
+         at 0.15 anything taller than about 6x the viewport height never
+         intersects, never gets .reveal-in, and sits at opacity 0 forever.
+         That is exactly what blanked the cafe menu — a 3918px section in a
+         463px window tops out at 11% and stayed invisible. The -8% bottom
+         margin still holds the entrance back until the element clears the
+         fold, which is all the threshold was really for. */
+      { threshold: 0, rootMargin: "0px 0px -8% 0px" }
     );
     els.forEach((el) => io.observe(el));
+
+    /* Belt and braces: reveal anything already on screen without waiting to
+       be told. An element stuck at opacity 0 is invisible content, which is
+       a far worse outcome than a missed animation, so it is worth a cheap
+       sweep at every entry point. */
+    const sweep = () => {
+      const h = window.innerHeight || 0;
+      els.forEach((el) => {
+        if (el.classList.contains("reveal-in")) return;
+        const b = el.getBoundingClientRect();
+        if (b.bottom > 0 && b.top < h) {
+          el.classList.add("reveal-in");
+          io.unobserve(el);
+        }
+      });
+    };
+    sweep();
+    window.addEventListener("load", sweep);
+    window.addEventListener("pageshow", sweep);
   }
 
   /* ---------------------------------------------------------------
@@ -4463,6 +4490,16 @@
       .forEach((sec) => {
         if (sec.hasAttribute("data-reveal") || sec.querySelector("[data-reveal]")) return;
         if (sec.querySelector('[class*="sticky"]')) return;
+        /* The class check above misses anything sticky by stylesheet rather
+           than by utility class — the cafe menu head is exactly that. Sticky
+           does not work inside a transformed ancestor, which is what the
+           reveal adds, so ask the element itself. */
+        const bar = sec.querySelector("header, nav");
+        if (bar && getComputedStyle(bar).position === "sticky") return;
+        /* Fading a section taller than the screen in as one block was never a
+           good effect — you cannot see the thing you are easing in. It is
+           also the shape most likely to strand itself at opacity 0. */
+        if (sec.getBoundingClientRect().height > (window.innerHeight || 0) * 2) return;
         sec.setAttribute("data-reveal", "");
       });
   }

@@ -333,92 +333,11 @@
           });
         }
 
-        /* Reveal each drink as it comes into view. Gated on IntersectionObserver
-           and on the user not asking for reduced motion — in either case the
-           .has-reveal class is never added, so the list renders plainly rather
-           than staying stuck at opacity 0. Each item is unobserved once shown:
-           this is an entrance, not something to replay on the way back up. */
-        (function reveal() {
-          if (!("IntersectionObserver" in window)) return;
-          if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-          dishHost.classList.add("has-reveal");
-
-          var all = [].slice.call(dishHost.querySelectorAll(".cafe-dish"));
-          var io = new IntersectionObserver(
-            function (entries) {
-              entries.forEach(function (entry) {
-                if (!entry.isIntersecting) return;
-                show(entry.target);
-              });
-            },
-            /* Bottom margin pulled in so a drink starts moving just after its
-               top edge clears the fold, not the instant one pixel shows. */
-            { rootMargin: "0px 0px -12% 0px", threshold: 0.05 },
-          );
-
-          /* Pending items only. Revealed ones are spliced out, so the sweep
-             below costs nothing once the visitor has read past them. */
-          var pending = all.slice();
-          function show(el) {
-            el.classList.add("is-in");
-            io.unobserve(el);
-            var i = pending.indexOf(el);
-            if (i > -1) pending.splice(i, 1);
-          }
-
-          /* Safety sweep, and the actual guarantee that the menu is never
-             blank. The whole list starts at opacity 0, so anything that stops
-             the observer firing — a restored scroll position, a jump straight
-             into the middle of the list, a tab that was backgrounded — would
-             otherwise leave the visitor staring at nothing with no way to
-             recover. This reveals whatever is at or above the fold outright
-             rather than waiting to be told. The observer is kept because it
-             does the job more cheaply in the normal case. */
-          function sweep() {
-            var h = window.innerHeight || 0;
-            pending.slice().forEach(function (el) {
-              if (el.getBoundingClientRect().top < h) show(el);
-            });
-          }
-
-          var sweepRaf = 0;
-          function sweepSoon() {
-            if (sweepRaf || !pending.length) return;
-            sweepRaf = requestAnimationFrame(function () {
-              sweepRaf = 0;
-              sweep();
-            });
-          }
-
-          all.forEach(function (el) {
-            io.observe(el);
-          });
-
-          sweep();
-          window.addEventListener("scroll", sweepSoon, { passive: true });
-          window.addEventListener("resize", sweepSoon, { passive: true });
-          window.addEventListener("load", sweep);
-          /* Covers back/forward cache restores, which reinstate the scroll
-             position without producing any new intersections. */
-          window.addEventListener("pageshow", sweep);
-          if (document.fonts && document.fonts.ready) document.fonts.ready.then(sweep);
-
-          /* Last resort. A drink sitting on screen and still hidden after the
-             page has settled means the reveal is broken, not merely early —
-             every path above would have caught it. Drop the hidden state
-             wholesale: a missing entrance animation beats a blank menu.
-             Note this deliberately does NOT fire when nothing has been
-             revealed yet, which is the correct state while the visitor is
-             still up in the hero. */
-          setTimeout(function () {
-            var h = window.innerHeight || 0;
-            var stuck = pending.some(function (el) {
-              var b = el.getBoundingClientRect();
-              return b.bottom > 0 && b.top < h;
-            });
-            if (stuck) dishHost.classList.remove("has-reveal");
-          }, 3000);
-        })();
+        /* No entrance animation on this list, by request. It previously
+           started every drink at opacity 0 and faded them in on scroll;
+           combined with the section-level reveal that wrapped the whole
+           2000px+ menu, a failure to fire left the page blank. Nothing here
+           is hidden now — the menu is simply drawn. */
 
         function refresh() {
           calibrate();

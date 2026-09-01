@@ -1111,29 +1111,6 @@ body.has-floating-cart .cafe-chips {
   align-items: center;
   gap: 8px;
 }
-/* Scroll reveal. The hidden state is gated behind .has-reveal, which the
-   page's script adds only once it is going to do the revealing — without
-   that gate a JS failure would leave all 31 drinks invisible. The two
-   columns are already offset half a step, so items stagger themselves and
-   need no per-item delay. */
-.cafe-dishes.has-reveal .cafe-dish {
-  opacity: 0;
-  transform: translateY(20px);
-  transition:
-    opacity 0.55s cubic-bezier(0.22, 0.61, 0.36, 1),
-    transform 0.55s cubic-bezier(0.22, 0.61, 0.36, 1);
-}
-.cafe-dishes.has-reveal .cafe-dish.is-in {
-  opacity: 1;
-  transform: none;
-}
-@media (prefers-reduced-motion: reduce) {
-  .cafe-dishes.has-reveal .cafe-dish {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
-}
 .cafe-dish__media {
   position: relative;
   flex: 0 0 auto;
