@@ -17,6 +17,13 @@
   </head>
   <body data-page="home" data-path="/" class="antialiased bg-white">
     <!-- Shared header is injected here by scripts.js -->
+    <!-- Boot cover. The header is injected by scripts.js and Tailwind (Play
+         CDN) builds its CSS in JS, so an uncovered load paints three times:
+         bare page -> restyled page -> header appears. This holds that first
+         frame until the page is whole. Deliberately blank: a spinner never
+         had time to register and read as an error. A CSS safety fade clears
+         it even if scripts.js never runs. -->
+    <div id="boot" aria-hidden="true"></div>
     <div id="site-header"></div>
 
     <main class="overflow-x-hidden">
@@ -216,6 +223,50 @@
                 <div data-fade="end" class="pointer-events-none absolute inset-y-0 end-0 z-[1] w-10 bg-gradient-to-l from-white to-transparent transition-opacity duration-200"></div>
                 <button type="button" class="carousel-btn carousel-prev !rounded-[8px]" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" class="h-5 w-5"><path d="m15 6-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
                 <button type="button" class="carousel-btn carousel-next !rounded-[8px]" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" class="h-5 w-5"><path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================ PROMO BANNERS (Figma 6520:56024) ============================
+           Two equal cards: Special Orders and Exception Cafe. Each is a solid
+           colour panel with one oversized circle bleeding out of it (clipped by
+           the card) and a cut-out photo sitting on top. The circle is a plain
+           div, not an SVG — it only ever shows one arc, and a border-radius
+           beats shipping two more assets. -->
+      <section class="bg-gray-200 pt-2 pb-4 md:pb-6">
+        <div class="mx-auto max-w-[1392px] px-4">
+          <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <!-- Special Orders -->
+            <div class="hbanner hbanner--orders" data-reveal="left">
+              <span class="hbanner__blob" aria-hidden="true"></span>
+              <img src="dummy-images/catering-home.webp" alt="" class="hbanner__art" loading="lazy" />
+              <div class="hbanner__body">
+                <div class="flex flex-col gap-2.5">
+                  <h2 class="hbanner__title">Special Orders</h2>
+                  <p class="hbanner__text">From corporate events to custom boxes and catering, we make every order exceptional.</p>
+                </div>
+                <a href="special-orders.html" class="hbanner__cta">
+                  Request Now
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h16M14 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+              </div>
+            </div>
+
+            <!-- Exception Cafe -->
+            <div class="hbanner hbanner--cafe" data-reveal="right" style="--reveal-delay: 0.08s">
+              <span class="hbanner__blob" aria-hidden="true"></span>
+              <img src="dummy-images/barista.webp" alt="" class="hbanner__art" loading="lazy" />
+              <div class="hbanner__body">
+                <div class="flex flex-col gap-2.5">
+                  <h2 class="hbanner__title">Exception Cafe</h2>
+                  <p class="hbanner__text">Discover our coffee, crafted drinks, and café favorites, made for moments worth savoring.</p>
+                </div>
+                <a href="exception-cafe.html" class="hbanner__cta">
+                  Explore Menu
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h16M14 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
               </div>
             </div>
           </div>
@@ -477,11 +528,10 @@
               </span>`;
           }
           if (type === "oos") {
-            return `
-              <span class="absolute end-3 -bottom-3 z-10 flex items-center gap-1.5 bg-white rounded-[6px] px-2.5 py-1 shadow-custom-5">
-                <span class="w-1 h-1 rounded-full bg-[#E21316]"></span>
-                <span class="text-[#E21316] text-sm font-medium whitespace-nowrap">Out of Stock</span>
-              </span>`;
+            /* Just the slot: initStock() in scripts.js fills it with the
+               Schedule control and puts the badge on the image, so every
+               out-of-stock card on the site is built by one piece of code. */
+            return `<span class="absolute end-3 -bottom-5 z-10" data-add-widget data-type="oos"></span>`;
           }
           // simple: dark-turquoise "+" button that elastically expands into a counter
           return `
@@ -510,6 +560,13 @@
               <div class="rounded-[12px] aspect-square overflow-hidden bg-primary-light ${type === "oos" ? "opacity-70" : ""}">
                 <img src="${IMGS[i % IMGS.length]}" alt="${name}" class="w-full h-full object-cover md:group-hover/card:scale-110 transition-all duration-300" />
               </div>
+              <!-- Wishlist. Small, top-left, opposite the add-to-cart control
+                   in the bottom-right. Shares [data-fav] + .fav-btn with the
+                   product page, so the pop + ripple animation and the header
+                   count are the same system. -->
+              <button type="button" data-fav aria-label="Add to wishlist" class="fav-btn absolute start-2 top-2 z-10 size-8">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path class="fav-heart" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78Z" stroke="currentColor" stroke-width="1.6"/></svg>
+              </button>
               ${cartWidget(type)}
             </div>
             <div class="flex flex-col gap-2 pt-6">

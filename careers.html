@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Careers — Exception</title>
+    <meta
+      name="description"
+      content="Be part of Exception. Send us your details and your CV, and our people team will be in touch when something fits."
+    />
+    <!-- Tailwind (Play CDN) + faithful port of the project's tailwind.config.ts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="tw-config.js"></script>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <script defer src="scripts.js"></script>
+  </head>
+  <body data-page="careers" data-path="/careers" class="antialiased bg-white">
+    <!-- Boot cover. The header is injected by scripts.js and Tailwind (Play
+         CDN) builds its CSS in JS, so an uncovered load paints three times:
+         bare page -> restyled page -> header appears. This holds that first
+         frame until the page is whole. Deliberately blank: a spinner never
+         had time to register and read as an error. A CSS safety fade clears
+         it even if scripts.js never runs. -->
+    <div id="boot" aria-hidden="true"></div>
+    <div id="site-header"></div>
+
+    <main class="overflow-x-hidden">
+      <!-- ============================ HERO ============================
+           Same shape as the Export and Special Orders heroes: breadcrumb,
+           pill, headline, lede, CTA. The CTA is an in-page anchor to the
+           form at the foot of the page — the whole page exists to get
+           someone there. -->
+      <section class="pt-8 lg:pt-16 pb-4 lg:pb-8 bg-primary-light">
+        <div class="container">
+          <nav aria-label="Breadcrumb" class="flex items-center gap-2 text-sm text-gray-700">
+            <a href="index.html" class="hover:text-primaryDark transition-colors">Home</a>
+            <span class="text-gray-400">/</span>
+            <span class="text-primaryDark font-medium">Careers</span>
+          </nav>
+
+          <div class="flex flex-col lg:flex-row items-center gap-10 lg:gap-16 py-10 lg:py-16">
+            <div class="flex-1 flex flex-col gap-5 max-w-[600px]" data-reveal="left">
+              <span class="w-fit rounded-full bg-[#F8DFE2] px-4 py-1.5 text-[13px] font-semibold text-cta">Join Now</span>
+              <h1 class="text-[32px] lg:text-[56px] font-semibold leading-[1.1] text-textSecondary">Be Part of Exception</h1>
+              <p class="text-base lg:text-lg text-gray-700 leading-[150%]">
+                Bakers, baristas, drivers, shop teams and the people behind them. If you care about doing
+                things properly, send us your CV — we'll come back to you when something fits.
+              </p>
+              <div class="flex flex-wrap items-center gap-3 pt-2">
+                <a href="#apply" class="btn btn--primary btn--md">Apply now</a>
+              </div>
+            </div>
+            <div class="flex-1 w-full" data-reveal="right" style="--reveal-delay: 0.12s">
+              <div class="relative overflow-hidden rounded-[24px] shadow-custom4">
+                <img src="dummy-images/staff.webp" alt="The Exception team at work" class="w-full h-[280px] lg:h-[420px] object-cover" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================ APPLICATION FORM ============================
+           The destination of the hero CTA, so it carries the #apply id and a
+           scroll margin that clears the sticky category bar. -->
+      <section id="apply" class="py-14 lg:py-20 scroll-mt-[120px]">
+        <div class="container">
+          <div class="mx-auto max-w-[860px] rounded-[32px] border border-gray-200 bg-white p-6 lg:p-10 shadow-custom4">
+            <div class="flex flex-col gap-3 mb-8 text-center">
+              <h2 class="text-[28px] lg:text-[40px] font-semibold text-textSecondary leading-[1.2]">Send Us Your CV</h2>
+              <p class="text-base text-gray-700 leading-[150%]">
+                A few details and your CV is all we need. We keep applications on file for six months.
+              </p>
+            </div>
+
+            <form data-demo-form="Application sent — thank you. Our people team will be in touch." class="flex w-full flex-col gap-[17px]">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-[17px]">
+                <div class="flex flex-col gap-2">
+                  <label for="cv-first" class="text-sm font-medium leading-[140%] text-gray-700">First Name<span class="text-red-500">*</span></label>
+                  <input id="cv-first" name="firstName" type="text" required placeholder="First Name" class="h-11 rounded-lg border border-customGrayMedium focus:border-primary px-[10px] text-sm font-normal leading-[140%] text-textSecondary transition-colors outline-none" />
+                </div>
+                <div class="flex flex-col gap-2">
+                  <label for="cv-last" class="text-sm font-medium leading-[140%] text-gray-700">Last Name<span class="text-red-500">*</span></label>
+                  <input id="cv-last" name="lastName" type="text" required placeholder="Last Name" class="h-11 rounded-lg border border-customGrayMedium focus:border-primary px-[10px] text-sm font-normal leading-[140%] text-textSecondary transition-colors outline-none" />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-[17px]">
+                <div class="flex flex-col gap-2">
+                  <label for="cv-email" class="text-sm font-medium leading-[140%] text-gray-700">Email<span class="text-red-500">*</span></label>
+                  <input id="cv-email" name="email" type="email" required placeholder="Email Address" class="h-11 rounded-lg border border-customGrayMedium focus:border-primary px-[10px] text-sm font-normal leading-[140%] text-textSecondary transition-colors outline-none" />
+                </div>
+                <div class="flex flex-col gap-2">
+                  <label for="cv-phone" class="text-sm font-medium leading-[140%] text-gray-700">Phone Number<span class="text-red-500">*</span></label>
+                  <input id="cv-phone" name="phone" type="tel" inputmode="numeric" required placeholder="100 1234 567" class="h-11 rounded-lg border border-customGrayMedium focus:border-primary px-[10px] text-sm font-normal leading-[140%] text-textSecondary transition-colors outline-none" />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-[17px]">
+                <div class="flex flex-col gap-2">
+                  <label for="cv-dept" class="text-sm font-medium leading-[140%] text-gray-700">Department<span class="text-red-500">*</span></label>
+                  <select id="cv-dept" name="department" required class="h-11 w-full rounded-lg border border-customGrayMedium focus:border-primary px-[10px] text-sm text-textSecondary outline-none">
+                    <option value="">Select a department</option>
+                    <option>Kitchen &amp; Pastry</option>
+                    <option>Shops &amp; Café</option>
+                    <option>Delivery &amp; Logistics</option>
+                    <option>Head Office</option>
+                    <option>Something else</option>
+                  </select>
+                </div>
+                <div class="flex flex-col gap-2">
+                  <label for="cv-exp" class="text-sm font-medium leading-[140%] text-gray-700">Years of Experience</label>
+                  <select id="cv-exp" name="experience" class="h-11 w-full rounded-lg border border-customGrayMedium focus:border-primary px-[10px] text-sm text-textSecondary outline-none">
+                    <option value="">Select</option>
+                    <option>No experience yet</option>
+                    <option>Less than 1 year</option>
+                    <option>1 – 3 years</option>
+                    <option>3 – 5 years</option>
+                    <option>More than 5 years</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="flex flex-col gap-2">
+                <label for="cv-note" class="text-sm font-medium leading-[140%] text-gray-700">Tell us about yourself</label>
+                <textarea id="cv-note" name="note" rows="4" placeholder="What you do, where you've worked, and what you're looking for…" class="min-h-[112px] w-full resize-none rounded-lg border border-customGrayMedium focus:border-primary px-[10px] py-3 text-sm font-normal leading-[140%] text-textSecondary transition-colors outline-none"></textarea>
+              </div>
+
+              <!-- CV upload. The native control is visually hidden inside its
+                   own <label>, which draws the field to match the inputs above.
+                   The label IS the control, so click and keyboard focus keep
+                   working with no JS; the script only writes the chosen
+                   filename back, since a hidden input otherwise gives no sign
+                   the file attached. -->
+              <div class="flex flex-col gap-2">
+                <span class="text-sm font-medium leading-[140%] text-gray-700">Upload your CV<span class="text-red-500">*</span></span>
+                <label for="cv-file" class="filefield">
+                  <span class="filefield__btn">
+                    <svg viewBox="0 0 24 24" fill="none" width="16" height="16" aria-hidden="true"><path d="M12 16V4m0 0 4 4m-4-4L8 8M4 17v2a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Choose a file
+                  </span>
+                  <span class="filefield__name" data-file-name>No file chosen</span>
+                  <input id="cv-file" name="cv" type="file" required accept=".pdf,.doc,.docx" class="sr-only" data-file-input />
+                </label>
+                <span class="text-xs text-customGrayMedium">PDF or Word, up to 5 MB.</span>
+              </div>
+
+              <label class="flex items-start gap-2.5 text-sm text-gray-700 leading-[150%]">
+                <input type="checkbox" required class="mt-0.5" />
+                <span>I agree that Exception may keep my details on file for future openings.</span>
+              </label>
+
+              <button type="submit" class="btn btn--primary btn--md w-full justify-center mt-2">Send Application</button>
+              <p class="text-xs text-gray-700 leading-[150%] text-center">
+                Prefer email? Send your CV to
+                <a href="mailto:careers@exceptionpastry.com" class="font-medium text-cta underline underline-offset-2" dir="ltr">careers@exceptionpastry.com</a>
+              </p>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Shared footer is injected here by scripts.js -->
+    <div id="site-footer"></div>
+
+    <script>
+      /* Filename readout for the CV upload. The native control is visually
+         hidden, so without this the applicant gets no confirmation that their
+         file actually attached — and this is the one field the whole form is
+         really collecting. */
+      (function () {
+        var input = document.querySelector("[data-file-input]");
+        var name = document.querySelector("[data-file-name]");
+        if (!input || !name) return;
+        var EMPTY = name.textContent;
+        var MAX_MB = 5;
+
+        function reset() {
+          name.textContent = EMPTY;
+          name.classList.remove("is-set", "is-error");
+        }
+
+        input.addEventListener("change", function () {
+          var file = input.files && input.files[0];
+          if (!file) return reset();
+          /* Checked here rather than left to the server: a rejected upload
+             after a filled-in form is the worst place to find out. */
+          if (file.size > MAX_MB * 1024 * 1024) {
+            input.value = "";
+            name.textContent = "That file is over " + MAX_MB + " MB — please choose a smaller one";
+            name.classList.remove("is-set");
+            name.classList.add("is-error");
+            return;
+          }
+          name.textContent = file.name;
+          name.classList.add("is-set");
+          name.classList.remove("is-error");
+        });
+
+        /* data-demo-form resets the form on submit, which clears the file but
+           not this label. */
+        var form = input.closest("form");
+        if (form) form.addEventListener("reset", reset);
+      })();
+    </script>
+  </body>
+</html>

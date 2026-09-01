@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Special Orders — Exception</title>
+    <meta
+      name="description"
+      content="Catering, corporate orders and custom boxes from Exception — thoughtfully prepared for weddings, events, team celebrations and every occasion in between."
+    />
+    <!-- Tailwind (Play CDN) + faithful port of the project's tailwind.config.ts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="tw-config.js"></script>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <script defer src="scripts.js"></script>
+  </head>
+  <body data-page="special-orders" data-path="/special-orders" class="antialiased bg-white">
+    <!-- Boot cover. The header is injected by scripts.js and Tailwind (Play
+         CDN) builds its CSS in JS, so an uncovered load paints three times:
+         bare page -> restyled page -> header appears. This holds that first
+         frame until the page is whole. Deliberately blank: a spinner never
+         had time to register and read as an error. A CSS safety fade clears
+         it even if scripts.js never runs. -->
+    <div id="boot" aria-hidden="true"></div>
+    <div id="site-header"></div>
+
+    <main class="overflow-x-hidden">
+      <!-- ============================ HERO (Figma 6517-55909) ============================
+           Centred on a full-bleed mint band, with the three supplied shots in a
+           row beneath: the office scene larger in the middle, the boxes and the
+           event table flanking it at a shorter height. One CTA only, anchored
+           to the request form at the foot of the page. -->
+      <section class="so-hero">
+        <div class="container">
+          <nav aria-label="Breadcrumb" class="flex items-center gap-2 text-sm text-gray-700 pt-2">
+            <a href="index.html" class="hover:text-primaryDark transition-colors">Home</a>
+            <span class="text-gray-400">/</span>
+            <span class="text-primaryDark font-medium">Special Orders</span>
+          </nav>
+
+          <div class="so-hero__head" data-reveal>
+            <p class="so-hero__pill">Catering · Corporate Orders · Custom Boxes</p>
+            <!-- Alternative headline supplied alongside this one, if the client
+                 prefers the more premium read. Swap the <h1> for "Big Moments
+                 Deserve an Exception" with the lede: "Catering, corporate orders
+                 and custom boxes, thoughtfully prepared for the moments that
+                 matter." -->
+            <h1 class="so-hero__title">Special Orders For Every Occasion</h1>
+            <p class="so-hero__lede">
+              From corporate celebrations to weddings, events, and special parties, we create thoughtfully
+              prepared orders made to fit your needs.
+            </p>
+            <a href="#request" class="so-hero__cta">Request Now</a>
+          </div>
+
+          <div class="so-hero__row" data-reveal style="--reveal-delay: 0.1s">
+            <figure class="so-hero__shot so-hero__shot--side">
+              <img src="dummy-images/special%20orders/hero%201.webp" alt="Branded Exception gift boxes stacked on a desk" width="620" height="525" loading="eager" decoding="async" />
+            </figure>
+            <figure class="so-hero__shot so-hero__shot--lead">
+              <img src="dummy-images/special%20orders/hero%202.webp" alt="Special Orders boxes laid out in an office" width="801" height="690" loading="eager" decoding="async" />
+            </figure>
+            <figure class="so-hero__shot so-hero__shot--side">
+              <img src="dummy-images/special%20orders/hero%203.webp" alt="An Exception dessert table set up for an event" width="620" height="525" loading="eager" decoding="async" />
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================ MADE FOR YOUR OCCASION ============================
+           Extra light turquoise, continuing the hero's band. The white cards
+           carry the section break that the background no longer does. -->
+      <section class="py-14 lg:py-20 bg-primary-light">
+        <div class="container">
+          <div class="flex flex-col gap-3 text-center max-w-[680px] mx-auto mb-10" data-reveal>
+            <h2 class="text-[28px] lg:text-[40px] font-semibold text-textSecondary leading-[1.2]">Made for Your Occasion</h2>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <div class="group overflow-hidden rounded-2xl bg-white border border-gray-200 transition-shadow hover:shadow-custom-5" data-tilt data-reveal="zoom">
+              <div class="relative overflow-hidden">
+                <img src="dummy-images/image-5.webp" alt="Catering" class="w-full aspect-[4/3] object-cover transition-transform duration-500 group-hover:scale-105" />
+              </div>
+              <div class="flex flex-col gap-2 p-6">
+                <h3 class="text-lg font-semibold text-textSecondary">Catering</h3>
+                <p class="text-sm text-gray-700 leading-[160%]">Make every gathering a little more special with a selection of Exception favorites, prepared and presented for your event.</p>
+              </div>
+            </div>
+            <div class="group overflow-hidden rounded-2xl bg-white border border-gray-200 transition-shadow hover:shadow-custom-5" data-tilt data-reveal="zoom" style="--reveal-delay: 0.06s">
+              <div class="relative overflow-hidden">
+                <img src="dummy-images/image-4.webp" alt="Corporate orders" class="w-full aspect-[4/3] object-cover transition-transform duration-500 group-hover:scale-105" />
+              </div>
+              <div class="flex flex-col gap-2 p-6">
+                <h3 class="text-lg font-semibold text-textSecondary">Corporate Orders</h3>
+                <p class="text-sm text-gray-700 leading-[160%]">From office celebrations to employee appreciation, create memorable moments for your team with carefully curated boxes and treats.</p>
+              </div>
+            </div>
+            <div class="group overflow-hidden rounded-2xl bg-white border border-gray-200 transition-shadow hover:shadow-custom-5" data-tilt data-reveal="zoom" style="--reveal-delay: 0.12s">
+              <div class="relative overflow-hidden">
+                <img src="dummy-images/image-1.webp" alt="Custom boxes" class="w-full aspect-[4/3] object-cover transition-transform duration-500 group-hover:scale-105" />
+              </div>
+              <div class="flex flex-col gap-2 p-6">
+                <h3 class="text-lg font-semibold text-textSecondary">Custom Boxes</h3>
+                <p class="text-sm text-gray-700 leading-[160%]">Choose from our selection of sweets, pastries, chocolates and savory bites to create a box that fits your occasion and your needs.</p>
+              </div>
+            </div>
+            <div class="group overflow-hidden rounded-2xl bg-white border border-gray-200 transition-shadow hover:shadow-custom-5" data-tilt data-reveal="zoom" style="--reveal-delay: 0.18s">
+              <div class="relative overflow-hidden">
+                <img src="dummy-images/special-cake.webp" alt="Events and celebrations" class="w-full aspect-[4/3] object-cover transition-transform duration-500 group-hover:scale-105" />
+              </div>
+              <div class="flex flex-col gap-2 p-6">
+                <h3 class="text-lg font-semibold text-textSecondary">Events &amp; Celebrations</h3>
+                <p class="text-sm text-gray-700 leading-[160%]">Whether it's a birthday, wedding, gathering or special event, we'll help you create an order your guests will remember.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================ MADE AROUND YOUR NEEDS ============================
+           Dark band, matching the Export page's certificates section. -->
+      <section class="bg-[#0F3B36] py-14 lg:py-20">
+        <div class="container">
+          <div class="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
+            <div class="flex-1 flex flex-col gap-5" data-reveal="left">
+              <h2 class="text-[28px] lg:text-[40px] font-semibold text-white leading-[1.2]">Made Around Your Needs</h2>
+              <p class="text-lg text-white font-medium leading-[150%]">Every special order is different.</p>
+              <p class="text-base text-white/85 leading-[160%]">
+                Tell us what you have in mind, and our team will work with you on the right selection, quantity,
+                presentation and delivery details.
+              </p>
+              <p class="text-base text-white/85 leading-[160%]">
+                From a few boxes to a large event, we're here to make it exceptional.
+              </p>
+              <div class="pt-2">
+                <a href="#request" class="btn btn--primary btn--md">Request Now</a>
+              </div>
+            </div>
+            <div class="flex-1 w-full" data-reveal="right" style="--reveal-delay: 0.12s">
+              <img src="dummy-images/custom-cake.webp" alt="A custom Exception order being prepared" class="w-full h-[280px] lg:h-[400px] rounded-[24px] object-cover shadow-custom4" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================ HOW IT WORKS ============================ -->
+      <section class="py-14 lg:py-20">
+        <div class="container">
+          <div class="flex flex-col gap-3 text-center max-w-[680px] mx-auto mb-10" data-reveal>
+            <h2 class="text-[28px] lg:text-[40px] font-semibold text-textSecondary leading-[1.2]">How It Works</h2>
+          </div>
+          <div class="so-steps">
+            <div class="so-step" data-reveal>
+              <span class="so-step__rail" aria-hidden="true">
+                <span class="so-step__dot"></span>
+                <span class="so-step__line"></span>
+              </span>
+              <h3 class="so-step__title">Tell Us What You Need</h3>
+              <p class="so-step__body">Share your occasion, requirements and estimated quantity.</p>
+            </div>
+            <div class="so-step" data-reveal style="--reveal-delay: 0.08s">
+              <span class="so-step__rail" aria-hidden="true">
+                <span class="so-step__dot"></span>
+                <span class="so-step__line"></span>
+              </span>
+              <h3 class="so-step__title">We Create Your Order</h3>
+              <p class="so-step__body">Our team will recommend the right products and presentation for your needs.</p>
+            </div>
+            <div class="so-step so-step--last" data-reveal style="--reveal-delay: 0.16s">
+              <span class="so-step__rail" aria-hidden="true">
+                <span class="so-step__dot"></span>
+                <span class="so-step__line"></span>
+              </span>
+              <h3 class="so-step__title">We Make It Exceptional</h3>
+              <p class="so-step__body">Once everything is confirmed, we prepare and deliver your order as planned.</p>
+            </div>
+        </div>
+      </section>
+
+      <!-- ============================ REQUEST FORM ============================
+           The destination of every "Request Now" on the page, so it carries the
+           #request id and a scroll margin that clears the sticky category bar.
+           Deliberately last: everything above it is the argument for filling
+           it in. -->
+      <section id="request" class="pb-14 lg:pb-20 scroll-mt-[120px]">
+        <div class="container">
+          <div class="mx-auto max-w-[860px] rounded-[32px] border border-gray-200 bg-white p-6 lg:p-10 shadow-custom4">
+            <div class="flex flex-col gap-3 mb-8 text-center">
+              <h2 class="text-[28px] lg:text-[40px] font-semibold text-textSecondary leading-[1.2]">Request Your Special Order</h2>
+              <p class="text-base text-gray-700 leading-[150%]">Tell us a little about your order and we'll take it from there.</p>
+            </div>
+
+            <form data-demo-form="Request submitted — our team will be in touch." class="flex w-full flex-col gap-[17px]">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-[17px]">
+                <div class="flex flex-col gap-2">
+                  <label for="so-first" class="text-sm font-medium leading-[140%] text-gray-700">First Name<span class="text-red-500">*</span></label>
+                  <input id="so-first" name="firstName" type="text" required placeholder="First Name" class="h-11 rounded-lg border border-customGrayMedium focus:border-primary px-[10px] text-sm font-normal leading-[140%] text-textSecondary transition-colors outline-none" />
+                </div>
+                <div class="flex flex-col gap-2">
+                  <label for="so-last" class="text-sm font-medium leading-[140%] text-gray-700">Last Name<span class="text-red-500">*</span></label>
+                  <input id="so-last" name="lastName" type="text" required placeholder="Last Name" class="h-11 rounded-lg border border-customGrayMedium focus:border-primary px-[10px] text-sm font-normal leading-[140%] text-textSecondary transition-colors outline-none" />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-[17px]">
+                <div class="flex flex-col gap-2">
+                  <label for="so-email" class="text-sm font-medium leading-[140%] text-gray-700">Email<span class="text-red-500">*</span></label>
+                  <input id="so-email" name="email" type="email" required placeholder="Email Address" class="h-11 rounded-lg border border-customGrayMedium focus:border-primary px-[10px] text-sm font-normal leading-[140%] text-textSecondary transition-colors outline-none" />
+                </div>
+                <div class="flex flex-col gap-2">
+                  <label for="so-phone" class="text-sm font-medium leading-[140%] text-gray-700">Phone Number<span class="text-red-500">*</span></label>
+                  <input id="so-phone" name="phone" type="tel" inputmode="numeric" required placeholder="100 1234 567" class="h-11 rounded-lg border border-customGrayMedium focus:border-primary px-[10px] text-sm font-normal leading-[140%] text-textSecondary transition-colors outline-none" />
+                </div>
+              </div>
+
+              <div class="flex flex-col gap-2">
+                <label for="so-type" class="text-sm font-medium leading-[140%] text-gray-700">Order Type<span class="text-red-500">*</span></label>
+                <select id="so-type" name="type" required class="h-11 w-full rounded-lg border border-customGrayMedium focus:border-primary px-[10px] text-sm text-textSecondary outline-none">
+                  <option value="">Select order type</option>
+                  <option>Corporate Order</option>
+                  <option>Catering</option>
+                  <option>Custom Boxes</option>
+                  <option>Event / Celebration</option>
+                  <option>Other</option>
+                </select>
+              </div>
+
+              <div class="flex flex-col gap-2">
+                <label for="so-note" class="text-sm font-medium leading-[140%] text-gray-700">Message<span class="text-red-500">*</span></label>
+                <textarea id="so-note" name="note" rows="5" required placeholder="Tell us about your order — the occasion, quantity, date and anything else we should know." class="min-h-[132px] w-full resize-none rounded-lg border border-customGrayMedium focus:border-primary px-[10px] py-3 text-sm font-normal leading-[140%] text-textSecondary transition-colors outline-none"></textarea>
+              </div>
+
+              <button type="submit" class="btn btn--primary btn--md w-full justify-center mt-2">Submit Request</button>
+              <p class="text-sm text-gray-700 leading-[150%] text-center">
+                Prefer email? Reach us at
+                <a href="mailto:info@exceptionpastry.com" class="font-medium text-cta underline underline-offset-2" dir="ltr">info@exceptionpastry.com</a>
+              </p>
+              <p class="text-xs text-gray-700 leading-[150%] text-center">
+                Our team will review your request and contact you to discuss availability, options and pricing.
+              </p>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Shared footer is injected here by scripts.js -->
+    <div id="site-footer"></div>
+  </body>
+</html>

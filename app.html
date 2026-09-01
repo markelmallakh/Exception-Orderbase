@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Get the Exception App</title>
+    <meta name="description" content="Download the Exception app for iOS or Android." />
+    <meta name="robots" content="noindex" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <style>
+      .getapp {
+        min-height: 100svh;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        background: #182325;
+      }
+      .getapp__card {
+        width: 100%;
+        max-width: 420px;
+        text-align: center;
+        color: #fff;
+      }
+      .getapp__logo { width: 190px; margin: 0 auto 28px; display: block; }
+      .getapp__title { font-size: 24px; font-weight: 600; line-height: 1.25; }
+      .getapp__sub { margin-top: 10px; font-size: 14px; line-height: 1.5; color: rgba(255, 255, 255, 0.7); }
+      .getapp__badges { margin-top: 26px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+      .getapp__badges .store-badge { height: 44px; padding: 0 16px; }
+      .getapp__badges .store-badge__txt strong { font-size: 15px; }
+    </style>
+  </head>
+  <body class="antialiased">
+    <!-- Platform router for the footer QR code. A QR only carries a URL, so
+         the iOS/Android split has to happen here: the code points at this
+         page and this page forwards to the right store. Anything that is
+         neither (desktop, scanners with JS off) just sees both badges. -->
+    <main class="getapp">
+      <div class="getapp__card">
+        <img src="images/logos/footer-logo.svg" alt="Exception Pâtissier" class="getapp__logo" />
+        <h1 class="getapp__title">Get the Exception app</h1>
+        <p class="getapp__sub" data-getapp-note>Taking you to your app store&hellip;</p>
+        <div class="getapp__badges">
+          <a href="https://play.google.com/store/apps/details?id=com.exception.exception&amp;pcampaignid=web_share" data-store="android" rel="noopener" class="store-badge">
+            <svg class="store-badge__mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.06 2.29a1.5 1.5 0 0 0-.31.94v17.54c0 .36.11.68.31.94l.06.06 9.83-9.83v-.23L3.12 2.23l-.06.06Z" fill="#00A0FF"/><path d="M16.2 15.24l-3.25-3.25v-.23l3.25-3.26.07.05 3.87 2.2c1.1.63 1.1 1.65 0 2.28l-3.87 2.2-.07.01Z" fill="#FFBC00"/><path d="M16.27 15.19 12.95 11.87 3.06 21.71c.36.39.96.44 1.63.05l11.58-6.57Z" fill="#FF3A44"/><path d="M16.27 8.55 4.69 1.98C4.02 1.6 3.42 1.65 3.06 2.04l9.89 9.83 3.32-3.32Z" fill="#00C853"/></svg>
+            <span class="store-badge__txt"><small>Download on the</small><strong>Google Play</strong></span>
+          </a>
+          <a href="https://apps.apple.com/eg/app/exception-patissier/id6741048876" data-store="ios" rel="noopener" class="store-badge">
+            <svg class="store-badge__mark" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M17.05 12.04c-.03-2.75 2.25-4.07 2.35-4.13-1.28-1.87-3.27-2.13-3.98-2.16-1.69-.17-3.3 1-4.16 1-.86 0-2.18-.98-3.58-.95-1.84.03-3.54 1.07-4.49 2.72-1.91 3.32-.49 8.23 1.38 10.92.91 1.32 2 2.8 3.42 2.75 1.37-.06 1.89-.89 3.55-.89 1.65 0 2.12.89 3.57.86 1.47-.02 2.41-1.34 3.31-2.67 1.04-1.53 1.47-3.01 1.5-3.09-.03-.01-2.88-1.11-2.91-4.4Z"/><path d="M14.5 4.2c.75-.92 1.26-2.19 1.12-3.46-1.08.04-2.4.72-3.18 1.63-.7.81-1.31 2.11-1.15 3.35 1.21.09 2.45-.61 3.21-1.52Z"/></svg>
+            <span class="store-badge__txt"><small>Download on the</small><strong>App Store</strong></span>
+          </a>
+        </div>
+      </div>
+    </main>
+    <script>
+      (function () {
+        var ua = navigator.userAgent || "";
+        var isAndroid = /android/i.test(ua);
+        /* iPadOS 13+ reports itself as a Mac, so the touch-point check is
+           what actually separates an iPad from a desktop Safari. */
+        var isIOS =
+          /iPad|iPhone|iPod/.test(ua) ||
+          (/Macintosh/.test(ua) && typeof navigator.maxTouchPoints === "number" && navigator.maxTouchPoints > 1);
+        var target = isAndroid
+          ? document.querySelector('[data-store="android"]')
+          : isIOS
+            ? document.querySelector('[data-store="ios"]')
+            : null;
+        var note = document.querySelector("[data-getapp-note]");
+        if (target) {
+          /* replace() so the back button returns to wherever they came from
+             rather than bouncing them through this page again. */
+          window.location.replace(target.href);
+        } else if (note) {
+          note.textContent = "Scan the QR code with your phone, or pick your store below.";
+        }
+      })();
+    </script>
+  </body>
+</html>

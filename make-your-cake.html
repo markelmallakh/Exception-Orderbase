@@ -15,6 +15,13 @@
     <script defer src="scripts.js"></script>
   </head>
   <body data-page="make-your-cake" data-path="/shop/make-your-cake" class="antialiased bg-white">
+    <!-- Boot cover. The header is injected by scripts.js and Tailwind (Play
+         CDN) builds its CSS in JS, so an uncovered load paints three times:
+         bare page -> restyled page -> header appears. This holds that first
+         frame until the page is whole. Deliberately blank: a spinner never
+         had time to register and read as an error. A CSS safety fade clears
+         it even if scripts.js never runs. -->
+    <div id="boot" aria-hidden="true"></div>
     <div id="site-header"></div>
 
     <main class="overflow-x-hidden">
@@ -35,8 +42,11 @@
           <!-- The cake IS the hero: it takes the wider column, the options
                sit beside it as a compact Walmart-style row list. -->
           <div class="mx-auto max-w-[1220px] grid gap-6 lg:grid-cols-[minmax(0,1.16fr)_minmax(0,0.84fr)] lg:items-stretch" data-cake-builder>
-            <!-- Live 3D cake on the studio floor -->
-            <div class="relative overflow-hidden rounded-[24px] border border-gray-300 bg-white p-6 flex flex-col items-center justify-center">
+            <!-- Live 3D cake on the studio floor. The stage carries its own
+                 backdrop (.myc-stage): the default cake is white-frosted, and
+                 on a plain white card it disappeared — every surface was
+                 within a few percent of white. -->
+            <div class="myc-stage relative overflow-hidden rounded-[24px] border border-gray-300 p-6 flex flex-col items-center justify-center">
               <!-- chosen sugar-paste figures, pinned to the stage corner -->
               <div class="cake-picks" data-cake-picks hidden></div>
               <div class="cake-stage w-full" style="min-height:470px">
@@ -55,6 +65,15 @@
                 <button type="button" class="btn btn--secondary btn--md whitespace-nowrap" data-back>Back</button>
                 <button type="button" class="btn btn--primary btn--md flex-1 justify-center" data-next>Next</button>
                 <button type="button" class="btn btn--primary btn--md flex-1 justify-center" data-add hidden>Add to Cart</button>
+                <!-- Appears with Add to Cart, i.e. once the design is finished. -->
+                <button type="button" class="myc-share-btn" data-open="cakeshare" data-cake-share aria-label="Share this cake" hidden>
+                  <svg viewBox="0 0 24 24" fill="none" width="18" height="18" aria-hidden="true">
+                    <circle cx="18" cy="5" r="2.6" stroke="currentColor" stroke-width="1.7"/>
+                    <circle cx="6" cy="12" r="2.6" stroke="currentColor" stroke-width="1.7"/>
+                    <circle cx="18" cy="19" r="2.6" stroke="currentColor" stroke-width="1.7"/>
+                    <path d="M8.35 10.75 15.65 6.6M8.35 13.25l7.3 4.15" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                  </svg>
+                </button>
               </div>
             </div>
           </div>
@@ -78,9 +97,11 @@
           </button>
         </div>
         <div class="flex-1 overflow-y-auto px-5 py-4" data-themes-body></div>
-        <div class="flex shrink-0 items-center gap-3 border-t border-neutral-100 px-5 py-4">
-          <span class="text-sm text-gray-600" data-themes-count>0 / 4 selected</span>
-          <button type="button" class="btn btn--primary btn--md ms-auto" data-themes-confirm>Add Figure</button>
+        <div class="flex shrink-0 items-center gap-4 border-t border-neutral-100 px-5 py-4">
+          <span class="text-sm text-gray-600 me-auto" data-themes-count>0 / 4 selected</span>
+          <!-- shown only while a figure is applied on the cake -->
+          <button type="button" class="myc-opt__link myc-opt__link--muted" data-themes-remove hidden>Remove theme</button>
+          <button type="button" class="btn btn--primary btn--md" data-themes-confirm>Add Figure</button>
         </div>
       </div>
     </div>
@@ -261,32 +282,29 @@
            9° to 81°, and a chord at cos(36°)=0.809·r with half-width
            sin(36°)=0.588·r seals it edge to edge (.c3-cut in styles.css). */
         const CUT_SKIP = { 18: 1, 36: 1, 54: 1, 72: 1 };
-        /* Scalloped paper cake board, drawn flat in screen space like the
-           shadow. A polygon whose radius breathes with |sin| makes the
-           doily scallops — bumps out, cusps in. */
+        /* Scalloped paper doily for the ROUND cake — a circular polygon
+           whose radius breathes with |sin| (bumps out, cusps in). It lives
+           on a plane INSIDE the 3D rig, so the perspective projection
+           flattens it exactly like the cake's own bottom — the board can
+           never disagree with the cake's shape or angle again. */
         function boardHTML() {
           const pts = [];
-          const N = 36, R = 104, cx = 110, cy = 50, ry = 44;
+          const N = 36, R = 104, c = 110;
           for (let i = 0; i < 288; i++) {
             const t = (i / 288) * Math.PI * 2;
             const w = 0.952 + 0.048 * Math.abs(Math.sin((t * N) / 2));
-            pts.push((cx + R * w * Math.cos(t)).toFixed(1) + "," + (cy + ry * w * Math.sin(t)).toFixed(1));
+            pts.push((c + R * w * Math.cos(t)).toFixed(1) + "," + (c + R * w * Math.sin(t)).toFixed(1));
           }
           return (
-            '<svg viewBox="0 0 220 100" preserveAspectRatio="none" aria-hidden="true">' +
+            '<svg viewBox="0 0 220 220" preserveAspectRatio="none" aria-hidden="true">' +
             '<defs><radialGradient id="cakeboard" cx="50%" cy="42%" r="62%">' +
             '<stop offset="0" stop-color="#ffffff"/><stop offset="0.72" stop-color="#f6f5f1"/><stop offset="1" stop-color="#e6e5df"/>' +
             "</radialGradient></defs>" +
-            '<polygon points="' + pts.join(" ") + '" fill="url(#cakeboard)" stroke="#dcdbd5" stroke-width="0.6"/></svg>'
+            '<polygon points="' + pts.join(" ") + '" fill="url(#cakeboard)" stroke="#dcdbd5" stroke-width="0.8"/></svg>'
           );
         }
         function buildCake(root, shape, live) {
           root.innerHTML = "";
-          if (live) {
-            const board = el("c3__board");
-            board.innerHTML = boardHTML();
-            root.appendChild(board);
-          }
           const shadow = el("c3__shadow");
           const pos = el("c3__pos");
           const rig = el("c3__rig");
@@ -295,11 +313,23 @@
           root.appendChild(shadow);
           root.appendChild(pos);
           root.appendChild(topper);
-          const rec = { shape, walls: [], top: null, word: null, topper, cutFace: null };
-          /* !! matters: an undefined `live` would turn toggle(force) into
-             a plain toggle and stamp c3--cut on every mini */
-          const withCut = !!(live && shape === "circle");
+          const rec = { shape, walls: [], top: null, word: null, topper, cutFace: null, live: !!live };
+          /* Every LIVE cake shows its interior — the round via the chord
+             cut, the sheet shapes via a corner piece taken from the
+             front-right (see the box-cut rules in styles.css). Minis stay
+             whole; the !! matters: an undefined `live` would turn
+             toggle(force) into a plain toggle and stamp c3--cut on minis. */
+          const withCut = !!live;
           root.classList.toggle("c3--cut", withCut);
+          /* Cake board, as a plane at the cake's base inside the rig:
+             a scalloped doily for round cakes, a clean rounded-rect
+             board (the real sheet-cake kind) for box shapes. Sized off
+             the same CSS vars as the cake, so it morphs along. */
+          if (live) {
+            const board = el("c3__board3d " + (shape === "circle" ? "c3__board3d--disc" : "c3__board3d--box"));
+            if (shape === "circle") board.innerHTML = boardHTML();
+            rig.appendChild(board);
+          }
           if (shape === "circle") {
             for (let i = 0; i < SEGS; i++) {
               const a = i * (360 / SEGS);
@@ -334,6 +364,30 @@
               rec.walls.push({ el: w, k: BOX_K[side], side });
               rig.appendChild(w);
             });
+            if (withCut) {
+              /* Corner piece removed front-right: two interior planes seal
+                 the pocket — one facing front, one facing right — both
+                 painted as sponge by paintCake, exactly like the round's
+                 chord face. The front/right walls and the top are trimmed
+                 to match in CSS (.c3--cut .c3f--front / --right / --top). */
+              const mk = (cls) => {
+                const cut = el("c3-cut " + cls);
+                cut.appendChild(el("c3-cut__fill"));
+                const n = el("c3-nut"), f = el("c3-fru");
+                cut.appendChild(n);
+                cut.appendChild(f);
+                rig.appendChild(cut);
+                return { cut, n, f };
+              };
+              const a = mk("c3-cut--boxfront");
+              const b = mk("c3-cut--boxside");
+              rec.cutFace = a.cut;
+              rec.cutN = a.n;
+              rec.cutF = a.f;
+              rec.cutFace2 = b.cut;
+              rec.cutN2 = b.n;
+              rec.cutF2 = b.f;
+            }
             const top = el("c3f c3f--top");
             rec.top = top;
             rig.appendChild(top);
@@ -376,11 +430,12 @@
           if (!rec) return;
           const frost = (COLOURS.find((c) => c.id === s.colour) || COLOURS[0]).hex;
           const choc = SPONGE.chocolate, van = SPONGE.vanilla;
-          /* With a cut-away the OUTSIDE is all frosting — like a real
-             (Walmart-style) cake, the sponge flavour only shows through
-             the cut. Without one (minis, box cakes) the walls keep
-             carrying the flavour so the choice stays visible. */
-          const frostWalls = !!rec.cutFace;
+          /* The LIVE cake's outside is all frosting — like a real coated
+             cake, whatever the shape. The sponge flavour shows through
+             the round cake's cut-away; on sheet cakes (and in real life)
+             the coat hides it. Minis keep flavour-coloured walls so the
+             option thumbnails stay readable at 56px. */
+          const frostWalls = rec.live;
           /* Cylinder lighting, sampled at any angle: ambient + diffuse
              + a narrow specular term that reads as the frosting's sheen.
              Each segment paints a GRADIENT between its two edge angles,
@@ -420,63 +475,74 @@
             }
             kids[1].style.background = shade(NUT_C, w.k);
             kids[2].style.background = shade(FRU_C, w.k);
-            /* a 0-height stripe still paints its 1px box-shadow hairline —
-               hide the layer entirely when the amount is zero */
-            kids[1].style.visibility = s.nuts === "0" ? "hidden" : "visible";
-            kids[2].style.visibility = s.fruits === "0" ? "hidden" : "visible";
+            /* Filling bands live on the mini thumbnails (as diagrams) and
+               on the live round cake's cut face — never on a live wall,
+               where a frosted cake would not show them. Hidden outright
+               (not 0-height) because the stripe's box-shadow would still
+               paint a 1px hairline. */
+            const wallStripes = !rec.live;
+            kids[1].style.visibility = wallStripes && s.nuts !== "0" ? "visible" : "hidden";
+            kids[2].style.visibility = wallStripes && s.fruits !== "0" ? "visible" : "hidden";
             kids[3].style.background = s.style === "drip" ? shade(DRIP_C, Math.min(1, w.k + 0.06)) : "transparent";
           });
           rec.top.style.background = shade(frost, 1.1);
           /* Cut face: two sponge layers with a cream line between — Half &
              Half reads Walmart-style as top chocolate / bottom vanilla.
              The frosting shell shows its thickness as bordered edges. */
-          if (rec.cutFace) {
+          [
+            [rec.cutFace, rec.cutN, rec.cutF, 0.97],
+            /* The side plane faces away from the light, so its crumb sits a
+               step darker — same offset the frosted walls use. */
+            [rec.cutFace2, rec.cutN2, rec.cutF2, 0.88],
+          ].forEach(([face, cn, cf, k]) => {
+            if (!face) return;
             const topL = s.flavour === "vanilla" ? van : choc;
             const botL = s.flavour === "chocolate" ? choc : van;
-            rec.cutFace.style.background =
-              "linear-gradient(to bottom," + shade(topL, 0.97) + " 0 50%," + shade(botL, 0.97) + " 50% 100%)";
-            rec.cutFace.style.borderTop = "4px solid " + shade(frost, 1.05);
-            rec.cutFace.style.borderLeft = "3px solid " + shade(frost, 0.88);
-            rec.cutFace.style.borderRight = "3px solid " + shade(frost, 0.88);
-            rec.cutN.style.background = shade(NUT_C, 0.95);
-            rec.cutF.style.background = shade(FRU_C, 0.95);
-            rec.cutN.style.visibility = s.nuts === "0" ? "hidden" : "visible";
-            rec.cutF.style.visibility = s.fruits === "0" ? "hidden" : "visible";
-          }
+            face.style.background =
+              "linear-gradient(to bottom," + shade(topL, k) + " 0 50%," + shade(botL, k) + " 50% 100%)";
+            face.style.borderTop = "4px solid " + shade(frost, 1.05);
+            face.style.borderLeft = "3px solid " + shade(frost, 0.88);
+            face.style.borderRight = "3px solid " + shade(frost, 0.88);
+            cn.style.background = shade(NUT_C, k);
+            cf.style.background = shade(FRU_C, k);
+            cn.style.visibility = s.nuts === "0" ? "hidden" : "visible";
+            cf.style.visibility = s.fruits === "0" ? "hidden" : "visible";
+          });
           root.style.setProperty("--lipH", s.type === "sugar" ? "100%" : "26%");
           root.style.setProperty("--nutsH", AMOUNT_H[s.nuts] + "px");
           root.style.setProperty("--fruH", AMOUNT_H[s.fruits] + "px");
           rec.word.textContent = s.message || "";
           rec.word.style.color = lum(frost) > 0.55 ? "#7a4a2a" : "#fff6ea";
-          /* Topper: chosen sugar-paste figures stand on the cake; falls back
-             to a single star until the user picks any. */
+          /* Topper: fruit decoration scatters over the top face. Themed
+             sugar-paste figures deliberately do NOT stand on the cake —
+             an emoji billboard read as a toy, not a figure — they show as
+             photo thumbnails pinned to the stage corner (paintPicks). */
           rec.topper.innerHTML = "";
           rec.topper.style.fontSize = "";
           if (s.style === "fruits") {
-            /* Scattered over the top rather than one piece in the middle —
-               laid out on the same squashed ellipse as the cake's top face
-               so they sit ON it, not in front of it. */
+            /* A mixed-fruit scatter over the top face — laid out on the
+               same squashed ellipse as the top so each piece sits ON the
+               surface, not in front of it. */
             const SPOTS = [
-              [0, 0, 1],
-              [-0.62, -0.2, 0.8], [0.62, -0.2, 0.8],
-              [-0.36, 0.26, 0.9], [0.36, 0.26, 0.9],
-              [0, -0.44, 0.72],
+              [0, 0, 1, "🍓"],
+              [-0.62, -0.2, 0.8, "🫐"], [0.62, -0.2, 0.8, "🍒"],
+              [-0.36, 0.26, 0.9, "🥝"], [0.36, 0.26, 0.9, "🍓"],
+              [0, -0.44, 0.72, "🫐"],
             ];
-            SPOTS.forEach(([x, y, sc]) => {
+            /* spread follows the ACTUAL top face: radius for the round
+               cake, half-width/half-depth for boxes (whose --cr would be
+               a stale leftover from the last round build) */
+            const sx = rec.shape === "circle" ? "var(--cr)" : "calc(var(--cw) * 0.44)";
+            const sy = rec.shape === "circle" ? "var(--cr)" : "calc(var(--cd) * 0.44)";
+            SPOTS.forEach(([x, y, sc, fruit]) => {
               const f = document.createElement("span");
               f.className = "c3-fruit";
-              f.textContent = "🍓";
+              f.textContent = fruit;
               f.style.transform =
-                "translate(calc(var(--cr) * " + x + "), calc(var(--cr) * " + y * 0.5 + ")) scale(" + sc + ")";
+                "translate(calc(" + sx + " * " + x + "), calc(" + sy + " * " + y * 0.5 + ")) scale(" + sc + ")";
               rec.topper.appendChild(f);
             });
             rec.topper.style.fontSize = "calc(var(--topFs) * 0.5)";
-          } else if (s.style === "themed") {
-            const picked = (s.themes || []).map((id) => THEME_MAP[id] && THEME_MAP[id].emoji).filter(Boolean);
-            rec.topper.textContent = picked.length ? picked.join("") : "⭐";
-            /* Several figures side by side need to shrink to stay on the cake. */
-            const n = picked.length || 1;
-            rec.topper.style.fontSize = n > 2 ? "calc(var(--topFs) * 0.58)" : n > 1 ? "calc(var(--topFs) * 0.78)" : "";
           }
         }
         /* Mini preview: a static snapshot of the current cake with overrides. */
@@ -687,8 +753,9 @@
             const g = optGrid();
             STYLES.forEach((o) => {
               const c = optCard("style", o.id, sel("style", o.id), true, o.name);
-              /* Themed Topper needs a second action — pick WHICH figures —
-                 so the card carries its own Select link. */
+              /* Themed Topper needs a second action — pick WHICH figure —
+                 so the card carries its own Select link. Removing the
+                 figure lives in the picker modal, beside Add Figure. */
               if (o.id === "themed") {
                 const pick = document.createElement("span");
                 pick.className = "myc-opt__link";
@@ -829,6 +896,11 @@
           const onLast = tab === LAST;
           nextBtn.hidden = onLast;
           addBtn.hidden = !onLast;
+          /* Share rides with Add to Cart: both mean "the design is finished".
+             Declared before this runs, so guard it — syncTabs is also called
+             during the initial build. */
+          const shareCtl = builder.querySelector("[data-cake-share]");
+          if (shareCtl) shareCtl.hidden = !onLast;
           /* Next is always live — browsing the steps shouldn't be blocked.
              Only Add to Cart waits for every required choice. */
           nextBtn.disabled = false;
@@ -875,6 +947,7 @@
         const themesBody = themesModal.querySelector("[data-themes-body]");
         const themesCount = themesModal.querySelector("[data-themes-count]");
         const themesConfirm = themesModal.querySelector("[data-themes-confirm]");
+        const themesRemove = themesModal.querySelector("[data-themes-remove]");
         let draftThemes = [];
 
         function themeTile(t) {
@@ -901,6 +974,9 @@
             ? chosen.name + "  ·  +" + THEME_PRICE[chosen.tier] + " EGP"
             : "Choose a figure";
           themesConfirm.disabled = false;
+          /* Remove theme only makes sense while a figure is actually
+             applied on the cake */
+          themesRemove.hidden = !state.themes.length;
         }
         function openThemes() {
           draftThemes = state.themes.slice();
@@ -929,6 +1005,19 @@
           state.themes = draftThemes.slice();
           state.style = "themed";
           touched.style = true;
+          closeThemes();
+          renderPanel();
+          syncTabs();
+          updateCake(true);
+        });
+        themesRemove.addEventListener("click", () => {
+          /* clearing the figure leaves nothing themed on the cake, so
+             the decoration falls back to "Without" */
+          state.themes = [];
+          state.style = "none";
+          touched.style = true;
+          state.colour = "white";
+          delete touched.colour;
           closeThemes();
           renderPanel();
           syncTabs();
@@ -997,6 +1086,206 @@
           }, 1800);
         });
 
+        /* ================= SHARE THE FINISHED CAKE =================
+           Two jobs: turn the design into a downloadable card, and turn it
+           into a link that rebuilds it. Both read the same `state`, so
+           neither can drift from what is on screen. */
+        /* The popup markup sits after this script in the document, so nothing
+           inside it exists yet — every reference to it is resolved lazily and
+           its buttons are handled by delegation. */
+        const $share = (sel) => document.querySelector(sel);
+
+        /* --- the design, as a card --- */
+        const CARD_BG = "#e7fffc";
+        function specLines() {
+          const size = (SIZES[state.shape] || []).find((x) => x.id === state.size);
+          const shape = SHAPES.find((x) => x.id === state.shape);
+          const flav = FLAVOURS.find((x) => x.id === state.flavour);
+          const col = COLOURS.find((c) => c.id === state.colour);
+          const out = [
+            (shape ? shape.name : "") + (size ? " · " + size.name + " cm" : ""),
+            state.height + " cm tall · " + (flav ? flav.name : ""),
+            (col ? col.name : "") + " frosting",
+          ];
+          const extras = [];
+          if (state.nuts !== "0") extras.push("Nuts " + state.nuts + "g");
+          if (state.fruits !== "0") extras.push("Fruits " + state.fruits + "g");
+          if (state.style === "themed" && state.themes.length) {
+            const names = state.themes
+              .map((id) => (THEMES.find((t) => t.id === id) || {}).name)
+              .filter(Boolean);
+            if (names.length) extras.push(names.join(", "));
+          }
+          if (extras.length) out.push(extras.join(" · "));
+          return out;
+        }
+
+        function roundRect(g, x, y, w, h, r) {
+          g.beginPath();
+          g.moveTo(x + r, y);
+          g.arcTo(x + w, y, x + w, y + h, r);
+          g.arcTo(x + w, y + h, x, y + h, r);
+          g.arcTo(x, y + h, x, y, r);
+          g.arcTo(x, y, x + w, y, r);
+          g.closePath();
+        }
+
+        /* A drawn card, not a screenshot: the 3D preview cannot be rasterised
+           without pulling in a capture library, and a half-broken screenshot
+           is worse than a clean illustration of the same choices. */
+        function drawCard() {
+          const canvas = $share("[data-cake-canvas]");
+          if (!canvas) return;
+          const g = canvas.getContext("2d");
+          const W = canvas.width, H = canvas.height;
+          const frost = (COLOURS.find((c) => c.id === state.colour) || COLOURS[0]).hex;
+
+          g.clearRect(0, 0, W, H);
+          g.fillStyle = CARD_BG;
+          g.fillRect(0, 0, W, H);
+
+          g.textAlign = "center";
+          g.fillStyle = "#182325";
+          g.font = "600 34px 'Google Sans Flex', system-ui, sans-serif";
+          g.fillText("EXCEPTION", W / 2, 120);
+          g.font = "900 74px 'DM Sans', system-ui, sans-serif";
+          g.fillText("My Cake", W / 2, 215);
+
+          /* ---- the cake ---- */
+          const cx = W / 2, baseY = 760;
+          const isRound = state.shape === "circle";
+          const bodyW = isRound ? 420 : 470;
+          const bodyH = 250;
+          const ry = isRound ? 62 : 40;
+          const topY = baseY - bodyH;
+
+          g.save();
+          g.filter = "blur(1px)";
+          g.fillStyle = "rgba(24,35,37,0.13)";
+          g.beginPath();
+          g.ellipse(cx, baseY + 46, bodyW * 0.62, 30, 0, 0, Math.PI * 2);
+          g.fill();
+          g.restore();
+
+          /* board */
+          g.fillStyle = "#dfe5e5";
+          g.beginPath();
+          g.ellipse(cx, baseY + 34, bodyW * 0.6, 26, 0, 0, Math.PI * 2);
+          g.fill();
+
+          /* body, lit from the upper left the way the 3D preview is */
+          const grad = g.createLinearGradient(cx - bodyW / 2, 0, cx + bodyW / 2, 0);
+          grad.addColorStop(0, tint(frost, -0.1));
+          grad.addColorStop(0.34, tint(frost, 0.1));
+          grad.addColorStop(1, tint(frost, -0.22));
+          g.fillStyle = grad;
+          if (isRound) {
+            g.beginPath();
+            g.moveTo(cx - bodyW / 2, topY);
+            g.lineTo(cx - bodyW / 2, baseY);
+            g.ellipse(cx, baseY, bodyW / 2, ry, 0, Math.PI, 0, true);
+            g.lineTo(cx + bodyW / 2, topY);
+            g.closePath();
+            g.fill();
+          } else {
+            roundRect(g, cx - bodyW / 2, topY, bodyW, bodyH, 14);
+            g.fill();
+          }
+
+          /* top surface */
+          g.fillStyle = tint(frost, 0.2);
+          if (isRound) {
+            g.beginPath();
+            g.ellipse(cx, topY, bodyW / 2, ry, 0, 0, Math.PI * 2);
+            g.fill();
+          } else {
+            g.beginPath();
+            g.moveTo(cx - bodyW / 2, topY);
+            g.lineTo(cx - bodyW / 2 + 54, topY - ry);
+            g.lineTo(cx + bodyW / 2 + 54, topY - ry);
+            g.lineTo(cx + bodyW / 2, topY);
+            g.closePath();
+            g.fill();
+          }
+
+          /* piped message, on the cake where it would actually go */
+          if (state.msgOn === "1" && state.message.trim()) {
+            g.fillStyle = readableOn(frost);
+            g.font = "600 30px 'DM Sans', system-ui, sans-serif";
+            g.fillText(state.message.trim().slice(0, 28), cx, topY + bodyH / 2 + 10);
+          }
+
+          /* ---- the spec ---- */
+          let y = baseY + 130;
+          g.fillStyle = "#182325";
+          g.font = "600 32px 'Google Sans Flex', system-ui, sans-serif";
+          specLines().forEach((line, i) => {
+            g.fillStyle = i === 0 ? "#182325" : "#4a5658";
+            g.font = (i === 0 ? "600 34px" : "400 28px") + " 'Google Sans Flex', system-ui, sans-serif";
+            g.fillText(line, cx, y);
+            y += i === 0 ? 54 : 44;
+          });
+
+          g.fillStyle = "#8cbab5";
+          g.font = "500 24px 'Google Sans Flex', system-ui, sans-serif";
+          g.fillText("Designed with Make Your Cake", cx, H - 60);
+        }
+
+        /* Small colour helpers so the card shades the chosen frosting rather
+           than painting it flat. Named tint/cardHexToRgb, NOT shade/hx: the
+           cake model above declares shade(hex, k) in this same scope, and a
+           second hoisted `function shade` here silently replaced it for the
+           whole script — which repainted every cake near-white. */
+        function cardHexToRgb(h) {
+          const v = h.replace("#", "");
+          const n = v.length === 3 ? v.split("").map((c) => c + c).join("") : v;
+          return [parseInt(n.slice(0, 2), 16), parseInt(n.slice(2, 4), 16), parseInt(n.slice(4, 6), 16)];
+        }
+        function tint(hex, amt) {
+          const [r, gg, b] = cardHexToRgb(hex);
+          const f = (c) => Math.max(0, Math.min(255, Math.round(amt >= 0 ? c + (255 - c) * amt : c * (1 + amt))));
+          return "rgb(" + f(r) + "," + f(gg) + "," + f(b) + ")";
+        }
+        function readableOn(hex) {
+          const [r, gg, b] = cardHexToRgb(hex);
+          /* Relative luminance, so a message on white frosting is dark and on
+             fuchsia is white. */
+          return (0.299 * r + 0.587 * gg + 0.114 * b) / 255 > 0.6 ? "#182325" : "#ffffff";
+        }
+
+        function saveBlob(blob) {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "exception-my-cake.png";
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          /* Revoked on a later tick — revoking synchronously can beat the
+             download in some browsers. */
+          setTimeout(() => URL.revokeObjectURL(url), 1000);
+        }
+
+        function withCard(fn) {
+          drawCard();
+          const canvas = $share("[data-cake-canvas]");
+          if (!canvas) return;
+          canvas.toBlob((blob) => blob && fn(blob), "image/png");
+        }
+
+        document.addEventListener("click", (e) => {
+          /* Redraw on open rather than on every change: the card only has to
+             be right at the moment it is looked at or saved. */
+          if (e.target.closest("[data-cake-share]")) {
+            drawCard();
+            return;
+          }
+
+          if (e.target.closest("[data-cake-download]")) {
+            withCard(saveBlob);
+          }
+        });
+
         buildStepper();
         syncStepper();
         renderPanel();
@@ -1005,5 +1294,36 @@
         window.addEventListener("resize", () => updateCake(false));
       })();
     </script>
+
+    <!-- ============ SHARE YOUR CAKE ============
+         Same shell and option styling as the product page's share popup
+         (.share-modal / .share-opt in styles.css) — one component, two
+         callers. A product shares a URL so it can hand off to WhatsApp/
+         Facebook/X; this hands over the picture itself, and the one action
+         that works everywhere for a picture is downloading it.
+
+         The live cake is a CSS-3D construct with no bitmap behind it, so the
+         card is drawn onto a canvas from the same design state.
+
+         Registered in scripts.js's openMap, so [data-close], the backdrop
+         and Esc work on it for free. -->
+    <div data-modal="cakeshare" class="modal-shell">
+      <div class="share-modal share-modal--cake" data-modal-box>
+        <button type="button" data-close class="share-modal__x" aria-label="Close">
+          <svg viewBox="0 0 24 24" fill="none" width="18" height="18" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+        <h2 class="share-modal__title">Share your cake</h2>
+        <div class="cakeshare__preview"><canvas data-cake-canvas width="1000" height="1250"></canvas></div>
+        <div class="share-modal__grid">
+          <button type="button" class="share-opt" data-cake-download>
+            <span class="share-opt__ico share-opt__ico--save">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4v11m0 0 4-4m-4 4-4-4M5 19h14" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <span class="share-opt__label">Download</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
   </body>
 </html>

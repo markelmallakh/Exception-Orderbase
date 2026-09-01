@@ -14,6 +14,13 @@
   </head>
   <body data-page="cart" data-path="/cart" class="antialiased bg-white">
     <!-- Shared header is injected here by scripts.js -->
+    <!-- Boot cover. The header is injected by scripts.js and Tailwind (Play
+         CDN) builds its CSS in JS, so an uncovered load paints three times:
+         bare page -> restyled page -> header appears. This holds that first
+         frame until the page is whole. Deliberately blank: a spinner never
+         had time to register and read as an error. A CSS safety fade clears
+         it even if scripts.js never runs. -->
+    <div id="boot" aria-hidden="true"></div>
     <div id="site-header"></div>
 
     <!-- overflow-x-clip (not -hidden): clips horizontal overflow WITHOUT creating a
@@ -48,7 +55,7 @@
               <!-- CartListPage -->
               <ul data-cart-list class="flex flex-col gap-6 divide-y divide-primaryLight">
                 <!-- ---- Line item 1 ---- -->
-                <li data-cart-row data-unit-price="650" class="flex items-center justify-between gap-4 pt-6 first:pt-0">
+                <li data-cart-product="chocolate-fudge-cake" data-cart-row data-unit-price="650" class="flex items-center justify-between gap-4 pt-6 first:pt-0">
                   <div class="flex gap-2.5 w-full">
                     <a href="product.html" class="shrink-0">
                       <img data-shot-img="" src="dummy-images/image-7.webp" alt="Chocolate Fudge Cake" class="h-[99px] !w-[99px] lg:h-[146px] lg:!w-[146px] rounded object-cover bg-primary-light" />
@@ -60,6 +67,8 @@
                       <div class="vtags">
                         <span class="vtag"><span class="vtag__k">Size:</span><span class="vtag__v">1 Kg</span></span>
                       </div>
+                      <!-- Filled by product.html with its chosen add-ons. -->
+                      <div data-cart-addons></div>
                     </div>
                   </div>
 
@@ -163,11 +172,11 @@
               <!-- Header (hidden on mobile like the source) -->
               <div class="hidden md:flex items-center justify-between w-full">
                 <div class="flex items-center gap-2 md:gap-6 pb-3">
-                  <!-- Branded cart-box illustration (same asset as the header +
-                       floating cart). No tinted circle behind it: that backdrop
-                       existed to carry a flat outline icon, and the illustration
-                       is full-colour and used bare everywhere else. -->
-                  <img src="images/icons/cart-box.webp" alt="" class="size-9 shrink-0 object-contain" />
+                  <!-- Cart mark. Decorative only — the header
+                       and floating cart use the shopping-basket icon chip
+                       (Figma 6508:49192 / 49209); this is the same mark in its
+                       dark-stroke variant, so no tinted circle behind it. -->
+                  <img src="images/icons/shopping-basket-dark.svg" alt="" class="cart-mark size-9 shrink-0 object-contain" />
                   <span class="font-semibold text-primaryDark md:text-[21px]">My Cart</span>
                 </div>
               </div>
@@ -304,6 +313,13 @@
               <div class="rounded-[12px] aspect-square overflow-hidden bg-primary-light">
                 <img src="${IMGS[i % IMGS.length]}" alt="${name}" class="w-full h-full object-cover md:group-hover/card:scale-110 transition-all duration-300" />
               </div>
+              <!-- Wishlist. Small, top-left, opposite the add-to-cart control
+                   in the bottom-right. Shares [data-fav] + .fav-btn with the
+                   product page, so the pop + ripple animation and the header
+                   count are the same system. -->
+              <button type="button" data-fav aria-label="Add to wishlist" class="fav-btn absolute start-2 top-2 z-10 size-8">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path class="fav-heart" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78Z" stroke="currentColor" stroke-width="1.6"/></svg>
+              </button>
               <span class="absolute end-3 -bottom-5 z-10" data-add-widget data-type="simple">
                 <button type="button" data-add-btn aria-label="Add to cart" class="grid place-items-center bg-primary-200 text-primaryDark rounded-[10px] size-[42px] shadow-custom-5 hover:bg-primary-300 transition-colors">
                   <svg viewBox="0 0 24 24" fill="none" class="w-[22px] h-[22px]"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>

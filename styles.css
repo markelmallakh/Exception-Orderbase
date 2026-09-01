@@ -9,7 +9,1270 @@
    the various React overlay components.
    ===================================================================== */
 
-@import url("https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,1..1000&family=DM+Sans:ital,opsz,wght@0,9..40,100..900;1,9..40,100..900&family=Caveat:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,1..1000&family=DM+Sans:ital,opsz,wght@0,9..40,100..900;1,9..40,100..900&family=Caveat:wght@400;500;600;700&family=Noto+Kufi+Arabic:wght@400;500;600;700&display=swap");
+
+/* =====================================================================
+   PAGE TRANSITIONS — a soft cross-fade on every same-origin navigation,
+   via cross-document View Transitions. Every page links this stylesheet,
+   so one rule covers all 31 of them: no router, no click interception.
+
+   THE DELAY IS LOAD-BEARING. Tailwind here is the Play CDN, which
+   generates its utility CSS in JavaScript: pages first-paint around 130ms
+   but the generated stylesheet only lands near DOMContentLoaded (~200ms).
+   Because ::view-transition-new renders the LIVE document rather than a
+   snapshot, revealing it immediately means watching the incoming page
+   restyle itself mid-transition — and since that gap varies per page, the
+   transition looked different on every navigation.
+
+   So the incoming page is held back, and the outgoing snapshot — static
+   and correctly styled — stays fully opaque over that window. The restyle
+   happens behind it, unseen.
+
+   A fade has no direction, so unlike the slide it needs no RTL mirror.
+   Browsers without support (Firefox today) navigate normally.
+   ===================================================================== */
+@view-transition {
+  navigation: auto;
+}
+
+/* Consistent ground under the two fading layers. */
+html {
+  background-color: #ffffff;
+}
+
+/* Opting out of the default isolation is what keeps a cross-fade clean:
+   with it, the two half-transparent layers blend and the page visibly
+   dips grey through the middle of the transition. */
+::view-transition-image-pair(root) {
+  isolation: auto;
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  animation: page-fade-out 440ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+::view-transition-new(root) {
+  /* Covers the Play CDN restyle window measured above. */
+  animation: page-fade-in 400ms cubic-bezier(0.22, 1, 0.36, 1) 150ms both;
+}
+
+/* Holding opacity through the first third keeps the outgoing page solid
+   while the incoming one is still settling. */
+@keyframes page-fade-out {
+  0%,
+  35% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes page-fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Reduced motion: same hold-then-reveal (it is what hides the restyle),
+   just quicker. */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root) {
+    animation-duration: 280ms;
+  }
+  ::view-transition-new(root) {
+    animation-duration: 200ms;
+  }
+}
+
+/* =====================================================================
+   BOOT COVER — hides the multi-step first paint.
+
+   Every page paints before it is finished: the browser renders the bare
+   HTML, then the Tailwind Play CDN injects its generated CSS (~60ms
+   later), then scripts.js fills in #site-header. Uncovered, that reads as
+   a flash followed by the header popping in.
+
+   These rules live in styles.css, which is render-blocking, so the cover
+   is painted in the very first frame — unlike anything JS could inject.
+
+   It is intentionally blank. A spinner here never had time to register
+   before the cover lifted, so it flickered and read as an error.
+   ===================================================================== */
+#boot {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  background: #ffffff;
+  /* Safety net: clears itself even if scripts.js fails to load, so a JS
+     error can never leave the site behind a blank white screen. */
+  animation: boot-clear 260ms ease 3s forwards;
+}
+#boot.is-done {
+  animation: boot-clear 260ms ease forwards;
+}
+@keyframes boot-clear {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+/* =====================================================================
+   APP BANNER (footer) — Figma 6508:52368. Dark panel, heading + store
+   badges on one side, QR on the other.
+   ===================================================================== */
+.app-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 20px;
+  border-radius: 12px;
+  background: #182325;
+  color: #ffffff;
+}
+.app-banner__title {
+  font-size: clamp(19px, 2.1vw, 28px);
+  font-weight: 600;
+  line-height: 1.2;
+}
+.app-banner__badges {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+/* The QR sits on a white tile rather than inverted on the dark panel.
+   Inverted codes are outside the spec and a good number of scanners
+   refuse them — and a code that does not scan defeats the point. */
+.app-banner__qr {
+  flex: 0 0 auto;
+  display: block;
+  padding: 6px;
+  border-radius: 10px;
+  background: #ffffff;
+  line-height: 0;
+  transition: transform 0.2s ease;
+}
+.app-banner__qr:hover {
+  transform: translateY(-2px);
+}
+.app-banner__qr img {
+  display: block;
+  width: 81px;
+  height: 81px;
+}
+/* Desktop only: scanning is for a second device. */
+.app-banner__cta {
+  display: none;
+}
+@media (max-width: 639px) {
+  .app-banner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+  /* Only the QR goes: you cannot scan a code with the phone you are already
+     holding. The store badges stay, and a button is added below them for
+     anyone who would rather not choose — app.html picks the store for them.
+     Everything centres, since there is no second column to balance against. */
+  .app-banner__qr {
+    display: none;
+  }
+  .app-banner {
+    text-align: center;
+  }
+  .app-banner__copy {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .app-banner__badges {
+    justify-content: center;
+  }
+  .app-banner__cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    height: 48px;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #182325;
+    font-size: 15px;
+    font-weight: 600;
+    transition: opacity 0.2s ease;
+  }
+  .app-banner__cta:active {
+    opacity: 0.85;
+  }
+  .app-banner__cta svg {
+    width: 20px;
+    height: 20px;
+    flex: 0 0 auto;
+  }
+}
+
+/* Store badges — markup, not artwork, so they take the site font and stay
+   sharp at any size. */
+.store-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 6px;
+  color: #ffffff;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+.store-badge:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #ffffff;
+}
+.store-badge__mark {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+}
+.store-badge__txt {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+  text-align: start;
+}
+.store-badge__txt small {
+  font-size: 7px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+.store-badge__txt strong {
+  margin-top: 2px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* =====================================================================
+   THEME TOGGLE + DARK MODE (preview)
+
+   The site's colour lives in Tailwind utilities baked into 31 pages of
+   markup, so retrofitting `dark:` variants everywhere is not realistic.
+   Instead this sheet re-points the surface/text/border utilities the site
+   actually uses, under :root[data-theme="dark"]. Specificity beats the
+   generated utilities comfortably, so it works no matter when the Play
+   CDN injects its stylesheet.
+
+   This is a preview build, not a hand-tuned dark palette: it shows the
+   client what dark mode WOULD look like, most usefully on the white
+   product cards, before anyone commits to it.
+   ===================================================================== */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  border-radius: 999px;
+  background: rgba(24, 35, 37, 0.08);
+}
+.theme-toggle__opt {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 22px;
+  border-radius: 999px;
+  color: #182325;
+  opacity: 0.5;
+  transition:
+    background 0.2s ease,
+    opacity 0.2s ease;
+}
+.theme-toggle__opt svg {
+  width: 14px;
+  height: 14px;
+}
+.theme-toggle__opt[aria-pressed="true"] {
+  background: #ffffff;
+  opacity: 1;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+}
+.theme-toggle__opt:hover {
+  opacity: 0.85;
+}
+
+:root[data-theme="dark"] {
+  --dk-bg: #0e1618;
+  --dk-surface: #172225;
+  --dk-raised: #1e2c30;
+  --dk-border: #2e3d41;
+  --dk-text: #e9eeed;
+  --dk-muted: #b9c7c5;
+  color-scheme: dark;
+}
+:root[data-theme="dark"] .theme-toggle {
+  background: rgba(255, 255, 255, 0.12);
+}
+:root[data-theme="dark"] .theme-toggle__opt {
+  color: var(--dk-text);
+}
+:root[data-theme="dark"] .theme-toggle__opt[aria-pressed="true"] {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+/* ---- page + boot cover ---- */
+:root[data-theme="dark"] {
+  background-color: var(--dk-bg);
+}
+:root[data-theme="dark"] body {
+  background-color: var(--dk-bg);
+  color: var(--dk-text);
+}
+:root[data-theme="dark"] #boot {
+  background: var(--dk-bg);
+}
+
+/* ---- surfaces ---- */
+:root[data-theme="dark"] .bg-white,
+:root[data-theme="dark"] .modal-shell > [data-modal-box],
+:root[data-theme="dark"] .side-drawer,
+:root[data-theme="dark"] .bottom-sheet {
+  background-color: var(--dk-surface) !important;
+}
+:root[data-theme="dark"] .bg-primary-light,
+:root[data-theme="dark"] .bg-primary-100,
+:root[data-theme="dark"] .bg-backgroundLocationBar,
+:root[data-theme="dark"] .bg-gray-100,
+:root[data-theme="dark"] .bg-gray-50,
+:root[data-theme="dark"] .bg-neutral-100,
+:root[data-theme="dark"] .goo-panel-bg,
+:root[data-theme="dark"] .goo-thumb {
+  background-color: var(--dk-raised) !important;
+}
+:root[data-theme="dark"] .bg-gray-200 {
+  background-color: #101a1c !important;
+}
+:root[data-theme="dark"] .hdr-utility {
+  border-bottom-color: rgba(255, 255, 255, 0.12);
+}
+:root[data-theme="dark"] .hdr-utility__link {
+  color: var(--dk-text);
+}
+
+/* ---- text ---- */
+:root[data-theme="dark"] .text-primaryDark,
+:root[data-theme="dark"] .text-textSecondary,
+:root[data-theme="dark"] .text-primaryColor,
+:root[data-theme="dark"] .text-blackText,
+:root[data-theme="dark"] .text-black {
+  color: var(--dk-text) !important;
+}
+:root[data-theme="dark"] .text-gray-700,
+:root[data-theme="dark"] .text-gray-600,
+:root[data-theme="dark"] .text-gray-500,
+:root[data-theme="dark"] .text-primaryText {
+  color: var(--dk-muted) !important;
+}
+
+/* ---- borders ---- */
+:root[data-theme="dark"] .border-gray-300,
+:root[data-theme="dark"] .border-gray-200,
+:root[data-theme="dark"] .border-neutral-100,
+:root[data-theme="dark"] .border-neutral-200,
+:root[data-theme="dark"] .border-customGray,
+:root[data-theme="dark"] .border-customGrayMedium,
+:root[data-theme="dark"] .border-border-light,
+:root[data-theme="dark"] .border-\[\#CFD3D8\],
+:root[data-theme="dark"] .border-primaryDark {
+  border-color: var(--dk-border) !important;
+}
+
+/* ---- components that hard-code light surfaces ---- */
+:root[data-theme="dark"] .product-card-shadow {
+  box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.55);
+}
+:root[data-theme="dark"] .catnav-item:hover:not(.is-current) {
+  background: rgba(255, 255, 255, 0.06);
+}
+:root[data-theme="dark"] .catnav-item.is-current {
+  background: #24484a;
+}
+:root[data-theme="dark"] .ui-select__menu,
+:root[data-theme="dark"] .loc-panel,
+:root[data-theme="dark"] .pages-panel {
+  background: var(--dk-raised);
+  border: 1px solid var(--dk-border);
+}
+:root[data-theme="dark"] .loc-hint {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--dk-text);
+}
+/* Inputs keep a slightly raised surface so fields stay findable. */
+:root[data-theme="dark"] input,
+:root[data-theme="dark"] select,
+:root[data-theme="dark"] textarea {
+  background-color: var(--dk-raised);
+  color: var(--dk-text);
+  border-color: var(--dk-border);
+}
+:root[data-theme="dark"] ::placeholder {
+  color: var(--dk-muted);
+}
+/* ---- LIGHT ISLANDS ----------------------------------------------------
+   Two things stay light in dark mode: the turquoise header band and the
+   product card. Both are brand surfaces, so the blanket text/background
+   swaps above have to be undone inside them — otherwise dark-on-mint text
+   turns white and disappears, and the card's own title goes invisible.
+   These rules sit after the blanket ones and out-specify them.
+   --------------------------------------------------------------------- */
+
+/* Header band: brand turquoise, dark text, exactly as in light mode. */
+:root[data-theme="dark"] .bg-primary-200 .text-primaryDark,
+:root[data-theme="dark"] .bg-primary-200 .text-textSecondary {
+  color: #182325 !important;
+}
+:root[data-theme="dark"] .bg-primary-200 .border-primaryDark {
+  border-color: #182325 !important;
+}
+:root[data-theme="dark"] .hdr-utility__link {
+  color: #182325;
+}
+:root[data-theme="dark"] .hdr-utility {
+  border-bottom-color: rgba(24, 35, 37, 0.14);
+}
+:root[data-theme="dark"] .theme-toggle {
+  background: rgba(24, 35, 37, 0.1);
+}
+:root[data-theme="dark"] .theme-toggle__opt {
+  color: #182325;
+}
+:root[data-theme="dark"] .theme-toggle__opt[aria-pressed="true"] {
+  background: #ffffff;
+}
+
+/* Round chevrons (category strip, carousels) take the brand turquoise so
+   they read as controls rather than dissolving into the dark page. */
+:root[data-theme="dark"] .rounded-full.bg-white {
+  background-color: #b0ded9 !important;
+  border-color: #8cbab5 !important;
+  color: #182325 !important;
+}
+
+/* ---- COMPONENT SURFACES ------------------------------------------------
+   Utility overrides only reach markup that carries bg-* classes. Roughly
+   85 component rules in this stylesheet paint their own light background
+   (.pdp-buy, .counter, .chip, .voucher, every drawer and card…), which is
+   why panels stayed white while their text went light — unreadable.
+
+   These are swept in two groups: base surfaces and raised/inset ones.
+   Deliberately NOT included: the turquoise CTA and category chevrons, the
+   pink and green status badges, the white app-banner button, and the QR
+   tile — a QR must stay dark-on-light to scan at all.
+   --------------------------------------------------------------------- */
+:root[data-theme="dark"] .addr-menu,
+:root[data-theme="dark"] .bottom-sheet,
+:root[data-theme="dark"] .branch-card,
+:root[data-theme="dark"] .cake-picks__item,
+:root[data-theme="dark"] .carousel-btn,
+:root[data-theme="dark"] .checkout-bar,
+:root[data-theme="dark"] .chip,
+:root[data-theme="dark"] .chip.variation-pill.is-active,
+:root[data-theme="dark"] .counter,
+:root[data-theme="dark"] .counter__qty,
+:root[data-theme="dark"] .delivery-note,
+:root[data-theme="dark"] .earn-card,
+:root[data-theme="dark"] .earn-card__check,
+:root[data-theme="dark"] .fav-btn,
+:root[data-theme="dark"] .is-spotlit,
+:root[data-theme="dark"] .myc-opt,
+:root[data-theme="dark"] .myc-step__dot,
+:root[data-theme="dark"] .optrow,
+:root[data-theme="dark"] .ord-detail,
+:root[data-theme="dark"] .ord-status__card,
+:root[data-theme="dark"] .ordernote__field,
+:root[data-theme="dark"] .ordernote__saved,
+:root[data-theme="dark"] .otp-box,
+:root[data-theme="dark"] .pdp-buy.pdp-buy,
+:root[data-theme="dark"] .pickchip,
+:root[data-theme="dark"] .promo__form,
+:root[data-theme="dark"] .redeem-field,
+:root[data-theme="dark"] .sched-nav,
+:root[data-theme="dark"] .segmented,
+:root[data-theme="dark"] .shot-dock button,
+:root[data-theme="dark"] .side-drawer,
+:root[data-theme="dark"] .side-drawer__close,
+:root[data-theme="dark"] .spotlight__tip,
+:root[data-theme="dark"] .ui-select__menu,
+:root[data-theme="dark"] .ui-select__trigger,
+:root[data-theme="dark"] .voucher,
+:root[data-theme="dark"] .card-form,
+:root[data-theme="dark"] .callout,
+:root[data-theme="dark"] .callout--natural,
+:root[data-theme="dark"] .callout--delivery,
+:root[data-theme="dark"] .callout--baked,
+:root[data-theme="dark"] body.shot-white a.group\/card,
+:root[data-theme="dark"] body.shot-white a.group\/card .aspect-square,
+:root[data-theme="dark"] body.shot-white [data-shot-img] {
+  background-color: var(--dk-surface) !important;
+  border-color: var(--dk-border);
+}
+:root[data-theme="dark"] .acct-count,
+:root[data-theme="dark"] .btn--secondary,
+:root[data-theme="dark"] .chip.variation-pill,
+:root[data-theme="dark"] .counter__btn,
+:root[data-theme="dark"] .myc-opt__ico,
+:root[data-theme="dark"] .myc-opt__img,
+:root[data-theme="dark"] .ord-item__pic,
+:root[data-theme="dark"] .redeem-field__all,
+:root[data-theme="dark"] .stepper__dot,
+:root[data-theme="dark"] .stepper__line,
+:root[data-theme="dark"] .ui-select__item.is-active,
+:root[data-theme="dark"] .voucher--old,
+:root[data-theme="dark"] .vtag,
+:root[data-theme="dark"] .wallet-toggle,
+:root[data-theme="dark"] .points-badge,
+:root[data-theme="dark"] .ord-gift,
+:root[data-theme="dark"] .ord-status__points,
+:root[data-theme="dark"] .redeem-balance,
+:root[data-theme="dark"] .branch-card__pin,
+:root[data-theme="dark"] .loc-hint {
+  background-color: var(--dk-raised) !important;
+  color: var(--dk-text);
+  border-color: var(--dk-border);
+}
+/* Hover states that also hard-code light greys. */
+:root[data-theme="dark"] .addr-menu:hover,
+:root[data-theme="dark"] .btn--secondary:hover,
+:root[data-theme="dark"] .counter__btn:hover,
+:root[data-theme="dark"] .side-drawer__close:hover,
+:root[data-theme="dark"] .ordernote__remove:hover,
+:root[data-theme="dark"] .chip.variation-pill:hover:not(.is-active),
+:root[data-theme="dark"] .carousel-btn:hover,
+:root[data-theme="dark"] .hero-banners .carousel-btn:hover {
+  background-color: #26363a !important;
+}
+/* Checkboxes render their own white box. */
+:root[data-theme="dark"] input[type="checkbox"]:not(.wallet-toggle__input) {
+  background-color: var(--dk-raised);
+  border-color: var(--dk-border);
+}
+
+/* ---- COMPONENT TEXT ----------------------------------------------------
+   The mirror of the surface sweep above: these component rules hard-code
+   the brand dark (#182325) or a mid grey for their text. Once their panel
+   went dark that text sat at roughly 1:1 contrast — technically present,
+   completely unreadable. Swept to the light tokens.
+
+   Excluded on purpose: anything sitting on a surface that STAYS light —
+   the turquoise CTA and chevrons, the current category tab, the white
+   app-banner button, the theme toggle. Their dark text is already right.
+   --------------------------------------------------------------------- */
+:root[data-theme="dark"] .addr-menu:hover,
+:root[data-theme="dark"] .btn--outline,
+:root[data-theme="dark"] .btn--secondary:hover,
+:root[data-theme="dark"] .cake-tab.is-active,
+:root[data-theme="dark"] .cake-tab:hover,
+:root[data-theme="dark"] .callout__title,
+:root[data-theme="dark"] .checkout-bar__plus,
+:root[data-theme="dark"] .checkout-bar__total,
+:root[data-theme="dark"] .chip.variation-pill.is-active,
+:root[data-theme="dark"] .chip:hover:not(.is-active),
+:root[data-theme="dark"] .counter__qty,
+:root[data-theme="dark"] .delivery-note__text,
+:root[data-theme="dark"] .earn-card__title,
+:root[data-theme="dark"] .goo-content.goo-content h4,
+:root[data-theme="dark"] .goo-tab.is-active,
+:root[data-theme="dark"] .hdr-utility__link,
+:root[data-theme="dark"] .hero-banners .carousel-btn,
+:root[data-theme="dark"] .label,
+:root[data-theme="dark"] .lang-switch,
+:root[data-theme="dark"] .loc-hint,
+:root[data-theme="dark"] .myc-opt__link--muted:hover,
+:root[data-theme="dark"] .myc-step.is-active .myc-step__label,
+:root[data-theme="dark"] .myc-step:not(.is-locked):hover .myc-step__label,
+:root[data-theme="dark"] .optrow__icon,
+:root[data-theme="dark"] .optrow__meta,
+:root[data-theme="dark"] .optrow__title,
+:root[data-theme="dark"] .ord-block__title,
+:root[data-theme="dark"] .ord-gift,
+:root[data-theme="dark"] .ord-item__name,
+:root[data-theme="dark"] .ord-item__price,
+:root[data-theme="dark"] .ord-lead,
+:root[data-theme="dark"] .ord-status__when-value,
+:root[data-theme="dark"] .ord-sum > div,
+:root[data-theme="dark"] .ord-sum__total > span:first-child,
+:root[data-theme="dark"] .ordernote__field,
+:root[data-theme="dark"] .ordernote__savedText,
+:root[data-theme="dark"] .otp-box,
+:root[data-theme="dark"] .points-badge,
+:root[data-theme="dark"] .promo__code,
+:root[data-theme="dark"] .promo__input,
+:root[data-theme="dark"] .promo__remove:hover,
+:root[data-theme="dark"] .redeem-balance,
+:root[data-theme="dark"] .redeem-field input,
+:root[data-theme="dark"] .redeem-field__all,
+:root[data-theme="dark"] .sched-nav,
+:root[data-theme="dark"] .segmented > button.is-active,
+:root[data-theme="dark"] .segmented > button:hover:not(.is-active),
+:root[data-theme="dark"] .shot-dock button:hover,
+:root[data-theme="dark"] .side-drawer__close,
+:root[data-theme="dark"] .spotlight__tip,
+:root[data-theme="dark"] .stepper__step.is-current .stepper__dot,
+:root[data-theme="dark"] .stepper__step.is-current .stepper__label,
+:root[data-theme="dark"] .stepper__step.is-done .stepper__label,
+:root[data-theme="dark"] .ui-select__item,
+:root[data-theme="dark"] .wallet-toggle__label,
+:root[data-theme="dark"] .wc-link:hover,
+:root[data-theme="dark"] .wc-title,
+:root[data-theme="dark"] .wysiwyg-blog h6,
+:root[data-theme="dark"] .wysiwyg-product h3,
+:root[data-theme="dark"] [aria-current="page"] .acct-count,
+:root[data-theme="dark"] body {
+  color: var(--dk-text) !important;
+}
+:root[data-theme="dark"] .acct-count,
+:root[data-theme="dark"] .addr-menu,
+:root[data-theme="dark"] .btn--secondary,
+:root[data-theme="dark"] .cake-tab,
+:root[data-theme="dark"] .callout__sub,
+:root[data-theme="dark"] .checkout-bar__label,
+:root[data-theme="dark"] .chip,
+:root[data-theme="dark"] .chip.variation-pill,
+:root[data-theme="dark"] .fav-btn,
+:root[data-theme="dark"] .gift-notes li,
+:root[data-theme="dark"] .goo-tab,
+:root[data-theme="dark"] .myc-opt__link--muted,
+:root[data-theme="dark"] .myc-step__dot,
+:root[data-theme="dark"] .myc-step__label,
+:root[data-theme="dark"] .optrow__sub,
+:root[data-theme="dark"] .ord-item__meta,
+:root[data-theme="dark"] .ord-item__price i,
+:root[data-theme="dark"] .ord-status__points span,
+:root[data-theme="dark"] .ord-status__when-label,
+:root[data-theme="dark"] .ord-sub,
+:root[data-theme="dark"] .ord-sum > div > span:first-child,
+:root[data-theme="dark"] .ordernote__remove,
+:root[data-theme="dark"] .pdp-buy .pdp-vars label,
+:root[data-theme="dark"] .promo__remove,
+:root[data-theme="dark"] .redeem-field__label,
+:root[data-theme="dark"] .segmented > button,
+:root[data-theme="dark"] .shot-dock button,
+:root[data-theme="dark"] .spotlight__tip small,
+:root[data-theme="dark"] .stepper__dot,
+:root[data-theme="dark"] .stepper__label,
+:root[data-theme="dark"] .voucher--old .voucher__title,
+:root[data-theme="dark"] .voucher-empty,
+:root[data-theme="dark"] .voucher__meta,
+:root[data-theme="dark"] .vtag__k,
+:root[data-theme="dark"] .wc-copy,
+:root[data-theme="dark"] .wc-link,
+:root[data-theme="dark"] .wysiwyg-blog p {
+  color: var(--dk-muted) !important;
+}
+/* The pink eyebrow renders on a 20%-alpha wash of its own colour, which
+   collapses to no contrast on dark. Lighten the type, not the wash. */
+:root[data-theme="dark"] .eyebrow {
+  color: #ff8fb0 !important;
+}
+
+/* The turquoise band is the one surface that stays light, so the sweeps
+   above must not reach into it: descendant selectors out-specify the flat
+   component rules and put the dark type back. */
+:root[data-theme="dark"] .bg-primary-200 .hdr-utility__link,
+:root[data-theme="dark"] .bg-primary-200 .lang-switch,
+:root[data-theme="dark"] .bg-primary-200 .theme-toggle__opt,
+:root[data-theme="dark"] .bg-primary-200 .label,
+:root[data-theme="dark"] .bg-primary-200 a,
+:root[data-theme="dark"] .bg-primary-200 button,
+:root[data-theme="dark"] .bg-primary-200 span,
+:root[data-theme="dark"] .bg-primary-200 p {
+  color: #182325 !important;
+}
+:root[data-theme="dark"] .bg-primary-200 .hdr-utility__link--tel,
+:root[data-theme="dark"] .bg-primary-200 .text-cta {
+  color: #db336c !important;
+}
+/* Dark- and pink-filled chips sitting INSIDE the turquoise band (the cart
+   chip, the favourites count, the "Location" tag) keep white type — the
+   band rule above would otherwise paint their text the same dark as their
+   own fill and erase it. Targeted by fill class so any future badge on
+   the same tokens is covered without another special case. */
+:root[data-theme="dark"] .bg-primary-200 .bg-primaryDark,
+:root[data-theme="dark"] .bg-primary-200 .bg-primaryDark *,
+:root[data-theme="dark"] .bg-primary-200 .bg-cta,
+:root[data-theme="dark"] .bg-primary-200 .bg-cta *,
+:root[data-theme="dark"] .bg-primary-200 [data-open="cart"] span {
+  color: #ffffff !important;
+}
+/* The turquoise add-to-cart button IS the .bg-primary-200 element, not a
+   child of one, so the descendant rules above miss it and the blanket
+   text sweep turned its plus glyph white on turquoise. Colour the element
+   itself; the icon draws with currentColor. */
+:root[data-theme="dark"] .bg-primary-200 {
+  color: #182325 !important;
+}
+
+/* Stragglers found by re-measuring contrast on the rendered page. */
+:root[data-theme="dark"] .vtag__v,
+:root[data-theme="dark"] .text-neutral-600,
+:root[data-theme="dark"] .text-neutral-500,
+:root[data-theme="dark"] .text-neutral-700 {
+  color: var(--dk-muted) !important;
+}
+:root[data-theme="dark"] .eyebrow {
+  color: #ffb3c8 !important;
+}
+
+/* Selectors my first sweep missed: it read multi-line selector lists by
+   their last line only, so `label, .label { color:#182325 }` swept .label
+   and silently dropped bare `label` — which is why the checkout field
+   labels rendered #182325 on a #172225 panel. */
+:root[data-theme="dark"] label,
+:root[data-theme="dark"] .goo-content.goo-content h3,
+:root[data-theme="dark"] .wysiwyg-blog h1,
+:root[data-theme="dark"] .wysiwyg-blog h2,
+:root[data-theme="dark"] .wysiwyg-blog h3,
+:root[data-theme="dark"] .wysiwyg-blog h4,
+:root[data-theme="dark"] .wysiwyg-blog h5 {
+  color: var(--dk-text) !important;
+}
+
+/* SELECTED STATES. Every "chosen" affordance marks itself with the brand
+   black — a dark border plus a dark inset ring. On a dark panel that is
+   invisible, so a picked option looked identical to an unpicked one.
+   Turquoise carries the selection instead, matching the CTA. */
+:root[data-theme="dark"] .optrow.is-selected,
+:root[data-theme="dark"] .optrow:has(input:checked),
+:root[data-theme="dark"] .pickchip.is-selected,
+:root[data-theme="dark"] .chip.variation-pill.is-active,
+:root[data-theme="dark"] .myc-opt.is-active,
+:root[data-theme="dark"] .cake-tab.is-active {
+  border-color: #b0ded9 !important;
+  box-shadow: inset 0 0 0 1px #b0ded9 !important;
+  background-color: rgba(176, 222, 217, 0.14) !important;
+  color: #ffffff !important;
+}
+:root[data-theme="dark"] .optrow:has(input:checked) .optrow__radio {
+  border-color: #b0ded9 !important;
+}
+:root[data-theme="dark"] .optrow:has(input:checked) .optrow__radio::after {
+  background: #b0ded9 !important;
+}
+:root[data-theme="dark"] .ui-select__item.is-selected,
+:root[data-theme="dark"] .ui-select__check {
+  color: #b0ded9 !important;
+}
+/* Schedule-picker rows mark selection the same way — black ring, black
+   dot — so they need the same turquoise treatment. */
+:root[data-theme="dark"] .pickrow.is-selected .pickrow__radio {
+  border-color: #b0ded9 !important;
+}
+:root[data-theme="dark"] .pickrow.is-selected .pickrow__radio::after {
+  background: #b0ded9 !important;
+}
+
+/* Dividers should register without drawing the eye. The border token is
+   tuned for control outlines, which need more presence than a hairline
+   between rows — so separators get their own, quieter value. */
+:root[data-theme="dark"] hr,
+:root[data-theme="dark"] .border-t,
+:root[data-theme="dark"] .border-b,
+:root[data-theme="dark"] .pickrow,
+:root[data-theme="dark"] .divide-y > * + * {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+/* The utility bar's rule sits on the turquoise band, where a white
+   hairline would not register — it keeps a dark one at the same weight. */
+:root[data-theme="dark"] .hdr-utility {
+  border-bottom-color: rgba(24, 35, 37, 0.14) !important;
+}
+
+/* ---- PRODUCT CARD: a light island -------------------------------------
+   The card stays white in dark mode — it is the brand's product surface,
+   and the photography is lit for it. That means undoing the sweeps above
+   inside the card: its own copy goes back to dark, its image tile back to
+   mint, its borders back to light grey. Placed last so it out-orders the
+   blanket rules; the descendant selectors also out-specify them.
+   --------------------------------------------------------------------- */
+:root[data-theme="dark"] .group\/card,
+:root[data-theme="dark"] body.shot-white a.group\/card,
+:root[data-theme="dark"] body.shot-white a.group\/card .aspect-square,
+:root[data-theme="dark"] body.shot-white [data-shot-img] {
+  background-color: #ffffff !important;
+}
+:root[data-theme="dark"] .group\/card {
+  border-radius: 14px;
+  padding: 10px 10px 14px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.42);
+}
+:root[data-theme="dark"] .group\/card .text-primaryDark,
+:root[data-theme="dark"] .group\/card .text-textSecondary,
+:root[data-theme="dark"] .group\/card .text-blackText,
+:root[data-theme="dark"] .group\/card p,
+:root[data-theme="dark"] .group\/card h3 {
+  color: #182325 !important;
+}
+:root[data-theme="dark"] .group\/card .text-gray-500,
+:root[data-theme="dark"] .group\/card .text-gray-600,
+:root[data-theme="dark"] .group\/card .text-gray-700 {
+  color: #6f7276 !important;
+}
+:root[data-theme="dark"] .group\/card .bg-primary-light {
+  background-color: #e7fffc !important;
+}
+:root[data-theme="dark"] .group\/card .border-gray-200,
+:root[data-theme="dark"] .group\/card .border-gray-300,
+:root[data-theme="dark"] .group\/card .border-b,
+:root[data-theme="dark"] .group\/card .border-t {
+  border-color: #dee2e6 !important;
+}
+/* The wishlist button sits on the white card, so it keeps its light
+   surface rather than the dark one the component sweep gave it. */
+:root[data-theme="dark"] .group\/card .fav-btn {
+  background: #ffffff !important;
+  border-color: #dee2e6 !important;
+  color: #6f7276 !important;
+}
+:root[data-theme="dark"] .group\/card .fav-btn.is-fav {
+  background: #db336c !important;
+  border-color: #db336c !important;
+  color: #ffffff !important;
+}
+/* Quantity stepper that replaces the plus once an item is added. */
+:root[data-theme="dark"] .group\/card [data-counter] {
+  background-color: #e7fffc !important;
+}
+
+/* Checkout runs a minimal header on a white bar, which goes dark — so its
+   dark monochrome logo needs inverting. Everywhere else the header band
+   stays brand turquoise and the dark mark is already correct, hence the
+   page scope. (Inverting in CSS rather than swapping src: the light
+   variant's path lives in data-logo-en/ar, which the Arabic switch
+   rewrites on every toggle.) */
+:root[data-theme="dark"] body[data-page="checkout"] #site-header img[data-logo-en] {
+  filter: brightness(0) invert(1);
+}
+
+
+/* =====================================================================
+   EXCEPTION CAFE — corporate page, built to the Figma (node 6509-52437).
+
+   Two pieces: a mint hero whose five-tile collage steps up toward the
+   cafe film in the middle, and a menu of drinks laid out in two columns
+   with the right one dropped half a step, so the round cup photographs
+   never line up in hard rows.
+
+   Everything below the head scales off --dish (the photograph edge).
+   Fixing that one value keeps the image, the gaps and the column offset
+   in proportion at every width, instead of three breakpoint ladders.
+
+   Titles only, no prices — per the brief; the Figma's price line is left
+   commented out in the page renderer.
+   ===================================================================== */
+.cafe-hero {
+  background: #e7fffc;
+  padding: 60px 0;
+}
+.cafe-hero__head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  text-align: center;
+}
+.cafe-hero__pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 16px;
+  border-radius: 40px;
+  background: #f8dfe2;
+  font-family: "DM Sans", sans-serif;
+  font-size: clamp(15px, 1.4vw, 18px);
+  line-height: 1.4;
+  color: #db336c;
+}
+/* DM Sans Black on a hard -3px track: the one display setting on the
+   site, and the reason this headline reads as a statement rather than
+   as another section heading. */
+.cafe-hero__title {
+  max-width: 702px;
+  font-family: "DM Sans", sans-serif;
+  font-weight: 900;
+  font-size: clamp(34px, 4.9vw, 70px);
+  line-height: 1.2;
+  letter-spacing: -0.043em;
+  color: #182325;
+}
+.cafe-hero__row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 60px;
+}
+/* flex-basis 0 with grow set to the Figma widths: the five tiles hold
+   their 206 / 266 / 385 proportion at any container width, with no
+   hard-coded pixel size to re-tune per breakpoint. */
+.cafe-hero__tile {
+  position: relative;
+  flex: 206 1 0;
+  overflow: hidden;
+  border-radius: 20px;
+  background: #d7efec;
+  aspect-ratio: 206 / 232;
+}
+.cafe-hero__tile--md {
+  flex-grow: 266;
+  aspect-ratio: 266 / 300;
+}
+.cafe-hero__tile--lg {
+  flex-grow: 385;
+  aspect-ratio: 385 / 392;
+}
+.cafe-hero__tile > img,
+.cafe-hero__tile > video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* The video gets its own compositing layer, which some engines paint
+     outside the parent's rounded clip. Rounding it directly is the fix. */
+  border-radius: inherit;
+}
+/* Below ~880px the outer pair would be thumbnail-sized. Dropping them
+   keeps three tiles at a usable scale rather than five illegible ones. */
+@media (max-width: 880px) {
+  .cafe-hero__tile--edge {
+    display: none;
+  }
+  .cafe-hero__row {
+    margin-top: 40px;
+  }
+}
+@media (max-width: 560px) {
+  .cafe-hero__tile--md {
+    display: none;
+  }
+}
+
+/* ------------------------------ MENU ------------------------------ */
+.cafe-menu {
+  /* Collapsed height of the sticky head. JS overwrites it with the real
+     measurement the first time the head sticks; this default only has to
+     be close enough for a category jump made from the top of the page. */
+  --cafe-head-h: 68px;
+  background: #ffffff;
+  padding-bottom: 80px;
+}
+/* Parks under the category bar, whose height scripts.js publishes as
+   --catnav-h (it changes with breakpoint, so it cannot be a constant). */
+.cafe-menu__head {
+  position: sticky;
+  top: var(--catnav-h, 92px);
+  z-index: 30;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 24px 0;
+  transition:
+    padding 0.25s ease,
+    gap 0.25s ease;
+}
+/* Full-bleed backing plate. The head lives inside the 1512px container, so
+   without this the drinks would scroll through the gutters beside it. */
+.cafe-menu__head::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0 auto;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 100vw;
+  transform: translateX(-50%);
+  background: #ffffff;
+  border-bottom: 1px solid #eceff0;
+  box-shadow: 0 6px 16px rgba(24, 35, 37, 0.06);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+.cafe-menu__head.is-stuck::before {
+  opacity: 1;
+}
+/* Used for a single silent measurement of the collapsed height on load —
+   see calibrate() on the page. Without it the measuring toggle would play
+   the collapse animation in front of the user. */
+.cafe-menu__head.is-measuring,
+.cafe-menu__head.is-measuring * {
+  transition: none !important;
+}
+/* Collapsed state: the head gives back ~36px of vertical space once it is
+   pinned, so the drinks keep the screen rather than the chrome. */
+.cafe-menu__head.is-stuck {
+  padding: 12px 0;
+  gap: 16px;
+}
+/* The floating cart is fixed into the same gutter at the same height as the
+   chip row, so the last chip lands underneath it. scripts.js flags the cart
+   on <body> (it is outside this subtree, so no selector reaches it) and the
+   row steps aside while it is up. Logical padding so this also clears in
+   RTL, where the cart mirrors via inset-inline-end. */
+body.has-floating-cart .cafe-chips {
+  padding-inline-end: 56px;
+}
+.cafe-menu__title {
+  font-size: clamp(26px, 3.2vw, 48px);
+  font-weight: 600;
+  line-height: 1.2;
+  color: #182325;
+  transition: font-size 0.25s ease;
+}
+/* A restrained step down from 48px — enough to read as "collapsed", not
+   so much that the title turns into a caption. */
+.cafe-menu__head.is-stuck .cafe-menu__title {
+  font-size: clamp(22px, 2.7vw, 38px);
+}
+.cafe-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  transition: padding 0.25s ease;
+}
+.cafe-chip {
+  padding: 4px 16px;
+  border-radius: 8px;
+  background: transparent;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: #6f7276;
+  white-space: nowrap;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+.cafe-chip:hover {
+  color: #182325;
+}
+.cafe-chip[aria-current="true"] {
+  background: #182325;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.cafe-dishes {
+  --dish: clamp(120px, 22vw, 331px);
+  padding-top: 60px;
+}
+/* Every category is on the page at once and the chips are jump links, so
+   this is the landing offset for one: past the category bar and the
+   collapsed head, plus a little air. */
+.cafe-section {
+  scroll-margin-top: calc(var(--catnav-h, 92px) + var(--cafe-head-h) + 16px);
+}
+.cafe-section + .cafe-section {
+  margin-top: calc(var(--dish) * 0.4);
+}
+.cafe-dishes__panel {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+}
+.cafe-dishes__col {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--dish) * 0.28);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+/* Half a row's drop on the second column. This is the whole point of the
+   layout: it staggers the two columns without any masonry maths. */
+.cafe-dishes__col:nth-child(2) {
+  margin-top: calc(var(--dish) * 0.64);
+}
+.cafe-dish {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+/* Scroll reveal. The hidden state is gated behind .has-reveal, which the
+   page's script adds only once it is going to do the revealing — without
+   that gate a JS failure would leave all 31 drinks invisible. The two
+   columns are already offset half a step, so items stagger themselves and
+   need no per-item delay. */
+.cafe-dishes.has-reveal .cafe-dish {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 0.55s cubic-bezier(0.22, 0.61, 0.36, 1),
+    transform 0.55s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.cafe-dishes.has-reveal .cafe-dish.is-in {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .cafe-dishes.has-reveal .cafe-dish {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+.cafe-dish__media {
+  position: relative;
+  flex: 0 0 auto;
+  width: var(--dish);
+  height: var(--dish);
+  border-radius: 24px;
+}
+.cafe-dish__media > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+/* The supplied cup shots are matted on near-white (#F9FBFC), which reads
+   as a visible grey square on a pure-white page. This vignette lifts the
+   frame to page white outside the cup, so each drink reads as a cut-out.
+   The Figma fades to #F9FAFB instead — same shape, but it leaves the
+   square edge showing, so this goes the last step to #FFF. */
+.cafe-dish__media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(circle farthest-side at 50% 50%, rgba(255, 255, 255, 0) 76%, #ffffff 96%);
+}
+/* Stand-in for a drink with no photograph yet: brand mark on a mint disc,
+   obviously a placeholder rather than the wrong cup. */
+.cafe-dish__ph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 999px;
+  background: #edf7f5;
+}
+.cafe-dish__ph > img {
+  width: 26%;
+  height: auto;
+  opacity: 0.32;
+}
+.cafe-dish__text {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+.cafe-dish__name {
+  font-size: clamp(18px, 2.1vw, 32px);
+  font-weight: 600;
+  line-height: 1.2;
+  color: #182325;
+}
+.cafe-dish__note {
+  font-size: clamp(13px, 1.2vw, 18px);
+  font-weight: 500;
+  line-height: 1.4;
+  color: #6f7276;
+}
+.cafe-dish__price {
+  font-size: clamp(13px, 1.2vw, 18px);
+  font-weight: 500;
+  line-height: 1.4;
+  color: #db336c;
+}
+/* One column on phones: at that width the stagger only buys whitespace. */
+@media (max-width: 720px) {
+  .cafe-menu {
+    --cafe-head-h: 104px;
+  }
+  .cafe-menu__head {
+    gap: 12px;
+    padding: 16px 0;
+  }
+  .cafe-menu__head.is-stuck {
+    padding: 10px 0;
+    gap: 10px;
+  }
+  .cafe-dishes {
+    --dish: 108px;
+    padding-top: 32px;
+  }
+  .cafe-dishes__panel {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .cafe-dishes__col {
+    gap: 20px;
+  }
+  .cafe-dishes__col:nth-child(2) {
+    margin-top: 20px;
+  }
+  .cafe-dish__text {
+    gap: 6px;
+  }
+}
+
+/* Dark mode. The drinks are shot on white, so the media keeps a light
+   plate — the same call the product widgets take — while the page chrome
+   follows the site tokens. */
+:root[data-theme="dark"] .cafe-hero {
+  background: var(--dk-raised);
+}
+:root[data-theme="dark"] .cafe-menu {
+  background: var(--dk-bg);
+}
+:root[data-theme="dark"] .cafe-menu__head::before {
+  background: var(--dk-bg);
+  border-bottom-color: var(--dk-border);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+}
+:root[data-theme="dark"] .cafe-hero__title,
+:root[data-theme="dark"] .cafe-menu__title,
+:root[data-theme="dark"] .cafe-dish__name {
+  color: var(--dk-text) !important;
+}
+:root[data-theme="dark"] .cafe-dish__note,
+:root[data-theme="dark"] .cafe-chip {
+  color: var(--dk-muted) !important;
+}
+:root[data-theme="dark"] .cafe-chip:hover {
+  color: var(--dk-text) !important;
+}
+/* Selected chip goes turquoise in dark mode: the light-mode near-black
+   fill would vanish into the page. */
+:root[data-theme="dark"] .cafe-chip[aria-current="true"] {
+  background: #b0ded9 !important;
+  color: #182325 !important;
+}
+:root[data-theme="dark"] .cafe-hero__tile {
+  background: #2a3b3e;
+}
+:root[data-theme="dark"] .cafe-dish__media {
+  background: #f4f8f8;
+}
+:root[data-theme="dark"] .cafe-dish__media::after {
+  background: radial-gradient(circle farthest-side at 50% 50%, rgba(244, 248, 248, 0) 76%, #f4f8f8 96%);
+}
 
 /* Font variables referenced by the Tailwind fontFamily tokens.
    Primary brand type is "Google Sans Flex"; DM Sans is the loaded fallback
@@ -597,22 +1860,38 @@ body.no-scroll {
   width: 18px;
   height: 18px;
 }
-[data-pagesmenu] .pages-ico-close,
-[data-pagesmenu] .pages-panel {
-  display: none;
+/* Secondary utility bar — the support pages, which used to be hidden
+   behind a hamburger in the header. Slim and right-aligned so it reads as
+   secondary to the primary category nav, with a hairline separating it
+   from the header row proper. */
+.hdr-utility {
+  border-bottom: 1px solid rgba(24, 35, 37, 0.12);
 }
-[data-pagesmenu].is-open .pages-ico-menu {
-  display: none;
+.hdr-utility__link {
+  padding: 9px 0;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #182325;
+  white-space: nowrap;
+  transition: color 0.2s ease;
 }
-[data-pagesmenu].is-open .pages-ico-close {
-  display: inline-grid;
+.hdr-utility__link:hover {
+  color: #db336c;
 }
-[data-pagesmenu].is-open .pages-panel {
+/* Hotline sits with the support links but stays the CTA pink and bold, so
+   it still reads as the one number to call rather than a seventh page. */
+.hdr-utility__link--tel {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #db336c;
+  font-weight: 700;
+}
+.hdr-utility__link--tel:hover {
+  color: #c22a5d;
+}
+.hdr-utility__link--tel img {
   display: block;
-}
-[data-pagesmenu].is-open .pages-toggle {
-  background: #fff;
-  border-color: transparent;
 }
 [data-locmenu] .loc-panel {
   display: none;
@@ -645,6 +1924,124 @@ body.loc-gate #site-header [data-locmenu] {
 body.loc-gate [data-loc-toggle] {
   box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.9);
   border-radius: 5px;
+}
+
+/* First-visit location prompt — a single ask, centred, with the
+   detect-location artwork above it. */
+.wc-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 30px 24px 24px;
+  text-align: center;
+}
+.wc-art {
+  width: 96px;
+  height: 96px;
+  object-fit: contain;
+}
+.wc-title {
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #182325;
+}
+.wc-copy {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #6f7276;
+}
+.wc-link {
+  font-size: 13px;
+  font-weight: 500;
+  color: #6f7276;
+  padding: 4px 8px;
+  transition: color 0.2s ease;
+}
+.wc-link:hover {
+  color: #182325;
+}
+/* Outcome line inside the picker: why this area is pre-selected, or why
+   nothing could be detected. */
+.loc-hint {
+  font-size: 12px;
+  line-height: 1.45;
+  color: #182325;
+  background: #e7fffc;
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin-bottom: 12px;
+}
+
+/* Sticky WhatsApp action, bottom-right on every page. Shares the floating
+   cart's container-aligned inset so the two line up vertically. */
+.wa-fab {
+  position: fixed;
+  /* same inset ladder as .floating-cart (see the note above it) so the two
+     fixed actions sit on one vertical line instead of drifting apart */
+  inset-inline-end: max(24px, calc(50vw - 696px));
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  z-index: 75;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #25d366;
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(24, 35, 37, 0.22);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.2s ease,
+    opacity 0.25s ease,
+    visibility 0.25s ease;
+}
+/* Retract once the footer is on screen: the footer carries its own
+   WhatsApp link in the social row, so the floating one would sit on top of
+   the very thing it duplicates. */
+body.footer-visible .wa-fab {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(14px) scale(0.9);
+  pointer-events: none;
+}
+.wa-fab:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(24, 35, 37, 0.28);
+}
+.wa-fab svg {
+  display: block;
+  width: 28px;
+  height: 28px;
+}
+/* Checkout keeps a fixed order-summary bar along the bottom under 1024px —
+   lift clear of it rather than covering the total. */
+@media (max-width: 1023px) {
+  .wa-fab {
+    width: 48px;
+    height: 48px;
+  }
+  .wa-fab svg {
+    width: 26px;
+    height: 26px;
+  }
+  body[data-page="checkout"] .wa-fab {
+    bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+  }
+}
+@media (min-width: 1024px) {
+  .wa-fab {
+    inset-inline-end: max(60px, calc(50vw - 696px));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wa-fab {
+    transition: none;
+  }
+  .wa-fab:hover {
+    transform: none;
+  }
 }
 
 /* Floating cart — hidden until the header scrolls away */
@@ -756,22 +2153,6 @@ body.loc-gate [data-loc-toggle] {
   [data-add-widget] [data-counter].is-pop {
     animation: none;
   }
-}
-
-/* Knockout: punch a transparent hole out of the cart box where the badge
-   sits, so the badge reads as SUBTRACTED from the box (background shows
-   through the ring) instead of sitting on a coloured border. */
-.cart-knockout {
-  -webkit-mask: radial-gradient(
-    circle 13px at calc(100% - 5px) calc(100% - 5px),
-    transparent 0 12.5px,
-    #000 13px
-  );
-  mask: radial-gradient(
-    circle 13px at calc(100% - 5px) calc(100% - 5px),
-    transparent 0 12.5px,
-    #000 13px
-  );
 }
 
 /* Accordion (FAQ) */
@@ -1116,26 +2497,32 @@ body[data-purchased="true"] .review-gate-hint {
    ================================================================= */
 .catnav-item {
   position: relative;
-  /* Labels range from "CAKES" to "CAKES & GATEAUX", so packing them by text
-     width makes the rhythm look random. A shared minimum footprint (plus a
-     cap so the longest label doesn't stretch the row) evens the spacing out
-     while each item still hugs its own icon. */
-  min-width: 104px;
-  max-width: 132px;
+  /* Phones keep the stacked layout: a side-by-side label would make each tab
+     ~150px wide and fit barely two on a 375px screen. A shared minimum
+     footprint (plus a cap so the longest label doesn't stretch the row)
+     evens out the rhythm between "CAKES" and "CAKES & GATEAUX". */
+  min-width: 72px;
+  max-width: 104px;
   text-align: center;
-}
-/* Phones: that 104px floor fits barely three categories on a 375px screen,
-   so the row reads as a dead end rather than something to swipe. Shrink the
-   footprint (and the gap/padding in the track) to show ~5 and imply more. */
-@media (max-width: 767px) {
-  .catnav-item {
-    min-width: 56px;
-    max-width: 92px;
-  }
 }
 .catnav-item span {
   display: block;
   width: 100%;
+}
+/* From md up the label sits BESIDE the icon rather than under it, which
+   takes roughly 30px off the height of the bar. Tabs then hug their own
+   content — a shared footprint only made sense while the label was stacked
+   and centred; in a row it would leave "CAKES" swimming in dead space
+   next to "CAKES & GATEAUX". */
+@media (min-width: 768px) {
+  .catnav-item {
+    min-width: 0;
+    max-width: none;
+    text-align: start;
+  }
+  .catnav-item span {
+    width: auto;
+  }
 }
 /* Callout sticker on a category tab (Make Your Cake → "TRY NOW"):
    a tiny light-pink tag perched on the top corner with a slight tilt,
@@ -1145,11 +2532,11 @@ body[data-purchased="true"] .review-gate-hint {
   top: -1px;
   inset-inline-start: -2px;
   z-index: 1;
-  padding: 2px 4px;
+  padding: 2.5px 5px;
   border-radius: 4px;
   background: #fbdbe7;
   color: #db336c;
-  font-size: 7px;
+  font-size: 8px;
   font-weight: 700;
   line-height: 1;
   letter-spacing: 0.03em;
@@ -1344,6 +2731,8 @@ body[data-purchased="true"] .review-gate-hint {
   margin-top: 8px;
 }
 /* Saved state: the note reads as a record, not an input. */
+/* The saved note doubles as its own edit control (role=button), so it says
+   so on hover and takes a focus ring like any other control. */
 .ordernote__saved {
   display: flex;
   align-items: flex-start;
@@ -1352,7 +2741,27 @@ body[data-purchased="true"] .review-gate-hint {
   background: #ffffff;
   border: 1px solid #dee2e6;
   border-radius: 10px;
+  cursor: pointer;
   animation: ordernoteIn 0.22s ease-out;
+  transition:
+    border-color 0.18s ease,
+    background-color 0.18s ease;
+}
+.ordernote__saved:hover {
+  border-color: #8cbab5;
+  background: #f8fdfc;
+}
+.ordernote__saved:focus-visible {
+  outline: 2px solid #8cbab5;
+  outline-offset: 2px;
+}
+/* The × removes; it must not inherit the container's "click me to edit". */
+.ordernote__saved .ordernote__remove {
+  cursor: pointer;
+}
+:root[data-theme="dark"] .ordernote__saved:hover {
+  background: var(--dk-raised) !important;
+  border-color: #8cbab5 !important;
 }
 @keyframes ordernoteIn {
   from {
@@ -2104,8 +3513,10 @@ body[data-purchased="true"] .review-gate-hint {
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  gap: 12px;
-  padding: 8px 14px;
+  gap: 10px;
+  /* slimmer start padding so the icon hugs the edge; the end padding
+     plus the text's own reserve keep labels clear of the check */
+  padding: 8px 12px 8px 9px;
   border-radius: 14px;
   min-height: 64px;
   text-align: start;
@@ -2115,6 +3526,15 @@ body[data-purchased="true"] .review-gate-hint {
   flex-direction: column;
   gap: 1px;
   min-width: 0;
+  /* the selected check is 20px wide at inset-end 12px — labels must
+     never run underneath it */
+  padding-inline-end: 26px;
+}
+.myc-opt--row .myc-opt__txt span:first-child {
+  font-size: 13px;
+}
+.myc-opt--row .myc-opt__txt span + span {
+  font-size: 11px;
 }
 .myc-opt__ico {
   flex: 0 0 auto;
@@ -2123,7 +3543,9 @@ body[data-purchased="true"] .review-gate-hint {
   width: 56px;
   height: 56px;
   border-radius: 12px;
-  background: #f6f7f8;
+  /* Mint, not grey: the mini cakes are white-frosted by default, and on a
+     near-white grey chip they vanished. Same ground the big stage uses. */
+  background: #e2f5f2;
 }
 .myc-opt__ico--emoji {
   font-size: 24px;
@@ -2137,6 +3559,13 @@ body[data-purchased="true"] .review-gate-hint {
 .myc-opt--row .myc-opt__link {
   margin-inline-start: auto;
   padding-inline-end: 26px; /* clear the selected check */
+}
+/* quieter link variant (Remove theme in the figure-picker footer) */
+.myc-opt__link--muted {
+  color: #6f7276;
+}
+.myc-opt__link--muted:hover {
+  color: #182325;
 }
 /* =================================================================
    PHOTO-STYLE COMPARE (temporary presentation aid) — a very small
@@ -2259,13 +3688,15 @@ body.shot-white [data-shot-img] {
 }
 .cake-picks__item {
   display: block;
-  width: 40px;
-  height: 40px;
+  /* the corner thumbnail is the ONLY representation of the chosen
+     figure (nothing stands on the cake), so it earns real presence */
+  width: 72px;
+  height: 72px;
   overflow: hidden;
   border: 1.5px solid #dee2e6;
-  border-radius: 8px;
+  border-radius: 12px;
   background: #fff;
-  box-shadow: 0 2px 8px rgba(24, 35, 37, 0.12);
+  box-shadow: 0 3px 10px rgba(24, 35, 37, 0.14);
 }
 .cake-picks__item img {
   width: 100%;
@@ -2711,6 +4142,53 @@ body.shot-white [data-shot-img] {
 .c3--cut .c3s .c3-fru {
   display: none;
 }
+
+/* =====================================================================
+   BOX CORNER CUT — the sheet shapes' answer to the round cake's chord
+   cut: a piece taken from the front-right corner, so square and
+   rectangle expose the same sponge interior as the round.
+
+   Geometry: the piece is --cutx wide (world x) by --cutz deep (world z),
+   full height. The front wall, right wall and top are trimmed to the
+   remaining cake, and two interior planes seal the pocket:
+   .c3-cut--boxfront (facing front, at z = cd/2 - cutz) and
+   .c3-cut--boxside (facing right, at x = cw/2 - cutx). Both inherit the
+   .c3-cut recessed-interior styling, and paintCake paints them with the
+   sponge layers. After rotateY(90deg) an element's local +x points to
+   world -z, which fixes the translateX signs below.
+   ===================================================================== */
+.c3--cut {
+  --cutx: calc(var(--cw, 0px) * 0.3);
+  --cutz: calc(var(--cd, 0px) * 0.42);
+}
+.c3--cut .c3f--front {
+  width: calc(var(--cw) - var(--cutx));
+  transform: translate(-50%, -50%) translateX(calc(var(--cutx) / -2)) translateZ(calc(var(--cd) / 2));
+}
+.c3--cut .c3f--right {
+  width: calc(var(--cd) - var(--cutz));
+  transform: translate(-50%, -50%) rotateY(90deg) translateZ(calc(var(--cw) / 2)) translateX(calc(var(--cutz) / 2));
+}
+/* Top keeps its full box (so the dome highlight stays centred on the
+   remaining mass reasonably) and clips the corner away. */
+.c3--cut .c3f--top {
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% calc(100% - var(--cutz)),
+    calc(100% - var(--cutx)) calc(100% - var(--cutz)),
+    calc(100% - var(--cutx)) 100%,
+    0 100%
+  );
+}
+.c3-cut--boxfront {
+  width: var(--cutx);
+  transform: translate(-50%, -50%) translateX(calc((var(--cw) - var(--cutx)) / 2)) translateZ(calc(var(--cd) / 2 - var(--cutz)));
+}
+.c3-cut--boxside {
+  width: var(--cutz);
+  transform: translate(-50%, -50%) rotateY(90deg) translateZ(calc(var(--cw) / 2 - var(--cutx))) translateX(calc((var(--cd) - var(--cutz)) / -2));
+}
 .c3--live .c3-cut {
   transition:
     width 0.55s cubic-bezier(0.34, 1.2, 0.5, 1),
@@ -2718,28 +4196,43 @@ body.shot-white [data-shot-img] {
     transform 0.55s cubic-bezier(0.34, 1.2, 0.5, 1),
     background 0.5s ease;
 }
-/* scalloped paper board under the live cake — flat in screen space,
-   like the shadow, sized off the same vars so it morphs along */
-.c3__board {
+/* Cake board — a plane at the cake's base INSIDE the 3D rig, so it
+   projects with the same perspective as the cake and always matches
+   its footprint. Round cakes get the scalloped doily SVG; box cakes
+   get a clean rounded-rect board with an embossed inner ring (the
+   real sheet-cake kind). Sized off the cake's own vars. */
+.c3__board3d {
   position: absolute;
-  left: 50%;
-  top: var(--cy);
-  width: calc(var(--shw) * 1.32);
-  height: calc(var(--shw) * 0.37);
-  transform: translate(-50%, calc(var(--chh) * 0.28));
+  left: 0;
+  top: 0;
+  backface-visibility: hidden;
   pointer-events: none;
 }
-.c3__board svg {
+.c3__board3d--disc {
+  width: calc(var(--cr) * 2.6);
+  height: calc(var(--cr) * 2.6);
+  transform: translate(-50%, -50%) rotateX(90deg) translateZ(calc(var(--chh) / -2 - 1px));
+}
+.c3__board3d--disc svg {
   display: block;
   width: 100%;
   height: 100%;
-  filter: drop-shadow(0 3px 7px rgba(24, 35, 37, 0.10));
 }
-.c3--live .c3__board {
+.c3__board3d--box {
+  width: calc(var(--cw) + 44px);
+  height: calc(var(--cd) + 44px);
+  border-radius: 14px;
+  transform: translate(-50%, -50%) rotateX(90deg) translateZ(calc(var(--chh) / -2 - 1px));
+  background: radial-gradient(ellipse at 46% 40%, #ffffff, #f6f5f1 68%, #e6e5df 100%);
+  box-shadow:
+    inset 0 0 0 1px #dcdbd5,
+    inset 0 0 0 5px #f2f1ec;
+}
+.c3--live .c3__board3d {
   transition:
-    width 0.55s ease,
-    height 0.55s ease,
-    transform 0.55s ease;
+    width 0.55s cubic-bezier(0.34, 1.2, 0.5, 1),
+    height 0.55s cubic-bezier(0.34, 1.2, 0.5, 1),
+    transform 0.55s cubic-bezier(0.34, 1.2, 0.5, 1);
 }
 /* message piped on the top surface */
 .c3-word {
@@ -2755,13 +4248,17 @@ body.shot-white [data-shot-img] {
   letter-spacing: 0.02em;
   overflow: hidden;
 }
-/* topper emoji floating above the cake (screen-space billboard) */
+/* Topper anchor (fruit scatter) — anchored to the CENTRE of the cake's
+   projected top face: the face centre sits ~0.46·chh above the cake's
+   middle, and the glyphs draw downward from their anchor so we lift by
+   a fraction of their own size. Everything is var-driven, so minis and
+   the live cake land on their surface at any scale — no fixed px. */
 .c3__topper {
   position: absolute;
   left: 50%;
   top: var(--cy);
   z-index: 6;
-  transform: translate(-50%, calc(var(--chh) * -0.62 - 30px));
+  transform: translate(-50%, calc(var(--chh) * -0.46 - var(--topFs, 30px) * 0.7));
   font-size: var(--topFs, 30px);
   line-height: 1;
   filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.22));
@@ -2771,11 +4268,11 @@ body.shot-white [data-shot-img] {
 }
 @keyframes topper-drop {
   0% {
-    transform: translate(-50%, calc(var(--chh) * -0.62 - 46px)) scale(0.4);
+    transform: translate(-50%, calc(var(--chh) * -0.46 - var(--topFs, 30px) * 0.7 - 16px)) scale(0.4);
     opacity: 0;
   }
   100% {
-    transform: translate(-50%, calc(var(--chh) * -0.62 - 30px)) scale(1);
+    transform: translate(-50%, calc(var(--chh) * -0.46 - var(--topFs, 30px) * 0.7)) scale(1);
     opacity: 1;
   }
 }
@@ -2937,44 +4434,61 @@ body.shot-white [data-shot-img] {
 }
 
 /* =================================================================
-   LANG / COUNTRY OPTION (.lang-opt) — selectable tile in the header
-   country/language modal. Resting = white + grey border; hover =
-   turquoise border; .is-active = black ring + mint fill.
+   HEADER ACTIONS (language · account · favourites) — one evenly
+   spaced row with a hairline between each item. The cart chip sits
+   outside this group, since it is filled rather than a bare icon.
    ================================================================= */
-.lang-opt {
+.hdr-actions {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 8px;
-  height: 52px;
-  border-radius: 12px;
-  border: 1.5px solid #dee2e6;
-  background: #fff;
+  gap: 14px;
+  flex-shrink: 0;
+}
+.hdr-actions__sep {
+  width: 1px;
+  height: 22px;
+  background: rgba(24, 35, 37, 0.22);
+  flex: 0 0 auto;
+}
+.hdr-actions__item {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  transition: opacity 0.2s ease;
+}
+.hdr-actions__item:hover {
+  opacity: 0.7;
+}
+
+/* One-tap language switch. The label names the language you would move
+   TO, so it reads as the action rather than as current state. */
+.lang-switch {
+  font-size: 13px;
+  font-weight: 500;
   color: #182325;
-  font-weight: 600;
-  font-size: 14px;
+  white-space: nowrap;
+  transition: color 0.2s ease;
+}
+.lang-switch:hover {
+  color: #db336c;
+}
+.lang-switch.is-ar {
+  font-family: "Noto Kufi Arabic", "Google Sans Flex", sans-serif;
+  font-size: 12.5px;
+}
+.lang-switch--block {
+  display: block;
+  width: 100%;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 11px 12px;
+  text-align: center;
   transition:
-    border-color 0.18s ease,
-    background 0.18s ease,
-    box-shadow 0.18s ease;
+    color 0.2s ease,
+    border-color 0.2s ease;
 }
-.lang-opt:hover {
-  border-color: #8cbab5;
-}
-.lang-opt.is-active {
+.lang-switch--block:hover {
   border-color: #182325;
-  background: #e7fffc;
-  box-shadow: inset 0 0 0 1px #182325;
-}
-/* Regional-settings variant: the flag sits ABOVE the country name in a
-   taller tile (Figma 6324-60291), so long labels never squeeze the flag. */
-.lang-opt--stacked {
-  flex-direction: column;
-  gap: 2px;
-  height: 68px;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 400;
 }
 
 /* =================================================================
@@ -3095,25 +4609,32 @@ blockquote {
 }
 
 /* =================================================================
-   PDP 3-COLUMN LAYOUT (product.html) — gallery | content | buy box.
-   DOM order is gallery → head → buy → details so the MOBILE stack
-   reads image, title, price/CTA, then the long content. On desktop
-   grid areas lift the buy box into its own right column spanning
-   both rows, and the two outer columns stick while the middle
-   column (title, description, tabs, FAQ) scrolls past them.
-   align-items:start is what lets a row-spanning grid item stick.
+   PDP 2-COLUMN LAYOUT (product.html) — gallery | everything else.
+
+   Was three columns (gallery | content | sticky buy box). The buy box
+   is now part of one continuous right-hand column, in the order a
+   buyer works through: title, price, options, description, add-ons,
+   quantity, CTA, reassurance, then the long-form detail. Grid areas
+   do the placing, so the DOM order (gallery -> head -> buy -> details)
+   still stacks correctly on mobile with no duplication.
+
+   The gallery spans all three rows and sticks; align-items:start is
+   what allows a row-spanning item to stick.
    ================================================================= */
 @media (min-width: 1024px) {
   .pdp-grid.pdp-grid {
     display: grid;
-    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr) 340px;
+    /* Gallery takes the larger share now that it no longer competes with
+       a third column — the photograph is what the page is selling. */
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
     grid-template-areas:
-      "gallery head    buy"
-      "gallery details buy";
-    grid-template-rows: auto 1fr;
+      "gallery head"
+      "gallery buy"
+      "gallery details";
+    grid-template-rows: auto auto 1fr;
     align-items: start;
-    column-gap: 32px;
-    row-gap: 22px;
+    column-gap: 40px;
+    row-gap: 20px;
   }
   .pdp-gallery.pdp-gallery {
     grid-area: gallery;
@@ -3130,84 +4651,29 @@ blockquote {
   .pdp-head.pdp-head {
     grid-area: head;
   }
-  .pdp-details.pdp-details {
-    grid-area: details;
-    /* Clear separation between the tab card and the FAQ block below it —
-       they are two distinct reading zones, not one continuous list. */
-    gap: 64px;
-  }
   .pdp-buy.pdp-buy {
     grid-area: buy;
-    position: sticky;
-    top: 100px;
-    padding: 18px;
-    border: 1px solid #dee2e6;
-    border-radius: 16px;
-    background: #fff;
-    box-shadow: 0 1px 3px rgba(24, 35, 37, 0.05);
+    gap: 16px;
   }
-  /* Trust callouts stack in the narrow buy column instead of squeezing
-     into the 2-up grid they use at full width. */
+  .pdp-details.pdp-details {
+    grid-area: details;
+    /* Clear separation between the tab card, the bundle box and the FAQ —
+       three distinct reading zones, not one continuous list. */
+    gap: 48px;
+    margin-top: 12px;
+  }
+  /* No column override here: the base .pdp-callouts rule already runs Fast
+     Delivery full width with the other two side by side under it, which is
+     the intended shape. The old single-column override existed only because
+     this used to be a narrow sidebar. */
   .pdp-buy .pdp-callouts {
-    grid-template-columns: 1fr;
-  }
-
-  /* Compact buy box: the sticky column reads as one neat block, so the
-     controls step down a size from their full-width defaults. */
-  .pdp-buy.pdp-buy {
-    gap: 12px;
-    padding: 16px;
-  }
-  .pdp-buy .pdp-vars.pdp-vars {
     gap: 10px;
-  }
-  .pdp-buy .pdp-vars label {
-    font-size: 12.5px;
-    font-weight: 400;
-    color: #6f7276;
-  }
-  /* Pull each label tight to the pills it names, so the two groups read
-     as "label + options" pairs rather than four evenly-spaced rows. */
-  .pdp-buy .pdp-vars [data-variation-group] {
-    gap: 3px;
-  }
-  /* The CTA is the one loud element here — let it breathe away from the
-     quantity stepper above it. */
-  .pdp-buy .pdp-actions > .flex.items-stretch {
-    margin-top: 6px;
-  }
-  .pdp-buy .pdp-vars .flex-wrap {
-    gap: 6px;
-  }
-  .pdp-buy .variation-pill.variation-pill {
-    padding: 6px 12px;
-    font-size: 12.5px;
-  }
-  .pdp-buy .counter--lg {
-    --c-h: 40px;
-    --c-btn: 36px;
-    --c-qty: 38px;
-    --c-icon: 15px;
-    --c-font: 0.9rem;
-  }
-  .pdp-buy .btn--lg {
-    height: 46px !important;
-    font-size: 15px;
-  }
-  .pdp-buy .btn--lg span {
-    font-size: 15px;
-  }
-  .pdp-buy [data-fav] {
-    width: 46px;
-  }
-  .pdp-buy .pdp-callouts {
-    gap: 6px;
   }
 }
 @media (min-width: 1280px) {
   .pdp-grid.pdp-grid {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr) 372px;
-    column-gap: 40px;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1fr);
+    column-gap: 48px;
   }
 }
 
@@ -5831,5 +7297,2229 @@ a.ord-status__card:hover {
   .vision-statement {
     opacity: 1;
     transform: none;
+  }
+}
+
+/* The collapse is a size change under the pointer; honour the OS setting. */
+@media (prefers-reduced-motion: reduce) {
+  .cafe-menu__head,
+  .cafe-menu__head::before,
+  .cafe-menu__title {
+    transition: none;
+  }
+}
+
+/* =====================================================================
+   ADD ELEGANT TOUCHES — PDP add-ons (Figma 6515-55317 strip,
+   6515-55662 popup).
+
+   A horizontal strip of add-on CATEGORIES sits between the variations
+   and the Add-to-Cart row. Each card shows the category's cheapest
+   price ("From N EGP") and, once something is chosen, a count badge.
+   Opening a card opens one shared popup already switched to that
+   category; every category is in the popup, so the strip is a shortcut,
+   not a filter.
+
+   Figma sets these in Poppins. The site never loads Poppins, and pulling
+   a fourth family for one component costs more than it buys, so this
+   inherits Google Sans Flex at the same sizes and weights.
+   ===================================================================== */
+.addons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.addons__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.addons__title {
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #182325;
+}
+.addons__nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+/* Nothing to scroll to means no arrows at all, rather than two dead ones. */
+.addons__nav[hidden] {
+  display: none;
+}
+.addons__arrow {
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  color: #182325;
+  transition: opacity 0.2s ease;
+}
+.addons__arrow:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+/* Masked rather than overlaid with a white gradient (which is what the
+   Figma does): a mask fades the cards against whatever the page is
+   behind them, so it survives dark mode untouched. */
+.addons__strip {
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 4%, #000 96%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 4%, #000 96%, transparent 100%);
+}
+.addons__strip::-webkit-scrollbar {
+  display: none;
+}
+.addons__track {
+  display: flex;
+  gap: 8px;
+  padding: 2px 10px;
+  width: max-content;
+}
+/* Figma draws these 134px wide. Narrow columns (mobile, and the buy column
+   before it went full width) get 110 so a third card still lands; from 1024
+   up there is room for all four at the drawn size. */
+.addon-cat {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 110px;
+  height: 92px;
+  padding: 10px 8px;
+  border: 1px solid #cccccc;
+  border-radius: 8px;
+  background: #ffffff;
+  text-align: center;
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+.addon-cat:hover {
+  transform: translateY(-2px);
+}
+/* Turquoise outline is the "you have chosen something here" state, and it
+   is the same signal the count badge carries — deliberately doubled up,
+   since the badge is only 16px. */
+.addon-cat.has-items {
+  border-color: #8cbab5;
+}
+.addon-cat__icon {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+@media (min-width: 1024px) {
+  .addon-cat {
+    width: 134px;
+    padding: 12px;
+  }
+  .addon-cat__icon {
+    width: 44px;
+    height: 44px;
+  }
+}
+.addon-cat__name {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.3;
+  color: #182325;
+}
+.addon-cat__from {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.3;
+  color: #db336c;
+}
+.addon-cat__count {
+  position: absolute;
+  top: 3px;
+  inset-inline-end: 3px;
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 100px;
+  background: #8cbab5;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  color: #ffffff;
+}
+.addon-cat__count[hidden] {
+  display: none;
+}
+
+/* ------------------------- POPUP ------------------------- */
+.addons-modal {
+  display: flex;
+  width: 100%;
+  max-width: 790px;
+  max-height: 86vh;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px 32px;
+  border: 1px solid #e5e5e5;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.addons-modal__x {
+  position: absolute;
+  top: 19px;
+  inset-inline-end: 18px;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  color: #182325;
+}
+.addons-modal__x:hover {
+  background: rgba(24, 35, 37, 0.06);
+}
+.addons-modal__head {
+  position: relative;
+  flex-shrink: 0;
+}
+.addons-modal__title {
+  font-size: clamp(22px, 3vw, 32px);
+  font-weight: 600;
+  line-height: 1.2;
+  color: #1a1a1a;
+}
+.addons-modal__tabs {
+  display: flex;
+  align-items: stretch;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.addons-modal__tabs::-webkit-scrollbar {
+  display: none;
+}
+.addon-tab {
+  display: flex;
+  flex: 1 0 0;
+  min-width: max-content;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 8px 16px;
+  border-bottom: 2px solid transparent;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.3;
+  color: #666666;
+  white-space: nowrap;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+.addon-tab__ico {
+  position: relative;
+  display: block;
+  flex-shrink: 0;
+}
+.addon-tab img {
+  display: block;
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+}
+/* Same badge as the strip cards, so a category reads the same whether you
+   are looking at the PDP row or the popup's tabs. */
+.addon-tab__count {
+  position: absolute;
+  top: -2px;
+  inset-inline-end: -5px;
+  display: grid;
+  place-items: center;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 100px;
+  background: #8cbab5;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  color: #ffffff;
+}
+.addon-tab__count[hidden] {
+  display: none;
+}
+.addon-tab[aria-selected="true"] {
+  border-bottom-color: #8cbab5;
+  color: #182325;
+}
+.addons-modal__list {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  overflow-y: auto;
+  padding-inline-end: 8px;
+  /* The Figma pins this to 510px. A viewport clamp keeps the popup usable
+     on a short laptop screen, where a fixed 510 would push the confirm
+     button off the bottom. */
+  max-height: min(510px, 48vh);
+}
+.addon-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid #cccccc;
+  border-radius: 10px;
+  background: #ffffff;
+  text-align: center;
+}
+.addon-item.is-added {
+  border-color: #8cbab5;
+}
+.addon-item__img {
+  width: 100%;
+  height: 104px;
+  object-fit: contain;
+}
+.addon-item__name {
+  font-size: 14px;
+  line-height: 1.4;
+  color: #1a1a1a;
+}
+.addon-item__price {
+  margin-top: 2px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.3;
+  color: #db336c;
+}
+.addon-item__foot {
+  margin-top: auto;
+}
+/* Matches .counter--sm's 34px height: the button is swapped for that
+   counter on the first tap, and a 28px button would resize the card. */
+.addon-add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 14px;
+  border: 1px solid #182325;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.3;
+  color: #182325;
+  transition: background-color 0.2s ease;
+}
+.addon-add:hover {
+  background: rgba(24, 35, 37, 0.06);
+}
+.addons-modal__cta {
+  align-self: center;
+  flex-shrink: 0;
+  padding: 12px 32px;
+  border-radius: 4px;
+  background: #222222;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #ffffff;
+}
+.addons-modal__cta:hover {
+  background: #182325;
+}
+@media (max-width: 640px) {
+  .addons-modal {
+    padding: 20px 16px;
+    gap: 16px;
+  }
+  .addon-tab {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+  .addon-tab img {
+    width: 32px;
+    height: 32px;
+  }
+  .addon-tab__count {
+    min-width: 14px;
+    height: 14px;
+    font-size: 10px;
+  }
+  .addons-modal__list {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+  .addon-item__img {
+    height: 80px;
+  }
+}
+
+/* Dark mode. The add-on shots are cut out on white, so the item cards stay
+   light — the same call the product widgets take — while the strip and the
+   popup chrome follow the site tokens. */
+:root[data-theme="dark"] .addons__title,
+:root[data-theme="dark"] .addon-cat__name,
+:root[data-theme="dark"] .addons-modal__title {
+  color: var(--dk-text) !important;
+}
+:root[data-theme="dark"] .addons__arrow,
+:root[data-theme="dark"] .addons-modal__x {
+  color: var(--dk-text);
+}
+/* The icons are transparent cut-outs with their own colour, so these read
+   on a dark card — no need to hold a light plate the way the photographic
+   add-on cards inside the popup do. */
+:root[data-theme="dark"] .addon-cat {
+  background: var(--dk-surface) !important;
+  border-color: var(--dk-border);
+}
+:root[data-theme="dark"] .addon-cat.has-items {
+  border-color: #8cbab5;
+}
+:root[data-theme="dark"] .addons-modal {
+  border-color: var(--dk-border);
+}
+:root[data-theme="dark"] .addon-tab {
+  color: var(--dk-muted) !important;
+}
+:root[data-theme="dark"] .addon-tab[aria-selected="true"] {
+  color: var(--dk-text) !important;
+}
+/* The #222 confirm button all but disappears against the dark panel, so it
+   takes the brand turquoise the other primary actions use in dark mode. */
+:root[data-theme="dark"] .addons-modal__cta {
+  background: #b0ded9 !important;
+  color: #182325 !important;
+}
+:root[data-theme="dark"] .addons-modal__cta:hover {
+  background: #9dd3cd !important;
+}
+
+/* ---------------------------------------------------------------------
+   GREETING-CARD MESSAGE. A card is the one add-on that carries words, so
+   choosing one opens a writing step rather than leaving the buyer to
+   discover a note field somewhere later.
+
+   It sits under the grid on the Greeting Card tab only — putting it on
+   every tab would ask candle buyers to ignore it — and once written, a
+   one-line preview follows the buyer back out to the PDP strip, which is
+   otherwise the last they would see of their own text.
+   --------------------------------------------------------------------- */
+.addon-note {
+  flex-shrink: 0;
+  padding: 14px 16px;
+  border: 1px solid #8cbab5;
+  border-radius: 10px;
+  background: #f4faf9;
+}
+.addon-note[hidden] {
+  display: none;
+}
+.addon-note__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.addon-note__title {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #182325;
+}
+.addon-note__hint {
+  font-size: 12px;
+  line-height: 1.3;
+  color: #6f7276;
+}
+.addon-note__row + .addon-note__row {
+  margin-top: 12px;
+}
+.addon-note__label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.3;
+  color: #4d4d4d;
+}
+.addon-note__field {
+  display: block;
+  width: 100%;
+  min-height: 62px;
+  padding: 10px 12px;
+  border: 1px solid #cccccc;
+  border-radius: 8px;
+  background: #ffffff;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.45;
+  color: #182325;
+  resize: vertical;
+}
+.addon-note__field:focus {
+  outline: none;
+  border-color: #8cbab5;
+  box-shadow: 0 0 0 3px rgba(140, 186, 181, 0.25);
+}
+.addon-note__field::placeholder {
+  color: #b2b2b2;
+}
+.addon-note__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+.addon-note__presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+/* One tap fills the field. Most card messages are one of four lines, and
+   typing them on a phone is the friction this removes. */
+.addon-note__preset {
+  padding: 4px 10px;
+  border: 1px solid #cccccc;
+  border-radius: 100px;
+  background: #ffffff;
+  font-size: 12px;
+  line-height: 1.3;
+  color: #182325;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+.addon-note__preset:hover {
+  border-color: #8cbab5;
+  background: #eef7f6;
+}
+.addon-note__count {
+  margin-inline-start: auto;
+  font-size: 12px;
+  line-height: 1.3;
+  color: #6f7276;
+  font-variant-numeric: tabular-nums;
+}
+.addon-note__count.is-full {
+  color: #db336c;
+}
+
+/* PDP strip preview — the written message, back outside the popup. */
+.addons-preview {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: #f4faf9;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #4d4d4d;
+}
+.addons-preview[hidden] {
+  display: none;
+}
+.addons-preview__text {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #182325;
+}
+.addons-preview__edit {
+  flex-shrink: 0;
+  font-weight: 500;
+  color: #db336c;
+  text-decoration: underline;
+}
+
+:root[data-theme="dark"] .addon-note,
+:root[data-theme="dark"] .addons-preview {
+  background: var(--dk-raised) !important;
+  border-color: var(--dk-border);
+}
+:root[data-theme="dark"] .addon-note__title,
+:root[data-theme="dark"] .addons-preview__text {
+  color: var(--dk-text) !important;
+}
+:root[data-theme="dark"] .addon-note__hint,
+:root[data-theme="dark"] .addon-note__label,
+:root[data-theme="dark"] .addon-note__count,
+:root[data-theme="dark"] .addons-preview {
+  color: var(--dk-muted) !important;
+}
+:root[data-theme="dark"] .addon-note__field,
+:root[data-theme="dark"] .addon-note__preset {
+  background: var(--dk-surface) !important;
+  border-color: var(--dk-border) !important;
+  color: var(--dk-text) !important;
+}
+
+/* ---------------------------------------------------------------------
+   GREETING-CARD TILES. Cards are picked one at a time, not counted: an
+   order carries a single card with a single message, so these are toggle
+   tiles rather than the counter the other add-ons use.
+
+   The photograph is the product, so it fills the tile and the price and
+   name ride on top of it in frosted pills — legible over a dark maroon
+   card or a pale pink one without per-image tuning.
+   --------------------------------------------------------------------- */
+/* Wider track than the other add-ons: a card's artwork is the thing being
+   chosen, and at four-up it is too small to tell one design from another. */
+.addons-modal__list.is-cards {
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+.addon-card {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  padding: 0;
+  aspect-ratio: 1;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  background: #f2f4f4;
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+.addon-card:hover {
+  transform: translateY(-2px);
+}
+.addon-card__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.addon-card__price,
+.addon-card__name {
+  position: absolute;
+  inset-inline-start: 10px;
+  max-width: calc(100% - 56px);
+  padding: 4px 10px;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.92);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  backdrop-filter: blur(4px);
+}
+.addon-card__price {
+  top: 10px;
+  color: #db336c;
+}
+.addon-card__price.is-free {
+  color: #182325;
+}
+.addon-card__name {
+  bottom: 10px;
+  color: #182325;
+}
+.addon-card__check {
+  position: absolute;
+  top: 10px;
+  inset-inline-end: 10px;
+  display: none;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #8cbab5;
+  color: #ffffff;
+}
+.addon-card[aria-pressed="true"] {
+  border-color: #8cbab5;
+}
+.addon-card[aria-pressed="true"] .addon-card__check {
+  display: grid;
+}
+:root[data-theme="dark"] .addon-card {
+  background: var(--dk-raised);
+}
+
+/* The cart mark is the site's basket icon in its dark-stroke variant, used
+   wherever it sits on a light surface (cart drawer header, cart page,
+   checkout summary). In dark mode those surfaces go dark, so the strokes
+   are flipped to white — the glyph is monochrome, so this is exact. */
+:root[data-theme="dark"] .cart-mark {
+  filter: brightness(0) invert(1);
+}
+
+/* ---------------------------------------------------------------------
+   CART ROW ADD-ONS. One truncated line under the price — the cart row is
+   already dense, and the detail lives one tap away in the popup the pencil
+   reopens. The full list (message included) is on the title attribute.
+   --------------------------------------------------------------------- */
+.cart-addons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+}
+.cart-addons[hidden] {
+  display: none;
+}
+.cart-addons__mark {
+  flex-shrink: 0;
+  color: #8cbab5;
+}
+.cart-addons__text {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+  line-height: 1.35;
+  color: #6f7276;
+}
+.cart-addons__edit {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  color: #182325;
+  transition: background-color 0.2s ease;
+}
+.cart-addons__edit:hover {
+  background: rgba(140, 186, 181, 0.2);
+}
+:root[data-theme="dark"] .cart-addons__text {
+  color: var(--dk-muted) !important;
+}
+:root[data-theme="dark"] .cart-addons__edit {
+  color: var(--dk-text) !important;
+}
+
+/* =====================================================================
+   FREQUENTLY BOUGHT TOGETHER (product.html). Two companions, ticked by
+   default. The running total sits up on the title line rather than down
+   by the button, so the number and the thing it totals are read together.
+   ===================================================================== */
+.fbt {
+  padding: 20px;
+  border: 1px solid #dee2e6;
+  border-radius: 16px;
+  background: #ffffff;
+}
+.fbt__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.fbt__title {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #182325;
+}
+.fbt__total {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-inline-start: auto;
+  text-align: end;
+}
+.fbt__total-label {
+  font-size: 13px;
+  color: #6f7276;
+}
+.fbt__total-value {
+  font-size: 18px;
+  font-weight: 600;
+  color: #182325;
+}
+.fbt__list {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+/* Photograph leads, then the name and price. The tick is pulled out of the
+   reading order into the corner — it is the card's state, not its first
+   piece of content. */
+.fbt__item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 38px 10px 10px;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+.fbt__item:hover {
+  border-color: #8cbab5;
+}
+/* The site's own checkbox component (see input[type="checkbox"] near the
+   foot of this file) — same box, same tick, same animation as checkout.
+   Only its placement is overridden: it belongs in the card's corner, not
+   in the reading order ahead of the photograph.
+
+   Three-part selector on purpose. The global rule is (0,2,1) thanks to its
+   :not(), so a two-part selector here would only tie and win on source
+   order — which is exactly the kind of thing that breaks when files move. */
+.fbt .fbt__item input[type="checkbox"] {
+  position: absolute;
+  top: 10px;
+  inset-inline-end: 10px;
+}
+.fbt__img {
+  width: 60px;
+  height: 60px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  object-fit: cover;
+  background: #e7fffc;
+}
+.fbt__text {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+}
+.fbt__name {
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.35;
+  color: #182325;
+  text-overflow: ellipsis;
+}
+.fbt__price {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #db336c;
+}
+/* Outlined, not the filled primary: Add to Cart above is the page's one loud
+   button, and a second filled CTA would compete with it. */
+.fbt__cta {
+  display: flex;
+  width: 100%;
+  min-height: 46px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 16px;
+  padding: 10px 24px;
+  border: 1px solid #182325;
+  border-radius: 10px;
+  background: transparent;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #182325;
+  transition:
+    background-color 0.2s ease,
+    opacity 0.2s ease;
+}
+.fbt__cta:hover {
+  background: rgba(24, 35, 37, 0.06);
+}
+/* Nothing ticked, nothing to add — the button says so rather than lying. */
+.fbt__cta[disabled] {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+:root[data-theme="dark"] .fbt {
+  background: var(--dk-surface) !important;
+  border-color: var(--dk-border) !important;
+}
+:root[data-theme="dark"] .fbt__item {
+  border-color: var(--dk-border) !important;
+}
+:root[data-theme="dark"] .fbt__title,
+:root[data-theme="dark"] .fbt__name,
+:root[data-theme="dark"] .fbt__total-value {
+  color: var(--dk-text) !important;
+}
+:root[data-theme="dark"] .fbt__total-label {
+  color: var(--dk-muted) !important;
+}
+:root[data-theme="dark"] .fbt__cta {
+  border-color: var(--dk-text) !important;
+  color: var(--dk-text) !important;
+}
+:root[data-theme="dark"] .fbt__cta:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ---------------------------------------------------------------------
+   PDP TITLE ROW — product name with the share control on the far end.
+   The rating and servings badges sit on their own row underneath, so a
+   long product name is never squeezed by them.
+   --------------------------------------------------------------------- */
+.pdp-titlerow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.pdp-titlerow h1 {
+  min-width: 0;
+}
+.pdp-share-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+/* Same shell as .fav-btn so the two secondary actions on this page read as
+   one family. */
+.pdp-share {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid #dee2e6;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #6f7276;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  transition:
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.pdp-share:hover {
+  color: #182325;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+.pdp-share svg {
+  width: 18px;
+  height: 18px;
+}
+:root[data-theme="dark"] .pdp-share {
+  background: var(--dk-surface) !important;
+  border-color: var(--dk-border) !important;
+  color: var(--dk-muted) !important;
+}
+:root[data-theme="dark"] .pdp-share:hover {
+  color: var(--dk-text) !important;
+}
+
+/* Short description gets a reading measure rather than the column's full
+   width. At ~700px it ran nearly edge to edge and read as a wall between
+   the variations and the add-ons; capped, it sits as a caption under the
+   options. Only from md up — on a phone the column is already this narrow. */
+@media (min-width: 768px) {
+  .pdp-lede {
+    max-width: 60ch;
+  }
+}
+
+/* ---------------------------------------------------------------------
+   SHARE POPUP (desktop only — touch devices get the OS share sheet).
+   A single row of round brand marks with labels underneath, sized so the
+   whole thing reads at a glance rather than as a menu to work through.
+   --------------------------------------------------------------------- */
+.share-modal {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  padding: 24px;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 8px 30px rgba(24, 35, 37, 0.16);
+}
+.share-modal__x {
+  position: absolute;
+  top: 14px;
+  inset-inline-end: 14px;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: #6f7276;
+}
+.share-modal__x:hover {
+  background: rgba(24, 35, 37, 0.06);
+  color: #182325;
+}
+.share-modal__title {
+  margin-bottom: 20px;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: center;
+  color: #182325;
+}
+.share-modal__grid {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(4, 1fr);
+}
+.share-opt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 2px;
+  border-radius: 12px;
+  text-align: center;
+  transition: background-color 0.2s ease;
+}
+.share-opt:hover {
+  background: rgba(24, 35, 37, 0.04);
+}
+.share-opt__ico {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+}
+.share-opt__ico svg {
+  width: 24px;
+  height: 24px;
+}
+/* Brand colours, because a share sheet is one of the few places a user
+   scans by logo rather than by label. */
+.share-opt__ico--link {
+  background: #e4e4e4;
+  color: #182325;
+}
+.share-opt__ico--wa {
+  background: #25d366;
+  color: #ffffff;
+}
+.share-opt__ico--fb {
+  background: #1877f2;
+  color: #ffffff;
+}
+.share-opt__ico--x {
+  background: #000000;
+  color: #ffffff;
+}
+.share-opt__label {
+  font-size: 12px;
+  line-height: 1.3;
+  color: #182325;
+}
+@media (max-width: 400px) {
+  .share-modal__grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+}
+:root[data-theme="dark"] .share-modal__title,
+:root[data-theme="dark"] .share-opt__label {
+  color: var(--dk-text) !important;
+}
+:root[data-theme="dark"] .share-modal__x {
+  color: var(--dk-muted) !important;
+}
+:root[data-theme="dark"] .share-opt:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+/* The three brand circles keep their own colours in dark mode; only the
+   neutral copy-link chip needs re-grounding. */
+:root[data-theme="dark"] .share-opt__ico--link {
+  background: var(--dk-raised);
+  color: var(--dk-text);
+}
+
+/* ---------------------------------------------------------------------
+   SPECIAL ORDERS hero (Figma 6517-55909). Full-bleed mint band, centred
+   text, then the three supplied shots in a row: the office scene taller
+   in the middle at a fixed 534x460, the other two sharing what is left at
+   350 tall.
+   --------------------------------------------------------------------- */
+.so-hero {
+  background: #e7fffc;
+  padding-bottom: 60px;
+}
+.so-hero__head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 44px 0 32px;
+  text-align: center;
+}
+.so-hero__pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 16px;
+  border-radius: 40px;
+  background: #f8dfe2;
+  font-family: "DM Sans", sans-serif;
+  font-size: clamp(14px, 1.4vw, 18px);
+  line-height: 1.4;
+  color: #db336c;
+}
+/* DM Sans Black on a hard -3px track — the same display setting the cafe
+   hero uses, so the two feature pages speak with one voice. */
+.so-hero__title {
+  max-width: 702px;
+  font-family: "DM Sans", sans-serif;
+  font-weight: 900;
+  font-size: clamp(34px, 4.9vw, 70px);
+  line-height: 1.2;
+  letter-spacing: -0.043em;
+  color: #182325;
+}
+.so-hero__lede {
+  max-width: 598px;
+  font-family: "DM Sans", sans-serif;
+  font-size: clamp(15px, 1.4vw, 18px);
+  line-height: 1.4;
+  color: #787878;
+}
+.so-hero__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 8px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: #b0ded9;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.3;
+  color: #182325;
+  transition: background-color 0.2s ease;
+}
+.so-hero__cta:hover {
+  background: #9dd3cd;
+}
+.so-hero__row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+.so-hero__shot {
+  overflow: hidden;
+  border-radius: 20px;
+  background: #d7efec;
+}
+/* Figma's proportions exactly: the two outer frames share the leftover
+   width, the middle one is fixed and taller. */
+.so-hero__shot--side {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 350px;
+}
+.so-hero__shot--lead {
+  flex: 0 0 534px;
+  height: 460px;
+}
+.so-hero__shot img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* Below the design width the fixed middle frame would crowd the other two
+   out, so the row becomes a stack: the office scene full width, the other
+   two sharing the row beneath it. */
+@media (max-width: 1100px) {
+  .so-hero__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .so-hero__shot--lead {
+    grid-column: 1 / -1;
+    order: -1;
+    height: auto;
+    aspect-ratio: 801 / 500;
+  }
+  .so-hero__shot--side {
+    height: auto;
+    aspect-ratio: 620 / 525;
+  }
+}
+:root[data-theme="dark"] .so-hero {
+  background: var(--dk-raised);
+}
+:root[data-theme="dark"] .so-hero__title {
+  color: var(--dk-text) !important;
+}
+:root[data-theme="dark"] .so-hero__lede {
+  color: var(--dk-muted) !important;
+}
+:root[data-theme="dark"] .so-hero__shot {
+  background: var(--dk-surface);
+}
+
+/* ---------------------------------------------------------------------
+   HOW IT WORKS (special-orders.html). A stepper rather than three cards:
+   a marker per step with a dashed run to the next one, so the sequence is
+   carried by the connector instead of by numbering.
+
+   Each step owns the line to its right, and that line overhangs the grid
+   gap by exactly the gap width so it meets the following dot — cheaper and
+   more robust than a single absolutely-positioned rail behind the row,
+   which would have to be re-measured every time a column resizes.
+   --------------------------------------------------------------------- */
+.so-steps {
+  display: grid;
+  gap: 32px;
+  grid-template-columns: 1fr;
+}
+.so-step__rail {
+  display: flex;
+  align-items: center;
+  height: 16px;
+  margin-bottom: 18px;
+}
+.so-step__dot {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #8cbab5;
+  /* Halo instead of a border, so the ring sits outside the 14px and the
+     dot's own size stays the thing that lines up with the dashes. */
+  box-shadow: 0 0 0 4px #e7fffc;
+}
+.so-step__line {
+  flex: 1 1 auto;
+  margin-inline-start: 12px;
+  border-top: 2px dashed #b0ded9;
+}
+.so-step__title {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #182325;
+}
+.so-step__body {
+  margin-top: 8px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #6f7276;
+}
+@media (min-width: 1024px) {
+  .so-steps {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  /* Reach across the 32px gutter to the next dot. */
+  .so-step__line {
+    margin-inline-end: -32px;
+  }
+  /* Nothing to the right of the last step, so it gets no run. */
+  .so-step--last .so-step__line {
+    display: none;
+  }
+  /* The copy runs to two lines in one step and three in the others;
+     reserving three keeps the three columns level. */
+  .so-step__body {
+    min-height: calc(1.6em * 3);
+  }
+}
+/* Stacked, the horizontal run would point at nothing, so the dots stand
+   alone rather than trailing a line off the side of the screen. */
+@media (max-width: 1023px) {
+  .so-step__line {
+    display: none;
+  }
+}
+:root[data-theme="dark"] .so-step__title {
+  color: var(--dk-text) !important;
+}
+:root[data-theme="dark"] .so-step__body {
+  color: var(--dk-muted) !important;
+}
+:root[data-theme="dark"] .so-step__dot {
+  box-shadow: 0 0 0 4px var(--dk-raised);
+}
+
+/* ---------------------------------------------------------------------
+   SHARE YOUR CAKE (make-your-cake.html). A square secondary control beside
+   Add to Cart, and the popup it opens.
+
+   The popup shows the card it will actually download, drawn on a canvas —
+   the live cake is a CSS-3D construct with no bitmap behind it, so there is
+   nothing to capture. Better a clean drawing of the same choices than a
+   half-rendered screenshot.
+   --------------------------------------------------------------------- */
+.myc-share-btn {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border: 1px solid #dee2e6;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #6f7276;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  transition:
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.myc-share-btn:hover {
+  color: #182325;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+.myc-share-btn[hidden] {
+  display: none;
+}
+
+/* The canvas is authored at 1000x1250 for a crisp download; here it is just
+   a preview, so it scales to the popup and its own mint ground shows through. */
+.cakeshare__preview {
+  overflow: hidden;
+  margin-bottom: 20px;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  background: #e7fffc;
+}
+.cakeshare__preview canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+/* Same popup as the product page, narrower: this one is portrait because of
+   the card above the options. */
+.share-modal--cake {
+  max-width: 380px;
+  max-height: 88vh;
+  overflow-y: auto;
+}
+/* One action, centred — not a lone circle stranded in a four-column grid. */
+.share-modal--cake .share-modal__grid {
+  display: flex;
+  justify-content: center;
+}
+.share-modal--cake .share-opt {
+  flex: 0 1 140px;
+}
+.share-opt__ico--save {
+  background: #182325;
+  color: #ffffff;
+}
+
+:root[data-theme="dark"] .myc-share-btn {
+  background: var(--dk-surface) !important;
+  border-color: var(--dk-border) !important;
+  color: var(--dk-muted) !important;
+}
+:root[data-theme="dark"] .cakeshare__preview {
+  border-color: var(--dk-border);
+}
+
+/* ---------------------------------------------------------------------
+   MAKE YOUR CAKE stage backdrop. A studio sweep rather than flat white:
+   white light pooled behind the cake, deepening to mint at the edges, so
+   a white-frosted cake (the default) reads as an object with a rim
+   instead of dissolving into the card. A soft radial, not a wall/floor
+   horizon — the cake's vertical position shifts with size and auto-fit,
+   and a hard horizon line would cut through the body at some sizes.
+   --------------------------------------------------------------------- */
+.myc-stage {
+  background:
+    radial-gradient(120% 95% at 50% 32%, #ffffff 0%, #f1faf8 42%, #ddf1ec 78%, #cfe9e3 100%);
+}
+:root[data-theme="dark"] .myc-stage {
+  background:
+    radial-gradient(120% 95% at 50% 32%, #24343a 0%, var(--dk-surface) 55%, var(--dk-bg) 100%) !important;
+}
+:root[data-theme="dark"] .myc-opt__ico {
+  background: var(--dk-raised) !important;
+}
+
+/* =====================================================================
+   BRANCHES — a wide landscape map with the branch panel floating over it
+   (branches.html). The panel carries the headline, the two filters and the
+   list, so the page needs no hero and no separate filter bar.
+
+   Desktop: panel absolutely placed inside the map stage. Phone: it can't
+   float over a map that small, so the stage becomes a stack — map on top
+   at a fixed height, panel beneath as an ordinary card.
+   ===================================================================== */
+.branches-stage {
+  position: relative;
+  border-radius: 24px;
+}
+.branches-map {
+  height: 420px;
+  border-radius: 24px;
+  border: 1px solid #dee2e6;
+  background: #eef2f2;
+  overflow: hidden;
+  z-index: 0; /* keep tiles under the site header and overlays */
+}
+/* No image filter here any more. The basemap is vector, so the Snazzy
+   "Interface map" palette is applied to the individual layers (water,
+   landscape, road fill, road stroke, labels) in branches.html — which is
+   what that style actually describes, and what a raster filter could only
+   ever approximate. */
+.branches-map canvas {
+  border-radius: 24px;
+}
+.branches-map__fallback {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  border-radius: 24px;
+  background: #eef2f2;
+  font-size: 14px;
+  line-height: 1.5;
+  text-align: center;
+  color: #6f7276;
+}
+.branches-map__fallback[hidden] {
+  display: none;
+}
+
+.branches-panel {
+  display: flex;
+  flex-direction: column;
+  margin-top: 16px;
+  padding: 20px;
+  border: 1px solid #dee2e6;
+  border-radius: 20px;
+  background: #ffffff;
+}
+.branches-panel__title {
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: #182325;
+}
+.branches-panel__count {
+  margin-top: 6px;
+  font-size: 13px;
+  color: #6f7276;
+}
+.branches-panel__filters {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 1fr 1fr;
+  margin: 16px 0;
+}
+.branches-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.branches-field__label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #6f7276;
+}
+.branches-field select {
+  width: 100%;
+  height: 44px;
+  padding: 0 12px;
+  border: 1px solid #dee2e6;
+  border-radius: 10px;
+  background: #ffffff;
+  font-size: 14px;
+  color: #182325;
+  outline: none;
+}
+.branches-field select:focus {
+  border-color: #8cbab5;
+}
+.branches-list {
+  overflow-y: auto;
+  /* Room for roughly three cards before it scrolls, so the panel never
+     grows taller than the map it floats on. */
+  max-height: 420px;
+  padding-inline-end: 4px;
+}
+@media (min-width: 1024px) {
+  .branches-map {
+    height: 660px;
+  }
+  .branches-panel {
+    position: absolute;
+    top: 20px;
+    inset-inline-start: 20px;
+    bottom: 20px;
+    z-index: 500; /* above Leaflet panes (400), below its controls */
+    width: 366px;
+    margin-top: 0;
+    border-radius: 18px;
+    box-shadow: 0 12px 34px rgba(24, 35, 37, 0.18);
+  }
+  .branches-list {
+    flex: 1 1 auto;
+    max-height: none;
+  }
+}
+
+.branch-card[hidden] {
+  display: none;
+}
+/* Selected from the map or the list — both routes light the same card. */
+.branch-card.is-active {
+  border-color: #8cbab5;
+  box-shadow: 0 0 0 2px rgba(140, 186, 181, 0.35);
+}
+/* Street line + number. Compact on purpose: this sits in a 366px panel and
+   again inside a map popup, so it has to stay two tight rows. */
+.branch-card__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 10px;
+}
+.branch-card__meta .branch-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0;
+}
+.branch-card__meta .branch-row__ico {
+  flex: none;
+  width: 15px;
+  height: 15px;
+  margin-top: 2px;
+  color: #8cbab5;
+}
+.branch-card__meta .branch-row__ico svg {
+  width: 100%;
+  height: 100%;
+}
+.branch-row__txt {
+  font-size: 13px;
+  line-height: 1.45;
+  color: #6f7276;
+}
+
+/* ---- Map pin. A brand dot with a soft halo, so 28 of them read as a
+   cluster of places rather than a swarm of teardrops. ---- */
+.branch-pin__dot {
+  display: block;
+  width: 14px;
+  height: 14px;
+  margin: 6px;
+  border-radius: 50%;
+  background: #db336c;
+  border: 2.5px solid #ffffff;
+  box-shadow: 0 1px 4px rgba(24, 35, 37, 0.35);
+  transition:
+    transform 0.18s ease,
+    background-color 0.18s ease;
+}
+.branch-pin:hover .branch-pin__dot {
+  transform: scale(1.25);
+}
+.branch-pin.is-active .branch-pin__dot {
+  background: #182325;
+  transform: scale(1.35);
+  box-shadow: 0 0 0 6px rgba(219, 51, 108, 0.22);
+}
+
+/* ---- Popup: strip Leaflet's own chrome so the branch card IS the popup,
+   rather than a card sitting inside a second white box. ---- */
+/* Strip the popup's own chrome so the branch card IS the popup, rather than
+   a card sitting inside a second white box. */
+.branch-popup .maplibregl-popup-content {
+  padding: 0;
+  border-radius: 16px;
+  background: transparent;
+  box-shadow: 0 10px 30px rgba(24, 35, 37, 0.22);
+}
+.branch-popup .maplibregl-popup-tip {
+  border-top-color: #ffffff;
+  border-bottom-color: #ffffff;
+}
+.branch-popup .maplibregl-popup-close-button {
+  z-index: 2;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border-radius: 50%;
+  background: transparent;
+  font-size: 18px;
+  line-height: 1;
+  color: #6f7276;
+}
+.branch-popup .maplibregl-popup-close-button:hover {
+  background: rgba(24, 35, 37, 0.06);
+}
+/* The buttons draw their icons with currentColor, and the popup lives
+   outside the panel's cascade, so state the colours explicitly. */
+.branch-popup .btn--primary {
+  color: #182325;
+}
+.branch-popup .btn--black {
+  color: #ffffff;
+}
+.branch-popup .btn:hover {
+  text-decoration: none;
+}
+/* Wider than the panel card, so the two buttons sit side by side without
+   wrapping their labels. */
+.branch-popup .branch-card {
+  width: 300px;
+  padding: 16px;
+}
+
+:root[data-theme="dark"] .branches-map,
+:root[data-theme="dark"] .branches-map__fallback,
+:root[data-theme="dark"] .branches-panel {
+  background: var(--dk-raised) !important;
+  border-color: var(--dk-border) !important;
+}
+:root[data-theme="dark"] .branches-panel__title {
+  color: var(--dk-text) !important;
+}
+:root[data-theme="dark"] .branches-field select {
+  background: var(--dk-surface) !important;
+  border-color: var(--dk-border) !important;
+  color: var(--dk-text) !important;
+}
+/* The basemap is a light style; a gentle knock-down of the whole canvas
+   keeps it from glaring out of a dark page without making streets
+   illegible. Applied to the canvas rather than to the palette, so the style
+   stays exactly the one that was asked for in light mode. */
+:root[data-theme="dark"] .branches-map canvas {
+  filter: brightness(0.8) contrast(1.04);
+}
+:root[data-theme="dark"] .branch-popup .maplibregl-popup-tip {
+  border-top-color: var(--dk-surface);
+  border-bottom-color: var(--dk-surface);
+}
+
+/* =====================================================================
+   OUT OF STOCK → SCHEDULE
+
+   An out-of-stock product is not gone, it is baked to order. The card says
+   so with a badge and swaps its quick-add "+" for a Schedule control;
+   checkout then closes off express delivery and explains why.
+   ===================================================================== */
+.oos-badge {
+  position: absolute;
+  top: 10px;
+  inset-inline-end: 10px;
+  z-index: 10;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 9px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(4px);
+  box-shadow: 0 1px 4px rgba(24, 35, 37, 0.16);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.3;
+  white-space: nowrap;
+  color: #e21316;
+  pointer-events: none;
+}
+.oos-badge__dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #e21316;
+}
+/* A light knock-back on the photo, not a grey-out: the product is still
+   for sale, just not today. */
+.is-oos > .rounded-\[12px\] img,
+.is-oos > div > img {
+  opacity: 0.78;
+}
+
+/* The Schedule control takes the quick-add's place, so it keeps the same
+   corner, height and shadow — the same slot, offering a different verb. It
+   expands into the quick-add's own counter, so a scheduled item can be
+   ordered two or three deep like anything else. */
+.sched-slot {
+  inset-inline-end: 0.75rem;
+}
+.sched-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 42px;
+  padding: 0 14px;
+  border-radius: 8px;
+  background: #b0ded9;
+  box-shadow: 0 1px 4px rgba(24, 35, 37, 0.14);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  color: #182325;
+  transition:
+    background-color 0.2s ease,
+    transform 0.15s ease;
+}
+.sched-btn.hidden {
+  display: none;
+}
+.sched-btn:hover {
+  background: #9dd3cd;
+}
+.sched-btn:active {
+  transform: scale(0.96);
+}
+.sched-btn__ico {
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+}
+.sched-btn__ico svg {
+  width: 100%;
+  height: 100%;
+}
+/* Says what the counter means, at the opposite bottom corner so it never
+   crowds it. Only present once something is actually scheduled. */
+.sched-note {
+  position: absolute;
+  bottom: 10px;
+  inset-inline-start: 10px;
+  z-index: 10;
+  display: none;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(4px);
+  box-shadow: 0 1px 4px rgba(24, 35, 37, 0.14);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  color: #4a5658;
+  pointer-events: none;
+}
+.is-scheduled .sched-note {
+  display: inline-flex;
+}
+/* Small cards drop the word and keep the icon, so the control never
+   outgrows its card. */
+@media (max-width: 420px) {
+  .sched-btn span:last-child {
+    display: none;
+  }
+  .sched-btn {
+    padding: 0 12px;
+  }
+  .sched-note {
+    font-size: 10px;
+  }
+}
+
+/* ---- checkout ---- */
+/* The row wraps so a note can take a line of its own beneath the icon,
+   title and time — which stay on one centred line together. Applied to
+   every .optrow, not just disabled ones: the rush-hour note appears on the
+   express row while it is perfectly selectable. */
+.optrow {
+  flex-wrap: wrap;
+}
+.optrow.is-disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+/* Faded per element, never on the row: the row carries the note, and
+   dimming the whole thing would dim the explanation with it. Held at 0.62
+   rather than a deep grey-out — the option is unavailable right now, not
+   gone, and its time still has to be readable. */
+.optrow.is-disabled .optrow__icon,
+.optrow.is-disabled .optrow__title,
+.optrow.is-disabled .optrow__meta {
+  opacity: 0.62;
+}
+/* A note, not an error: warm paper yellow rather than the site's mint
+   (which means "chosen") or a red (which would read as a failure). Full
+   width of the row, so it lines up with the icon on the left and the time
+   on the right, and at full strength — it is the one thing here that has
+   to be read. */
+.ship-note {
+  flex: 0 0 100%;
+  display: block;
+  padding: 9px 11px;
+  border: 1px solid #ecd79c;
+  border-radius: 8px;
+  background: #fff6dd;
+  font-size: 12.5px;
+  font-weight: 500;
+  line-height: 1.45;
+  white-space: normal;
+  color: #6b5417;
+  opacity: 1;
+}
+.ship-note[hidden] {
+  display: none;
+}
+
+:root[data-theme="dark"] .oos-badge {
+  background: rgba(23, 34, 37, 0.94);
+}
+:root[data-theme="dark"] .sched-note {
+  background: rgba(23, 34, 37, 0.94) !important;
+  color: var(--dk-muted) !important;
+}
+/* Keeps its paper-yellow identity in dark mode, just deeper — a note that
+   turned grey would read as more disabled text. */
+:root[data-theme="dark"] .ship-note {
+  background: #3a3117 !important;
+  border-color: #574922 !important;
+  color: #f0dfae !important;
+}
+
+/* ---------------------------------------------------------------------
+   ORDER NOTE PRESETS. The three requests couriers hear most, as chips
+   under the field. A chip writes its line into the note and highlights;
+   tapping it again takes the line back out — the field stays free text
+   throughout, so a preset is a starting point, not a choice.
+   --------------------------------------------------------------------- */
+.ordernote__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+.ordernote__chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 12px;
+  border: 1px solid #dee2e6;
+  border-radius: 100px;
+  background: #ffffff;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.3;
+  white-space: nowrap;
+  color: #4a5658;
+  transition:
+    border-color 0.18s ease,
+    background-color 0.18s ease,
+    color 0.18s ease;
+}
+.ordernote__chip:hover {
+  border-color: #8cbab5;
+  color: #182325;
+}
+/* Chosen: mint fill and a turquoise edge — tapping it again takes the line
+   back out of the note. */
+.ordernote__chip.is-on {
+  border-color: #8cbab5;
+  background: #e7fffc;
+  color: #182325;
+}
+:root[data-theme="dark"] .ordernote__chip {
+  background: var(--dk-surface) !important;
+  border-color: var(--dk-border) !important;
+  color: var(--dk-muted) !important;
+}
+:root[data-theme="dark"] .ordernote__chip.is-on {
+  background: var(--dk-raised) !important;
+  border-color: #8cbab5 !important;
+  color: var(--dk-text) !important;
+}
+
+/* ---------------------------------------------------------------------
+   DELIVERY NOTE (checkout). Fine print, not an alert: it sets an
+   expectation that may never come true, so it stays grey and quiet and
+   leaves the coloured treatments for things that definitely apply.
+   --------------------------------------------------------------------- */
+.deliverynote {
+  flex: 0 0 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  white-space: normal;
+  text-align: start;
+  color: #6f7276;
+}
+.deliverynote[hidden] {
+  display: none;
+}
+.deliverynote strong {
+  font-weight: 600;
+  color: #4a5658;
+}
+.deliverynote__ico {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 15px;
+  height: 15px;
+  margin-top: 2px;
+  color: #8cbab5;
+}
+.deliverynote__ico svg {
+  width: 100%;
+  height: 100%;
+}
+:root[data-theme="dark"] .deliverynote {
+  color: var(--dk-muted) !important;
+}
+:root[data-theme="dark"] .deliverynote strong {
+  color: var(--dk-text) !important;
+}
+
+/* ---------------------------------------------------------------------
+   BRAND MARKS in a payment row. The illustration icons beside the other
+   options are drawn oversized and cropped by .optrow__icon; a logo must
+   not be cropped, so this variant contains it whole and gives it a white
+   tile to sit on — ValU and Premium Card both carry their own background
+   colour and would otherwise float on the row.
+   --------------------------------------------------------------------- */
+.optrow__icon--brand {
+  overflow: visible;
+  padding: 4px;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: inset 0 0 0 1px #e9ecef;
+}
+.optrow__icon--brand img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  /* .optrow__icon img scales its art up by --icon-crop so the illustrations
+     fill the tile. A logo must not be blown past its box, so that is undone
+     here — without this the marks rendered 28% oversized and spilled out. */
+  transform: none;
+}
+:root[data-theme="dark"] .optrow__icon--brand {
+  background: #ffffff !important;
+  box-shadow: inset 0 0 0 1px var(--dk-border);
+}
+
+/* ============================================================
+   FILE FIELD — a styled wrapper around a native <input type="file">
+   The input itself is .sr-only inside this <label>, so the label IS
+   the control: clicking or focusing it opens the picker with no JS,
+   and the script only writes the chosen filename into .filefield__name.
+   Built for the careers CV upload; reusable anywhere a file is asked for.
+   ============================================================ */
+.filefield {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 6px 10px 6px 6px;
+  border: 1px dashed #adb5bd;
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+.filefield:hover {
+  border-color: var(--primary, #b0ded9);
+  background: #fbfefe;
+}
+/* The native input is visually hidden, so its focus ring has nothing to
+   draw around — the wrapper wears it instead via :focus-within. */
+.filefield:focus-within {
+  border-color: var(--primary, #b0ded9);
+  box-shadow: 0 0 0 3px rgba(176, 222, 217, 0.45);
+}
+.filefield__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 6px;
+  background: #182325;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.filefield__name {
+  font-size: 13px;
+  color: #adb5bd;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.filefield__name.is-set {
+  color: #182325;
+  font-weight: 500;
+}
+.filefield__name.is-error {
+  color: #dc2626;
+  white-space: normal;
+}
+:root[data-theme="dark"] .filefield {
+  background: var(--dk-raised);
+  border-color: var(--dk-border);
+}
+:root[data-theme="dark"] .filefield:hover {
+  background: var(--dk-surface);
+}
+:root[data-theme="dark"] .filefield__btn {
+  background: var(--primary, #b0ded9);
+  color: #182325;
+}
+:root[data-theme="dark"] .filefield__name {
+  color: var(--dk-muted);
+}
+:root[data-theme="dark"] .filefield__name.is-set {
+  color: var(--dk-text);
+}
+
+/* Confirmation line printed by [data-demo-form] on submit. The prototype has
+   no backend, so this is the only feedback a visitor gets that the form went
+   anywhere — it must not be subtle. */
+.form-sent {
+  margin-top: 4px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: #e7fffc;
+  border: 1px solid #b0ded9;
+  color: #182325;
+  font-size: 14px;
+  line-height: 1.45;
+  text-align: center;
+}
+:root[data-theme="dark"] .form-sent {
+  background: var(--dk-raised);
+  border-color: var(--dk-border);
+  color: var(--dk-text);
+}
+
+/* ============================================================
+   HOME PROMO BANNERS (.hbanner) — Figma 6520:56024
+   A solid colour card, one oversized circle bleeding out of it, and a
+   cut-out photo on top. Geometry is taken from a 660x355 Figma card:
+   horizontal offsets are expressed as percentages so the card can breathe
+   with the grid, while vertical offsets stay in px because the height is
+   fixed. Both photos already match their slots exactly
+   (605x428 -> 403x285, 545x533 -> 363x355), so object-contain never crops.
+   ============================================================ */
+.hbanner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 355px;
+  overflow: hidden;
+  border-radius: 20px;
+  isolation: isolate;
+}
+.hbanner__blob {
+  position: absolute;
+  z-index: 0;
+  width: 745px;
+  height: 745px;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.hbanner__art {
+  position: absolute;
+  z-index: 1;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+}
+.hbanner__body {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  /* Holds the text clear of the photo. The Figma copy blocks are 279px and
+     297px wide inside a 660px card — 52% here leaves the same ~42% of the
+     card for the text once the 32px side padding is taken off. */
+  max-width: 52%;
+  padding: 0 32px;
+}
+.hbanner__title {
+  font-size: 40px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.hbanner__text {
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.4;
+}
+.hbanner__cta {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.3;
+  white-space: nowrap;
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+.hbanner__cta:hover {
+  transform: translateY(-1px);
+  filter: brightness(0.95);
+}
+.hbanner__cta svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+/* --- Special Orders: pink card, turquoise arc rising from the bottom --- */
+.hbanner--orders {
+  background: #db336c;
+}
+.hbanner--orders .hbanner__blob {
+  background: #b0ded9;
+  top: 121px;
+  left: 38.6%;
+}
+.hbanner--orders .hbanner__art {
+  right: 0;
+  bottom: 26px;
+  width: 403px;
+  height: 285px;
+}
+.hbanner--orders .hbanner__title,
+.hbanner--orders .hbanner__text {
+  color: #ffffff;
+}
+.hbanner--orders .hbanner__cta {
+  background: #b0ded9;
+  color: #182325;
+}
+
+/* --- Exception Cafe: turquoise card, pink arc sweeping in from the right --- */
+.hbanner--cafe {
+  background: #b0ded9;
+}
+.hbanner--cafe .hbanner__blob {
+  background: #db336c;
+  top: -196px;
+  left: 53%;
+}
+.hbanner--cafe .hbanner__art {
+  right: -28px;
+  top: 0;
+  width: 363px;
+  height: 355px;
+}
+.hbanner--cafe .hbanner__title {
+  color: #182325;
+}
+.hbanner--cafe .hbanner__text {
+  color: #6f7276;
+}
+.hbanner--cafe .hbanner__cta {
+  background: #182325;
+  color: #ffffff;
+}
+
+/* Arabic mirrors the whole card: art and arc move to the other side and the
+   CTA arrow turns around with the reading direction. */
+[dir="rtl"] .hbanner--orders .hbanner__blob {
+  left: auto;
+  right: 38.6%;
+}
+[dir="rtl"] .hbanner--cafe .hbanner__blob {
+  left: auto;
+  right: 53%;
+}
+[dir="rtl"] .hbanner--orders .hbanner__art {
+  right: auto;
+  left: 0;
+  transform: scaleX(-1);
+}
+[dir="rtl"] .hbanner--cafe .hbanner__art {
+  right: auto;
+  left: -28px;
+  transform: scaleX(-1);
+}
+[dir="rtl"] .hbanner__cta svg {
+  transform: scaleX(-1);
+}
+
+/* One card per row from here down, so each gets the full grid width back and
+   the art can stay large. */
+@media (max-width: 1023px) {
+  .hbanner {
+    height: 320px;
+  }
+  .hbanner__body {
+    max-width: 55%;
+    gap: 24px;
+  }
+  .hbanner__title {
+    font-size: 32px;
+  }
+}
+
+@media (max-width: 639px) {
+  .hbanner {
+    height: 280px;
+  }
+  .hbanner__blob {
+    width: 560px;
+    height: 560px;
+  }
+  .hbanner__body {
+    max-width: 60%;
+    gap: 18px;
+    padding: 0 20px;
+  }
+  .hbanner__title {
+    font-size: 24px;
+  }
+  .hbanner__text {
+    font-size: 14px;
+  }
+  .hbanner__cta {
+    padding: 10px 14px;
+    font-size: 14px;
+  }
+  .hbanner--orders .hbanner__blob {
+    top: 130px;
+    left: 34%;
+  }
+  .hbanner--orders .hbanner__art {
+    width: 210px;
+    height: 149px;
+    bottom: 18px;
+    right: -14px;
+  }
+  .hbanner--cafe .hbanner__blob {
+    top: -150px;
+    left: 48%;
+  }
+  .hbanner--cafe .hbanner__art {
+    width: 190px;
+    height: 186px;
+    top: auto;
+    bottom: 0;
+    right: -18px;
+  }
+  [dir="rtl"] .hbanner--orders .hbanner__art {
+    left: -14px;
+  }
+  [dir="rtl"] .hbanner--cafe .hbanner__art {
+    left: -18px;
   }
 }

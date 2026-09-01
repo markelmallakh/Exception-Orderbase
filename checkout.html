@@ -15,6 +15,13 @@
   <!-- data-page="checkout" → scripts.js renders the minimal centered-logo header + minimal footer -->
   <body data-page="checkout" data-path="/checkout" class="antialiased bg-gray-100">
     <!-- Shared (minimal) header is injected here by scripts.js -->
+    <!-- Boot cover. The header is injected by scripts.js and Tailwind (Play
+         CDN) builds its CSS in JS, so an uncovered load paints three times:
+         bare page -> restyled page -> header appears. This holds that first
+         frame until the page is whole. Deliberately blank: a spinner never
+         had time to register and read as an error. A CSS safety fade clears
+         it even if scripts.js never runs. -->
+    <div id="boot" aria-hidden="true"></div>
     <div id="site-header"></div>
 
     <!-- overflow-x-clip (not -hidden): clips horizontal overflow WITHOUT creating a
@@ -104,6 +111,20 @@
                         <input type="tel" placeholder="100 123 4567" class="flex-1 h-full bg-transparent outline-none" />
                       </div>
                     </div>
+                    <!-- Secondary number, optional — the one the courier tries when
+                         the first doesn't answer at the door. Same PhoneInputField
+                         shell, no required mark, and "(Optional)" said outright
+                         rather than implied by a missing asterisk. -->
+                    <div class="flex flex-col gap-y-2">
+                      <label class="text-gray-700">Secondary phone number <span class="text-customGrayMedium">(Optional)</span></label>
+                      <div class="flex items-center h-11 px-2.5 border border-customGrayMedium focus-within:border-primary-400 rounded-[10px] text-textSecondary transition-colors text-sm font-medium">
+                        <div class="relative mr-3 flex h-[30px] items-center gap-2 border-r border-[#979BA0] pr-3.5">
+                          <span class="text-sm font-normal text-[#182325]">🇪🇬 +20</span>
+                          <svg viewBox="0 0 24 24" fill="none" class="h-[14px] w-[14px] text-gray-500"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
+                        <input type="tel" placeholder="100 123 4567" class="flex-1 h-full bg-transparent outline-none" />
+                      </div>
+                    </div>
                     <div class="flex flex-col gap-y-2">
                       <label class="text-gray-700 after:ps-1 after:content-['*']">Email address</label>
                       <input type="email" placeholder="mariam.hassan@example.com" class="h-11 px-2.5 py-4 border border-customGrayMedium focus:border-primary-400 rounded-[10px] text-textSecondary transition-colors text-sm font-medium outline-none" />
@@ -167,8 +188,10 @@
                     </div>
                   </div>
 
-                  <!-- ShippingAddressForm (guest) -->
-                  <div class="border-b border-border-light pb-5" data-checkout-step="1">
+                  <!-- ShippingAddressForm (guest). Hidden while "Pickup from
+                       store" is the shipping type — the store IS the address
+                       (initCheckoutOptions toggles [data-ship-address]). -->
+                  <div class="border-b border-border-light pb-5" data-checkout-step="1" data-ship-address>
                     <div class="mb-5 text-xl font-semibold text-primaryDark">Shipping address</div>
                     <div class="flex flex-col gap-y-5">
                       <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
@@ -250,6 +273,22 @@
                           <span class="optrow__title">Within 2 hours</span>
                         </span>
                         <span class="optrow__meta" data-opt-meta="asap">Today | 3:30 PM</span>
+                        <!-- Rush-hour warning, on its own line under this option.
+                             Shown only when the serving branch is flagged busy
+                             and this option is the one chosen — see
+                             syncDeliveryNote() in scripts.js. Named
+                             data-rush-note, NOT data-delivery-note — that
+                             attribute already belongs to the location/ETA
+                             callout component. Deliberately quiet
+                             grey fine print: it sets an expectation that may
+                             never come true, so it must not read like the
+                             out-of-stock note, which always applies. -->
+                        <span class="deliverynote" data-rush-note hidden>
+                          <span class="deliverynote__ico">
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><path d="M12 7v5l3 2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                          </span>
+                          <span><strong>Delivery note:</strong> your branch is busy right now — the order may be delayed during rush hours.</span>
+                        </span>
                       </button>
                       <button type="button" class="optrow" data-opt="later" data-opens="schedule">
                         <span class="optrow__icon"><img src="images/icons/Schedule.webp" alt="" /></span>
@@ -316,6 +355,28 @@
                           <span class="optrow__title">Cash on delivery</span>
                         </span>
                       </label>
+                      <!-- ValU and Premium Card: instalment plans, so each says
+                           what it actually offers rather than just naming the
+                           provider. Brand marks, not the site's illustration
+                           icons — .optrow__icon--brand keeps them at their own
+                           proportions instead of cropping them like the
+                           artwork. -->
+                      <label class="optrow">
+                        <input type="radio" name="payment" value="valu" class="sr-only" />
+                        <span class="optrow__icon optrow__icon--brand"><img src="dummy-images/Value.webp" alt="ValU" width="63" height="30" /></span>
+                        <span class="optrow__body">
+                          <span class="optrow__title">ValU</span>
+                          <span class="optrow__sub">Pay in instalments</span>
+                        </span>
+                      </label>
+                      <label class="optrow">
+                        <input type="radio" name="payment" value="premium" class="sr-only" />
+                        <span class="optrow__icon optrow__icon--brand"><img src="dummy-images/premium-card.webp" alt="Premium Card" width="59" height="36" /></span>
+                        <span class="optrow__body">
+                          <span class="optrow__title">Premium Card</span>
+                          <span class="optrow__sub">Pay in instalments</span>
+                        </span>
+                      </label>
                       <!-- Wallet -->
                       <label class="optrow">
                         <input type="radio" name="payment" value="wallet" class="sr-only" />
@@ -368,8 +429,9 @@
               <!-- Header -->
               <div class="flex items-center justify-between w-full">
                 <div class="flex items-center gap-2 pb-1">
-                  <!-- Branded cart-box illustration, matching cart.html + the header -->
-                  <img src="images/icons/cart-box.webp" alt="" class="size-9 shrink-0 object-contain" />
+                  <!-- Same basket mark as cart.html and the header chip, dark-stroke
+                       variant for this light surface (decorative). -->
+                  <img src="images/icons/shopping-basket-dark.svg" alt="" class="cart-mark size-9 shrink-0 object-contain" />
                   <span class="font-semibold text-primaryDark text-[24px] md:text-[21px]">My Cart</span>
                 </div>
                 <a href="cart.html" class="btn btn--secondary btn--sm hidden lg:flex w-fit">

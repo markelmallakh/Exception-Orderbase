@@ -17,6 +17,13 @@
   </head>
   <body data-page="export" data-path="/export" class="antialiased bg-white">
     <!-- Shared header is injected here by scripts.js -->
+    <!-- Boot cover. The header is injected by scripts.js and Tailwind (Play
+         CDN) builds its CSS in JS, so an uncovered load paints three times:
+         bare page -> restyled page -> header appears. This holds that first
+         frame until the page is whole. Deliberately blank: a spinner never
+         had time to register and read as an error. A CSS safety fade clears
+         it even if scripts.js never runs. -->
+    <div id="boot" aria-hidden="true"></div>
     <div id="site-header"></div>
 
     <main class="overflow-x-hidden">
@@ -412,22 +419,80 @@
         </div>
       </section>
 
-      <!-- ============================ PARTNERSHIP CTA ============================ -->
-      <section class="pb-14 lg:pb-20">
+      <!-- ============================ PARTNERSHIP FORM ============================
+           Replaces the old dark CTA band, which only bounced people to
+           contact-us.html. The enquiry is captured here instead, with a
+           Subject field so export and franchise leads arrive already sorted.
+           `.cta-illum` stays in styles.css — faqs.html and special-cakes.html
+           still use it. -->
+      <section id="partner" class="pb-14 lg:pb-20 scroll-mt-[120px]">
         <div class="container">
-          <div class="cta-illum overflow-hidden rounded-[32px] px-6 py-12 lg:px-[60px] lg:py-16" data-reveal="zoom">
-            <div class="relative z-10 flex flex-col items-center justify-between gap-8 text-center lg:flex-row lg:gap-12 lg:text-start">
-              <div class="flex flex-col items-center gap-4 lg:items-start">
-                <h2 class="text-[28px] lg:text-[40px] font-semibold text-white leading-[1.2]">Ready for a <span class="text-primary">Strategic Partnership?</span></h2>
-                <p class="max-w-[520px] text-base text-white/85 leading-[160%]">
-                  Partner with us today and bring authentic Middle Eastern delicacies to your market.
-                </p>
-              </div>
-              <div class="flex flex-wrap items-center justify-center gap-3 shrink-0">
-                <a href="contact-us.html" class="btn btn--primary btn--lg">Request Samples</a>
-                <a href="mailto:export@exception-group.com" class="btn btn--secondary btn--lg" dir="ltr">export@exception-group.com</a>
-              </div>
+          <div class="mx-auto max-w-[860px] rounded-[32px] border border-gray-200 bg-white p-6 lg:p-10 shadow-custom4">
+            <div class="flex flex-col gap-3 mb-8 text-center">
+              <h2 class="text-[28px] lg:text-[40px] font-semibold text-textSecondary leading-[1.2]">Ready for a Strategic Partnership?</h2>
+              <p class="text-base text-gray-700 leading-[150%]">
+                Tell us what you're looking for and our export team will come back to you.
+              </p>
             </div>
+
+            <form data-demo-form="Request sent — our export team will be in touch." class="flex w-full flex-col gap-[17px]">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-[17px]">
+                <div class="flex flex-col gap-2">
+                  <label for="ex-first" class="text-sm font-medium leading-[140%] text-gray-700">First Name<span class="text-red-500">*</span></label>
+                  <input id="ex-first" name="firstName" type="text" required placeholder="First Name" class="h-11 rounded-lg border border-customGrayMedium focus:border-primary px-[10px] text-sm font-normal leading-[140%] text-textSecondary transition-colors outline-none" />
+                </div>
+                <div class="flex flex-col gap-2">
+                  <label for="ex-last" class="text-sm font-medium leading-[140%] text-gray-700">Last Name<span class="text-red-500">*</span></label>
+                  <input id="ex-last" name="lastName" type="text" required placeholder="Last Name" class="h-11 rounded-lg border border-customGrayMedium focus:border-primary px-[10px] text-sm font-normal leading-[140%] text-textSecondary transition-colors outline-none" />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-[17px]">
+                <div class="flex flex-col gap-2">
+                  <label for="ex-email" class="text-sm font-medium leading-[140%] text-gray-700">Email<span class="text-red-500">*</span></label>
+                  <input id="ex-email" name="email" type="email" required placeholder="Email Address" class="h-11 rounded-lg border border-customGrayMedium focus:border-primary px-[10px] text-sm font-normal leading-[140%] text-textSecondary transition-colors outline-none" />
+                </div>
+                <div class="flex flex-col gap-2">
+                  <label for="ex-phone" class="text-sm font-medium leading-[140%] text-gray-700">Phone Number<span class="text-red-500">*</span></label>
+                  <input id="ex-phone" name="phone" type="tel" required placeholder="+20 100 1234 567" class="h-11 rounded-lg border border-customGrayMedium focus:border-primary px-[10px] text-sm font-normal leading-[140%] text-textSecondary transition-colors outline-none" />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-[17px]">
+                <div class="flex flex-col gap-2">
+                  <label for="ex-company" class="text-sm font-medium leading-[140%] text-gray-700">Company<span class="text-red-500">*</span></label>
+                  <input id="ex-company" name="company" type="text" required placeholder="Company Name" class="h-11 rounded-lg border border-customGrayMedium focus:border-primary px-[10px] text-sm font-normal leading-[140%] text-textSecondary transition-colors outline-none" />
+                </div>
+                <div class="flex flex-col gap-2">
+                  <label for="ex-country" class="text-sm font-medium leading-[140%] text-gray-700">Country<span class="text-red-500">*</span></label>
+                  <input id="ex-country" name="country" type="text" required placeholder="Country / Market" class="h-11 rounded-lg border border-customGrayMedium focus:border-primary px-[10px] text-sm font-normal leading-[140%] text-textSecondary transition-colors outline-none" />
+                </div>
+              </div>
+
+              <!-- The point of the whole change: two distinct enquiry types
+                   arriving through one form, tagged at the source. -->
+              <div class="flex flex-col gap-2">
+                <label for="ex-subject" class="text-sm font-medium leading-[140%] text-gray-700">Subject<span class="text-red-500">*</span></label>
+                <select id="ex-subject" name="subject" required class="h-11 w-full rounded-lg border border-customGrayMedium focus:border-primary px-[10px] text-sm text-textSecondary outline-none">
+                  <option value="">Select a subject</option>
+                  <option>Export Request</option>
+                  <option>Franchise Request</option>
+                  <option>Distribution &amp; Wholesale</option>
+                  <option>Other</option>
+                </select>
+              </div>
+
+              <div class="flex flex-col gap-2">
+                <label for="ex-note" class="text-sm font-medium leading-[140%] text-gray-700">Message<span class="text-red-500">*</span></label>
+                <textarea id="ex-note" name="note" rows="5" required placeholder="Tell us about your market, the volumes you have in mind and anything else we should know." class="min-h-[132px] w-full resize-none rounded-lg border border-customGrayMedium focus:border-primary px-[10px] py-3 text-sm font-normal leading-[140%] text-textSecondary transition-colors outline-none"></textarea>
+              </div>
+
+              <button type="submit" class="btn btn--primary btn--md w-full justify-center mt-2">Send Request</button>
+              <p class="text-sm text-gray-700 leading-[150%] text-center">
+                Prefer email? Reach us at
+                <a href="mailto:export@exception-group.com" class="font-medium text-cta underline underline-offset-2" dir="ltr">export@exception-group.com</a>
+              </p>
+            </form>
           </div>
         </div>
       </section>

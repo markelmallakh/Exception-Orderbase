@@ -20,12 +20,51 @@
   /* ---------------------------------------------------------------
      Placeholder content (formerly fetched from the CMS)
      --------------------------------------------------------------- */
+  /* Store listings for the footer banner and app.html. */
+  /* ---------------------------------------------------------------
+     Colour theme. Dark mode is a preview: rather than adding dark:
+     variants to 31 pages of markup, the theme sheet re-points the handful
+     of surface/text utilities the site actually uses (see DARK MODE in
+     styles.css). Read and applied before boot() so the theme is already
+     on <html> while the boot cover is still up — no flash of the wrong
+     theme on reload.
+     --------------------------------------------------------------- */
+  const THEME_KEY = "ex-theme";
+  function storedTheme() {
+    try {
+      return localStorage.getItem(THEME_KEY) === "dark" ? "dark" : "light";
+    } catch (e) {
+      return "light";
+    }
+  }
+  function applyTheme(theme) {
+    const t = theme === "dark" ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", t);
+    try {
+      localStorage.setItem(THEME_KEY, t);
+    } catch (e) {}
+    document.querySelectorAll("[data-theme-set]").forEach((b) => {
+      b.setAttribute("aria-pressed", String(b.getAttribute("data-theme-set") === t));
+    });
+  }
+  document.documentElement.setAttribute("data-theme", storedTheme());
+
+  const APP_LINKS = {
+    android: "https://play.google.com/store/apps/details?id=com.exception.exception&pcampaignid=web_share",
+    /* Egyptian storefront; Apple forwards visitors elsewhere to their own. */
+    ios: "https://apps.apple.com/eg/app/exception-patissier/id6741048876",
+  };
+
+  /* The utility bar / drawer secondary menu. Deliberately shorter than the
+     footer's Company column: FAQs and Careers live in the footer only, so
+     this row stays scannable. */
   const SUPPORT_MENU = [
-    { title: "About Us", url: "/about" },
-    { title: "Media Center", url: "/blogs" },
-    { title: "FAQs", url: "/faqs" },
+    { title: "About", url: "/about" },
     { title: "Branches", url: "/branches" },
-    { title: "Export", url: "/export" },
+    { title: "Exception Cafe", url: "/exception-cafe" },
+    { title: "Special Orders", url: "/special-orders" },
+    { title: "Export & Partnership", url: "/export" },
+    { title: "Media Center", url: "/blogs" },
     { title: "Contact Us", url: "/contact-us" },
   ];
 
@@ -119,11 +158,17 @@
     },
     {
       name: "Company",
+      /* Carries the whole secondary menu plus the two entries kept out of it.
+         "Blogs" and "Media Center" were two names for /blogs — unified here
+         as Media Center, which is what the top menu calls it. */
       links: [
         { title: "About Us", url: "/about" },
         { title: "Branches", url: "/branches" },
-        { title: "Export", url: "/export" },
-        { title: "Blogs", url: "/blogs" },
+        { title: "Exception Cafe", url: "/exception-cafe" },
+        { title: "Special Orders", url: "/special-orders" },
+        { title: "Export & Partnership", url: "/export" },
+        { title: "Media Center", url: "/blogs" },
+        { title: "Careers", url: "/careers" },
         { title: "Contact Us", url: "/contact-us" },
       ],
     },
@@ -159,6 +204,15 @@
       href: "#",
       svg: '<path d="M23 12s0-3.2-.4-4.73a2.5 2.5 0 0 0-1.76-1.77C19.31 5.1 12 5.1 12 5.1s-7.31 0-8.84.4A2.5 2.5 0 0 0 1.4 7.27C1 8.8 1 12 1 12s0 3.2.4 4.73a2.5 2.5 0 0 0 1.76 1.77c1.53.4 8.84.4 8.84.4s7.31 0 8.84-.4a2.5 2.5 0 0 0 1.76-1.77C23 15.2 23 12 23 12Zm-13 3.5v-7l6 3.5Z"/>',
     },
+    {
+      /* The one social we have a real destination for — same number as the
+         sticky button. `ext` opens it in a new tab; the others are still
+         placeholder hrefs. */
+      title: "WhatsApp",
+      href: "https://wa.me/201099335774",
+      ext: true,
+      svg: '<path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/>',
+    },
   ];
 
   /* ---------------------------------------------------------------
@@ -172,8 +226,11 @@
     const map = {
       "/": "index.html",
       "/about": "about.html",
+      "/exception-cafe": "exception-cafe.html",
       "/branches": "branches.html",
       "/export": "export.html",
+      "/special-orders": "special-orders.html",
+      "/careers": "careers.html",
       "/faqs": "faqs.html",
       "/contact-us": "contact-us.html",
       "/privacy-policy": "privacy-policy.html",
@@ -307,26 +364,34 @@
     /* --- desktop primary nav --- */
     const nav = MAIN_MENU.map(desktopNavItem).join("");
 
-    /* flag + language — opens the country/language modal (data-open="lang") */
-    const langSelector = `
-      <button type="button" data-open="lang" aria-label="Country and language" class="flex items-center gap-1.5 text-primaryDark shrink-0">
-        <span data-lang-flag class="text-sm leading-none">🇪🇬</span>
-        <span data-lang-label class="text-[13px] font-medium">EN | Egy</span>
-        <img src="images/icons/chevron-arrow-down.svg" alt="" width="14" height="14" class="shrink-0" />
-      </button>`;
+    /* Language switch — one tap, no modal and no country step (Egypt is the
+       only market). The label always names the language you would switch
+       TO, so it doubles as the action. updateLangLabel() fills it in. */
+    const langSelector = `<button type="button" data-lang-toggle class="lang-switch shrink-0"></button>`;
 
-    /* Pages dropdown (secondary pages) — Figma "Pages Menu" component */
-    const pagesLinks = SUPPORT_MENU.map(
-      (i) => `<li><a href="${pageHref(i.url)}" class="block whitespace-nowrap text-primaryDark text-base hover:text-cta transition-colors">${esc(i.title)}</a></li>`,
+    /* Support pages. These used to sit behind a hamburger in the header;
+       they now run along a slim utility bar above it, so they are visible
+       without a click. Mobile still reaches them through its drawer
+       (menuSecondaryLinks). */
+    const utilityLinks = SUPPORT_MENU.map(
+      (i) => `<a href="${pageHref(i.url)}" class="hdr-utility__link">${esc(i.title)}</a>`,
     ).join("");
-    const pagesMenu = `
-      <div class="relative shrink-0" data-pagesmenu>
-        <button type="button" data-pages-toggle aria-label="Menu" class="pages-toggle grid place-items-center rounded-[4px] size-[34px] text-primaryDark border border-primaryDark shadow-custom-5 transition-colors">
-          <span class="pages-ico-menu"><img src="images/icons/menu-icon.svg" alt="" width="18" height="18" /></span>
-          <span class="pages-ico-close hdr-ico">${ICON.close2}</span>
+    /* Theme switch — a preview of dark mode for the client. Segmented so the
+       current mode is readable at a glance rather than guessed from an icon. */
+    const themeToggle = `
+      <div class="theme-toggle" role="group" aria-label="Colour theme">
+        <button type="button" data-theme-set="light" class="theme-toggle__opt" aria-label="Light mode">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.7"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.2 5.2l1.4 1.4M17.4 17.4l1.4 1.4M18.8 5.2l-1.4 1.4M6.6 17.4l-1.4 1.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
         </button>
-        <div class="pages-panel absolute top-full start-0 mt-2 bg-white rounded-[8px] p-4 shadow-custom3 z-[60] min-w-[168px]">
-          <ul class="flex flex-col gap-3">${pagesLinks}</ul>
+        <button type="button" data-theme-set="dark" class="theme-toggle__opt" aria-label="Dark mode">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20.5 14.6A8.5 8.5 0 0 1 9.4 3.5a8.5 8.5 0 1 0 11.1 11.1Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+        </button>
+      </div>`;
+    const utilityBar = `
+      <div class="hdr-utility">
+        <div class="mx-auto flex max-w-[1512px] items-center justify-between gap-4 px-6 lg:px-[60px]">
+          ${themeToggle}
+          <nav aria-label="Support" class="flex items-center gap-6">${utilityLinks}<a href="tel:16689" class="hdr-utility__link hdr-utility__link--tel" dir="ltr"><img src="images/icons/phone-icon.svg" alt="" width="14" height="14" />16689</a></nav>
         </div>
       </div>`;
 
@@ -341,32 +406,33 @@
                  </div>
                </div>`
             : `<div class="relative z-40 bg-primary-200">
+                 ${utilityBar}
                  <div class="mx-auto flex items-center justify-between gap-4 max-w-[1512px] px-6 lg:px-[60px] py-[20px]">
-                   <!-- Left: pages menu + search + Go To location -->
+                   <!-- Left: search + Location picker -->
                    <div class="flex flex-1 items-center gap-2 min-w-0">
-                     ${pagesMenu}
                      <button type="button" data-open="search" aria-label="Search" class="grid place-items-center shrink-0 rounded-[4px] size-[34px] text-primaryDark border border-primaryDark shadow-custom-5 hover:bg-primaryDark/5 transition-colors"><img src="images/icons/search-icon.svg" alt="" width="18" height="18" /></button>
                      <div class="relative min-w-0" data-locmenu>
                        <button type="button" data-loc-toggle class="relative flex items-center gap-1.5 bg-[#E7FFFC]/80 rounded-[5px] px-2.5 h-[34px] text-primaryDark min-w-0">
-                         <span class="absolute -top-2 start-2 -rotate-[4deg] bg-cta text-white text-[11px] leading-none px-1.5 py-0.5 rounded-[4px]">Go To</span>
+                         <span class="absolute -top-2 start-2 -rotate-[4deg] bg-cta text-white text-[11px] leading-none px-1.5 py-0.5 rounded-[4px]">Location</span>
                          <span class="shrink-0"><img src="images/icons/delivery.webp" alt="" class="w-6 h-6 object-contain" /></span>
                          <span class="text-xs whitespace-nowrap truncate"><span class="font-normal">Street 9</span> <span class="font-semibold" data-loc-place>| Maadi, Cairo</span></span>
                        </button>
                        <div class="loc-panel absolute top-full start-0 mt-2 bg-white rounded-[12px] p-4 shadow-custom3 z-[60] w-[320px] text-start">
                          <p class="font-semibold text-primaryDark text-sm mb-3">Choose your delivery location</p>
                          <p class="loc-gate-only text-xs text-textSecondary leading-[150%] mb-3">Stock differs by branch — pick your area and we'll only show what we can actually deliver to you.</p>
+                         <p class="loc-hint" data-loc-hint hidden></p>
                          <form data-location-form class="flex flex-col gap-3">
                            <label class="flex items-center gap-3">
                              <span class="label w-16 shrink-0">City</span>
-                             <select class="placeholder-select flex-1 min-w-0 border border-gray-300 rounded-lg px-3 h-11 text-sm text-primaryDark"><option>Cairo</option><option>Giza</option><option>Alexandria</option></select>
+                             <select data-loc-city class="placeholder-select flex-1 min-w-0 border border-gray-300 rounded-lg px-3 h-11 text-sm text-primaryDark"></select>
                            </label>
                            <label class="flex items-center gap-3">
                              <span class="label w-16 shrink-0">Area</span>
-                             <select class="placeholder-select flex-1 min-w-0 border border-gray-300 rounded-lg px-3 h-11 text-sm text-primaryDark"><option>Maadi</option><option>New Cairo</option><option>Nasr City</option><option>Zamalek</option></select>
+                             <select data-loc-area class="placeholder-select flex-1 min-w-0 border border-gray-300 rounded-lg px-3 h-11 text-sm text-primaryDark"></select>
                            </label>
                            <label class="flex items-center gap-3">
                              <span class="label w-16 shrink-0">District</span>
-                             <select class="placeholder-select flex-1 min-w-0 border border-gray-300 rounded-lg px-3 h-11 text-sm text-primaryDark"><option>First District</option><option>Second District</option><option>Third District</option><option>Fourth District</option></select>
+                             <select data-loc-district class="placeholder-select flex-1 min-w-0 border border-gray-300 rounded-lg px-3 h-11 text-sm text-primaryDark"></select>
                            </label>
                            <button type="submit" class="btn btn--primary btn--md mt-1 w-full justify-center">Confirm Location</button>
                          </form>
@@ -375,16 +441,19 @@
                    </div>
                    <!-- Center: logo -->
                    <a href="index.html" aria-label="Exception home" class="shrink-0">${logoMark(true, 52)}</a>
-                   <!-- Right: language · account · phone + cart (search moved to the left group) -->
-                   <div class="flex flex-1 items-center justify-end gap-4 min-w-0 dir-ltr">
-                     <div class="flex items-center gap-3.5 px-1.5">
+                   <!-- Right: language · account + favourites/cart (search sits in the left group, the hotline on the utility bar) -->
+                   <div class="flex flex-1 items-center justify-end gap-6 min-w-0">
+                     <!-- Language · account · favourites: one row, even gaps,
+                          a hairline between each. The cart keeps its own gap
+                          because it is a filled chip, not a bare icon. -->
+                     <div class="hdr-actions">
                        ${langSelector}
-                       <span class="w-px h-[26px] bg-primaryDark/25"></span>
-                       <a href="login.html" aria-label="Account" class="grid place-items-center shrink-0 hover:opacity-70 transition-opacity"><img src="images/icons/user-icon.svg" alt="Account" width="18" height="18" /></a>
-                       <span class="w-px h-[26px] bg-primaryDark/25"></span>
-                       <a href="tel:16689" class="flex items-center gap-1 text-cta shrink-0"><img src="images/icons/phone-icon.svg" alt="" width="18" height="18" /><span class="text-sm font-bold">16689</span></a>
+                       <span class="hdr-actions__sep" aria-hidden="true"></span>
+                       <a href="login.html" aria-label="Account" class="hdr-actions__item"><img src="images/icons/user-icon.svg" alt="" width="20" height="20" /></a>
+                       <span class="hdr-actions__sep" aria-hidden="true"></span>
+                       <a href="my-account-favorites.html" aria-label="Favorites" class="hdr-actions__item relative"><img src="images/icons/favourite.svg" alt="" width="20" height="20" /><span class="absolute -top-[6px] -end-[7px] grid place-items-center bg-primaryDark border border-primary-200 text-white text-[10px] font-semibold leading-none rounded-full size-[16px]" data-fav-count>6</span></a>
                      </div>
-                     <button type="button" data-open="cart" aria-label="Cart" class="relative grid place-items-center shrink-0"><img src="images/icons/cart-box.webp" alt="" class="w-11 h-11 object-contain" /><span class="absolute -top-1 -end-1 grid place-items-center bg-primaryDark text-white text-[11px] font-semibold rounded-full size-[22px]" data-cart-count>4</span></button>
+                     <button type="button" data-open="cart" aria-label="Cart" class="relative grid place-items-center shrink-0 size-[34px] rounded-[10px] bg-primaryDark shadow-[0_1px_1px_rgba(0,0,0,0.05)]"><img src="images/icons/shopping-basket.svg" alt="" width="26" height="26" /><span class="absolute -top-[4px] -end-[8px] grid place-items-center bg-cta border border-primary-200 text-white text-[12px] font-semibold leading-none rounded-full size-[18px]" data-cart-count>4</span></button>
                    </div>
                  </div>
                </div>`
@@ -414,7 +483,7 @@
           ${
             checkout
               ? ""
-              : `<button type="button" data-open="cart" class="relative grid place-items-center size-[42px]" aria-label="Cart"><img src="images/icons/cart-box.webp" alt="" class="w-full h-full object-contain" /><span class="absolute -top-1 -end-1 grid place-items-center bg-primaryDark text-white text-[9px] font-bold rounded-full w-4 h-4" data-cart-count>4</span></button>`
+              : `<button type="button" data-open="cart" aria-label="Cart" class="relative grid place-items-center size-[34px] rounded-[10px] bg-primaryDark shadow-[0_1px_1px_rgba(0,0,0,0.05)]"><img src="images/icons/shopping-basket.svg" alt="" width="26" height="26" /><span class="absolute -top-[4px] -end-[8px] grid place-items-center bg-cta border border-primary-200 text-white text-[12px] font-semibold leading-none rounded-full size-[18px]" data-cart-count>4</span></button>`
           }
         </div>
       </div>
@@ -427,7 +496,7 @@
                    <span class="flex items-center gap-[5px]">
                      <span class="shrink-0"><img src="images/icons/delivery.webp" alt="" class="w-6 h-6 object-contain" /></span>
                      <span class="flex items-center gap-1">
-                       <span class="font-normal text-[10px] leading-[140%]">Go To</span>
+                       <span class="font-normal text-[10px] leading-[140%]">Location</span>
                        <span class="font-semibold text-[12px] leading-[140%]">Street 9 <span data-loc-place>| Maadi, Cairo</span></span>
                      </span>
                    </span>
@@ -444,10 +513,10 @@
     const catItems = CATEGORY_NAV.map((c) => {
       const isCurrent = !!c.url && c.url === currentPath;
       return `
-        <a href="${pageHref(c.url)}" class="catnav-item relative flex flex-col items-center justify-center gap-0.5 px-1.5 py-1 md:px-2.5 rounded-[10px] shrink-0 hover:bg-primary-50 transition-colors${isCurrent ? " is-current" : ""}"${isCurrent ? ' aria-current="page"' : ""}>
+        <a href="${pageHref(c.url)}" class="catnav-item relative flex flex-col md:flex-row items-center justify-center md:justify-start gap-1 md:gap-2 px-2 py-2 md:px-3 md:py-2 rounded-[12px] shrink-0 hover:bg-primary-50 transition-colors${isCurrent ? " is-current" : ""}"${isCurrent ? ' aria-current="page"' : ""}>
           ${c.badge ? `<span class="catnav-badge">${esc(c.badge)}</span>` : ""}
-          <img src="images/icons/${c.icon}" alt="" width="40" height="40" class="size-8 md:size-10 shrink-0" />
-          <span class="text-primaryDark whitespace-nowrap text-[9px] md:${c.big ? "text-xs" : "text-[11px]"} ${c.big ? "font-medium" : "font-semibold"}">${esc(c.label)}</span>
+          <img src="images/icons/${c.icon}" alt="" width="64" height="64" class="size-14 md:size-16 shrink-0" />
+          <span class="text-primaryDark whitespace-nowrap text-[10px] md:${c.big ? "text-[13px]" : "text-xs"} ${c.big ? "font-medium" : "font-semibold"}">${esc(c.label)}</span>
         </a>`;
     }).join("");
 
@@ -455,7 +524,7 @@
       ? ""
       : `<div data-navbar class="w-full bg-white shadow-[0px_4px_8px_rgba(0,0,0,0.08)] relative z-30">
            <div class="relative mx-auto max-w-[1512px]">
-             <div data-catnav-track class="flex items-center gap-1.5 px-3 py-1.5 md:gap-5 md:px-[60px] md:py-2 overflow-x-auto no-scrollbar scroll-smooth">
+             <div data-catnav-track class="flex items-center gap-1.5 px-3 py-1.5 md:gap-1 md:px-[60px] md:py-1.5 overflow-x-auto no-scrollbar scroll-smooth">
                ${catItems}
              </div>
              <div class="pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 hidden md:flex items-center justify-between px-6">
@@ -473,16 +542,55 @@
      --------------------------------------------------------------- */
   function footerHTML() {
     if (isCheckout()) {
+      /* Checkout keeps its stripped-down footer — no menus to distract from
+         paying — but the bottom line now matches the main one exactly:
+         copyright, payment marks, credit. Same three-part row, same
+         stack-on-mobile behaviour. */
       return `<footer class="bg-neutral-support-bg py-6">
-        <div class="mx-auto max-w-[1392px] px-4 text-center text-bordercolor text-[10px]">© Exception ${YEAR} — All copyrights reserved</div>
+        <div class="mx-auto flex max-w-[1392px] flex-col-reverse items-center gap-4 px-4 md:flex-row">
+          <span class="text-[10px] leading-[1.4] text-white dir-ltr md:flex-1 md:text-start">© Exception ${YEAR} - All Copyrights Reserved</span>
+          <img src="dummy-images/payment-method.png" alt="Accepted payment methods" width="374" height="24" class="shrink-0 object-contain" />
+          <span class="text-[10px] leading-[1.4] text-white md:flex-1 md:text-end"><a href="https://www.mitchdesigns.com" target="_blank" rel="noopener noreferrer" class="hover:underline">Designed &amp; Developed By Mitchdesigns</a></span>
+        </div>
       </footer>`;
     }
 
     // Plain white social marks (Figma shows bare icons, no circles).
     const socials = SOCIALS.map(
       (s) =>
-        `<li><a href="${s.href}" aria-label="Visit our ${s.title} page" class="text-white transition-opacity hover:opacity-70"><svg viewBox="0 0 24 24" fill="currentColor" class="h-6 w-6">${s.svg}</svg></a></li>`,
+        `<li><a href="${s.href}"${s.ext ? ' target="_blank" rel="noopener noreferrer"' : ""} aria-label="${s.ext ? "Chat with us on " + s.title : "Visit our " + s.title + " page"}" class="text-white transition-opacity hover:opacity-70"><svg viewBox="0 0 24 24" fill="currentColor" class="h-6 w-6">${s.svg}</svg></a></li>`,
     ).join("");
+
+    /* Store badges are markup rather than image files: they inherit the site
+       font, stay crisp at any size, and need no extra requests. */
+    const PLAY_MARK =
+      '<svg class="store-badge__mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.06 2.29a1.5 1.5 0 0 0-.31.94v17.54c0 .36.11.68.31.94l.06.06 9.83-9.83v-.23L3.12 2.23l-.06.06Z" fill="#00A0FF"/><path d="M16.2 15.24l-3.25-3.25v-.23l3.25-3.26.07.05 3.87 2.2c1.1.63 1.1 1.65 0 2.28l-3.87 2.2-.07.01Z" fill="#FFBC00"/><path d="M16.27 15.19 12.95 11.87 3.06 21.71c.36.39.96.44 1.63.05l11.58-6.57Z" fill="#FF3A44"/><path d="M16.27 8.55 4.69 1.98C4.02 1.6 3.42 1.65 3.06 2.04l9.89 9.83 3.32-3.32Z" fill="#00C853"/></svg>';
+    const APPLE_MARK =
+      '<svg class="store-badge__mark" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M17.05 12.04c-.03-2.75 2.25-4.07 2.35-4.13-1.28-1.87-3.27-2.13-3.98-2.16-1.69-.17-3.3 1-4.16 1-.86 0-2.18-.98-3.58-.95-1.84.03-3.54 1.07-4.49 2.72-1.91 3.32-.49 8.23 1.38 10.92.91 1.32 2 2.8 3.42 2.75 1.37-.06 1.89-.89 3.55-.89 1.65 0 2.12.89 3.57.86 1.47-.02 2.41-1.34 3.31-2.67 1.04-1.53 1.47-3.01 1.5-3.09-.03-.01-2.88-1.11-2.91-4.4Z"/><path d="M14.5 4.2c.75-.92 1.26-2.19 1.12-3.46-1.08.04-2.4.72-3.18 1.63-.7.81-1.31 2.11-1.15 3.35 1.21.09 2.45-.61 3.21-1.52Z"/></svg>';
+    const storeBadges = `
+      <a href="${APP_LINKS.android}" target="_blank" rel="noopener noreferrer" class="store-badge">${PLAY_MARK}<span class="store-badge__txt"><small>Download on the</small><strong>Google Play</strong></span></a>
+      <a href="${APP_LINKS.ios}" target="_blank" rel="noopener noreferrer" class="store-badge">${APPLE_MARK}<span class="store-badge__txt"><small>Download on the</small><strong>App Store</strong></span></a>`;
+
+    /* One QR for both platforms. A QR only carries a URL, so it points at
+       app.html, which reads the user agent and forwards to the right store.
+       It is a link too, so a desktop visitor can just click it. */
+    const appBanner = `
+      <div class="app-banner">
+        <div class="app-banner__copy">
+          <p class="app-banner__title">Download Now Exception App</p>
+          <div class="app-banner__badges">${storeBadges}</div>
+        </div>
+        <a href="app.html" class="app-banner__qr" aria-label="Get the Exception app">
+          <img src="images/icons/app-qr.svg" alt="QR code linking to the Exception app" width="81" height="81" />
+        </a>
+        <!-- Phones get a button instead: you cannot scan a code with the
+             device already in your hand. Same destination — app.html sends
+             each device to its own store. -->
+        <a href="app.html" class="app-banner__cta">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v12m0 0 4.5-4.5M12 15l-4.5-4.5M4.5 16.5v1.75A2.75 2.75 0 0 0 7.25 21h9.5a2.75 2.75 0 0 0 2.75-2.75V16.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Download App
+        </a>
+      </div>`;
 
     const panelLink = (title, url) =>
       `<li><a href="${pageHref(url)}" class="text-sm leading-[1.35] text-primaryDark transition-colors hover:text-primary-700 hover:underline">${esc(title)}</a></li>`;
@@ -503,7 +611,8 @@
 
         <!-- Panels: mint links panel + turquoise newsletter panel -->
         <div class="flex flex-col gap-2 lg:flex-row">
-          <div class="footer-anim flex min-w-0 flex-1 flex-col gap-10 rounded-[20px] bg-primary-light px-8 py-10 md:flex-row md:justify-between md:gap-6" style="--footer-delay: 0.1s">
+          <div class="footer-anim flex min-w-0 flex-1 flex-col gap-8 rounded-[20px] bg-primary-light px-8 py-10" style="--footer-delay: 0.1s">
+           <div class="flex flex-col gap-10 md:flex-row md:justify-between md:gap-6">
             <!-- Shop (2 columns) -->
             <div class="flex flex-col gap-4">
               <p class="text-[18px] font-semibold leading-[1.4] text-primaryDark">Shop</p>
@@ -533,11 +642,17 @@
                 ${panelLink("Terms & Conditions", "/terms-conditions")}
               </ul>
             </div>
+           </div>
+           ${appBanner}
           </div>
 
-          <!-- Newsletter panel -->
-          <div class="footer-anim flex w-full flex-col justify-center gap-10 rounded-[20px] bg-[#8CBAB5] px-8 py-10 lg:w-[406px] lg:shrink-0 lg:gap-[60px]" style="--footer-delay: 0.2s">
-            <div class="flex flex-col gap-2">
+          <!-- Newsletter panel. justify-between per Figma 6508:52157: the heading
+               and form sit at the top, the socials at the bottom, and the space
+               between them absorbs whatever height the column beside it ends up
+               being. gap-10 is only a floor, for when the panel is short (mobile)
+               and there is no spare height to distribute. -->
+          <div class="footer-anim flex w-full flex-col items-start justify-between gap-10 rounded-[20px] bg-[#8CBAB5] px-8 py-10 lg:w-[406px] lg:shrink-0" style="--footer-delay: 0.2s">
+            <div class="flex w-full flex-col gap-2">
               <div class="flex flex-col gap-[5px] text-white">
                 <p class="text-[24px] font-semibold leading-[1.2]">Join Our Newsletter</p>
                 <p class="text-base leading-[1.4]">Enjoy exclusive offers and updates</p>
@@ -547,15 +662,18 @@
                 <button type="submit" aria-label="Subscribe" class="grid shrink-0 place-items-center rounded-[8px] bg-primaryDark p-[10px] transition-colors hover:bg-black"><img src="images/icons/sent.svg" alt="" class="h-[26px] w-[26px]" /></button>
               </form>
             </div>
-            <ul class="flex items-center justify-end gap-4">${socials}</ul>
+            <ul class="flex w-full items-center justify-end gap-4">${socials}</ul>
           </div>
         </div>
 
         <!-- Bottom bar -->
-        <div class="footer-anim flex flex-col-reverse items-center gap-4 md:flex-row md:justify-between" style="--footer-delay: 0.3s">
-          <span class="text-[10px] leading-[1.4] text-white dir-ltr">© Exception ${YEAR} - All Copyrights Reserved</span>
-          <img src="images/payments.png" alt="payment methods" width="172" height="24" class="object-contain" />
-          <span class="text-[10px] leading-[1.4] text-white"><a href="https://www.mitchdesigns.com" target="_blank" rel="noopener noreferrer" class="hover:underline">Designed &amp; Developed By Mitchdesigns</a></span>
+        <!-- Equal-weight side columns rather than justify-between: the
+             copyright and the credit are different lengths, so space-between
+             pushed the payment marks off true centre. -->
+        <div class="footer-anim flex flex-col-reverse items-center gap-4 md:flex-row" style="--footer-delay: 0.3s">
+          <span class="text-[10px] leading-[1.4] text-white dir-ltr md:flex-1 md:text-start">© Exception ${YEAR} - All Copyrights Reserved</span>
+          <img src="dummy-images/payment-method.png" alt="Accepted payment methods" width="374" height="24" class="shrink-0 object-contain" />
+          <span class="text-[10px] leading-[1.4] text-white md:flex-1 md:text-end"><a href="https://www.mitchdesigns.com" target="_blank" rel="noopener noreferrer" class="hover:underline">Designed &amp; Developed By Mitchdesigns</a></span>
         </div>
       </div>
     </footer>`;
@@ -568,9 +686,11 @@
      below, so the header badge always starts equal to the actual number
      of units in the drawer (and so reaches exactly 0 when it's emptied,
      instead of stopping at a leftover offset from an unrelated seed). */
+  /* `key` ties a demo row to a product page, so that page can paint its own
+     state (currently the PDP add-ons summary) into the matching cart row. */
   const DEMO_CART_ITEMS = [
-    { name: "Chocolate Fudge Cake", price: 650, qty: 1, img: "dummy-images/image-7.webp", variants: [["Size", "1 Kg"]] },
-    { name: "Assorted Baklava Box", price: 420, qty: 1, img: "dummy-images/image.webp", variants: [["Weight", "500 g"]] },
+    { key: "chocolate-fudge-cake", name: "Chocolate Fudge Cake", price: 650, qty: 1, img: "dummy-images/image-7.webp", variants: [["Size", "1 Kg"]] },
+    { key: "assorted-baklava-box", name: "Assorted Baklava Box", price: 420, qty: 1, img: "dummy-images/image.webp", variants: [["Weight", "500 g"]] },
   ];
 
   /* ---------------------------------------------------------------
@@ -605,7 +725,7 @@
     const cartRows = demoCartItems
       .map(
         (it) => `
-      <div class="flex gap-3 py-4 border-b border-neutral-100" data-cart-row data-unit-price="${it.price}">
+      <div class="flex gap-3 py-4 border-b border-neutral-100" data-cart-row data-unit-price="${it.price}" data-cart-product="${it.key || ""}">
         <img data-shot-img="ui" src="${it.img}" alt="${esc(it.name)}" class="w-[72px] h-[72px] rounded-lg object-cover bg-primary-light" />
         <!-- Text column and counter sit side-by-side (counter no longer stacks
              below the price), so the row is only as tall as the thumbnail. -->
@@ -614,6 +734,9 @@
             <p class="font-medium text-textSecondary text-sm">${esc(it.name)}</p>
             ${vtags(it.variants)}
             <p class="mt-1 font-semibold text-cta text-sm">EGP ${it.price}</p>
+            <!-- Filled by the product page with its chosen add-ons; stays
+                 empty (and collapsed) on every row that has none. -->
+            <div data-cart-addons></div>
           </div>
           <div class="counter counter--sm shrink-0 self-center" data-stepper data-removable>
             <button type="button" data-step="-1" class="counter__btn" aria-label="Decrease quantity"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
@@ -693,8 +816,9 @@
            is no room beside the drawer. -->
       <button type="button" data-close class="side-drawer__close" aria-label="Close cart">${ICON.close}</button>
       <div class="shrink-0 flex items-center gap-2 px-5 py-4 border-b border-neutral-100">
-        <!-- Branded cart-box illustration, matching the checkout summary + header -->
-        <img src="images/icons/cart-box.webp" alt="" class="w-6 h-6 shrink-0 object-contain" />
+        <!-- Same basket mark the header chip and floating cart use, in its
+             dark-stroke variant for this light header (decorative). -->
+        <img src="images/icons/shopping-basket-dark.svg" alt="" class="cart-mark w-6 h-6 shrink-0 object-contain" />
         <h2 class="font-semibold text-textSecondary text-lg">Your Cart</h2>
         <a href="cart.html" class="ms-1 text-sm font-medium text-primaryDark underline underline-offset-2 hover:text-cta">View Cart</a>
       </div>
@@ -738,11 +862,7 @@
         </ul>
       </nav>
       <div class="flex flex-col gap-3 border-t border-gray-200 px-6 py-5">
-        <button type="button" data-open="lang" class="flex w-full items-center gap-2 rounded-[10px] border border-gray-200 px-3 py-2.5 text-primaryDark transition-colors hover:border-primaryDark">
-          <span data-lang-flag class="text-base leading-none">🇪🇬</span>
-          <span class="flex-1 text-start text-sm font-medium">Regional Settings</span>
-          <span data-lang-label class="text-[13px] font-medium text-textSecondary">EN | Egy</span>
-        </button>
+        <button type="button" data-lang-toggle class="lang-switch lang-switch--block"></button>
         <a href="login.html" class="btn btn--black btn--md w-full justify-center">Sign In</a>
       </div>
     </aside>
@@ -772,6 +892,22 @@
     <!-- Store picker (checkout → "Pickup from store"). City → Area → the
          branches assigned to that area. Body is rendered by
          initCheckoutOptions(); this is just the shell. -->
+    <!-- First-visit location prompt. One ask, one button: tapping Allow
+         raises the browser's own location prompt, and the answer either
+         way lands in the area picker with the detected area pre-selected. -->
+    <div data-modal="welcome" class="modal-shell">
+      <div class="flex w-full max-w-[380px] flex-col overflow-hidden rounded-2xl bg-white shadow-custom3" data-modal-box>
+        <div class="wc-step is-active">
+          <img src="images/icons/detect-location.webp" alt="" class="wc-art" width="96" height="96" />
+          <h2 class="wc-title">Allow location for a better experience</h2>
+          <p class="wc-copy">We deliver from the branch nearest to you, and stock differs by branch. Share your location once and we&#39;ll pick your area automatically.</p>
+          <button type="button" data-wc-allow class="btn btn--primary btn--md mt-1 w-full justify-center">Allow location</button>
+          <button type="button" data-wc-skip class="wc-link">I&#39;ll choose my area</button>
+          <p class="wc-note" data-wc-note hidden></p>
+        </div>
+      </div>
+    </div>
+
     <div data-modal="storepicker" class="modal-shell">
       <div class="flex w-full max-w-[520px] max-h-[85vh] flex-col overflow-hidden rounded-2xl bg-white shadow-custom3" data-modal-box>
         <div class="flex shrink-0 items-center justify-between border-b border-neutral-100 px-5 py-4">
@@ -825,31 +961,6 @@
     <!-- Regional settings (Figma 6324-60291). A .bottom-sheet, not a
          .modal-shell: it slides up from the bottom on phones and becomes a
          centered popup at md+, which is exactly what the design asks for. -->
-    <div data-modal="lang" class="bottom-sheet !px-0 !pt-0">
-      <div class="flex items-center gap-2 px-4 py-4">
-        <button type="button" data-close aria-label="Close" class="grid shrink-0 place-items-center rounded-[6px] border border-[#dee2e6] bg-white text-primaryDark size-[32px]">${ICON.close}</button>
-        <h2 class="flex-1 pe-[32px] text-center text-[18px] font-semibold leading-[1.3] text-primaryDark">Regional Settings</h2>
-      </div>
-      <div class="flex flex-col gap-6 px-4 pb-2">
-        <div class="flex flex-col gap-2">
-          <span class="text-[12px] font-normal leading-[1.3] text-textSecondary">Choose Country*</span>
-          <div class="grid grid-cols-2 gap-2.5">
-            <button type="button" data-country="egy" class="lang-opt lang-opt--stacked"><span class="text-xl leading-none">🇪🇬</span> Egypt</button>
-            <button type="button" data-country="ksa" class="lang-opt lang-opt--stacked"><span class="text-xl leading-none">🇸🇦</span> KSA</button>
-          </div>
-        </div>
-        <div class="flex flex-col gap-2">
-          <span class="text-[12px] font-normal leading-[1.3] text-textSecondary">Choose Language*</span>
-          <div class="grid grid-cols-2 gap-2.5">
-            <button type="button" data-lang-pick="en" class="lang-opt lang-opt--stacked">English</button>
-            <button type="button" data-lang-pick="ar" class="lang-opt lang-opt--stacked" style="font-family: 'Noto Kufi Arabic', 'Google Sans Flex', sans-serif;">العربية</button>
-          </div>
-        </div>
-        <button type="button" data-lang-confirm class="btn btn--primary btn--lg w-full justify-center">Select</button>
-      </div>
-    </div>
-
-    <!-- Location bottom sheet -->
     <div data-sheet="location" class="bottom-sheet">
       <div class="mx-auto w-10 h-1 rounded-full bg-neutral-200 mb-4 md:hidden"></div>
       <div class="flex items-center justify-between mb-4">
@@ -857,24 +968,19 @@
         <button type="button" data-close class="grid place-items-center w-8 h-8 rounded-full hover:bg-neutral-100 text-textSecondary">${ICON.close}</button>
       </div>
       <p class="loc-gate-only text-xs text-textSecondary leading-[150%] -mt-2 mb-4">Stock differs by branch — pick your area and we'll only show what we can actually deliver to you.</p>
+      <p class="loc-hint" data-loc-hint hidden></p>
       <form data-location-form class="flex flex-col gap-3">
         <label class="block">
           <span class="label">City</span>
-          <select class="placeholder-select w-full border border-neutral-200 rounded-lg px-3 h-12 mt-1 text-textSecondary">
-            <option>Cairo</option><option>Giza</option><option>Alexandria</option>
-          </select>
+          <select data-loc-city class="placeholder-select w-full border border-neutral-200 rounded-lg px-3 h-12 mt-1 text-textSecondary"></select>
         </label>
         <label class="block">
           <span class="label">Area</span>
-          <select class="placeholder-select w-full border border-neutral-200 rounded-lg px-3 h-12 mt-1 text-textSecondary">
-            <option>New Cairo</option><option>Nasr City</option><option>Maadi</option><option>Zamalek</option>
-          </select>
+          <select data-loc-area class="placeholder-select w-full border border-neutral-200 rounded-lg px-3 h-12 mt-1 text-textSecondary"></select>
         </label>
         <label class="block">
           <span class="label">District</span>
-          <select class="placeholder-select w-full border border-neutral-200 rounded-lg px-3 h-12 mt-1 text-textSecondary">
-            <option>First District</option><option>Second District</option><option>Third District</option><option>Fourth District</option>
-          </select>
+          <select data-loc-district class="placeholder-select w-full border border-neutral-200 rounded-lg px-3 h-12 mt-1 text-textSecondary"></select>
         </label>
         <button type="submit" class="btn btn--primary btn--md mt-2 w-full justify-center">Confirm Location</button>
       </form>
@@ -908,12 +1014,20 @@
     </div>
 
     <!-- Floating cart — sticks directly under the category bar once scrolled.
-         The dark box is masked (.cart-knockout) so the badge is subtracted
-         from it; the badge itself is a sibling on top (unmasked). -->
-    <button type="button" data-open="cart" data-floating-cart aria-label="Cart" class="floating-cart fixed top-[100px] z-[80] size-[44px] md:size-[56px]">
-      <img src="images/icons/cart-box.webp" alt="" class="w-full h-full object-contain drop-shadow-md" />
-      <span class="absolute -bottom-1 -end-1 grid place-items-center bg-primaryDark text-white text-[10px] md:text-[11px] font-semibold rounded-full size-[18px] md:size-[22px]" data-cart-count>4</span>
-    </button>`;
+         Same component as the header cart, colours inverted (Figma 6508:49209):
+         pink chip + dark badge, against the header's dark chip + pink badge. -->
+    <button type="button" data-open="cart" data-floating-cart aria-label="Cart" class="floating-cart fixed top-[100px] z-[80] grid place-items-center size-[40px] rounded-[12px] bg-cta shadow-[0_1px_1px_rgba(0,0,0,0.05)]">
+      <img src="images/icons/shopping-basket.svg" alt="" width="30" height="30" />
+      <span class="absolute -top-[5px] -end-[10px] grid place-items-center bg-primaryDark border border-primary-200 text-white text-[16px] font-semibold leading-[1.4] rounded-full size-[22px]" data-cart-count>4</span>
+    </button>
+
+    <!-- Sticky WhatsApp. Number is Exception's own published one. Shares the
+         floating cart's inset so the two fixed actions sit on one vertical
+         line, and sits at z 75: above the mobile checkout bar (70) but under
+         the overlay backdrop (90), so opening a drawer still dims it. -->
+    <a href="https://wa.me/201099335774" target="_blank" rel="noopener noreferrer" class="wa-fab" aria-label="Chat with us on WhatsApp">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+    </a>`;
   }
 
   /* ---------------------------------------------------------------
@@ -925,12 +1039,18 @@
     search: '[data-modal="search"]',
     location: '[data-sheet="location"]',
     review: '[data-sheet="review"]',
-    lang: '[data-modal="lang"]',
     storepicker: '[data-modal="storepicker"]',
     schedule: '[data-modal="schedule"]',
     voucher: '[data-modal="voucher"]',
     redeem: '[data-modal="redeem"]',
     address: '[data-modal="address"]',
+    welcome: '[data-modal="welcome"]',
+    /* Rendered by the product page, not by this shell — both are PDP-only and
+       would be dead markup on the other 30 pages. Listing them here is all
+       they need to join the shared open/close/backdrop/Esc plumbing. */
+    addons: '[data-modal="addons"]',
+    share: '[data-modal="share"]',
+    cakeshare: '[data-modal="cakeshare"]',
   };
   let openEl = null;
 
@@ -949,6 +1069,9 @@
   }
 
   function closeOverlay() {
+    /* Captured before the class is stripped: closing the onboarding shell
+       without having resolved an area falls through to the manual picker. */
+    const wasWelcome = !!(openEl && openEl.matches('[data-modal="welcome"]'));
     document
       .querySelectorAll(".side-drawer.is-open, .modal-shell.is-open, .bottom-sheet.is-open")
       .forEach((el) => el.classList.remove("is-open"));
@@ -961,6 +1084,7 @@
        confirmed pick calls commitLocation() first, which clears the gate
        flag, so this can't overwrite a real choice. */
     dismissLocationGate();
+    if (wasWelcome && !storedLocation()) setTimeout(openLocationGate, 0);
   }
 
   /* ---------------------------------------------------------------
@@ -1009,39 +1133,318 @@
     commitLocation(DEFAULT_LOCATION);
   }
 
-  function initLocationGate() {
-    /* Review affordance: ?loc=1 replays the first-visit gate on a browser
-       that has already answered it. Without this, re-checking the flow
-       means hand-clearing localStorage every time. */
-    const force = /[?&]loc=1\b/.test(window.location.search);
+  /* The manual picker: header dropdown on desktop, bottom sheet on mobile.
+     Shared by the first-visit gate and by every "choose manually" exit out
+     of the onboarding flow below. */
+  function openLocationGate() {
+    document.body.classList.add("loc-gate");
+    const wrap = document.querySelector("[data-locmenu]");
+    if (wrap && window.matchMedia("(min-width: 768px)").matches) {
+      wrap.classList.add("is-open");
+      const backdrop = document.querySelector("[data-backdrop]");
+      if (backdrop) backdrop.classList.add("is-open");
+      document.body.classList.add("no-scroll");
+    } else {
+      openOverlay("location"); // mobile: the bottom sheet, already above the backdrop
+    }
+  }
+
+  /* ---------------------------------------------------------------
+     First-visit onboarding — notifications, then automatic area
+     detection.
+
+     The two prompts are presented as one flow because that is how it
+     reads to a visitor, but they are separate browser permissions:
+     granting notifications tells us nothing about where someone is, so
+     geolocation still raises its own prompt. Every failure path (either
+     permission denied, no geolocation, timeout, outside our delivery
+     range) lands on the manual picker, so an area is always resolved.
+
+     Detection snaps the device coordinates to the nearest serviceable
+     area rather than calling a reverse-geocoding service: no API key, no
+     third-party request, and the answer is always an area we actually
+     deliver to — which is the only thing the catalogue can be scoped by.
+     --------------------------------------------------------------- */
+  const AREA_KEY = "ex-area";
+  const BRANCH_KEY = "ex-branch";
+  const SERVICE_RADIUS_KM = 25;
+
+  /* Exception's real branch network, scraped from the branch list on
+     exception-group.com and resolved through each branch's own Google
+     Maps link (the short links redirect to a place whose !3d/!4d pair is
+     the authoritative coordinate). 28 branches across Cairo, Giza and
+     Fayoum — the company has no Alexandria branch.
+
+     Matching runs against BRANCHES, not against area centroids: stock is
+     held per branch, so the branch a visitor is closest to is the thing
+     that actually determines what can be delivered. The area shown in the
+     picker is then read off that branch. */
+  /* `busy` marks a branch the kitchen has flagged as under pressure. In
+     production the backend sets it (per branch, live); here a few are
+     pre-marked so the rush-hour delivery note can be demonstrated. It only
+     ever softens an expectation — nothing is blocked by it.
+
+     `addr` is a human-readable street line, needed where an area holds
+     several branches (Maadi has three, Hadayek El Ahram three) and the area
+     name alone can't tell them apart. PLACEHOLDER STREET LINES — plausible
+     for each area but NOT verified against the real stores; the lat/lng are
+     the surveyed values and remain the source of truth for directions.
+     Add a `phone` here when per-branch numbers exist; until then every
+     branch shows the real 16689 hotline. */
+  const BRANCHES = [
+    // ---- Cairo ----
+    { name: "Nasr City", ar: "مدينة نصر", city: "Cairo", area: "Nasr City", addr: "Abbas El Akkad St, Nasr City", busy: true, lat: 30.0444517, lng: 31.3395126 },
+    { name: "Gesr El Suez", ar: "جسر السويس", city: "Cairo", area: "Gesr El Suez", addr: "Gesr El Suez Rd, El Amiriya", lat: 30.1430239, lng: 31.4044377 },
+    { name: "Madinaty", ar: "مدينتي", city: "Cairo", area: "Madinaty", addr: "Craft Zone, Madinaty", lat: 30.0900938, lng: 31.6416597 },
+    { name: "Maadi El Laselky", ar: "المعادي الاسلكي", city: "Cairo", area: "Maadi", addr: "El Laselky St, New Maadi", lat: 29.9737016, lng: 31.2806005 },
+    { name: "Bitasho — Zahraa El Maadi", ar: "بيتشو زهراء المعادي", city: "Cairo", area: "Maadi", addr: "Bitasho Mall, Zahraa El Maadi", lat: 29.969111, lng: 31.329472 },
+    { name: "Ring Road — Maadi", ar: "دائري المعادي", city: "Cairo", area: "Maadi", addr: "Ring Rd, Kotsika, Maadi", lat: 29.9865319, lng: 31.3084817 },
+    { name: "Mokattam", ar: "المقطم", city: "Cairo", area: "Mokattam", addr: "Street 9, Mokattam", lat: 30.0158428, lng: 31.2808804 },
+    { name: "Fifth Settlement", ar: "التجمع الخامس", city: "Cairo", area: "New Cairo", addr: "South Teseen St, Fifth Settlement", busy: true, lat: 29.9965936, lng: 31.420283 },
+    { name: "Ninetieth Street", ar: "التجمع التسعين", city: "Cairo", area: "New Cairo", addr: "North Teseen St, New Cairo", lat: 30.0210596, lng: 31.4343541 },
+    { name: "Mohamed Naguib", ar: "محمد نجيب", city: "Cairo", area: "New Cairo", addr: "Mohamed Naguib Axis, New Cairo", lat: 29.9755148, lng: 31.4701463 },
+    { name: "Masr El Gedida", ar: "مصر الجديدة", city: "Cairo", area: "Heliopolis", addr: "El Higaz St, Masr El Gedida", lat: 30.1107628, lng: 31.3450177 },
+    { name: "El Nozha", ar: "النزهة", city: "Cairo", area: "Heliopolis", addr: "El Nozha St, Heliopolis", lat: 30.0900009, lng: 31.3418913 },
+    { name: "Obour City", ar: "مدينة العبور", city: "Cairo", area: "Obour City", addr: "Golf City, Obour", lat: 30.1788257, lng: 31.4728002 },
+    // ---- Giza ----
+    { name: "Mohandessin", ar: "المهندسين", city: "Giza", area: "Mohandessin", addr: "Gamet El Dowal El Arabeya St, Mohandessin", busy: true, lat: 30.0525021, lng: 31.1955117 },
+    { name: "Faisal", ar: "فيصل", city: "Giza", area: "Faisal", addr: "Faisal Main St, Giza", lat: 30.0016073, lng: 31.1677954 },
+    { name: "Sahl Hamza", ar: "سهل حمزة", city: "Giza", area: "Haram", addr: "Sahl Hamza, Haram", lat: 29.9922453, lng: 31.155171 },
+    { name: "El Mansoureya", ar: "المنصورية", city: "Giza", area: "Haram", addr: "El Mansoureya Rd, Haram", lat: 29.9870712, lng: 31.1415566 },
+    { name: "Tersa", ar: "ترسا", city: "Giza", area: "Haram", addr: "Tersa St, Haram", lat: 29.9940063, lng: 31.1730213 },
+    { name: "Hadayek El Ahram — Gate A", ar: "حدائق الأهرام ا", city: "Giza", area: "Hadayek El Ahram", addr: "Gate A, Hadayek El Ahram", lat: 29.9812693, lng: 31.10878 },
+    { name: "Hadayek El Ahram — Gate N", ar: "حدائق الأهرام ن", city: "Giza", area: "Hadayek El Ahram", addr: "Gate N, Hadayek El Ahram", lat: 29.9574127, lng: 31.08931 },
+    { name: "Hadayek El Ahram — Gate S", ar: "حدائق الأهرام س", city: "Giza", area: "Hadayek El Ahram", addr: "Gate S, Hadayek El Ahram", lat: 29.9530873, lng: 31.0965007 },
+    { name: "October — El Hosary", ar: "اكتوبر الحصري", city: "Giza", area: "6th of October", addr: "El Hosary Square, 6th of October", lat: 29.9783935, lng: 30.9469547 },
+    { name: "West Sumed", ar: "غرب سوميد", city: "Giza", area: "6th of October", addr: "West Sumed, 6th of October", lat: 29.9827653, lng: 30.95296 },
+    { name: "Gamal Axis", ar: "محور جمال", city: "Giza", area: "6th of October", addr: "Gamal Abdel Nasser Axis, 6th of October", lat: 29.9912966, lng: 30.9454978 },
+    { name: "Hadayek October", ar: "حدائق أكتوبر", city: "Giza", area: "6th of October", addr: "Hadayek October, 6th of October", lat: 29.9304775, lng: 31.0436434 },
+    { name: "Sheikh Zayed", ar: "زايد", city: "Giza", area: "Sheikh Zayed", addr: "Zayed 2000 St, Sheikh Zayed", lat: 30.0351359, lng: 30.9675977 },
+    { name: "Smart Village", ar: "القرية الذكية", city: "Giza", area: "Smart Village", addr: "Smart Village, Cairo–Alex Desert Rd", lat: 30.0723333, lng: 31.0232222 },
+    // ---- Fayoum ----
+    { name: "Fayoum", ar: "الفيوم", city: "Fayoum", area: "Fayoum", addr: "Gomhoreya St, Fayoum", lat: 29.3124599, lng: 30.8515567 },
+  ];
+  /* Published for pages that need the branch list themselves (branches.html
+     draws them on a map). One source of truth — the nearest-branch matcher,
+     the store picker and the map all read this same array, so a new branch
+     appears everywhere at once. */
+  window.EXCEPTION_BRANCHES = BRANCHES;
+
+  /* Sub-districts, only where the area genuinely has them. Areas absent
+     from this map hide the District field rather than inventing one. */
+  const AREA_DISTRICTS = {
+    "Cairo|Maadi": ["Degla", "Sarayat El Maadi", "New Maadi", "Zahraa El Maadi", "El Laselky"],
+    "Cairo|New Cairo": ["First Settlement", "Third Settlement", "Fifth Settlement", "Ninetieth Street", "Katameya"],
+    "Cairo|Nasr City": ["First District", "Sixth District", "Seventh District", "Eighth District", "Tenth District", "Zahraa Nasr City"],
+    "Cairo|Heliopolis": ["Korba", "Roxy", "Almaza", "El Nozha", "Triumph"],
+    "Cairo|Mokattam": ["Hadaba Wosta", "Hadaba Olya"],
+    "Giza|6th of October": ["First District", "Third District", "Seventh District", "El Hosary", "Central Axis", "Hadayek October"],
+    "Giza|Sheikh Zayed": ["First Neighbourhood", "Third Neighbourhood", "Seventh Neighbourhood", "Beverly Hills"],
+    "Giza|Hadayek El Ahram": ["Gate A (Khufu)", "Gate N (Mina)", "Gate S (Horus)"],
+    "Giza|Haram": ["Sahl Hamza", "El Mansoureya", "Tersa", "Kom El Akhdar"],
+  };
+
+  /* City -> areas, derived from where branches actually are, so the picker
+     can never offer an area nothing can be delivered from. */
+  const EG_GEO = BRANCHES.reduce((map, b) => {
+    (map[b.city] = map[b.city] || {})[b.area] = true;
+    return map;
+  }, {});
+
+  /* A branch's catchment. Beyond this from EVERY branch we say we don't
+     deliver, rather than snapping to something implausibly far away. */
+  const BRANCH_RADIUS_KM = 20;
+
+  function haversineKm(lat1, lng1, lat2, lng2) {
+    const R = 6371, rad = Math.PI / 180;
+    const dLat = (lat2 - lat1) * rad, dLng = (lng2 - lng1) * rad;
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * rad) * Math.cos(lat2 * rad) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
+    return 2 * R * Math.asin(Math.sqrt(a));
+  }
+
+  /* Closest branch to a fix, with its distance. Straight-line: good enough
+     to rank branches, and it never fails or costs a request the way a
+     routing/distance-matrix call would. */
+  function nearestBranch(lat, lng) {
+    let best = null, bestKm = Infinity;
+    BRANCHES.forEach((b) => {
+      const km = haversineKm(lat, lng, b.lat, b.lng);
+      if (km < bestKm) { bestKm = km; best = b; }
+    });
+    if (!best || bestKm > BRANCH_RADIUS_KM) return null;
+    return { branch: best, km: bestKm, city: best.city, area: best.area };
+  }
+
+  /* Fill one picker's three selects and keep them cascading: city -> its
+     areas -> that area's sub-districts. Areas with no real sub-division
+     hide the District select rather than inventing "First/Second/Third".
+
+     Native <select>s here are replaced by the custom ui-select widget,
+     which renders its own trigger from the options it saw at init, so
+     every repopulation re-syncs it through the hook it exposes. */
+  function fillLocationSelects(form, sel) {
+    const citySel = form.querySelector("[data-loc-city]");
+    const areaSel = form.querySelector("[data-loc-area]");
+    const distSel = form.querySelector("[data-loc-district]");
+    if (!citySel || !areaSel || !distSel) return;
+    const want = sel || {};
+    const opts = (el, list, chosen) => {
+      el.innerHTML = list.map((v) => "<option" + (v === chosen ? " selected" : "") + ">" + v + "</option>").join("");
+      if (typeof el._uiSelectRefresh === "function") el._uiSelectRefresh();
+    };
+
+    const cities = Object.keys(EG_GEO);
+    const city = cities.indexOf(want.city) > -1 ? want.city : citySel.value || cities[0];
+    opts(citySel, cities, city);
+
+    const areas = Object.keys(EG_GEO[city] || {});
+    const area = areas.indexOf(want.area) > -1 ? want.area : areas[0];
+    opts(areaSel, areas, area);
+
+    const districts = AREA_DISTRICTS[city + "|" + area] || [];
+    const lbl = distSel.closest("label");
+    if (districts.length) {
+      opts(distSel, districts, want.district);
+      distSel.disabled = false;
+      if (lbl) lbl.hidden = false;
+    } else {
+      opts(distSel, [], null);
+      distSel.disabled = true;
+      if (lbl) lbl.hidden = true;
+    }
+  }
+
+  /* Every picker on the page (desktop dropdown + mobile sheet). */
+  function fillAllLocationSelects(sel) {
+    document.querySelectorAll("[data-location-form]").forEach((f) => fillLocationSelects(f, sel));
+  }
+
+  function initLocationSelects() {
+    document.querySelectorAll("[data-location-form]").forEach((f) => {
+      fillLocationSelects(f);
+      f.addEventListener("change", (e) => {
+        const t = e.target;
+        if (t.matches("[data-loc-city]")) fillLocationSelects(f, { city: t.value });
+        else if (t.matches("[data-loc-area]"))
+          fillLocationSelects(f, { city: f.querySelector("[data-loc-city]").value, area: t.value });
+      });
+    });
+  }
+
+  /* Every real branch serving an area, nearest-first is not meaningful
+     here (no fix), so declaration order stands. */
+  function branchFor(city, area) {
+    const hit = BRANCHES.filter((b) => b.city === city && b.area === area);
+    return hit.length ? hit[0].name : "";
+  }
+
+  /* Resolve an area: persist it, paint the header, and announce it so
+     inventory-scoped views can requery. This is the single place the rest
+     of the app should read the delivery area from. */
+  function commitArea(entry) {
+    document.body.dataset.area = entry.area;
+    /* The branch is the unit stock is held in, so it travels with the
+       area. Manual picks resolve it from the area instead of from a fix. */
+    const branch = entry.branch || BRANCHES.filter((b) => b.city === entry.city && b.area === entry.area)[0];
+    if (branch) {
+      document.body.dataset.branch = branch.name;
+      try { localStorage.setItem(BRANCH_KEY, branch.name); } catch (e) {}
+    }
+    try {
+      localStorage.setItem(AREA_KEY, entry.area + "|" + entry.city);
+    } catch (e) {}
+    commitLocation(entry.area + ", " + entry.city);
+    document.dispatchEvent(
+      new CustomEvent("ex:area-change", {
+        detail: { area: entry.area, city: entry.city, branch: branch ? branch.name : "" },
+      })
+    );
+  }
+
+  function initOnboarding() {
+    const qs = window.location.search;
+    const force = /[?&](welcome|loc)=1\b/.test(qs);
     if (force) {
       try {
         localStorage.removeItem(LOCATION_KEY);
+        localStorage.removeItem(AREA_KEY);
+        localStorage.removeItem(BRANCH_KEY);
       } catch (e) {}
     }
     const saved = force ? "" : storedLocation();
     if (saved) {
       paintLocation(saved);
+      try {
+        const a = (localStorage.getItem(AREA_KEY) || "").split("|")[0];
+        if (a) document.body.dataset.area = a;
+        const b = localStorage.getItem(BRANCH_KEY);
+        if (b) document.body.dataset.branch = b;
+      } catch (e) {}
       return;
     }
     paintLocation(DEFAULT_LOCATION);
     // Checkout runs the minimal header — no location control to anchor to.
     if (document.body.dataset.page === "checkout") return;
 
-    /* Let the page paint first: the gate reads as a deliberate prompt
-       rather than a flash of chrome during load. */
-    setTimeout(() => {
-      document.body.classList.add("loc-gate");
-      const wrap = document.querySelector("[data-locmenu]");
-      if (wrap && window.matchMedia("(min-width: 768px)").matches) {
-        wrap.classList.add("is-open");
-        const backdrop = document.querySelector("[data-backdrop]");
-        if (backdrop) backdrop.classList.add("is-open");
-        document.body.classList.add("no-scroll");
-      } else {
-        openOverlay("location"); // mobile: the bottom sheet, already above the backdrop
-      }
-    }, 400);
+    const modal = document.querySelector('[data-modal="welcome"]');
+    // No prompt shell on this page -> the plain manual gate still runs.
+    if (!modal) { setTimeout(openLocationGate, 400); return; }
+
+    const allowBtn = modal.querySelector("[data-wc-allow]");
+    const note = modal.querySelector("[data-wc-note]");
+
+    /* Hand off to the picker, pre-selecting `sel` when we resolved one.
+       Deferred a tick: the click that got us here still has to bubble to
+       the document-level "clicked outside a menu" handler, which would
+       otherwise strip .is-open straight back off the picker. */
+    function toPicker(sel, msg) {
+      closeOverlay();
+      setTimeout(() => {
+        fillAllLocationSelects(sel || {});
+        openLocationGate();
+        if (msg) {
+          document.querySelectorAll("[data-loc-hint]").forEach((el) => {
+            el.textContent = msg;
+            el.hidden = false;
+          });
+        }
+      }, 0);
+    }
+
+    function detect() {
+      allowBtn.disabled = true;
+      allowBtn.textContent = "Finding your area\u2026";
+      if (!navigator.geolocation) return toPicker(null, "This browser can\u2019t share a location \u2014 pick your area below.");
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const hit = nearestBranch(pos.coords.latitude, pos.coords.longitude);
+          if (!hit) {
+            return toPicker(null, "You\u2019re outside every branch\u2019s delivery range \u2014 pick an area below to browse.");
+          }
+          /* Resolve straight away so the header and anything inventory-
+             scoped update, then open the picker on that area so the choice
+             is visible and correctable in one click. */
+          commitArea(hit);
+          const km = hit.km < 1 ? Math.round(hit.km * 1000) + " m" : hit.km.toFixed(1) + " km";
+          toPicker(hit, "Nearest branch: Exception " + hit.branch.name + " (" + km + " away). Change it if that\u2019s not right.");
+        },
+        (err) => {
+          const msg =
+            err && err.code === 1
+              ? "Location is off \u2014 pick your area below and we\u2019ll remember it."
+              : "Couldn\u2019t get a location \u2014 pick your area below.";
+          toPicker(null, msg);
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 300000 }
+      );
+    }
+
+    allowBtn.addEventListener("click", detect);
+    modal.querySelector("[data-wc-skip]").addEventListener("click", () => toPicker(null, ""));
+
+    setTimeout(() => openOverlay("welcome"), 400);
   }
 
   /* ---------------------------------------------------------------
@@ -2308,20 +2711,9 @@
           pickup.classList.toggle("is-disabled", on);
           pickup.disabled = on;
         }
-        /* Cash on delivery — not available for gift orders */
-        const cod = document.querySelector('input[name="payment"][value="cod"]');
-        const codRow = cod && cod.closest(".optrow");
-        if (codRow) {
-          codRow.classList.toggle("is-disabled", on);
-          cod.disabled = on;
-          if (on && cod.checked) {
-            const cc = document.querySelector('input[name="payment"][value="cc"]');
-            if (cc) {
-              cc.checked = true;
-              cc.dispatchEvent(new Event("change", { bubbles: true }));
-            }
-          }
-        }
+        /* Cash on delivery — not available for gift orders. Routed through
+           the shared blocker so it can't fight the scheduled-order rule. */
+        setCodBlock("gift", on);
       });
     });
   }
@@ -2331,6 +2723,12 @@
      collapses into a saved white card with a remove control.
      Drop a placeholder anywhere: <div data-order-note></div>
      --------------------------------------------------------------- */
+  /* The three things couriers are asked for most. Offered as chips so the
+     common case is one tap, while the field stays a free-text box — a chip
+     writes into it and leaves the caret at the end, rather than locking the
+     buyer into a canned choice. */
+  const NOTE_PRESETS = ["Avoid phone calls", "Leave it at the door", "Don't ring the bell"];
+
   function orderNoteHTML() {
     return `
       <button type="button" class="ordernote__toggle" data-note-toggle aria-expanded="false">
@@ -2343,6 +2741,14 @@
       <div class="ordernote__panel" data-note-panel>
         <div class="ordernote__panelInner">
           <textarea rows="3" class="ordernote__field" data-note-field placeholder="Write a note for your order (e.g. happy birthday message)…"></textarea>
+          <!-- Under the field: the box is the primary way in, and these are
+               shortcuts into it — offering them first read as a menu to pick
+               from rather than as help with writing. -->
+          <div class="ordernote__chips" data-note-chips>
+            ${NOTE_PRESETS.map(
+              (t) => `<button type="button" class="ordernote__chip" data-note-chip="${esc(t)}">${esc(t)}</button>`,
+            ).join("")}
+          </div>
           <div class="ordernote__actions">
             <button type="button" class="btn btn--primary btn--sm" data-note-save>Add Note</button>
           </div>
@@ -2370,14 +2776,51 @@
 
       function showSaved(text) {
         savedWrap.hidden = false;
+        /* The saved note is the way back in to edit it — the only other
+           control here removes it, and a note you can't correct without
+           deleting it first is a trap. */
         savedWrap.innerHTML = `
-          <div class="ordernote__saved">
+          <div class="ordernote__saved" role="button" tabindex="0" aria-label="Edit order note" title="Click to edit">
             <span class="ordernote__savedIcon"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2v10Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
             <span class="ordernote__savedText">${esc(text)}</span>
             <button type="button" class="ordernote__remove" data-note-remove aria-label="Remove note"><svg viewBox="0 0 24 24" fill="none" class="w-4 h-4" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
           </div>`;
         // With a note saved, the link becomes the way back in to edit it.
         toggle.hidden = true;
+      }
+
+      /* A chip appends rather than replaces, so two can be combined ("Leave
+         it at the door. Don't ring the bell."), and the caret lands at the
+         end ready to keep typing. Tapping the same chip again removes its
+         line, so a mis-tap is one tap to undo. */
+      const chips = root.querySelector("[data-note-chips]");
+      function syncChips() {
+        const v = field.value;
+        root.querySelectorAll("[data-note-chip]").forEach((c) => {
+          const on = v.indexOf(c.getAttribute("data-note-chip")) !== -1;
+          c.classList.toggle("is-on", on);
+          c.setAttribute("aria-pressed", String(on));
+        });
+      }
+      if (chips) {
+        chips.addEventListener("click", (e) => {
+          const chip = e.target.closest("[data-note-chip]");
+          if (!chip) return;
+          const text = chip.getAttribute("data-note-chip");
+          const has = field.value.indexOf(text) !== -1;
+          if (has) {
+            field.value = field.value
+              .replace(new RegExp("\\s*" + text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "\\.?", "g"), "")
+              .replace(/\s{2,}/g, " ")
+              .trim();
+          } else {
+            field.value = (field.value.trim() ? field.value.trim().replace(/\.?$/, ".") + " " : "") + text + ".";
+          }
+          syncChips();
+          field.focus();
+          field.setSelectionRange(field.value.length, field.value.length);
+        });
+        field.addEventListener("input", syncChips);
       }
 
       /* The +/× in the toggle is the only open AND close control — a separate
@@ -2392,13 +2835,31 @@
         open(false);
         showSaved(text);
       });
-      savedWrap.addEventListener("click", (e) => {
-        if (!e.target.closest("[data-note-remove]")) return;
+      function editSaved() {
         savedWrap.hidden = true;
         savedWrap.innerHTML = "";
-        field.value = "";
         toggle.hidden = false;
-        label.textContent = "Add order note";
+        label.textContent = "Edit order note";
+        open(true); // field keeps its text, so editing starts where it left off
+      }
+      savedWrap.addEventListener("click", (e) => {
+        if (e.target.closest("[data-note-remove]")) {
+          savedWrap.hidden = true;
+          savedWrap.innerHTML = "";
+          field.value = "";
+          syncChips();
+          toggle.hidden = false;
+          label.textContent = "Add order note";
+          return;
+        }
+        if (e.target.closest(".ordernote__saved")) editSaved();
+      });
+      /* role=button, so it has to answer the keyboard like one. */
+      savedWrap.addEventListener("keydown", (e) => {
+        if (e.key !== "Enter" && e.key !== " ") return;
+        if (!e.target.closest(".ordernote__saved")) return;
+        e.preventDefault();
+        editSaved();
       });
     });
   }
@@ -2601,6 +3062,12 @@
       render();
       // Lets callers that repopulate <option>s re-sync the custom menu.
       sel._uiSelectRefresh = render;
+
+      /* form.reset() restores the native <select>, but this widget paints its
+         own label — which otherwise kept showing the previous choice after a
+         submit. The reset event fires BEFORE the fields are cleared, so the
+         re-render has to wait a tick. */
+      if (sel.form) sel.form.addEventListener("reset", () => setTimeout(render, 0));
 
       function open() {
         uiSelectCloseAll();
@@ -3006,6 +3473,18 @@
       rows.forEach((row) => {
         row.addEventListener("click", () => {
           rows.forEach((r) => r.classList.toggle("is-selected", r === row));
+          /* Pickup means the store IS the address, so the address form asks
+             for something that doesn't exist for this order — hide it.
+             Toggled (not removed) so flipping back to delivery restores the
+             form with everything typed into it intact. */
+          if (group.getAttribute("data-optgroup") === "shiptype") {
+            const pickup = row.getAttribute("data-opt") === "pickup";
+            const addr = document.querySelector("[data-ship-address]");
+            if (addr) addr.hidden = pickup;
+            /* The rush-hour note ([data-rush-note]) is owned by
+               initOOSShipping, which also weighs the chosen date and the
+               branch — it listens for this click itself. */
+          }
           const opens = row.getAttribute("data-opens");
           if (opens) openOverlay(opens);
         });
@@ -3195,9 +3674,14 @@
     scope.querySelectorAll("[data-location-form]").forEach((f) =>
       f.addEventListener("submit", (e) => {
         e.preventDefault();
-        // Selects are ordered City, Area, District; the pill shows "Area, City".
-        const [city, area] = [...f.querySelectorAll("select")].map((s) => s.value);
-        commitLocation(area && city ? area + ", " + city : DEFAULT_LOCATION);
+        const city = f.querySelector("[data-loc-city]").value;
+        const area = f.querySelector("[data-loc-area]").value;
+        /* Routed through commitArea so a manual pick lands in exactly the
+           same state as a detected one — body[data-area], ex-area and the
+           ex:area-change event. Anything inventory-scoped can then read one
+           source of truth regardless of how the area was resolved. */
+        if (area && city) commitArea({ area: area, city: city });
+        else commitLocation(DEFAULT_LOCATION);
         closeOverlay();
         document
           .querySelectorAll("[data-locmenu].is-open")
@@ -3208,8 +3692,27 @@
       f.addEventListener("submit", (e) => {
         e.preventDefault();
         if (f.getAttribute("data-reset") !== "false") f.reset();
-        // Mock success flow: navigate to the next page if requested.
+
+        /* The attribute's VALUE is the confirmation copy, and nothing was
+           reading it — every demo form simply blanked on submit and left the
+           visitor with no sign it had gone anywhere. Skipped when the form
+           redirects, since the next page is the confirmation. */
         const redirect = f.getAttribute("data-redirect");
+        const msg = f.getAttribute("data-demo-form");
+        if (msg && !redirect) {
+          const prev = f.querySelector("[data-demo-form-note]");
+          if (prev) prev.remove();
+          const note = document.createElement("p");
+          note.className = "form-sent";
+          note.setAttribute("role", "status");
+          note.setAttribute("data-demo-form-note", "");
+          note.textContent = msg;
+          f.appendChild(note);
+          clearTimeout(f._demoNoteTimer);
+          f._demoNoteTimer = setTimeout(() => note.remove(), 6000);
+        }
+
+        // Mock success flow: navigate to the next page if requested.
         if (redirect) setTimeout(() => (window.location.href = redirect), 250);
       }),
     );
@@ -3267,10 +3770,318 @@
   /* ---------------------------------------------------------------
      Sticky navbar on scroll (desktop) — mirrors useWindowScroll(150)
      --------------------------------------------------------------- */
+  /* ---------------------------------------------------------------
+     OUT OF STOCK → SCHEDULE
+
+     An out-of-stock product isn't removed from the shelf: it is baked to
+     order, so the card swaps its quick-add "+" for a Schedule control and
+     wears a badge. Scheduling one records it, and checkout then refuses
+     "Within 2 hours" — you cannot two-hour-deliver something nobody has
+     baked yet — and explains why in one line instead of failing silently
+     at the end of the flow.
+
+     The record lives in localStorage because the card and the checkout are
+     different pages; the demo cart has no server behind it.
+     --------------------------------------------------------------- */
+  const OOS_KEY = "ex-oos";
+  /* Which card in an unseeded list becomes the out-of-stock one. Index 1
+     (the second card) rather than the first, so lists still open on a
+     normal product and the feature reads as an exception, not the rule. */
+  const OOS_DEMO_INDEX = 1;
+
+  function oosList() {
+    try {
+      const v = JSON.parse(localStorage.getItem(OOS_KEY) || "[]");
+      return Array.isArray(v) ? v : [];
+    } catch (e) {
+      return [];
+    }
+  }
+  function oosSave(list) {
+    try {
+      localStorage.setItem(OOS_KEY, JSON.stringify(list));
+    } catch (e) {
+      /* private mode — the flag just won't survive the page hop */
+    }
+    document.body.classList.toggle("has-oos", list.length > 0);
+    document.dispatchEvent(new CustomEvent("ex:oos-change", { detail: list }));
+  }
+  function oosAdd(name) {
+    const l = oosList();
+    if (l.indexOf(name) === -1) l.push(name);
+    oosSave(l);
+  }
+  function oosRemove(name) {
+    oosSave(oosList().filter((n) => n !== name));
+  }
+
+  const ICON_SCHEDULE =
+    '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3" stroke="currentColor" stroke-width="1.8"/><path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+
+  /* A card's product name, wherever the page happens to keep it. */
+  function productName(widget) {
+    const link = widget.closest("a[aria-label]");
+    if (link) return link.getAttribute("aria-label").trim();
+    const wrap = widget.closest("a") || widget.parentElement;
+    const img = wrap && wrap.querySelector("img[alt]");
+    if (img && img.alt) return img.alt.trim();
+    const t = wrap && wrap.querySelector("h3, h4, p.line-clamp-1, .prod-name");
+    return t ? t.textContent.trim() : "This item";
+  }
+
+  /* Schedule reuses the quick-add's own [data-add-btn] / [data-counter]
+     pair, so adding a second one behaves exactly like any other product —
+     the existing stepper handlers drive it and nothing had to be
+     reimplemented. Only the button's face differs: a calendar and a verb. */
+  function scheduleWidgetHTML(qty, name) {
+    const on = qty > 0;
+    return (
+      '<button type="button" data-add-btn class="sched-btn' + (on ? " hidden" : "") + '" ' +
+      'aria-label="Schedule ' + esc(name) + '">' +
+      '<span class="sched-btn__ico">' + ICON_SCHEDULE + "</span>" +
+      "<span>Schedule</span></button>" +
+      '<span class="' + (on ? "flex" : "hidden") + ' items-center gap-0.5 bg-primary-light rounded-[8px] h-[42px] px-2 shadow-custom-5" data-counter>' +
+      '<button type="button" data-dec aria-label="Remove" class="grid place-items-center size-[26px] rounded-[4px] hover:bg-black/5 transition-colors">' +
+      '<img data-dec-icon src="images/icons/trash.svg" alt="" width="18" height="18" /></button>' +
+      '<span data-qty class="w-[34px] text-center text-lg font-medium text-primaryDark tabular-nums">' + (on ? qty : 1) + "</span>" +
+      '<button type="button" data-inc aria-label="Add" class="grid place-items-center size-[26px] rounded-[4px] bg-primary-300 text-white hover:bg-primary-400 transition-colors">' +
+      '<svg viewBox="0 0 24 24" fill="none" class="w-4 h-4"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>' +
+      "</span>"
+    );
+  }
+
+  /* Turn one quick-add widget into the out-of-stock treatment. */
+  function markOOS(widget) {
+    if (!widget || widget.dataset.oosReady) return;
+    widget.dataset.oosReady = "1";
+    widget.setAttribute("data-type", "oos");
+    const name = productName(widget);
+    widget.setAttribute("data-oos-name", name);
+
+    /* The badge sits on the image, opposite the wishlist heart. */
+    const media = widget.parentElement;
+    if (media && !media.querySelector(".oos-badge")) {
+      media.classList.add("is-oos");
+      const b = document.createElement("span");
+      b.className = "oos-badge";
+      b.innerHTML = '<span class="oos-badge__dot"></span>Out of stock';
+      media.appendChild(b);
+    }
+    /* The "Scheduled for later" line sits at the other bottom corner of the
+       image, so it explains the counter without crowding it. */
+    if (media && !media.querySelector(".sched-note")) {
+      const n = document.createElement("span");
+      n.className = "sched-note";
+      n.textContent = "Scheduled for later";
+      media.appendChild(n);
+    }
+    widget.classList.add("sched-slot");
+    const scheduled = oosList().indexOf(name) !== -1;
+    widget.innerHTML = scheduleWidgetHTML(scheduled ? 1 : 0, name);
+    if (media) media.classList.toggle("is-scheduled", scheduled);
+  }
+
+  /* Called after the shared stepper has moved a quantity. Records or clears
+     the branch in the same breath, so the checkout rule can never disagree
+     with what the card is showing. */
+  function oosSync(widget) {
+    if (!widget) return;
+    const name = widget.getAttribute("data-oos-name");
+    if (!name) return;
+    const counter = widget.querySelector("[data-counter]");
+    const showing = counter && !counter.classList.contains("hidden");
+    const media = widget.parentElement;
+    if (media) media.classList.toggle("is-scheduled", !!showing);
+    if (showing) oosAdd(name);
+    else oosRemove(name);
+  }
+
+  function initStock(scope) {
+    scope = scope || document;
+    document.body.classList.toggle("has-oos", oosList().length > 0);
+
+    /* Cards already declared out of stock by their page. */
+    scope.querySelectorAll('[data-add-widget][data-type="oos"]').forEach(markOOS);
+
+    /* Demo seeding: every product list or carousel gets one out-of-stock
+       card so the flow can be shown without hunting for the right product.
+       Skipped for any list that already has one, and for a list opted out
+       with data-no-oos. */
+    const groups = new Map();
+    scope.querySelectorAll("[data-add-widget]:not([data-oos-ready])").forEach((w) => {
+      const list = w.closest("[data-no-oos]") ? null : w.closest(".carousel-track, .grid, [data-product-list]");
+      if (!list) return;
+      if (!groups.has(list)) groups.set(list, []);
+      groups.get(list).push(w);
+    });
+    groups.forEach((widgets, list) => {
+      if (list.querySelector('[data-add-widget][data-type="oos"]')) return;
+      if (widgets.length < 3) return; // too small a row to spare one
+      markOOS(widgets[Math.min(OOS_DEMO_INDEX, widgets.length - 1)]);
+    });
+  }
+
+  /* ---- cash on delivery: more than one thing can rule it out ----
+     A gift order hides prices from the recipient; a scheduled order is
+     charged up front. Both can apply at once, so the reasons are held in a
+     set — otherwise turning one off would re-enable the row while the other
+     still stood. */
+  const COD_BLOCKS = new Set();
+  const COD_BLOCK_TEXT = {
+    gift: "Not available for gift orders \u2014 pay by card or wallet instead.",
+    scheduled: "Scheduled orders are paid when you place them, so cash on delivery isn't available.",
+  };
+  function setCodBlock(reason, on) {
+    if (on) COD_BLOCKS.add(reason);
+    else COD_BLOCKS.delete(reason);
+
+    const cod = document.querySelector('input[name="payment"][value="cod"]');
+    const row = cod && cod.closest(".optrow");
+    if (!row) return;
+    const blocked = COD_BLOCKS.size > 0;
+
+    let note = row.querySelector("[data-cod-note]");
+    if (!note) {
+      note = document.createElement("span");
+      note.className = "ship-note";
+      note.setAttribute("data-cod-note", "");
+      row.appendChild(note);
+    }
+    /* One reason at a time in the copy: two stacked sentences in a payment
+       row is more than anyone reads. Gift leads — it is the one the buyer
+       just toggled themselves. */
+    const reasonShown = COD_BLOCKS.has("gift") ? "gift" : "scheduled";
+    note.textContent = COD_BLOCK_TEXT[reasonShown] || "";
+    note.hidden = !blocked;
+
+    row.classList.toggle("is-disabled", blocked);
+    cod.disabled = blocked;
+    if (blocked && cod.checked) {
+      const cc = document.querySelector('input[name="payment"][value="cc"]');
+      if (cc) {
+        cc.checked = true;
+        cc.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+    }
+  }
+
+  /* ---- checkout: express delivery is off the table for baked-to-order ---- */
+  function initOOSShipping(scope) {
+    const group = (scope || document).querySelector('[data-optgroup="shipdate"]');
+    if (!group || group.dataset.oosReady) return;
+    group.dataset.oosReady = "1";
+    const asap = group.querySelector('[data-opt="asap"]');
+    const later = group.querySelector('[data-opt="later"]');
+    if (!asap || !later) return;
+
+    /* The note lives INSIDE the express row — it explains that one option, so
+       it belongs to it rather than floating under both. Appended to the row
+       itself, not the title block, so it lands on its own line beneath the
+       icon / title / time and spans their full width (see .optrow in
+       styles.css, which wraps). Generic wording on purpose: naming the items
+       would grow with every out-of-stock line in the cart. */
+    const body = asap;
+    let note = body.querySelector("[data-oos-note]");
+    if (!note) {
+      note = document.createElement("span");
+      note.className = "ship-note";
+      note.setAttribute("data-oos-note", "");
+      note.hidden = true;
+      note.textContent =
+        "Your cart has items baked to order, so this isn't available. Schedule a time instead.";
+      body.appendChild(note);
+    }
+
+    function sync() {
+      const blocked = oosList().length > 0;
+      asap.classList.toggle("is-disabled", blocked);
+      asap.disabled = blocked;
+      asap.setAttribute("aria-disabled", String(blocked));
+      note.hidden = !blocked;
+      if (!blocked) return;
+      /* Move the selection rather than leaving a disabled row highlighted. */
+      if (asap.classList.contains("is-selected")) {
+        asap.classList.remove("is-selected");
+        later.classList.add("is-selected");
+      }
+    }
+
+    /* Rush-hour warning: only when the branch this order comes from is
+       flagged busy AND the buyer has actually chosen the two-hour option.
+       Any other combination has nothing to warn about — a scheduled order
+       has a slot, and a quiet branch will make the window. */
+    const dnote = document.querySelector("[data-rush-note]");
+    /* DEMO: every branch answers "busy" so the note is always there to show.
+       In production this reads the branch's own flag, which the backend sets
+       live — flip DEMO_ALWAYS_BUSY to false and the real rule below takes
+       over, showing the note only for a branch under pressure. */
+    const DEMO_ALWAYS_BUSY = true;
+    function branchBusy() {
+      if (DEMO_ALWAYS_BUSY) return true;
+      const name = document.body.dataset.branch;
+      if (!name) return false;
+      const b = BRANCHES.filter((x) => x.name === name)[0];
+      return !!(b && b.busy);
+    }
+    function syncDeliveryNote() {
+      if (!dnote) return;
+      const pickup = !!document.querySelector('[data-optgroup="shiptype"] [data-opt="pickup"].is-selected');
+      dnote.hidden = pickup || !asap.classList.contains("is-selected") || !branchBusy();
+    }
+
+    /* A scheduled order is charged when it is placed, so cash on delivery
+       comes off the table — whether the buyer chose to schedule or the cart
+       forced it. Read from the actual selection, not from the stock flag, so
+       freely choosing "Schedule for later" behaves the same way. */
+    function syncPayment() {
+      setCodBlock("scheduled", later.classList.contains("is-selected"));
+    }
+
+    /* Bound on the group, so it runs after the row's own click handler in
+       initCheckoutOptions has moved .is-selected. */
+    group.addEventListener("click", function () {
+      setTimeout(syncPayment, 0);
+    });
+
+    function syncAll() {
+      sync();
+      syncPayment();
+      syncDeliveryNote();
+    }
+
+    group.addEventListener("click", function () {
+      setTimeout(syncDeliveryNote, 0);
+    });
+    /* Switching to store pickup, or changing area (which re-resolves the
+       branch), can both change the answer. */
+    const typeGroup = document.querySelector('[data-optgroup="shiptype"]');
+    if (typeGroup) typeGroup.addEventListener("click", function () { setTimeout(syncDeliveryNote, 0); });
+    document.addEventListener("ex:area-change", syncDeliveryNote);
+
+    syncAll();
+    document.addEventListener("ex:oos-change", syncAll);
+    /* The branch is restored from storage during boot, which can land after
+       this runs — without a second pass the note would stay hidden on a busy
+       branch until something else was clicked. */
+    window.addEventListener("load", syncDeliveryNote);
+    setTimeout(syncDeliveryNote, 0);
+  }
+
   function initStickyNav() {
     const nav = document.querySelector("[data-navbar]");
     const floatCart = document.querySelector("[data-floating-cart]");
     if (!nav) return;
+    /* Publish the category bar's height so page-level sticky elements can
+       park directly under it (the cafe menu head does) without hard-coding
+       a number that breaks the moment the bar's icons or padding change. */
+    const publishHeight = () =>
+      document.documentElement.style.setProperty(
+        "--catnav-h",
+        nav.offsetHeight + "px",
+      );
+    publishHeight();
+    window.addEventListener("load", publishHeight);
+    window.addEventListener("resize", publishHeight, { passive: true });
     const placeholder = document.createElement("div");
     nav.parentNode.insertBefore(placeholder, nav.nextSibling);
     // Stick the category bar once its own top reaches the viewport top
@@ -3310,6 +4121,11 @@
       if (floatCart) {
         const vis = stuck && window.scrollY > 40;
         floatCart.classList.toggle("is-visible", vis);
+        /* Mirror the state onto <body>. The cart is fixed into the page
+           gutter, so anything laying content out against that gutter (the
+           cafe menu's chip row) needs to know it is there — and it cannot
+           reach the cart with a CSS selector from inside the page. */
+        document.body.classList.toggle("has-floating-cart", vis);
         // 8px below the (now-stuck) category bar — measured live so it's
         // correct regardless of late web-font reflow.
         if (vis)
@@ -3364,46 +4180,18 @@
     return document.documentElement.getAttribute("dir") === "rtl" ? "ar" : "en";
   }
 
-  /* Country/language selector state — the header label reads "EN | Egy". */
-  const COUNTRY = {
-    egy: { short: "Egy", flag: "🇪🇬" },
-    ksa: { short: "Ksa", flag: "🇸🇦" },
-  };
-  function currentCountry() {
-    try {
-      return localStorage.getItem("ex-country") === "ksa" ? "ksa" : "egy";
-    } catch (e) {
-      return "egy";
-    }
-  }
-  function applyCountry(country) {
-    country = country === "ksa" ? "ksa" : "egy";
-    try {
-      localStorage.setItem("ex-country", country);
-    } catch (e) {
-      /* storage unavailable */
-    }
-    updateLangLabel();
-  }
+  /* The switch always advertises the language you are NOT in, so its label
+     is the action. Arabic gets Noto Kufi Arabic via .is-ar; the English
+     label uses the site face. Egypt is the only market, so there is no
+     country dimension any more. */
   function updateLangLabel() {
-    const c = COUNTRY[currentCountry()] || COUNTRY.egy;
-    const langShort = currentLang() === "ar" ? "ع" : "EN";
-    document.querySelectorAll("[data-lang-label]").forEach((el) => {
-      el.textContent = langShort + " | " + c.short;
-    });
-    document.querySelectorAll("[data-lang-flag]").forEach((el) => {
-      el.textContent = c.flag;
-    });
-  }
-  /* Preselect the current country + language when the modal opens. */
-  function syncLangModal() {
-    const lang = currentLang();
-    const country = currentCountry();
-    document.querySelectorAll("[data-country]").forEach((b) => {
-      b.classList.toggle("is-active", b.getAttribute("data-country") === country);
-    });
-    document.querySelectorAll("[data-lang-pick]").forEach((b) => {
-      b.classList.toggle("is-active", b.getAttribute("data-lang-pick") === lang);
+    const toArabic = currentLang() !== "ar";
+    document.querySelectorAll("[data-lang-toggle]").forEach((el) => {
+      el.textContent = toArabic ? "تصفح بالعربية" : "Browse in English";
+      el.classList.toggle("is-ar", toArabic);
+      el.setAttribute("lang", toArabic ? "ar" : "en");
+      el.setAttribute("dir", toArabic ? "rtl" : "ltr");
+      el.setAttribute("aria-label", toArabic ? "التبديل إلى العربية" : "Switch to English");
     });
   }
 
@@ -3433,6 +4221,24 @@
   function bumpCart(delta) {
     cartCount = Math.max(0, cartCount + delta);
     setCartCount(cartCount);
+  }
+  /* Favourites badge — same treatment as the cart's, seeded to the demo
+     wishlist on my-account-favorites.html so the header agrees with that
+     page. Unlike the cart there is no empty-state glyph: an empty wishlist
+     has no state worth showing, so the badge just goes away. display is set
+     inline rather than via [hidden] because the badge carries .grid, which
+     would win over Tailwind's [hidden] rule on source order. */
+  const DEMO_FAV_COUNT = 6;
+  let favCount = DEMO_FAV_COUNT;
+  function setFavCount(n) {
+    document.querySelectorAll("[data-fav-count]").forEach((el) => {
+      el.textContent = n;
+      el.style.display = n > 0 ? "" : "none";
+    });
+  }
+  function bumpFav(delta) {
+    favCount = Math.max(0, favCount + delta);
+    setFavCount(favCount);
   }
   function pwQty(w) {
     const q = w.querySelector("[data-qty]");
@@ -3480,11 +4286,6 @@
           .querySelectorAll("[data-locmenu].is-open")
           .forEach((w) => w.classList.remove("is-open"));
       }
-      if (!e.target.closest("[data-pagesmenu]")) {
-        document
-          .querySelectorAll("[data-pagesmenu].is-open")
-          .forEach((w) => w.classList.remove("is-open"));
-      }
     });
     document.addEventListener("click", (e) => {
       /* --- Product card add-to-cart (preventDefault stops the card link) --- */
@@ -3492,6 +4293,7 @@
       if (favBtn) {
         e.preventDefault();
         favBtn.classList.toggle("is-fav");
+        bumpFav(favBtn.classList.contains("is-fav") ? 1 : -1);
         return;
       }
       const addBtn = e.target.closest("[data-add-btn]");
@@ -3501,6 +4303,7 @@
         const srcRect = addBtn.getBoundingClientRect(); // capture before hiding
         pwShowCounter(w, true);
         pwSetQty(w, 1);
+        oosSync(w);
         flyToCart(srcRect, () => bumpCart(1)); // badge bumps when the dot lands
         return;
       }
@@ -3509,6 +4312,7 @@
         e.preventDefault();
         const w = incBtn.closest("[data-add-widget]");
         pwSetQty(w, pwQty(w) + 1);
+        oosSync(w);
         bumpCart(1);
         return;
       }
@@ -3523,6 +4327,7 @@
         } else {
           pwSetQty(w, q - 1);
         }
+        oosSync(w);
         bumpCart(-1);
         return;
       }
@@ -3533,55 +4338,19 @@
         applyLang(langBtn.getAttribute("data-lang"));
         return;
       }
-      const langCycle = e.target.closest("[data-lang-cycle]");
+      const themeBtn = e.target.closest("[data-theme-set]");
+      if (themeBtn) {
+        e.preventDefault();
+        applyTheme(themeBtn.getAttribute("data-theme-set"));
+        return;
+      }
+      /* One-tap switch (header + mobile drawer). data-lang-cycle is the
+         older alias for the same action. */
+      const langCycle = e.target.closest("[data-lang-toggle], [data-lang-cycle]");
       if (langCycle) {
         e.preventDefault();
         applyLang(currentLang() === "ar" ? "en" : "ar");
         return;
-      }
-      // Country/Language modal: single-select within each group, then Choose applies
-      const countryOpt = e.target.closest("[data-country]");
-      if (countryOpt) {
-        e.preventDefault();
-        document
-          .querySelectorAll("[data-country]")
-          .forEach((b) => b.classList.toggle("is-active", b === countryOpt));
-        return;
-      }
-      const langPick = e.target.closest("[data-lang-pick]");
-      if (langPick) {
-        e.preventDefault();
-        document
-          .querySelectorAll("[data-lang-pick]")
-          .forEach((b) => b.classList.toggle("is-active", b === langPick));
-        return;
-      }
-      const langConfirm = e.target.closest("[data-lang-confirm]");
-      if (langConfirm) {
-        e.preventDefault();
-        const c = document.querySelector("[data-country].is-active");
-        const l = document.querySelector("[data-lang-pick].is-active");
-        applyCountry(c ? c.getAttribute("data-country") : currentCountry());
-        applyLang(l ? l.getAttribute("data-lang-pick") : currentLang());
-        closeOverlay();
-        return;
-      }
-      // Pages dropdown: toggle on the button, close when clicking elsewhere
-      const pagesToggle = e.target.closest("[data-pages-toggle]");
-      if (pagesToggle) {
-        e.preventDefault();
-        const wrap = pagesToggle.closest("[data-pagesmenu]");
-        const wasOpen = wrap.classList.contains("is-open");
-        document
-          .querySelectorAll("[data-pagesmenu].is-open")
-          .forEach((w) => w.classList.remove("is-open"));
-        if (!wasOpen) wrap.classList.add("is-open");
-        return;
-      }
-      if (!e.target.closest("[data-pagesmenu]")) {
-        document
-          .querySelectorAll("[data-pagesmenu].is-open")
-          .forEach((w) => w.classList.remove("is-open"));
       }
       // Location dropdown (desktop): toggle on the pill, close when clicking outside
       const locToggle = e.target.closest("[data-loc-toggle]");
@@ -3607,17 +4376,10 @@
         const track = document.querySelector("[data-catnav-track]");
         if (track) {
           const dir = catArrow.hasAttribute("data-catnav-prev") ? -1 : 1;
-          /* Loop: past either end the strip wraps to the other side, so the
-             arrows keep cycling the whole category list instead of dead-ending.
-             RTL reports scrollLeft as negative, hence the abs()/sign handling. */
-          const max = track.scrollWidth - track.clientWidth;
-          const cur = Math.abs(track.scrollLeft);
-          const sign = track.scrollLeft < 0 ? -1 : 1;
-          const step = 320;
-          let next = cur + dir * step;
-          if (next > max - 2) next = dir > 0 && cur >= max - 2 ? 0 : Math.min(next, max);
-          else if (next < 0) next = cur <= 2 ? max : 0;
-          track.scrollTo({ left: sign * next, behavior: "smooth" });
+          /* Just a nudge in the pressed direction — no end handling here.
+             The strip is a true loop (initCatnavLoop), so there is no end to
+             hit: it keeps travelling the same way and the list repeats. */
+          track.scrollBy({ left: dir * 320, behavior: "smooth" });
         }
         return;
       }
@@ -3626,7 +4388,6 @@
         e.preventDefault();
         const key = opener.getAttribute("data-open");
         openOverlay(key);
-        if (key === "lang") syncLangModal();
         return;
       }
       if (e.target.closest("[data-close]")) {
@@ -4427,6 +5188,8 @@
     initCheckoutSteps(scope);
     initCheckoutMobileBar(scope);
     initCheckoutOptions(scope);
+    initStock(scope);
+    initOOSShipping(scope);
     initCardForm(scope);
     initCountdown(scope);
     initPosts(scope);
@@ -4449,16 +5212,86 @@
      so centre it on load — otherwise the highlight is off-screen and the user
      never sees where they are. Only touches scrollLeft, so the page itself
      never scrolls. */
-  function initCatnavCurrent() {
+  /* Endless category strip.
+
+     The old behaviour jumped back to scrollLeft 0 at the end, which reads as
+     the strip snapping backwards. Instead the item list is rendered THREE
+     times and the viewport is parked on the middle copy: travelling in either
+     direction always has a full copy of runway ahead, and because the copies
+     are pixel-identical, silently re-centring puts the first category after
+     the last with nothing visible happening.
+
+     Re-centring runs only once scrolling has come to rest — adjusting
+     scrollLeft mid-animation would cancel the smooth scroll and stutter. */
+  function initCatnavLoop() {
     const track = document.querySelector("[data-catnav-track]");
-    const current = track && track.querySelector(".catnav-item.is-current");
-    if (!track || !current) return;
-    const center = current.offsetLeft - track.clientWidth / 2 + current.offsetWidth / 2;
-    const target = Math.max(0, Math.min(center, track.scrollWidth - track.clientWidth));
-    // Wait for the icons to lay out, else offsetLeft is measured too early.
-    const place = () => (track.scrollLeft = target);
-    place();
-    window.addEventListener("load", place, { once: true });
+    if (!track) return;
+    const originals = [...track.children];
+    if (originals.length < 2) return;
+
+    /* Copies are decorative duplicates: hidden from assistive tech and taken
+       out of the tab order so the category list is announced once. */
+    for (let copy = 0; copy < 2; copy++) {
+      originals.forEach((node) => {
+        const c = node.cloneNode(true);
+        c.setAttribute("aria-hidden", "true");
+        c.setAttribute("tabindex", "-1");
+        c.removeAttribute("aria-current");
+        track.appendChild(c);
+      });
+    }
+
+    let setW = 0;
+    const measure = () => {
+      setW = track.scrollWidth / 3;
+    };
+
+    /* Park on the middle copy, offset so the current category is in view. */
+    const home = () => {
+      measure();
+      if (!setW) return;
+      const cur = track.querySelector(".catnav-item.is-current");
+      let within = 0;
+      if (cur) within = cur.offsetLeft - track.clientWidth / 2 + cur.offsetWidth / 2;
+      track.scrollLeft = setW + Math.max(0, Math.min(within, setW));
+    };
+
+    const recentre = () => {
+      if (!setW) return;
+      const x = track.scrollLeft;
+      if (x > setW * 1.75) track.scrollLeft = x - setW;
+      else if (x < setW * 0.25) track.scrollLeft = x + setW;
+    };
+
+    home();
+    // offsetLeft is unreliable until the icons have loaded and laid out.
+    window.addEventListener("load", home, { once: true });
+    if (window.ResizeObserver) new ResizeObserver(measure).observe(track);
+
+    if ("onscrollend" in window) {
+      track.addEventListener("scrollend", recentre);
+    } else {
+      let t;
+      track.addEventListener("scroll", () => {
+        clearTimeout(t);
+        t = setTimeout(recentre, 140);
+      });
+    }
+  }
+
+  /* Drop the boot cover once the page is actually presentable: header and
+     footer injected, overlays mounted, Tailwind's generated CSS applied.
+     Two nested rAFs put the reveal after the next paint, so the cover
+     never lifts on a frame that is still mid-layout. */
+  function clearBootCover() {
+    const el = document.getElementById("boot");
+    if (!el) return;
+    requestAnimationFrame(() =>
+      requestAnimationFrame(() => {
+        el.classList.add("is-done");
+        setTimeout(() => el.remove(), 320);
+      }),
+    );
   }
 
   function boot() {
@@ -4474,14 +5307,18 @@
 
     initDelegation();
     initStickyNav();
-    initCatnavCurrent();
+    initCatnavLoop();
     applyLang(initialLang());
     window.kInit(document);
     // The badge markup carries a hardcoded placeholder; sync every badge
     // (and the floating cart's empty/full icon) to the real seeded count.
     setCartCount(cartCount);
+    setFavCount(favCount);
     initFooterReveal();
-    initLocationGate();
+    applyTheme(storedTheme());
+    initLocationSelects();
+    initOnboarding();
+    clearBootCover();
 
     // Footer DotField background (plain canvas script).
     if (document.querySelector("[data-dotfield]") && !document.getElementById("dotfield-script")) {
@@ -4522,16 +5359,20 @@
   function initFooterReveal() {
     const footer = document.querySelector("#site-footer footer");
     if (!footer) return;
-    if (
-      window.matchMedia &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    ) {
-      footer.classList.add("footer-in");
-      return;
-    }
+    const reduce =
+      window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) footer.classList.add("footer-in");
+    /* One observer, two jobs: the footer's reveal animation (skipped when
+       reduced motion is preferred) and retracting the sticky WhatsApp
+       button, which would otherwise cover the footer's own social row —
+       WhatsApp link included. The retract runs either way, so it is
+       outside the reduced-motion branch. */
     new IntersectionObserver(
       (entries) => {
-        entries.forEach((e) => footer.classList.toggle("footer-in", e.isIntersecting));
+        entries.forEach((e) => {
+          if (!reduce) footer.classList.toggle("footer-in", e.isIntersecting);
+          document.body.classList.toggle("footer-visible", e.isIntersecting);
+        });
       },
       { threshold: 0, rootMargin: "0px 0px -12% 0px" },
     ).observe(footer);

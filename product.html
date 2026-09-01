@@ -19,6 +19,13 @@
        Gates the "Leave a review" button (see .review-cta). Server-set in production. -->
   <body data-page="product" data-path="/products/chocolate-fudge-cake" data-purchased="true" class="antialiased bg-white">
     <!-- Shared header is injected here by scripts.js -->
+    <!-- Boot cover. The header is injected by scripts.js and Tailwind (Play
+         CDN) builds its CSS in JS, so an uncovered load paints three times:
+         bare page -> restyled page -> header appears. This holds that first
+         frame until the page is whole. Deliberately blank: a spinner never
+         had time to register and read as an error. A CSS safety fade clears
+         it even if scripts.js never runs. -->
+    <div id="boot" aria-hidden="true"></div>
     <div id="site-header"></div>
 
     <!-- overflow-x-clip (not -hidden): clips horizontal overflow WITHOUT creating a
@@ -107,9 +114,25 @@
                 <!-- Status label (not the category) — swap the text per product: Limited, New, Best Seller… -->
                   <span class="self-start inline-flex items-center -rotate-[2deg] bg-cta text-white text-[11px] font-semibold uppercase tracking-wide leading-none px-1.5 py-0.5 rounded-[4px]">Limited</span>
 
-                <!-- Product name + reviews / servings badges -->
-                <div class="flex items-center gap-3 flex-wrap">
+                <!-- Title line: name on the left, share on the right. The
+                     rating and servings badges moved to their own row below,
+                     so the product name has the line to itself. -->
+                <div class="pdp-titlerow">
                   <h1 class="text-lg font-semibold text-textSecondary md:text-xl lg:text-3xl">Chocolate Fudge Cake</h1>
+                  <span class="pdp-share-wrap">
+                    <button type="button" class="pdp-share" data-share data-open="share" aria-label="Share this product">
+                      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" data-share-icon>
+                        <circle cx="18" cy="5" r="2.6" stroke="currentColor" stroke-width="1.7"/>
+                        <circle cx="6" cy="12" r="2.6" stroke="currentColor" stroke-width="1.7"/>
+                        <circle cx="18" cy="19" r="2.6" stroke="currentColor" stroke-width="1.7"/>
+                        <path d="M8.35 10.75 15.65 6.6M8.35 13.25l7.3 4.15" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                      </svg>
+                    </button>
+                  </span>
+                </div>
+
+                <!-- Reviews / servings badges -->
+                <div class="flex items-center gap-3 flex-wrap">
                   <a href="#reviews" class="inline-flex items-center gap-1.5 bg-primary-light rounded-[4px] px-2.5 py-1 hover:bg-primary-200 transition-colors">
                     <svg viewBox="0 0 24 24" class="w-4 h-4 text-cta fill-current"><path d="M12 2l2.9 6.26L21.6 9.27l-4.8 4.68 1.13 6.6L12 17.77l-5.93 3.12 1.13-6.6-4.8-4.68 6.7-1.01L12 2z"/></svg>
                     <span class="text-primaryDark text-xs font-semibold">4.5</span>
@@ -123,12 +146,6 @@
                 </div>
               </div>
 
-              <!-- Short description -->
-              <div class="text-gray-700 text-xs md:text-sm wysiwyg-product">
-                <!-- Keep this to ~2 lines so the Add-to-cart CTA stays above the
-                     fold; the full story lives in the Description tab below. -->
-                <p>Moist Belgian chocolate sponge layered with silky fudge and finished with a glossy ganache — baked fresh to order.</p>
-              </div>
             </div>
 
             <!-- ==================== BUY BOX — price, options, CTA (sticky) ==================== -->
@@ -169,6 +186,39 @@
                     <button type="button" class="variation-pill chip px-5 py-2.5 text-sm font-medium capitalize">2 kg</button>
                   </div>
                 </div>
+              </div>
+
+              <!-- Short description. Sits under the variations, not up with the
+                   title: what a buyer wants first is the price and the options,
+                   and the full story is in the Description tab further down. -->
+              <div class="pdp-lede text-gray-700 text-xs md:text-sm wysiwyg-product">
+                <p>Moist Belgian chocolate sponge layered with silky fudge and finished with a glossy ganache — baked fresh to order.</p>
+              </div>
+
+              <!-- ============ ADD ELEGANT TOUCHES (Figma 6515-55317) ============
+                   Add-on categories with each one's cheapest price. Rendered
+                   by the script at the foot of this page; opening a card
+                   opens the shared popup on that category. -->
+              <div class="addons" id="pdp-addons" hidden>
+                <div class="addons__head">
+                  <p class="addons__title">Add Elegant Touches</p>
+                  <div class="addons__nav" data-addons-nav hidden>
+                    <button type="button" class="addons__arrow" data-addons-scroll="-1" aria-label="Scroll add-ons left">
+                      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
+                    <button type="button" class="addons__arrow" data-addons-scroll="1" aria-label="Scroll add-ons right">
+                      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
+                  </div>
+                </div>
+                <div class="addons__strip" data-addons-strip>
+                  <div class="addons__track" data-addons-track></div>
+                </div>
+                <p class="addons-preview" data-addons-preview hidden>
+                  <span aria-hidden="true">&#9998;</span>
+                  <span class="addons-preview__text" data-addons-preview-text></span>
+                  <button type="button" class="addons-preview__edit" data-open="addons" data-addon-cat="cards">Edit</button>
+                </p>
               </div>
 
               <!-- Purchase actions: counter on its own line, then Add-to-cart + favorite -->
@@ -314,6 +364,39 @@
                 </div>
               </div>
 
+              </div>
+
+              <!-- ==================== FREQUENTLY BOUGHT TOGETHER ====================
+                   Two companions, both ticked by default, with a running total
+                   that follows the ticks. Untick everything and the CTA goes
+                   quiet rather than offering to add nothing. -->
+              <div class="fbt" data-fbt>
+                <div class="fbt__head">
+                  <h2 class="fbt__title">Frequently Bought Together</h2>
+                  <p class="fbt__total">
+                    <span class="fbt__total-label">Total for <span data-fbt-count>2</span> items</span>
+                    <span class="fbt__total-value" data-fbt-total>EGP 540</span>
+                  </p>
+                </div>
+                <div class="fbt__list">
+                  <label class="fbt__item">
+                    <input type="checkbox" checked data-fbt-item data-fbt-price="260" />
+                    <img src="dummy-images/image-1.webp" alt="" class="fbt__img" width="72" height="72" loading="lazy" decoding="async" />
+                    <span class="fbt__text">
+                      <span class="fbt__name">Pistachio Kunafa</span>
+                      <span class="fbt__price">EGP 260</span>
+                    </span>
+                  </label>
+                  <label class="fbt__item">
+                    <input type="checkbox" checked data-fbt-item data-fbt-price="280" />
+                    <img src="dummy-images/image-4.webp" alt="" class="fbt__img" width="72" height="72" loading="lazy" decoding="async" />
+                    <span class="fbt__text">
+                      <span class="fbt__name">Mini Cupcake Dozen</span>
+                      <span class="fbt__price">EGP 280</span>
+                    </span>
+                  </label>
+                </div>
+                <button type="button" data-open="cart" data-fbt-add class="fbt__cta">Add all to cart</button>
               </div>
 
               <!-- ============================ PRODUCT FAQ (AEO) ============================
@@ -698,6 +781,13 @@
                 <div class="rounded-[12px] aspect-square overflow-hidden bg-primary-light">
                   <img src="${imgs[i % imgs.length]}" alt="${name}" class="w-full h-full object-cover md:group-hover/card:scale-110 transition-all duration-300" />
                 </div>
+              <!-- Wishlist. Small, top-left, opposite the add-to-cart control
+                   in the bottom-right. Shares [data-fav] + .fav-btn with the
+                   product page, so the pop + ripple animation and the header
+                   count are the same system. -->
+              <button type="button" data-fav aria-label="Add to wishlist" class="fav-btn absolute start-2 top-2 z-10 size-8">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path class="fav-heart" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78Z" stroke="currentColor" stroke-width="1.6"/></svg>
+              </button>
                 <span class="absolute end-3 -bottom-5 z-10" data-add-widget data-type="simple">
                   <button type="button" data-add-btn aria-label="Add to cart" class="grid place-items-center bg-primary-200 text-primaryDark rounded-[8px] size-[42px] shadow-custom-5 hover:bg-primary-300 transition-colors">
                     <svg viewBox="0 0 24 24" fill="none" class="w-[22px] h-[22px]"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
@@ -757,6 +847,765 @@
         }
         // scripts.js runs its kInit(document) on DOMContentLoaded (after this inline
         // script), so the freshly-populated .carousel is picked up automatically.
+      })();
+    </script>
+
+    <!-- ============ ADD-ONS POPUP (Figma 6515-55662) ============
+         Lives on this page rather than in the shared shell in scripts.js:
+         it is PDP-only, and the shell is injected into all 31 pages. It is
+         registered in scripts.js's openMap, so [data-open="addons"],
+         [data-close], the backdrop and Esc all work on it for free. -->
+    <div data-modal="addons" class="modal-shell">
+      <div class="addons-modal" data-modal-box>
+        <div class="addons-modal__head">
+          <h2 class="addons-modal__title" data-addons-title>Choose add-ons</h2>
+          <button type="button" data-close class="addons-modal__x" aria-label="Close">
+            <svg viewBox="0 0 24 24" fill="none" width="20" height="20" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+        <div class="addons-modal__tabs" data-addons-tabs role="tablist" aria-label="Add-on categories"></div>
+        <div class="addons-modal__list" data-addons-list></div>
+        <div class="addon-note" data-addon-note hidden></div>
+        <button type="button" data-close class="addons-modal__cta">Add to Product</button>
+      </div>
+    </div>
+
+    <!-- ============ SHARE POPUP (desktop) ============
+         Only reached on pointer:fine devices — touch devices get the OS share
+         sheet instead. Registered in scripts.js's openMap, so [data-open],
+         [data-close], the backdrop and Esc all work on it for free. -->
+    <div data-modal="share" class="modal-shell">
+      <div class="share-modal" data-modal-box>
+        <button type="button" data-close class="share-modal__x" aria-label="Close">
+          <svg viewBox="0 0 24 24" fill="none" width="18" height="18" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+        <h2 class="share-modal__title">Share</h2>
+        <div class="share-modal__grid">
+          <button type="button" class="share-opt" data-share-copy>
+            <span class="share-opt__ico share-opt__ico--link">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M10.6 13.4a4 4 0 0 0 6.03.43l2.4-2.4a4 4 0 1 0-5.66-5.66l-1.37 1.38M13.4 10.6a4 4 0 0 0-6.03-.43l-2.4 2.4a4 4 0 1 0 5.66 5.66l1.37-1.38" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <span class="share-opt__label" data-share-copy-label>Copy link</span>
+          </button>
+          <a class="share-opt" data-share-net="whatsapp" href="#" target="_blank" rel="noopener noreferrer">
+            <span class="share-opt__ico share-opt__ico--wa">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+            </span>
+            <span class="share-opt__label">WhatsApp</span>
+          </a>
+          <a class="share-opt" data-share-net="facebook" href="#" target="_blank" rel="noopener noreferrer">
+            <span class="share-opt__ico share-opt__ico--fb">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M15.12 5.32H17V2.14A26.11 26.11 0 0 0 14.26 2c-2.72 0-4.58 1.66-4.58 4.7v2.62H6.61v3.56h3.07V22h3.68v-9.12h3.06l.46-3.56h-3.52V7.05c0-1.03.28-1.73 1.76-1.73Z"/></svg>
+            </span>
+            <span class="share-opt__label">Facebook</span>
+          </a>
+          <a class="share-opt" data-share-net="x" href="#" target="_blank" rel="noopener noreferrer">
+            <span class="share-opt__ico share-opt__ico--x">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231L18.244 2.25Zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77Z"/></svg>
+            </span>
+            <span class="share-opt__label">X</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <!-- Clicked in JS when a native share sheet fails for a real reason, to
+         hand the user the popup instead. -->
+    <span hidden data-open="share" data-share-fallback></span>
+
+    <script>
+      (function () {
+        /* Add-on catalogue. Page-local for the same reason the cafe menu is:
+           it is content, not shared site logic. `from` is not stored — it is
+           the cheapest item in the group, derived below, so the strip can
+           never disagree with the popup. */
+        var IMG = "dummy-images/add-ons/";
+        var CATS = [
+          {
+            id: "candles",
+            name: "Candles",
+            icon: "candle.webp",
+            items: [
+              { id: "c1", name: "XOXO Scented Candles", price: 600 },
+              { id: "c2", name: "Be Mine Scented Candle", price: 590 },
+              { id: "c3", name: "Happy Birthday Candles", price: 250 },
+              { id: "c4", name: "Number Candle", price: 120 },
+              { id: "c5", name: "Sparkler Candles", price: 180 },
+              { id: "c6", name: "Rose Gold Taper Candles", price: 320 },
+            ],
+          },
+          {
+            /* One card per order, so this category is single-select tiles
+               rather than counters — see `single` below. Every card here has
+               its own photograph; no card is listed without one. */
+            id: "cards",
+            name: "Greeting Card",
+            icon: "greeting-card.webp",
+            single: true,
+            items: [
+              { id: "g1", name: "Default Greeting Card", price: 0, img: "default-card.webp" },
+              { id: "g2", name: "Thank You Card", price: 150, img: "thankyou-card.webp" },
+              { id: "g3", name: "I Love You Card", price: 150, img: "I-Love-You-Card.webp" },
+              { id: "g4", name: "Mom Card", price: 150, img: "Mom-card.webp" },
+              { id: "g5", name: "My Best Friend Card", price: 150, img: "Best-frient.webp" },
+              { id: "g6", name: "Get Well Soon Card", price: 150, img: "Get well soon-card.webp" },
+            ],
+          },
+          {
+            id: "ballons",
+            name: "Ballons",
+            icon: "ballon.webp",
+            items: [
+              { id: "b1", name: "Get Well Soon Helium Ballon", price: 200 },
+              { id: "b2", name: "Happy Birthday Foil Ballon", price: 220 },
+              { id: "b3", name: "Number Foil Ballon", price: 260 },
+              { id: "b4", name: "Heart Ballon Bunch", price: 350 },
+              { id: "b5", name: "Confetti Ballon Set", price: 400 },
+            ],
+          },
+          {
+            id: "topper",
+            name: "Topper",
+            icon: "topper.webp",
+            items: [
+              { id: "t1", name: "Happy Birthday Topper", price: 150 },
+              { id: "t2", name: "Acrylic Name Topper", price: 380 },
+              { id: "t3", name: "Gold Number Topper", price: 220 },
+              { id: "t4", name: "Crown Topper", price: 260 },
+              { id: "t5", name: "Custom Message Topper", price: 450 },
+            ],
+          },
+        ];
+        /* One product photograph was supplied, so every add-on shows it.
+           Give an item its own `img` and it wins. */
+        var FALLBACK_IMG = "item.webp";
+
+        var strip = document.getElementById("pdp-addons");
+        var track = strip && strip.querySelector("[data-addons-track]");
+        var scroller = strip && strip.querySelector("[data-addons-strip]");
+        var modal = document.querySelector('[data-modal="addons"]');
+        if (!strip || !track || !modal) return;
+
+        var tabHost = modal.querySelector("[data-addons-tabs]");
+        var listHost = modal.querySelector("[data-addons-list]");
+        var titleEl = modal.querySelector("[data-addons-title]");
+
+        /* chosen[categoryId][itemId] = qty. The card message is a single
+           string, not a per-item map: only one card can be chosen, and
+           keying it to the category means swapping the card DESIGN keeps
+           what the buyer already wrote. */
+        var chosen = {};
+        var cardMessage = "";
+        var active = CATS[0].id;
+        /* The category whose items carry writing. Named rather than assumed
+           by index so reordering CATS cannot silently move the feature. */
+        var NOTE_CAT = "cards";
+        /* Ties this page to its row in the cart (see DEMO_CART_ITEMS[].key). */
+        var PRODUCT_KEY = "chocolate-fudge-cake";
+        var NOTE_MAX = 120;
+        var PRESETS = ["Happy Birthday!", "Congratulations!", "Thank You!", "Get Well Soon", "With Love"];
+
+        function esc(v) {
+          return String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+        }
+        function cat(id) {
+          for (var i = 0; i < CATS.length; i++) if (CATS[i].id === id) return CATS[i];
+          return null;
+        }
+        function cheapest(c) {
+          return c.items.reduce(function (m, it) {
+            return it.price < m ? it.price : m;
+          }, Infinity);
+        }
+        function fromLabel(c) {
+          var min = cheapest(c);
+          return min ? "From " + min + " EGP" : "Free";
+        }
+        function countIn(id) {
+          var bag = chosen[id] || {};
+          var n = 0;
+          for (var k in bag) if (Object.prototype.hasOwnProperty.call(bag, k)) n += bag[k];
+          return n;
+        }
+        function qty(catId, itemId) {
+          return (chosen[catId] && chosen[catId][itemId]) || 0;
+        }
+        function setQty(catId, itemId, n) {
+          if (!chosen[catId]) chosen[catId] = {};
+          if (n > 0) chosen[catId][itemId] = n;
+          else delete chosen[catId][itemId];
+        }
+
+        /* ------------------------------ strip ------------------------------ */
+        track.innerHTML = CATS.map(function (c) {
+          return (
+            '<button type="button" class="addon-cat" data-open="addons" data-addon-cat="' + c.id + '">' +
+            '<img class="addon-cat__icon" src="' + IMG + encodeURIComponent(c.icon) + '" alt="" width="44" height="44" loading="lazy" decoding="async" />' +
+            '<span class="addon-cat__name">' + esc(c.name) + "</span>" +
+            '<span class="addon-cat__from">' + fromLabel(c) + "</span>" +
+            '<span class="addon-cat__count" data-addon-count="' + c.id + '" hidden>0</span>' +
+            "</button>"
+          );
+        }).join("");
+        strip.hidden = false;
+
+        /* Strip cards and popup tabs carry the same count, so they are painted
+           together — two call sites would drift apart. */
+        function paintCounts() {
+          CATS.forEach(function (c) {
+            var n = countIn(c.id);
+            var badge = track.querySelector('[data-addon-count="' + c.id + '"]');
+            var card = track.querySelector('[data-addon-cat="' + c.id + '"]');
+            if (badge) {
+              badge.textContent = n;
+              badge.hidden = n === 0;
+              badge.setAttribute("aria-label", n + " " + c.name + " added");
+            }
+            if (card) card.classList.toggle("has-items", n > 0);
+            var tabBadge = tabHost.querySelector('[data-addon-tab-count="' + c.id + '"]');
+            if (tabBadge) {
+              tabBadge.textContent = n;
+              tabBadge.hidden = n === 0;
+              tabBadge.setAttribute("aria-label", n + " selected");
+            }
+          });
+        }
+
+        /* ------------------------------ popup ------------------------------ */
+        /* The site's shared .counter component, in the same --sm size and with
+           the same trash-at-one behaviour the cart rows use. Wired to
+           data-addon-step rather than scripts.js's [data-stepper], since that
+           handler only knows how to move a number — it cannot update the
+           add-on state or the strip badges. Markup and classes are identical,
+           so the two stay visually in step. */
+        var STEP_MINUS =
+          '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+        var STEP_TRASH =
+          '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-12M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        var STEP_PLUS =
+          '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+
+        function footHTML(c, it) {
+          var n = qty(c.id, it.id);
+          if (!n) {
+            return (
+              '<button type="button" class="addon-add" data-addon-add="' + it.id + '">' +
+              '<svg viewBox="0 0 24 24" fill="none" width="14" height="14" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>' +
+              "Add</button>"
+            );
+          }
+          var last = n <= 1;
+          return (
+            '<div class="counter counter--sm">' +
+            '<button type="button" class="counter__btn" data-addon-step="-1" data-addon-id="' + it.id + '" ' +
+            'aria-label="' + (last ? "Remove " + esc(it.name) : "Decrease quantity") + '">' +
+            (last ? STEP_TRASH : STEP_MINUS) + "</button>" +
+            '<span class="counter__qty">' + n + "</span>" +
+            '<button type="button" class="counter__btn counter__inc" data-addon-step="1" data-addon-id="' + it.id + '" ' +
+            'aria-label="Increase quantity">' + STEP_PLUS + "</button>" +
+            "</div>"
+          );
+        }
+
+        function paintTabs() {
+          tabHost.innerHTML = CATS.map(function (c) {
+            return (
+              '<button type="button" class="addon-tab" role="tab" data-addon-tab="' + c.id + '" ' +
+              'aria-selected="' + (c.id === active) + '">' +
+              /* Badge hangs off the icon rather than the tab's corner: the tabs
+                 stretch to fill the row, so a corner badge would drift away
+                 from the thing it counts. */
+              '<span class="addon-tab__ico">' +
+              '<img src="' + IMG + encodeURIComponent(c.icon) + '" alt="" width="44" height="44" />' +
+              '<span class="addon-tab__count" data-addon-tab-count="' + c.id + '" hidden>0</span>' +
+              "</span>" +
+              "<span>" + esc(c.name) + "</span></button>"
+            );
+          }).join("");
+        }
+
+        function cardHTML(c, it) {
+          var on = qty(c.id, it.id) > 0;
+          return (
+            '<button type="button" class="addon-card" data-addon-pick="' + it.id + '" ' +
+            'aria-pressed="' + on + '">' +
+            '<img class="addon-card__img" src="' + IMG + encodeURIComponent(it.img) + '" alt="' + esc(it.name) + '" width="345" height="345" loading="lazy" decoding="async" />' +
+            '<span class="addon-card__price' + (it.price ? "" : " is-free") + '">' + (it.price ? "+" + it.price + " EGP" : "Free") + "</span>" +
+            '<span class="addon-card__name">' + esc(it.name) + "</span>" +
+            '<span class="addon-card__check" aria-hidden="true">' +
+            '<svg viewBox="0 0 24 24" fill="none" width="14" height="14"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+            "</span></button>"
+          );
+        }
+
+        function paintList() {
+          var c = cat(active);
+          if (!c) return;
+          titleEl.textContent = "Choose " + c.name;
+          listHost.classList.toggle("is-cards", !!c.single);
+          if (c.single) {
+            listHost.innerHTML = c.items
+              .map(function (it) {
+                return cardHTML(c, it);
+              })
+              .join("");
+            listHost.scrollTop = 0;
+            return;
+          }
+          listHost.innerHTML = c.items.map(function (it) {
+            return (
+              '<article class="addon-item' + (qty(c.id, it.id) ? " is-added" : "") + '" data-addon-item="' + it.id + '">' +
+              '<img class="addon-item__img" src="' + IMG + encodeURIComponent(it.img || FALLBACK_IMG) + '" alt="' + esc(it.name) + '" width="143" height="104" loading="lazy" decoding="async" />' +
+              "<div>" +
+              '<p class="addon-item__name">' + esc(it.name) + "</p>" +
+              '<p class="addon-item__price">' + it.price + " EGP</p>" +
+              "</div>" +
+              '<div class="addon-item__foot">' + footHTML(c, it) + "</div>" +
+              "</article>"
+            );
+          }).join("");
+          listHost.scrollTop = 0;
+        }
+
+        /* Only the one card's footer is redrawn, so an add does not blow away
+           and rebuild the whole grid under the pointer. */
+        function repaintItem(itemId) {
+          var c = cat(active);
+          if (c && c.single) {
+            /* Single-select: the pressed state of every tile can change on one
+               tap, so the whole set is re-flagged rather than just this one. */
+            [].forEach.call(listHost.querySelectorAll("[data-addon-pick]"), function (t) {
+              t.setAttribute("aria-pressed", String(qty(c.id, t.getAttribute("data-addon-pick")) > 0));
+            });
+            return;
+          }
+          var card = listHost.querySelector('[data-addon-item="' + itemId + '"]');
+          if (!c || !card) return;
+          var it = null;
+          c.items.forEach(function (x) {
+            if (x.id === itemId) it = x;
+          });
+          if (!it) return;
+          card.querySelector(".addon-item__foot").innerHTML = footHTML(c, it);
+          card.classList.toggle("is-added", qty(c.id, it.id) > 0);
+        }
+
+        function show(id) {
+          if (!cat(id)) return;
+          active = id;
+          [].forEach.call(tabHost.querySelectorAll("[data-addon-tab]"), function (t) {
+            t.setAttribute("aria-selected", String(t.getAttribute("data-addon-tab") === id));
+          });
+          paintList();
+          paintNote(false);
+        }
+
+        /* ------------------------- card message ------------------------- */
+        var noteHost = modal.querySelector("[data-addon-note]");
+        var preview = strip.querySelector("[data-addons-preview]");
+        var previewText = strip.querySelector("[data-addons-preview-text]");
+
+        function pickedCard() {
+          var c = cat(NOTE_CAT);
+          if (!c) return null;
+          for (var i = 0; i < c.items.length; i++) {
+            if (qty(NOTE_CAT, c.items[i].id) > 0) return c.items[i];
+          }
+          return null;
+        }
+
+        function paintNote(focus) {
+          if (!noteHost) return;
+          var card = pickedCard();
+          /* Only on the card tab: showing a message box to someone buying
+             candles is noise, and the panel is inside the popup they are
+             already looking at when they pick a card. */
+          if (active !== NOTE_CAT || !card) {
+            noteHost.hidden = true;
+            noteHost.innerHTML = "";
+            return;
+          }
+          noteHost.innerHTML =
+            '<div class="addon-note__head">' +
+            '<p class="addon-note__title">Write your card message</p>' +
+            '<p class="addon-note__hint">Handwritten inside your ' + esc(card.name) + ", up to " + NOTE_MAX + " characters</p>" +
+            "</div>" +
+            '<div class="addon-note__row">' +
+            '<textarea class="addon-note__field" data-addon-note maxlength="' + NOTE_MAX + '" rows="2" ' +
+            'aria-label="Card message" ' +
+            'placeholder="e.g. Happy Birthday Nour — from all of us">' + esc(cardMessage) + "</textarea>" +
+            '<div class="addon-note__foot">' +
+            '<div class="addon-note__presets">' +
+            PRESETS.map(function (t) {
+              return '<button type="button" class="addon-note__preset" data-addon-preset-text="' + esc(t) + '">' + esc(t) + "</button>";
+            }).join("") +
+            "</div>" +
+            '<span class="addon-note__count" data-addon-note-count>' + cardMessage.length + "/" + NOTE_MAX + "</span>" +
+            "</div></div>";
+          noteHost.hidden = false;
+          if (focus) {
+            var field = noteHost.querySelector(".addon-note__field");
+            if (field) field.focus();
+          }
+        }
+
+        /* The preview is the only sight of the card once the popup closes, so
+           it names the card whether or not a message has been written yet. */
+        function paintPreview() {
+          if (!preview) return;
+          var card = pickedCard();
+          if (!card) {
+            preview.hidden = true;
+            return;
+          }
+          var msg = cardMessage.trim();
+          previewText.textContent = msg ? card.name + " — \u201C" + msg + "\u201D" : "Add a message to your " + card.name;
+          previewText.title = msg || card.name;
+          preview.hidden = false;
+        }
+
+        function syncCount() {
+          var el = noteHost.querySelector("[data-addon-note-count]");
+          if (!el) return;
+          el.textContent = cardMessage.length + "/" + NOTE_MAX;
+          el.classList.toggle("is-full", cardMessage.length >= NOTE_MAX);
+        }
+
+        /* Typing must not re-render the panel — that would drop the caret
+           mid-sentence — so input only touches state, the counter and the
+           preview. */
+        noteHost.addEventListener("input", function (e) {
+          var field = e.target.closest("[data-addon-note]");
+          if (!field) return;
+          cardMessage = field.value.slice(0, NOTE_MAX);
+          syncCount();
+          paintPreview();
+          paintCartRows();
+        });
+
+        noteHost.addEventListener("click", function (e) {
+          var chip = e.target.closest("[data-addon-preset-text]");
+          if (!chip) return;
+          var field = noteHost.querySelector("[data-addon-note]");
+          if (!field) return;
+          cardMessage = chip.getAttribute("data-addon-preset-text").slice(0, NOTE_MAX);
+          field.value = cardMessage;
+          field.focus();
+          /* Caret to the end so the preset reads as a starting point to
+             finish, not a finished sentence. */
+          field.setSelectionRange(field.value.length, field.value.length);
+          syncCount();
+          paintPreview();
+        });
+
+        paintTabs();
+        show(active);
+        paintCounts();
+        paintPreview();
+
+        /* The strip cards and the preview's Edit link both carry
+           data-open="addons", which scripts.js handles; this only has to pick
+           the category before the popup paints. Bound on the whole block, not
+           the track, so the Edit link outside the scroller is covered too. */
+        strip.addEventListener("click", function (e) {
+          var card = e.target.closest("[data-addon-cat]");
+          if (card) show(card.getAttribute("data-addon-cat"));
+        });
+
+        strip.addEventListener("click", function (e) {
+          var arrow = e.target.closest("[data-addons-scroll]");
+          if (!arrow || !scroller) return;
+          scroller.scrollBy({ left: Number(arrow.getAttribute("data-addons-scroll")) * 236, behavior: "smooth" });
+        });
+
+        /* Arrows appear only when the row actually overflows, and each end
+           disables itself — otherwise this is two permanently dead buttons on
+           a category list short enough to fit. */
+        var nav = strip.querySelector("[data-addons-nav]");
+        var prev = strip.querySelector('[data-addons-scroll="-1"]');
+        var next = strip.querySelector('[data-addons-scroll="1"]');
+        function paintArrows() {
+          if (!scroller || !nav) return;
+          var max = scroller.scrollWidth - scroller.clientWidth;
+          nav.hidden = max <= 1;
+          if (prev) prev.disabled = scroller.scrollLeft <= 1;
+          if (next) next.disabled = scroller.scrollLeft >= max - 1;
+        }
+        if (scroller) scroller.addEventListener("scroll", paintArrows, { passive: true });
+        window.addEventListener("resize", paintArrows, { passive: true });
+        window.addEventListener("load", paintArrows);
+        paintArrows();
+
+        /* ------------------- cart row summary + edit ------------------- */
+        function picks() {
+          var out = [];
+          CATS.forEach(function (c) {
+            c.items.forEach(function (it) {
+              var n = qty(c.id, it.id);
+              if (n > 0) out.push({ cat: c, item: it, n: n });
+            });
+          });
+          return out;
+        }
+
+        function summaryLine(list) {
+          return list
+            .map(function (p) {
+              /* Cards are single-select, so a quantity on them would be noise. */
+              return p.cat.single || p.n === 1 ? p.item.name : p.item.name + " \u00D7" + p.n;
+            })
+            .join(" \u00B7 ");
+        }
+
+        function summaryFull(list) {
+          var text = summaryLine(list);
+          var msg = cardMessage.trim();
+          return msg ? text + "\n\u201C" + msg + "\u201D" : text;
+        }
+
+        /* Paints into the cart drawer AND the cart page — both expose the same
+           [data-cart-product] row and [data-cart-addons] slot, so this does not
+           need to know which page it is on. The drawer is injected by the
+           deferred scripts.js, i.e. after this inline script runs, so this is
+           called on load as well as on every change. */
+        function paintCartRows() {
+          var slots = document.querySelectorAll(
+            '[data-cart-product="' + PRODUCT_KEY + '"] [data-cart-addons]',
+          );
+          if (!slots.length) return;
+          var list = picks();
+          [].forEach.call(slots, function (slot) {
+            if (!list.length) {
+              slot.innerHTML = "";
+              return;
+            }
+            slot.innerHTML =
+              '<div class="cart-addons" title="' + esc(summaryFull(list)) + '">' +
+              '<svg class="cart-addons__mark" viewBox="0 0 24 24" fill="none" width="14" height="14" aria-hidden="true">' +
+              '<path d="M20 12v9H4v-9M22 7H2v5h20V7ZM12 21V7M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7ZM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+              '<span class="cart-addons__text">' + esc(summaryLine(list)) + "</span>" +
+              '<button type="button" class="cart-addons__edit" data-open="addons" data-addons-edit ' +
+              'aria-label="Edit add-ons">' +
+              '<svg viewBox="0 0 24 24" fill="none" width="14" height="14" aria-hidden="true"><path d="M4 20h4L19 9a2.1 2.1 0 0 0-3-3L5 17v3Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+              "</button></div>";
+          });
+        }
+
+        /* Opened from the cart, the popup is editing an existing selection, so
+           the confirm button says so. Reset on close, because the same popup is
+           reached from the strip where nothing has been committed yet. */
+        var cta = modal.querySelector(".addons-modal__cta");
+        var CTA_ADD = cta ? cta.textContent : "Add to Product";
+        var fromCart = false;
+
+        document.addEventListener("click", function (e) {
+          var edit = e.target.closest("[data-addons-edit]");
+          if (!edit) return;
+          fromCart = true;
+          if (cta) cta.textContent = "Update";
+          /* Open on the first category that actually holds something — that is
+             what the buyer clicked the pencil to change. */
+          var list = picks();
+          if (list.length) show(list[0].cat.id);
+          /* Two stacked overlays would fight over the backdrop, so the drawer
+             steps out; it comes back when the popup closes. */
+          var drawer = document.querySelector('[data-drawer="cart"]');
+          if (drawer) drawer.classList.remove("is-open");
+        });
+
+        /* Every close path — Update, the X, the backdrop, Esc — runs through
+           the shared plumbing removing .is-open, so watch for that rather than
+           wiring each one. */
+        new MutationObserver(function () {
+          if (modal.classList.contains("is-open") || !fromCart) return;
+          fromCart = false;
+          if (cta) cta.textContent = CTA_ADD;
+          var opener = document.querySelector('[data-open="cart"]');
+          if (opener) setTimeout(function () { opener.click(); }, 0);
+        }).observe(modal, { attributes: true, attributeFilter: ["class"] });
+
+        window.addEventListener("load", paintCartRows);
+        paintCartRows();
+
+        tabHost.addEventListener("click", function (e) {
+          var tab = e.target.closest("[data-addon-tab]");
+          if (tab) show(tab.getAttribute("data-addon-tab"));
+        });
+
+        listHost.addEventListener("click", function (e) {
+          var pick = e.target.closest("[data-addon-pick]");
+          if (pick) {
+            var pickId = pick.getAttribute("data-addon-pick");
+            var wasEmpty = !pickedCard();
+            var already = qty(active, pickId) > 0;
+            /* One card only: the whole category is cleared before the new
+               choice lands, and tapping the chosen card again clears it. */
+            chosen[active] = {};
+            if (!already) setQty(active, pickId, 1);
+            else cardMessage = "";
+            repaintItem(pickId);
+            paintCounts();
+            paintNote(wasEmpty && !already);
+            paintPreview();
+            paintCartRows();
+            return;
+          }
+          var add = e.target.closest("[data-addon-add]");
+          if (add) {
+            var id = add.getAttribute("data-addon-add");
+            setQty(active, id, 1);
+            repaintItem(id);
+            paintCounts();
+            paintCartRows();
+            return;
+          }
+          var step = e.target.closest("[data-addon-step]");
+          if (step) {
+            var itemId = step.getAttribute("data-addon-id");
+            var next = Math.max(0, qty(active, itemId) + Number(step.getAttribute("data-addon-step")));
+            setQty(active, itemId, next);
+            repaintItem(itemId);
+            paintCounts();
+            paintCartRows();
+          }
+        });
+      })();
+    </script>
+
+    <script>
+      /* Frequently bought together — the total tracks the ticks, so the bundle
+         price on screen is always the price of what is actually selected. */
+      (function () {
+        var box = document.querySelector("[data-fbt]");
+        if (!box) return;
+        var items = [].slice.call(box.querySelectorAll("[data-fbt-item]"));
+        var totalEl = box.querySelector("[data-fbt-total]");
+        var countEl = box.querySelector("[data-fbt-count]");
+        var cta = box.querySelector("[data-fbt-add]");
+
+        function paint() {
+          var on = items.filter(function (i) {
+            return i.checked;
+          });
+          var sum = on.reduce(function (n, i) {
+            return n + (parseInt(i.getAttribute("data-fbt-price"), 10) || 0);
+          }, 0);
+          if (countEl) countEl.textContent = on.length;
+          if (totalEl) totalEl.textContent = "EGP " + sum;
+          /* Nothing ticked: the CTA has nothing to add, so it stops offering.
+             disabled also blocks the data-open="cart" handler in scripts.js. */
+          if (cta) cta.disabled = on.length === 0;
+        }
+
+        box.addEventListener("change", function (e) {
+          if (e.target.closest("[data-fbt-item]")) paint();
+        });
+        paint();
+      })();
+    </script>
+
+    <script>
+      /* Share. Phones and tablets get the OS sheet — it is what people expect
+         there, and it reaches apps a web page never could. Desktop has no
+         useful sheet, so it gets a small popup with the networks that matter
+         here plus a copy-link option.
+
+         The split is on pointer type, not on navigator.share alone: desktop
+         Safari and Edge both expose navigator.share, and a share sheet on a
+         mouse-driven machine is the wrong answer. */
+      (function () {
+        var btn = document.querySelector("[data-share]");
+        var modal = document.querySelector('[data-modal="share"]');
+        if (!btn || !modal) return;
+
+        var url = location.href;
+        var title = document.title;
+
+        /* Network links are built once from the live URL rather than hard-coded,
+           so this keeps working when the page moves to a real domain. */
+        var NETS = {
+          whatsapp: "https://wa.me/?text=" + encodeURIComponent(title + " " + url),
+          facebook: "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(url),
+          x: "https://x.com/intent/post?url=" + encodeURIComponent(url) + "&text=" + encodeURIComponent(title),
+        };
+        Object.keys(NETS).forEach(function (k) {
+          var a = modal.querySelector('[data-share-net="' + k + '"]');
+          if (a) a.setAttribute("href", NETS[k]);
+        });
+
+        /* Touch-first device with a real share sheet: intercept in the CAPTURE
+           phase so the delegated [data-open] handler in scripts.js never runs
+           and the popup never appears behind the sheet. */
+        document.addEventListener(
+          "click",
+          function (e) {
+            if (!e.target.closest("[data-share]")) return;
+            var coarse = window.matchMedia("(pointer: coarse)").matches;
+            if (!coarse || !navigator.share) return; // let the popup open
+            e.preventDefault();
+            e.stopPropagation();
+            navigator.share({ title: title, url: url }).catch(function (err) {
+              /* Dismissing the sheet is the user saying no. Anything else is a
+                 real failure, so fall through to the popup. */
+              if (err && err.name !== "AbortError") {
+                var opener = document.querySelector("[data-share-fallback]");
+                if (opener) opener.click();
+              }
+            });
+          },
+          true,
+        );
+
+        /* ------------------------- copy link ------------------------- */
+        var copyBtn = modal.querySelector("[data-share-copy]");
+        var copyLabel = modal.querySelector("[data-share-copy-label]");
+        var timer;
+
+        function flip(text) {
+          if (!copyLabel) return;
+          copyLabel.textContent = text;
+          clearTimeout(timer);
+          timer = setTimeout(function () {
+            copyLabel.textContent = "Copy link";
+          }, 1900);
+        }
+
+        /* execCommand path, kept for file:// and any context where the async
+           clipboard API is present but refuses (no permission, no activation). */
+        function legacyCopy() {
+          var tmp = document.createElement("input");
+          tmp.value = url;
+          tmp.setAttribute("aria-hidden", "true");
+          tmp.style.cssText = "position:fixed;top:-100px;opacity:0";
+          document.body.appendChild(tmp);
+          tmp.select();
+          var ok = false;
+          try {
+            ok = document.execCommand("copy");
+          } catch (e) {
+            ok = false;
+          }
+          document.body.removeChild(tmp);
+          return ok;
+        }
+
+        if (copyBtn) {
+          copyBtn.addEventListener("click", function () {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(url).then(
+                function () {
+                  flip("Copied!");
+                },
+                /* A rejection is not the end of the road — try the legacy path
+                   before telling the user to copy by hand. */
+                function () {
+                  flip(legacyCopy() ? "Copied!" : "Press Ctrl+C");
+                },
+              );
+              return;
+            }
+            flip(legacyCopy() ? "Copied!" : "Press Ctrl+C");
+          });
+        }
       })();
     </script>
   </body>

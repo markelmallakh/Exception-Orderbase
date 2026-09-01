@@ -6,193 +6,384 @@
     <title>Our Branches — Exception</title>
     <meta
       name="description"
-      content="Find your nearest Exception branch across Cairo, Giza and Alexandria — addresses, working hours, phone numbers and directions."
+      content="Find your nearest Exception branch on the map — 28 branches across Cairo, Giza and Fayoum, with directions to every one."
     />
     <!-- Tailwind (Play CDN) + faithful port of the project's tailwind.config.ts -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="tw-config.js"></script>
     <link rel="stylesheet" href="styles.css" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <!-- MapLibre GL + OpenFreeMap vector tiles (both keyless). Vector, not
+         raster, because the requested Snazzy "Interface map" style recolours
+         individual map features — water, landscape, road fill, road stroke,
+         labels — and a raster basemap can only be filtered as a whole image.
+         Deferred and placed BEFORE scripts.js so both are ready by
+         DOMContentLoaded, which is when the map builds. -->
+    <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" />
+    <script defer src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
     <script defer src="scripts.js"></script>
   </head>
   <body data-page="branches" data-path="/branches" class="antialiased bg-white">
     <!-- Shared header is injected here by scripts.js -->
+    <!-- Boot cover. The header is injected by scripts.js and Tailwind (Play
+         CDN) builds its CSS in JS, so an uncovered load paints three times:
+         bare page -> restyled page -> header appears. This holds that first
+         frame until the page is whole. Deliberately blank: a spinner never
+         had time to register and read as an error. A CSS safety fade clears
+         it even if scripts.js never runs. -->
+    <div id="boot" aria-hidden="true"></div>
     <div id="site-header"></div>
 
     <main class="overflow-x-hidden">
-      <!-- ==================== HERO (full-bleed storefront photo) ==================== -->
-      <section class="relative">
-        <img
-          src="dummy-images/branches-hero.webp"
-          alt="Exception Café &amp; Restaurant storefront at sunset"
-          class="w-full h-[360px] md:h-[480px] object-cover object-center"
-        />
-        <div class="absolute inset-0 bg-gradient-to-r from-black/75 via-black/45 to-black/10"></div>
-        <div class="absolute inset-0 flex items-center">
-          <div class="container w-full">
-            <div class="flex flex-col items-start gap-4 max-w-[620px]">
-              <nav aria-label="Breadcrumb" class="flex items-center gap-2 text-sm text-white/80">
-                <a href="index.html" class="hover:text-white transition-colors">Home</a>
-                <span class="text-white/50">/</span>
-                <span class="text-white font-medium">Our Branches</span>
-              </nav>
-              <h1 class="font-semibold text-[34px] md:text-[56px] leading-[110%] text-white">
-                Find an Exception <span class="text-primary-200">Near You</span>
-              </h1>
-              <p class="text-base md:text-lg text-white/85 leading-[150%]">
-                From Cairo to Alexandria — walk into any Exception for freshly baked pastries,
-                oriental sweets and a proper cup of coffee.
-              </p>
-              <div class="flex flex-wrap items-center gap-3 pt-1">
-                <span class="inline-flex items-center gap-2 rounded-[12px] bg-white/15 backdrop-blur px-4 py-2 text-sm font-semibold text-white">
-                  <span class="w-2 h-2 rounded-full bg-primary-200"></span> 25+ Branches Across Egypt
-                </span>
-                <span class="inline-flex items-center gap-2 rounded-[12px] bg-white/15 backdrop-blur px-4 py-2 text-sm font-semibold text-white">
-                  <span class="w-2 h-2 rounded-full bg-cta"></span> 3 Cities
-                </span>
-              </div>
+      <!-- ==================== BRANCHES — map with a floating panel ====================
+           No hero and no separate filter bar: the map is the page. The panel
+           carries the headline, both filters and the branch list, and floats
+           over the map on desktop so the map stays wide and landscape. On a
+           phone it can't float over anything useful, so it drops below. -->
+      <section class="container py-6 md:py-10">
+        <nav aria-label="Breadcrumb" class="flex items-center gap-2 text-sm text-gray-700 mb-4">
+          <a href="index.html" class="hover:text-primaryDark transition-colors">Home</a>
+          <span class="text-gray-400">/</span>
+          <span class="text-primaryDark font-medium">Our Branches</span>
+        </nav>
+
+        <div class="branches-stage" data-branches-stage>
+          <div class="branches-map" id="branch-map" role="application" aria-label="Map of Exception branches"></div>
+          <!-- Shown only if Leaflet or the tiles can't load, so the page never
+               presents an empty grey box with no explanation. -->
+          <p class="branches-map__fallback" data-map-fallback hidden>
+            The map couldn't load. Every branch is still listed beside it, with directions.
+          </p>
+
+          <aside class="branches-panel" id="branch-panel">
+            <div class="branches-panel__head">
+              <h1 class="branches-panel__title">Find an Exception <span class="text-primary">Near You</span></h1>
+              <p class="branches-panel__count" data-branch-count>Showing all branches</p>
             </div>
-          </div>
-        </div>
-      </section>
 
-      <!-- ==================== Floating filter bar (overlaps the hero) ==================== -->
-      <div class="container relative z-10 -mt-8 md:-mt-14">
-        <div class="bg-white rounded-2xl shadow-custom4 border border-gray-200 p-4 md:p-6 flex flex-col md:flex-row md:items-end gap-4 md:gap-6">
-          <div class="flex-1">
-            <label class="block mb-2 text-sm font-medium text-textSecondary">City</label>
-            <select
-              name="city"
-              data-branch-filter="city"
-              class="w-full h-[52px] px-4 rounded-lg border border-gray-200 bg-white text-textSecondary text-sm focus:outline-none focus:border-primaryDark"
-            >
-              <option value="all">All cities</option>
-              <option>Cairo</option>
-              <option>Giza</option>
-              <option>Alexandria</option>
-            </select>
-          </div>
-          <div class="flex-1">
-            <label class="block mb-2 text-sm font-medium text-textSecondary">Area</label>
-            <select
-              name="area"
-              data-branch-filter="area"
-              class="w-full h-[52px] px-4 rounded-lg border border-gray-200 bg-white text-textSecondary text-sm focus:outline-none focus:border-primaryDark"
-            >
-              <option value="all">All areas</option>
-              <option>Zamalek</option>
-              <option>Heliopolis</option>
-              <option>Nasr City</option>
-              <option>Maadi</option>
-              <option>Sheikh Zayed</option>
-              <option>Downtown Alexandria</option>
-            </select>
-          </div>
-        </div>
-      </div>
+            <div class="branches-panel__filters">
+              <label class="branches-field">
+                <span class="branches-field__label">City</span>
+                <!-- Options are built from the branch data, so a new branch can
+                     never be filtered out by a stale hard-coded list. -->
+                <select id="branch-city" name="city" data-branch-filter="city"></select>
+              </label>
+              <label class="branches-field">
+                <span class="branches-field__label">Area</span>
+                <select id="branch-area" name="area" data-branch-filter="area"></select>
+              </label>
+            </div>
 
-      <!-- ==================== Branch grid ==================== -->
-      <section class="container py-10 md:py-16">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6" id="branch-grid"></div>
-        <p class="hidden text-center text-gray-500 py-16" data-branch-empty>
-          No branches match your selection — try a different city or area.
-        </p>
+            <div class="branches-list" data-branch-list>
+              <div id="branch-grid" class="flex flex-col gap-3"></div>
+              <p class="hidden text-center text-gray-500 py-12" data-branch-empty>
+                No branches match your selection — try a different city or area.
+              </p>
+            </div>
+          </aside>
+        </div>
       </section>
     </main>
 
     <!-- Shared footer is injected here by scripts.js -->
     <div id="site-footer"></div>
 
-    <!-- Branch data → rendered as cards, with live City/Area filtering -->
+    <!-- Branch cards + Leaflet map, both driven by window.EXCEPTION_BRANCHES
+         (published by scripts.js) so there is one branch list on the site. -->
     <script>
-      (function () {
-        // [name, address, hours, phone, city, area]
-        const BRANCHES = [
-          ["Exception Zamalek", "12 26th of July St, Zamalek, Cairo", "8:00 AM - 12:00 AM", "+20 2 2735 1234", "Cairo", "Zamalek"],
-          ["Exception Heliopolis", "Cleopatra Square, Heliopolis, Cairo", "9:00 AM - 11:00 PM", "+20 2 2418 5678", "Cairo", "Heliopolis"],
-          ["Exception Nasr City", "Abbas El Akkad St, Nasr City, Cairo", "8:30 AM - 11:30 PM", "+20 2 2274 9012", "Cairo", "Nasr City"],
-          ["Exception Maadi", "Road 9, Maadi, Cairo", "9:00 AM - 11:00 PM", "+20 2 2358 3456", "Cairo", "Maadi"],
-          ["Exception Sheikh Zayed", "Americana Plaza, Sheikh Zayed, Giza", "10:00 AM - 12:00 AM", "+20 2 3850 7890", "Giza", "Sheikh Zayed"],
-          ["Exception Alexandria", "Fouad St, Downtown, Alexandria", "9:00 AM - 11:00 PM", "+20 3 486 2345", "Alexandria", "Downtown Alexandria"],
-        ];
+      document.addEventListener("DOMContentLoaded", function () {
+        var BRANCHES = (window.EXCEPTION_BRANCHES || []).slice();
+        var grid = document.getElementById("branch-grid");
+        if (!grid || !BRANCHES.length) return;
 
-        const ICON = {
+        var HOTLINE = "16689";
+        var ICON = {
           pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>',
-          clock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
           phone: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92Z"/></svg>',
           nav: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>',
         };
-
-        function card([name, address, hours, phone, city, area]) {
-          const tel = phone.replace(/\s/g, "");
-          const mapLink = "https://maps.google.com/?q=" + encodeURIComponent(name + " " + address);
-          return `
-          <article class="branch-card" data-city="${city.toLowerCase()}" data-area="${area.toLowerCase()}">
-            <div class="flex items-start gap-3">
-              <span class="branch-card__pin">${ICON.pin}</span>
-              <div class="min-w-0">
-                <h3 class="font-semibold text-lg leading-[130%] text-textSecondary">${name}</h3>
-                <p class="mt-0.5 text-xs font-medium uppercase tracking-wide text-primary">${city} &middot; ${area}</p>
-              </div>
-            </div>
-
-            <div class="flex flex-col gap-2.5 border-t border-gray-200 pt-4">
-              <div class="branch-row">
-                <span class="branch-row__ico">${ICON.pin}</span>
-                <p class="m-0 text-sm leading-[150%] text-gray-700">${address}</p>
-              </div>
-              <div class="branch-row">
-                <span class="branch-row__ico">${ICON.clock}</span>
-                <p class="m-0 text-sm leading-[150%] text-gray-700" dir="ltr">${hours}</p>
-              </div>
-              <div class="branch-row">
-                <span class="branch-row__ico">${ICON.phone}</span>
-                <p class="m-0 text-sm leading-[150%] text-gray-700" dir="ltr">${phone}</p>
-              </div>
-            </div>
-
-            <div class="flex gap-2 mt-auto pt-1">
-              <a href="tel:${tel}" class="btn btn--primary btn--sm flex-1 justify-center">${ICON.phone} Call</a>
-              <a href="${mapLink}" target="_blank" rel="noopener noreferrer" class="btn btn--black btn--sm flex-1 justify-center">${ICON.nav} Directions</a>
-            </div>
-          </article>`;
+        function esc(v) {
+          return String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+        }
+        /* Coordinates, not a name search — these are the surveyed positions
+           from the branch data, so Directions lands on the door. */
+        function mapsLink(b) {
+          return "https://www.google.com/maps/search/?api=1&query=" + b.lat + "," + b.lng;
         }
 
-        const grid = document.getElementById("branch-grid");
-        if (grid) grid.innerHTML = BRANCHES.map(card).join("");
+        /* One card, two homes: the list and the map popup. Keeping a single
+           renderer is what makes the popup the same widget as the card. */
+        function card(b, i) {
+          return (
+            '<article class="branch-card" data-branch="' + i + '" data-city="' + esc(b.city.toLowerCase()) + '" data-area="' + esc(b.area.toLowerCase()) + '">' +
+            '<div class="flex items-start gap-3">' +
+            '<span class="branch-card__pin">' + ICON.pin + "</span>" +
+            '<div class="min-w-0">' +
+            '<h3 class="font-semibold text-lg leading-[130%] text-textSecondary">Exception ' + esc(b.name) + "</h3>" +
+            '<p class="mt-0.5 text-xs font-medium uppercase tracking-wide text-primary">' + esc(b.city) + " &middot; " + esc(b.area) + "</p>" +
+            /* The data carries an Arabic name per branch (b.ar) — not shown
+               here, since this build keeps its copy English even in RTL. It is
+               waiting in the data if the Arabic version ever needs it. */
+            "</div></div>" +
+            /* Street line and number: an area name alone can't separate the
+               three Maadi branches or the three at Hadayek El Ahram. */
+            '<div class="branch-card__meta">' +
+            (b.addr
+              ? '<p class="branch-row"><span class="branch-row__ico">' + ICON.pin + "</span>" +
+                '<span class="branch-row__txt">' + esc(b.addr) + "</span></p>"
+              : "") +
+            '<p class="branch-row"><span class="branch-row__ico">' + ICON.phone + "</span>" +
+            '<span class="branch-row__txt" dir="ltr">' + esc(b.phone || HOTLINE) + "</span></p>" +
+            "</div>" +
+            '<div class="flex gap-2 mt-auto pt-3 border-t border-gray-200">' +
+            '<a href="tel:' + esc((b.phone || HOTLINE).replace(/[^0-9+]/g, "")) + '" class="btn btn--primary btn--sm flex-1 justify-center">' + ICON.phone + " Call</a>" +
+            '<a href="' + mapsLink(b) + '" target="_blank" rel="noopener noreferrer" class="btn btn--black btn--sm flex-1 justify-center">' + ICON.nav + " Directions</a>" +
+            "</div></article>"
+          );
+        }
 
-        // ---- Live filtering ----
-        const cards = Array.from(grid ? grid.children : []);
-        const countEl = document.querySelector("[data-branch-count]");
-        const emptyEl = document.querySelector("[data-branch-empty]");
-        const filters = document.querySelectorAll("[data-branch-filter]");
-        const norm = (v) => (v || "all").trim().toLowerCase();
+        grid.innerHTML = BRANCHES.map(card).join("");
+        var cards = [].slice.call(grid.children);
+        var total = document.querySelector("[data-branch-total]");
+        if (total) total.textContent = BRANCHES.length;
 
-        function apply() {
-          let city = "all";
-          let area = "all";
-          filters.forEach((f) => {
-            if (f.dataset.branchFilter === "city") city = norm(f.value);
-            if (f.dataset.branchFilter === "area") area = norm(f.value);
+        /* ---------------- filters, built from the data ---------------- */
+        var citySel = document.querySelector('[data-branch-filter="city"]');
+        var areaSel = document.querySelector('[data-branch-filter="area"]');
+        var uniq = function (arr) {
+          return arr.filter(function (v, i, a) {
+            return a.indexOf(v) === i;
+          }).sort();
+        };
+        function fillCities() {
+          citySel.innerHTML =
+            '<option value="all">All cities</option>' +
+            uniq(BRANCHES.map(function (b) { return b.city; }))
+              .map(function (c) { return '<option value="' + esc(c.toLowerCase()) + '">' + esc(c) + "</option>"; })
+              .join("");
+        }
+        /* Areas follow the chosen city, so the menu can never offer an area
+           that would return nothing. */
+        function fillAreas() {
+          var city = citySel.value;
+          var areas = uniq(
+            BRANCHES.filter(function (b) { return city === "all" || b.city.toLowerCase() === city; })
+              .map(function (b) { return b.area; }),
+          );
+          areaSel.innerHTML =
+            '<option value="all">All areas</option>' +
+            areas.map(function (a) { return '<option value="' + esc(a.toLowerCase()) + '">' + esc(a) + "</option>"; }).join("");
+          if (areaSel._uiSelectRefresh) areaSel._uiSelectRefresh();
+        }
+        fillCities();
+        fillAreas();
+        if (citySel._uiSelectRefresh) citySel._uiSelectRefresh();
+
+        /* ---------------- the map ---------------- */
+        var map = null, markers = [], mapReady = false;
+        var mapEl = document.getElementById("branch-map");
+        var fallback = document.querySelector("[data-map-fallback]");
+
+        /* Snazzy Maps "Interface map" (style 1243) — its palette, applied to
+           the vector basemap. The Snazzy JSON itself is a Google-Maps styler
+           and cannot be fed to MapLibre, so the same six rules are expressed
+           against the vector style's own layers below. */
+        var STYLE = {
+          land: "#f9f5ed",
+          water: "#aee0f4",
+          road: "#f5f5f5",
+          roadStroke: "#c9c9c9",
+          label: "#878787",
+          building: "#f1ece1",
+        };
+
+        /* Walk every layer the basemap ships and repaint it by category. Done
+           by inspecting the layers rather than hand-authoring a style file, so
+           the basemap can be updated upstream without this breaking. */
+        function applyInterfaceStyle() {
+          var layers = map.getStyle().layers || [];
+          layers.forEach(function (l) {
+            var id = l.id, t = l.type;
+            try {
+              if (t === "background") {
+                map.setPaintProperty(id, "background-color", STYLE.land);
+              } else if (/water|ocean|sea|lake|river/i.test(id)) {
+                if (t === "fill") map.setPaintProperty(id, "fill-color", STYLE.water);
+                if (t === "line") map.setPaintProperty(id, "line-color", STYLE.water);
+              } else if (t === "fill" && /landcover|landuse|park|wood|grass|sand|pitch|cemetery|hospital|school|residential/i.test(id)) {
+                /* The style has no green: every landscape feature is the same
+                   off-white as the ground. */
+                map.setPaintProperty(id, "fill-color", STYLE.land);
+              } else if (t === "fill" && /building/i.test(id)) {
+                map.setPaintProperty(id, "fill-color", STYLE.building);
+              } else if (t === "line" && /road|highway|street|motorway|trunk|primary|secondary|tertiary|bridge|tunnel|transit|rail|aeroway/i.test(id)) {
+                /* Casing layers are the stroke; everything else is the fill. */
+                map.setPaintProperty(id, "line-color", /casing|outline|_case/i.test(id) ? STYLE.roadStroke : STYLE.road);
+              } else if (t === "symbol") {
+                map.setPaintProperty(id, "text-color", STYLE.label);
+                /* labels.text.stroke: visibility off */
+                map.setPaintProperty(id, "text-halo-width", 0);
+              } else if (t === "fill") {
+                map.setPaintProperty(id, "fill-color", STYLE.land);
+              }
+            } catch (e) {
+              /* A layer that doesn't carry the property we tried is not an
+                 error worth stopping the whole restyle for. */
+            }
           });
-          let shown = 0;
-          cards.forEach((c) => {
-            const ok =
-              (city === "all" || c.dataset.city === city) &&
-              (area === "all" || c.dataset.area === area);
-            c.style.display = ok ? "" : "none";
-            if (ok) shown++;
+        }
+
+        function pinEl(i) {
+          var el = document.createElement("span");
+          el.className = "branch-pin";
+          el.innerHTML = '<span class="branch-pin__dot"></span>';
+          el.addEventListener("click", function (ev) {
+            ev.stopPropagation();
+            focus(i);
+          });
+          return el;
+        }
+
+        function buildMap() {
+          if (typeof maplibregl === "undefined" || !mapEl) {
+            if (fallback) fallback.hidden = false;
+            return;
+          }
+          map = new maplibregl.Map({
+            container: mapEl,
+            style: "https://tiles.openfreemap.org/styles/positron",
+            center: [31.24, 30.05],
+            zoom: 8.4,
+            attributionControl: false,
+            /* Flat: the Snazzy style is a plan view, and tilt/rotate would
+               make the pins harder to compare. */
+            pitchWithRotate: false,
+            dragRotate: false,
+          });
+          /* Both controls to the right: the panel floats over the left. */
+          map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
+          map.addControl(new maplibregl.AttributionControl({ compact: true }), "bottom-right");
+
+          markers = BRANCHES.map(function (b, i) {
+            var m = new maplibregl.Marker({ element: pinEl(i), anchor: "center" }).setLngLat([b.lng, b.lat]);
+            /* The popup IS the branch card — same renderer as the list. */
+            m.setPopup(
+              new maplibregl.Popup({
+                className: "branch-popup",
+                maxWidth: "320px",
+                offset: 18,
+                /* focus() positions the view itself; the built-in pan would
+                   fight it and land the popup somewhere else. */
+                focusAfterOpen: false,
+              }).setHTML(card(b, i)),
+            );
+            return m;
+          });
+
+          map.on("load", function () {
+            applyInterfaceStyle();
+            mapReady = true;
+            apply(true);
+          });
+          map.on("error", function () {
+            if (fallback && !mapReady) fallback.hidden = false;
+          });
+        }
+
+        var activeIdx = -1;
+        function setActive(i) {
+          activeIdx = i;
+          cards.forEach(function (c, n) { c.classList.toggle("is-active", n === i); });
+          markers.forEach(function (m, n) {
+            var el = m.getElement();
+            if (el) el.classList.toggle("is-active", n === i);
+          });
+        }
+
+        /* ---------------- filtering drives both ---------------- */
+        var countEl = document.querySelector("[data-branch-count]");
+        var emptyEl = document.querySelector("[data-branch-empty]");
+
+        function apply(fit) {
+          var city = citySel.value || "all";
+          var area = areaSel.value || "all";
+          var shown = [];
+          BRANCHES.forEach(function (b, i) {
+            var ok =
+              (city === "all" || b.city.toLowerCase() === city) &&
+              (area === "all" || b.area.toLowerCase() === area);
+            cards[i].hidden = !ok;
+            if (ok) shown.push(i);
           });
           if (countEl) {
             countEl.textContent =
-              shown === cards.length ? "Showing all branches" : "Showing " + shown + " of " + cards.length + " branches";
+              shown.length === BRANCHES.length
+                ? "Showing all " + BRANCHES.length + " branches"
+                : "Showing " + shown.length + " of " + BRANCHES.length + " branches";
           }
-          if (emptyEl) emptyEl.classList.toggle("hidden", shown !== 0);
+          if (emptyEl) emptyEl.classList.toggle("hidden", shown.length !== 0);
+
+          if (!map || !mapReady) return;
+          markers.forEach(function (m, i) {
+            if (shown.indexOf(i) === -1) m.remove();
+            else m.addTo(map);
+          });
+          if (fit === false || !shown.length) return;
+          if (shown.length === 1) {
+            map.easeTo({ center: [BRANCHES[shown[0]].lng, BRANCHES[shown[0]].lat], zoom: 14, duration: 600 });
+            return;
+          }
+          var bounds = new maplibregl.LngLatBounds();
+          shown.forEach(function (i) { bounds.extend([BRANCHES[i].lng, BRANCHES[i].lat]); });
+          /* Left padding clears the floating panel, so a fitted set never
+             hides behind it. */
+          var wide = window.matchMedia("(min-width: 1024px)").matches;
+          map.fitBounds(bounds, {
+            padding: { top: 60, bottom: 60, left: wide ? 430 : 40, right: 60 },
+            maxZoom: 13,
+            duration: 600,
+          });
         }
 
-        filters.forEach((f) => f.addEventListener("change", apply));
-        apply();
-      })();
+        citySel.addEventListener("change", function () {
+          fillAreas();
+          apply(true);
+        });
+        areaSel.addEventListener("change", function () { apply(true); });
+
+        /* Bring a branch into view with its popup sitting where it can be
+           read: horizontally past the panel that floats over the left of the
+           map, and low enough that the popup (which opens upward) has room.
+           Below 1024px the panel sits under the map, so no bias is needed. */
+        function focus(i) {
+          if (!map || !mapReady) return;
+          var b = BRANCHES[i];
+          var size = mapEl.getBoundingClientRect();
+          var wide = window.matchMedia("(min-width: 1024px)").matches;
+          /* offset shifts where the centre lands, in pixels — positive x moves
+             the target right of the container's middle. */
+          var offset = wide
+            ? [size.width * 0.13, size.height * 0.16]
+            : [0, size.height * 0.12];
+          map.flyTo({ center: [b.lng, b.lat], zoom: 14.5, offset: offset, duration: 700 });
+          markers[i].togglePopup();
+          if (!markers[i].getPopup().isOpen()) markers[i].togglePopup();
+          setActive(i);
+        }
+
+        /* Clicking a card flies to its pin and opens the same card there. */
+        grid.addEventListener("click", function (e) {
+          if (e.target.closest("a")) return; // Call / Directions do their own thing
+          var el = e.target.closest("[data-branch]");
+          if (el) focus(+el.getAttribute("data-branch"));
+        });
+
+        buildMap();
+        /* Painted once here for the list and the count; the map re-runs it
+           from its own load event, once the style is ready for markers. */
+        apply(false);
+        window.addEventListener("resize", function () { if (map) map.resize(); });
+      });
     </script>
   </body>
 </html>

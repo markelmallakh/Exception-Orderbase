@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Exception Cafe — Exception</title>
+    <meta
+      name="description"
+      content="Exception Cafe — a place for exceptional moments. Specialty coffee, fresh juices and signature drinks served inside our stores."
+    />
+    <!-- Tailwind (Play CDN) + faithful port of the project's tailwind.config.ts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="tw-config.js"></script>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <script defer src="scripts.js"></script>
+  </head>
+  <body data-page="cafe" data-path="/exception-cafe" class="antialiased bg-white">
+    <!-- Boot cover. The header is injected by scripts.js and Tailwind (Play
+         CDN) builds its CSS in JS, so an uncovered load paints three times:
+         bare page -> restyled page -> header appears. This holds that first
+         frame until the page is whole. Deliberately blank: a spinner never
+         had time to register and read as an error. A CSS safety fade clears
+         it even if scripts.js never runs. -->
+    <div id="boot" aria-hidden="true"></div>
+    <div id="site-header"></div>
+
+    <main class="overflow-x-clip">
+      <!-- ============================ HERO ============================
+           Mint band, centred pill + display headline, then a five-tile
+           collage that steps up toward the middle. The centre tile is the
+           café film; the four stills flank it at two smaller heights, so
+           the row reads as one arc rather than a strip of equal thumbs. -->
+      <section class="cafe-hero">
+        <div class="mx-auto max-w-[1512px] px-6 lg:px-[60px]">
+          <div class="cafe-hero__head">
+            <p class="cafe-hero__pill">Exception Cafe</p>
+            <h1 class="cafe-hero__title">A Place for Exceptional Moments</h1>
+          </div>
+
+          <div class="cafe-hero__row">
+            <div class="cafe-hero__tile cafe-hero__tile--sm cafe-hero__tile--edge">
+              <img src="dummy-images/cafe/hero1.webp" alt="" width="309" height="348" loading="eager" decoding="async" />
+            </div>
+            <div class="cafe-hero__tile cafe-hero__tile--md">
+              <img src="dummy-images/cafe/hero2.webp" alt="Coffee served beside a slice of Exception cake" width="399" height="450" loading="eager" decoding="async" />
+            </div>
+            <div class="cafe-hero__tile cafe-hero__tile--lg">
+              <video
+                src="dummy-images/cafe/hero3.mp4"
+                autoplay
+                muted
+                loop
+                playsinline
+                preload="metadata"
+                aria-label="Inside an Exception Cafe"
+              ></video>
+            </div>
+            <div class="cafe-hero__tile cafe-hero__tile--md">
+              <img src="dummy-images/cafe/hero4.webp" alt="An Exception Cafe drink being prepared" width="399" height="450" loading="eager" decoding="async" />
+            </div>
+            <div class="cafe-hero__tile cafe-hero__tile--sm cafe-hero__tile--edge">
+              <img src="dummy-images/cafe/hero5.webp" alt="" width="309" height="348" loading="eager" decoding="async" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================= CAFE MENU =========================
+           Heading left, category chips right; below, a two-column list of
+           drinks where the right column is dropped half a step so the
+           photographs never line up in hard rows.
+
+           All four categories sit on the page at once: the chips are jump
+           links, not filters, and the active one follows the section you
+           are reading. The head pins under the category bar and collapses
+           while pinned, so it costs less of the screen than it does at rest.
+
+           Titles only, no prices — per the brief. The Figma carries a
+           placeholder price line; if the client wants it back, give each
+           item a `price` and uncomment the one line in the renderer. -->
+      <section class="cafe-menu">
+        <div class="mx-auto max-w-[1512px] px-6 lg:px-[60px]">
+          <header class="cafe-menu__head">
+            <h2 class="cafe-menu__title">Exception Cafe Menu</h2>
+            <nav class="cafe-chips" id="cafe-chips" aria-label="Menu categories"></nav>
+          </header>
+          <div class="cafe-dishes" id="cafe-dishes"></div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Shared footer is injected here by scripts.js -->
+    <div id="site-footer"></div>
+
+    <script>
+      (function () {
+        /* Menu data lives here rather than in scripts.js: it is content for
+           this one page, and keeping it beside the markup means the client
+           can edit a drink name without touching shared site logic.
+
+           `img` is the supplied photograph. Items without one fall back to
+           a branded placeholder disc — deliberately neutral, so a missing
+           shot reads as "photo pending" rather than as the wrong drink. */
+        var DIR = "dummy-images/cafe/";
+        /* Ten drink photographs were supplied, all coffee. Rather than leave
+           the other twenty-one items blank, each group cycles its own pool so
+           every drink shows a cup. Juices and cocktails borrow the iced pool —
+           the closest match until their own shots exist. Give an item its own
+           `img` and it wins over the pool. */
+        var HOT = ["machiato.webp", "cortado.webp", "flatwhite.webp", "cuppacino.webp", "american.webp"];
+        var COLD = ["iced american.webp", "iced late.webp", "iced spanish.webp", "iced mocha.webp", "iced white mocha.webp"];
+        var MENU = [
+          {
+            id: "hot",
+            pool: HOT,
+            group: "Hot Coffee",
+            items: [
+              { name: "Espresso", note: "Single / Double" },
+              { name: "Macchiato", note: "Single / Double", img: "machiato.webp" },
+              { name: "Cortado", note: "Single / Double", img: "cortado.webp" },
+              { name: "Flat White", note: "Regular / Large", img: "flatwhite.webp" },
+              { name: "Cappuccino", note: "Regular / Large", img: "cuppacino.webp" },
+              { name: "Caffè Latte", note: "Regular / Large" },
+              { name: "Americano", note: "Regular / Large", img: "american.webp" },
+              { name: "Café Mocha", note: "Regular / Large" },
+              { name: "Spanish Latte", note: "Regular / Large" },
+              { name: "Turkish Coffee", note: "Plain / Medium / Sweet" },
+            ],
+          },
+          {
+            id: "cold",
+            pool: COLD,
+            group: "Cold Coffee",
+            items: [
+              { name: "Iced Americano", note: "Regular / Large", img: "iced american.webp" },
+              { name: "Iced Latte", note: "Regular / Large", img: "iced late.webp" },
+              { name: "Iced Spanish Latte", note: "Regular / Large", img: "iced spanish.webp" },
+              { name: "Iced Mocha", note: "Regular / Large", img: "iced mocha.webp" },
+              { name: "Iced White Mocha", note: "Regular / Large", img: "iced white mocha.webp" },
+              { name: "Cold Brew", note: "Regular / Large" },
+              { name: "Coffee Frappé", note: "Regular / Large" },
+              { name: "Affogato", note: "Single scoop" },
+            ],
+          },
+          {
+            id: "juices",
+            pool: COLD,
+            group: "Juices",
+            items: [
+              { name: "Fresh Orange", note: "Freshly squeezed" },
+              { name: "Lemon & Mint", note: "Freshly squeezed" },
+              { name: "Mango", note: "Freshly squeezed" },
+              { name: "Strawberry", note: "Freshly squeezed" },
+              { name: "Guava", note: "Freshly squeezed" },
+              { name: "Watermelon", note: "Freshly squeezed" },
+              { name: "Sugarcane", note: "Freshly pressed" },
+            ],
+          },
+          {
+            id: "cocktails",
+            pool: COLD,
+            group: "Special Cocktails",
+            items: [
+              { name: "Exception Cocktail", note: "Layered fresh fruit" },
+              { name: "Mango & Passion", note: "Layered fresh fruit" },
+              { name: "Strawberry & Banana", note: "Layered fresh fruit" },
+              { name: "Tropical Sunrise", note: "Layered fresh fruit" },
+              { name: "Karkade Cooler", note: "Served over ice" },
+              { name: "Berry Fizz", note: "Served over ice" },
+            ],
+          },
+        ];
+
+        /* Fill every gap from the group's pool, walking it in order so no two
+           neighbours repeat until the pool runs out. */
+        MENU.forEach(function (sec) {
+          var n = 0;
+          sec.items.forEach(function (it) {
+            if (!it.img && sec.pool && sec.pool.length) it.img = sec.pool[n++ % sec.pool.length];
+          });
+        });
+
+        var chipHost = document.getElementById("cafe-chips");
+        var dishHost = document.getElementById("cafe-dishes");
+        var head = document.querySelector(".cafe-menu__head");
+        var menu = document.querySelector(".cafe-menu");
+        if (!chipHost || !dishHost || !head) return;
+
+        function esc(s) {
+          return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+        }
+
+        function dish(item) {
+          var media = item.img
+            ? '<img src="' + DIR + encodeURIComponent(item.img) + '" alt="' + esc(item.name) + '" width="497" height="497" loading="lazy" decoding="async" />'
+            : '<span class="cafe-dish__ph" aria-hidden="true"><img src="favicon.svg" alt="" width="60" height="60" /></span>';
+          return (
+            '<li class="cafe-dish">' +
+            '<div class="cafe-dish__media">' + media + "</div>" +
+            '<div class="cafe-dish__text">' +
+            '<h3 class="cafe-dish__name">' + esc(item.name) + "</h3>" +
+            '<p class="cafe-dish__note">' + esc(item.note) + "</p>" +
+            /* '<p class="cafe-dish__price">' + esc(item.price) + "</p>" + */
+            "</div>" +
+            "</li>"
+          );
+        }
+
+        /* Split alternately so the two columns stay balanced and the
+           half-step stagger keeps its rhythm whatever the item count. */
+        function section(sec) {
+          var a = [];
+          var b = [];
+          sec.items.forEach(function (it, i) {
+            (i % 2 ? b : a).push(dish(it));
+          });
+          return (
+            '<section class="cafe-section" id="cafe-sec-' + sec.id + '" aria-label="' + esc(sec.group) + '">' +
+            '<div class="cafe-dishes__panel">' +
+            '<ul class="cafe-dishes__col">' + a.join("") + "</ul>" +
+            '<ul class="cafe-dishes__col">' + b.join("") + "</ul>" +
+            "</div></section>"
+          );
+        }
+
+        chipHost.innerHTML = MENU.map(function (sec, i) {
+          return (
+            '<a class="cafe-chip" id="cafe-chip-' + sec.id + '" href="#cafe-sec-' + sec.id + '"' +
+            (i === 0 ? ' aria-current="true"' : "") + ">" + esc(sec.group) + "</a>"
+          );
+        }).join("");
+        dishHost.innerHTML = MENU.map(section).join("");
+
+        var SECTIONS = MENU.map(function (sec) {
+          return { id: sec.id, el: document.getElementById("cafe-sec-" + sec.id) };
+        }).filter(function (s) {
+          return s.el;
+        });
+
+        var current = "";
+        function setActive(id) {
+          if (id === current) return;
+          current = id;
+          MENU.forEach(function (sec) {
+            var chip = document.getElementById("cafe-chip-" + sec.id);
+            if (!chip) return;
+            if (sec.id === id) chip.setAttribute("aria-current", "true");
+            else chip.removeAttribute("aria-current");
+          });
+        }
+
+        /* While a chip-triggered smooth scroll is in flight the spy would
+           strobe through every section it passes, so it is held off until
+           the scroll settles. */
+        var lock = false;
+        var lockTimer = 0;
+
+        /* A chip jump has to land the section just under the PINNED head, so
+           we need its collapsed height — and we need it before the head has
+           ever collapsed. Measuring it lazily (on the first stick) meant the
+           first jump of the session missed. So take it once, up front, with
+           transitions muted so the probe is invisible. */
+        var headH = 0;
+        var GAP = 16; // breathing room between the pinned head and a landed section
+        function calibrate() {
+          var was = head.classList.contains("is-stuck");
+          head.classList.add("is-measuring", "is-stuck");
+          headH = Math.round(head.offsetHeight);
+          head.classList.remove("is-stuck");
+          if (was) head.classList.add("is-stuck");
+          /* Force a reflow before re-enabling transitions, or the browser
+             coalesces the probe with the restore and animates the diff. */
+          void head.offsetHeight;
+          head.classList.remove("is-measuring");
+          if (menu) menu.style.setProperty("--cafe-head-h", headH + "px");
+        }
+
+        function measure() {
+          var navH = parseFloat(getComputedStyle(head).top) || 0;
+          var stuck = head.getBoundingClientRect().top <= navH + 1;
+          if (stuck !== head.classList.contains("is-stuck")) head.classList.toggle("is-stuck", stuck);
+          if (lock) return;
+          /* Active = the last section whose top has crossed the line just
+             below the pinned head. The line sits a few pixels PAST where a
+             chip jump lands (navH + headH + GAP), otherwise landing on a
+             section leaves it exactly on the boundary and the spy hands the
+             chip back to the section above. */
+          var line = navH + headH + GAP + 8;
+          var active = SECTIONS[0];
+          SECTIONS.forEach(function (sec) {
+            if (sec.el.getBoundingClientRect().top <= line) active = sec;
+          });
+          if (active) setActive(active.id);
+        }
+
+        function release() {
+          lock = false;
+          measure();
+        }
+
+        chipHost.addEventListener("click", function (e) {
+          var link = e.target.closest(".cafe-chip");
+          if (!link) return;
+          var target = document.querySelector(link.getAttribute("href"));
+          if (!target) return; // let the browser handle it
+          e.preventDefault();
+          setActive(link.id.replace("cafe-chip-", ""));
+          lock = true;
+          /* Not scrollIntoView: the head is in flow, so collapsing it pulls
+             everything below up by the difference. Jumping from an expanded
+             head means the page shrinks under the scroll and the section
+             overshoots — so that shrink is subtracted up front. */
+          var navH = parseFloat(getComputedStyle(head).top) || 0;
+          var shrink = head.classList.contains("is-stuck") ? 0 : head.offsetHeight - headH;
+          var y = window.scrollY + target.getBoundingClientRect().top - navH - headH - GAP - shrink;
+          var smooth = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+          window.scrollTo({ top: Math.max(0, y), behavior: smooth ? "smooth" : "auto" });
+          clearTimeout(lockTimer);
+          lockTimer = setTimeout(release, 1000);
+          if ("onscrollend" in window) window.addEventListener("scrollend", release, { once: true });
+        });
+
+        /* One measurement per frame. Two reasons: measure() reads layout four
+           times over, and reading it synchronously inside the scroll event
+           could catch the head mid-reposition and miss the pin entirely. */
+        var raf = 0;
+        function onScroll() {
+          if (raf) return;
+          raf = requestAnimationFrame(function () {
+            raf = 0;
+            measure();
+          });
+        }
+
+        /* Reveal each drink as it comes into view. Gated on IntersectionObserver
+           and on the user not asking for reduced motion — in either case the
+           .has-reveal class is never added, so the list renders plainly rather
+           than staying stuck at opacity 0. Each item is unobserved once shown:
+           this is an entrance, not something to replay on the way back up. */
+        (function reveal() {
+          if (!("IntersectionObserver" in window)) return;
+          if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+          dishHost.classList.add("has-reveal");
+          var io = new IntersectionObserver(
+            function (entries) {
+              entries.forEach(function (entry) {
+                if (!entry.isIntersecting) return;
+                entry.target.classList.add("is-in");
+                io.unobserve(entry.target);
+              });
+            },
+            /* Bottom margin pulled in so a drink starts moving just after its
+               top edge clears the fold, not the instant one pixel shows. */
+            { rootMargin: "0px 0px -12% 0px", threshold: 0.05 },
+          );
+          [].forEach.call(dishHost.querySelectorAll(".cafe-dish"), function (el) {
+            io.observe(el);
+          });
+        })();
+
+        function refresh() {
+          calibrate();
+          measure();
+        }
+        window.addEventListener("scroll", onScroll, { passive: true });
+        if ("onscrollend" in window) window.addEventListener("scrollend", measure);
+        window.addEventListener("resize", refresh, { passive: true });
+        window.addEventListener("load", refresh);
+        /* Re-measure once the web fonts land. Calibrating against fallback
+           metrics leaves the head the wrong height, which threw off a chip
+           jump made in the first moments after load. */
+        if (document.fonts && document.fonts.ready) document.fonts.ready.then(refresh);
+        refresh();
+      })();
+    </script>
+  </body>
+</html>
