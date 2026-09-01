@@ -792,10 +792,15 @@
       </div>`,
       )
       .join("");
+    /* data-no-oos: this is a cross-sell strip, so everything in it must be
+       addable in one tap — available and simple. Without the opt-out the
+       demo seeding in initStock() treats the grid like any other product
+       list and marks one card out of stock, which turned an upsell into a
+       "Schedule" button nobody can act on from the drawer. */
     const cartUpsell = `
       <div class="py-4">
         <p class="font-semibold text-textSecondary text-sm mb-3">Complete Your Order</p>
-        <div class="grid grid-cols-3 gap-x-2.5 gap-y-4">${upsellCards}</div>
+        <div class="grid grid-cols-3 gap-x-2.5 gap-y-4" data-no-oos>${upsellCards}</div>
       </div>`;
 
     const initialSubtotal = demoCartItems.reduce((sum, it) => sum + it.price * it.qty, 0);
