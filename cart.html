@@ -95,7 +95,9 @@
                 </li>
 
                 <!-- ---- Line item 2 (on sale) ---- -->
-                <li data-cart-row data-unit-price="420" class="flex items-center justify-between gap-4 pt-6 first:pt-0">
+                <!-- DEMO: the out-of-stock line, same product as the drawer and the
+                     checkout summary. data-oos is what flags it (see initCartOOS). -->
+                <li data-cart-row data-oos data-unit-price="420" class="flex items-center justify-between gap-4 pt-6 first:pt-0">
                   <div class="flex gap-2.5 w-full">
                     <a href="product.html" class="shrink-0">
                       <img data-shot-img="" src="dummy-images/image-2.webp" alt="Assorted Baklava Box" class="h-[99px] !w-[99px] lg:h-[146px] lg:!w-[146px] rounded object-cover bg-primary-light" />

@@ -9500,3 +9500,61 @@ a.ord-status__card:hover {
     left: -18px;
   }
 }
+
+/* ============================================================
+   OUT-OF-STOCK CART LINE (.cart-oos)
+   One such item blocks express delivery and cash on delivery for the whole
+   order, and the disclaimers that say so are worded generically. This is
+   what tells you which line to act on. Same amber as .ship-note, so the
+   badge and the note that sent you looking read as one thing.
+   ============================================================ */
+.cart-oos {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 5px;
+  margin-bottom: 1px;
+  padding: 3px 7px;
+  border: 1px solid #ecd79c;
+  border-radius: 6px;
+  background: #fff6dd;
+  color: #6b5417;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.35;
+  /* The drawer's text column is narrow and sits right beside the quantity
+     counter, so this must be free to wrap rather than run underneath it. */
+  max-width: 100%;
+  flex-wrap: wrap;
+}
+.cart-oos svg {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+}
+.cart-oos__remove {
+  /* No divider rule: in the drawer this badge has ~160px to work with, and
+     the extra padding a separator needs is exactly what pushed "Remove"
+     onto a second line. */
+  margin-inline-start: 1px;
+  color: #b4231f;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.15s ease;
+}
+.cart-oos__remove:hover {
+  color: #8c1a17;
+}
+/* An amber edge down the row so the line is findable in a long cart without
+   having to read every badge. */
+[data-cart-row].is-oos,
+[data-order-summary] li.is-oos {
+  box-shadow: inset 3px 0 0 #f0c95a;
+  padding-inline-start: 10px;
+}
+:root[data-theme="dark"] .cart-oos {
+  border-color: #6a5a2c;
+  background: #3a3320;
+  color: #f4e3b4;
+}

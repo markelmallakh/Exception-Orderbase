@@ -690,7 +690,10 @@
      state (currently the PDP add-ons summary) into the matching cart row. */
   const DEMO_CART_ITEMS = [
     { key: "chocolate-fudge-cake", name: "Chocolate Fudge Cake", price: 650, qty: 1, img: "dummy-images/image-7.webp", variants: [["Size", "1 Kg"]] },
-    { key: "assorted-baklava-box", name: "Assorted Baklava Box", price: 420, qty: 1, img: "dummy-images/image.webp", variants: [["Weight", "500 g"]] },
+    /* DEMO: the out-of-stock line. The same product is flagged on cart.html
+       and in the checkout summary, so the item stays the same one all the
+       way through the flow. */
+    { key: "assorted-baklava-box", name: "Assorted Baklava Box", price: 420, qty: 1, img: "dummy-images/image.webp", variants: [["Weight", "500 g"]], oos: true },
   ];
 
   /* ---------------------------------------------------------------
@@ -725,7 +728,7 @@
     const cartRows = demoCartItems
       .map(
         (it) => `
-      <div class="flex gap-3 py-4 border-b border-neutral-100" data-cart-row data-unit-price="${it.price}" data-cart-product="${it.key || ""}">
+      <div class="flex gap-3 py-4 border-b border-neutral-100" data-cart-row data-unit-price="${it.price}" data-cart-product="${it.key || ""}"${it.oos ? " data-oos" : ""}>
         <img data-shot-img="ui" src="${it.img}" alt="${esc(it.name)}" class="w-[72px] h-[72px] rounded-lg object-cover bg-primary-light" />
         <!-- Text column and counter sit side-by-side (counter no longer stacks
              below the price), so the row is only as tall as the thumbnail. -->
@@ -1071,6 +1074,9 @@
     document.body.classList.add("no-scroll");
     const input = el.querySelector("[data-search-input]");
     if (input) setTimeout(() => input.focus(), 80);
+    /* Re-flag the out-of-stock line: rows may have been added or removed
+       since the drawer was last looked at. */
+    if (key === "cart" && initCartOOS.sync) initCartOOS.sync();
   }
 
   function closeOverlay() {
@@ -3971,6 +3977,162 @@
   }
 
   /* ---- checkout: express delivery is off the table for baked-to-order ---- */
+  /* ---------------------------------------------------------------
+     Flag the out-of-stock line wherever the cart is shown.
+
+     One out-of-stock item blocks express delivery and cash on delivery
+     for the WHOLE order, and the disclaimer that says so is deliberately
+     generic — it never names the item, because that list grows with every
+     line. Which left no way to tell WHICH line was responsible short of
+     emptying the cart one row at a time. This marks it in place.
+
+     Three surfaces, three row shapes: the drawer builds its own markup,
+     the cart page uses <li data-cart-row>, and the checkout summary is
+     plain <li>s with no data hooks at all. They agree on one thing — the
+     thumbnail's alt text is the product name — so that is what the match
+     runs on, with the heading as a fallback.
+     --------------------------------------------------------------- */
+  /* Names this module put into the out-of-stock list from [data-oos] markup,
+     so they can be taken back out when their row goes — without touching
+     anything the visitor actually scheduled from a product card. */
+  const CART_OOS_SEEDED = new Set();
+
+  function cartRowName(row) {
+    const img = row.querySelector("img[alt]");
+    if (img && img.alt.trim()) return img.alt.trim();
+    const h = row.querySelector("h3, h4, h5, h6, p");
+    return h ? h.textContent.trim() : "";
+  }
+
+  function initCartOOS(scope) {
+    const root = scope && scope.querySelectorAll ? scope : document;
+    if (root === document && document.body.dataset.cartOosReady) return;
+    if (root === document) document.body.dataset.cartOosReady = "1";
+
+    function allRows() {
+      return [].concat(
+        [].slice.call(document.querySelectorAll("[data-cart-row]")),
+        /* Checkout's summary rows carry no attributes of their own, and
+           must not be given [data-cart-row] — that selector drives the
+           subtotal maths and the empty-cart swap, neither of which should
+           see a read-only list. */
+        [].slice.call(document.querySelectorAll("[data-order-summary] li")),
+      );
+    }
+
+    function flagFor(row) {
+      const flag = document.createElement("span");
+      flag.className = "cart-oos";
+      flag.setAttribute("data-oos-flag", "");
+      flag.innerHTML =
+        ICON_SCHEDULE + '<span class="cart-oos__text">Out of stock</span>';
+
+      /* Only offer removal where the row already has a control for it, so
+         the click reuses the tested path (drop to 1, then the decrement
+         that removes the row and updates the totals) instead of a second
+         implementation that could drift from it. */
+      const dec = row.querySelector("[data-removable] [data-step='-1']");
+      const qty = row.querySelector("[data-removable] [data-qty]");
+      if (dec && qty) {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "cart-oos__remove";
+        btn.textContent = "Remove";
+        btn.addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          /* The cart page and the drawer keep separate copies of the same
+             line, so taking it out of one leaves it sitting in the other —
+             and the express slot stays blocked by an item the visitor
+             believes they just removed. Snapshot both before the first
+             removal, since that mutates the DOM underneath us. */
+          const name = cartRowName(row);
+          const twins = allRows().filter((r) => r !== row && cartRowName(r) === name);
+          qty.textContent = "1";
+          dec.click();
+          twins.forEach((r) => {
+            const d = r.querySelector("[data-removable] [data-step='-1']");
+            const q = r.querySelector("[data-removable] [data-qty]");
+            if (d && q) {
+              q.textContent = "1";
+              d.click();
+            } else {
+              r.remove();
+            }
+          });
+        });
+        flag.appendChild(btn);
+      }
+      return flag;
+    }
+
+    function sync() {
+      /* DEMO: one line in the sample cart is marked [data-oos] in the page
+         markup so the flow can be shown without first hunting down an
+         out-of-stock product and adding it. Seeding the shared list from it
+         keeps the three consequences in agreement — the flagged row, the
+         blocked express slot and the blocked cash payment all read the same
+         record. In production nothing carries [data-oos] and the list comes
+         from the backend, so this is inert. */
+      allRows().forEach((row) => {
+        if (!row.hasAttribute("data-oos")) return;
+        const n = cartRowName(row);
+        if (!n) return;
+        CART_OOS_SEEDED.add(n);
+        if (oosList().indexOf(n) === -1) oosAdd(n);
+      });
+
+      /* ...and drop it again once that row leaves the cart. Without this the
+         express slot and cash on delivery stayed blocked by an item the
+         visitor had already removed. Only names this seeded are cleared —
+         anything genuinely scheduled from a product card is left alone. */
+      const present = allRows().map(cartRowName);
+      CART_OOS_SEEDED.forEach((n) => {
+        if (present.indexOf(n) === -1) {
+          CART_OOS_SEEDED.delete(n);
+          oosRemove(n);
+        }
+      });
+
+      const oos = oosList();
+      allRows().forEach((row) => {
+        const name = cartRowName(row);
+        const hit = !!name && (oos.indexOf(name) > -1 || row.hasAttribute("data-oos"));
+        const existing = row.querySelector("[data-oos-flag]");
+        row.classList.toggle("is-oos", hit);
+        if (!hit) {
+          if (existing) existing.remove();
+          return;
+        }
+        if (existing) return;
+        const flag = flagFor(row);
+        /* Under the product name, above the variant tags and price, so it
+           reads as part of the item rather than a footnote to the row. */
+        const nameEl = [].slice
+          .call(row.querySelectorAll("p, h3, h4, h5, h6"))
+          .filter((e) => e.textContent.trim() === name)[0];
+        if (nameEl && nameEl.parentElement) nameEl.insertAdjacentElement("afterend", flag);
+        else row.appendChild(flag);
+      });
+    }
+
+    sync();
+    if (root === document) {
+      document.addEventListener("ex:oos-change", sync);
+      /* A row can also leave by the counter's own trash button, which knows
+         nothing about this. Re-checking just after any stepper click is what
+         keeps the express slot and the cash option from staying blocked by an
+         item that is no longer in the cart. */
+      document.addEventListener("click", (e) => {
+        if (e.target.closest && e.target.closest("[data-step]")) setTimeout(sync, 0);
+      });
+    }
+    /* Rows come and go after load — quick-add from a card, the product page
+       writing its line in. openOverlay() calls this back every time the
+       drawer opens, which is the only moment those rows are looked at. */
+    initCartOOS.sync = sync;
+  }
+
   function initOOSShipping(scope) {
     const group = (scope || document).querySelector('[data-optgroup="shipdate"]');
     if (!group || group.dataset.oosReady) return;
@@ -5232,6 +5394,7 @@
     initCheckoutOptions(scope);
     initStock(scope);
     initOOSShipping(scope);
+    initCartOOS(scope);
     initCardForm(scope);
     initCountdown(scope);
     initPosts(scope);
