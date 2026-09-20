@@ -347,6 +347,25 @@
                         </p>
                       </div>
 
+                      <!-- Apple Pay. Sits with the card because it is a
+                           card behind the scenes; the mark is inline SVG so it
+                           stays crisp and needs no asset. Shown to everyone —
+                           on a device without Apple Pay the provider falls
+                           back to the normal card sheet. -->
+                      <label class="optrow">
+                        <input type="radio" name="payment" value="applepay" class="sr-only" />
+                        <span class="optrow__icon optrow__icon--brand">
+                          <svg viewBox="0 0 50 24" fill="currentColor" aria-hidden="true">
+                            <path d="M11.2 3.6c-.7.8-1.8 1.5-2.9 1.4-.1-1.1.4-2.3 1-3 .7-.8 1.9-1.4 2.9-1.4.1 1.2-.3 2.3-1 3Zm1 1.6c-1.6-.1-3 .9-3.7.9-.8 0-1.9-.9-3.2-.8-1.6 0-3.2 1-4 2.4-1.7 3-.4 7.4 1.2 9.8.8 1.2 1.8 2.5 3.1 2.5 1.2 0 1.7-.8 3.2-.8 1.5 0 1.9.8 3.2.8 1.3 0 2.2-1.2 3-2.4.9-1.4 1.3-2.7 1.3-2.8 0 0-2.5-1-2.5-3.9 0-2.4 2-3.6 2.1-3.6-1.1-1.7-2.9-1.9-3.5-2Z"/>
+                            <text x="20" y="18" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', Helvetica, Arial, sans-serif" font-size="17" font-weight="500" letter-spacing="-0.3">Pay</text>
+                          </svg>
+                        </span>
+                        <span class="optrow__body">
+                          <span class="optrow__title">Apple&nbsp;Pay</span>
+                          <span class="optrow__sub">Confirm with Face ID or Touch ID</span>
+                        </span>
+                      </label>
+
                       <!-- Cash on delivery -->
                       <label class="optrow">
                         <input type="radio" name="payment" value="cod" class="sr-only" />
@@ -387,6 +406,11 @@
                           <span class="wallet-toggle__amount">EGP 500</span>
                       </label>
                     </div>
+
+                    <p class="pay-hold-note">
+                      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3l7 3v6c0 4.4-3 8.3-7 9-4-.7-7-4.6-7-9V6l7-3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="m9 12 2 2 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                      <span>Paying by card or Apple&nbsp;Pay places a hold, not a charge. We only take the money once we have confirmed every item in your order is in stock &mdash; if something turns out to be unavailable, you are not charged for it.</span>
+                    </p>
                   </div>
                 </div>
               </div>
@@ -457,7 +481,7 @@
                       </div>
                     </div>
                     <div class="flex flex-col items-end">
-                      <span class="font-semibold text-cta text-nowrap">EGP 650</span>
+                      <span class="font-semibold text-price text-nowrap">EGP 650</span>
                     </div>
                   </div>
                 </li>
@@ -476,7 +500,7 @@
                       </div>
                     </div>
                     <div class="flex flex-col items-end">
-                      <span class="font-semibold text-cta text-nowrap">EGP 420</span>
+                      <span class="font-semibold text-price text-nowrap">EGP 420</span>
                       <span class="font-semibold text-primaryText text-sm line-through">EGP 480</span>
                     </div>
                   </div>
@@ -494,7 +518,7 @@
                       </div>
                     </div>
                     <div class="flex flex-col items-end">
-                      <span class="font-semibold text-cta text-nowrap">EGP 760</span>
+                      <span class="font-semibold text-price text-nowrap">EGP 760</span>
                     </div>
                   </div>
                 </li>

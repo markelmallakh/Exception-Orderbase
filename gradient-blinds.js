@@ -9,7 +9,7 @@
      <script type="module" src="gradient-blinds.js"></script>
 
    Optional data attributes:
-     data-gb-colors="#8CBAB5,#DB336C"   up to 8 hex stops
+     data-gb-colors="#8CBAB5,#C9711E"   up to 8 hex stops
      data-gb-angle="0"                  gradient rotation (deg)
      data-gb-blinds="16"                target blind count
    Defaults are the Exception brand pairing (dark turquoise → pink)
@@ -34,7 +34,7 @@ const hexToRGB = (hex) => {
 };
 
 const prepStops = (stops) => {
-  const base = (stops && stops.length ? stops : ["#8CBAB5", "#DB336C"]).slice(0, MAX_COLORS);
+  const base = (stops && stops.length ? stops : ["#8CBAB5", "#C9711E"]).slice(0, MAX_COLORS);
   if (base.length === 1) base.push(base[0]);
   const count = Math.max(2, base.length);
   while (base.length < MAX_COLORS) base.push(base[base.length - 1]);
@@ -155,7 +155,7 @@ function boot(container) {
   const reduce =
     window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  const colors = (container.getAttribute("data-gb-colors") || "#8CBAB5,#DB336C")
+  const colors = (container.getAttribute("data-gb-colors") || "#8CBAB5,#C9711E")
     .split(",")
     .map((s) => s.trim())
     .filter(Boolean);

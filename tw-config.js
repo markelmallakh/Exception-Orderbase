@@ -57,8 +57,8 @@ tailwind.config = {
            Primary:   Text/Black #182325 · Dark turquoise #8CBAB5 ·
                       turquoise #B0DED9 · extra light turquoise #E7FFFC ·
                       Secondary Text #6F7276 · White #FFFFFF
-           Secondary: Pink #DB336C · Beige #EED3B8 · Rose #E4BCB5 ·
-                      light pink #F8DFE2 · Medium green #D5EBE6 ·
+           Secondary: Pink #C9711E · Beige #EED3B8 · Rose #E4BCB5 ·
+                      light pink #FDE8D3 · Medium green #D5EBE6 ·
                       Light Green #E2F7F2
            Accent:    Error #D83434 · Success #209B34
            Gray:      Dark9 #111928 · Dark8 #1F2A37 · Dark7 #374151 ·
@@ -73,10 +73,26 @@ tailwind.config = {
         lightBlue: "#E7FFFC",
         primaryDark: "#182325",
         primaryExtraDark: "#111928",
-        cardbadgecolor: "#DB336C",
+        cardbadgecolor: "#C9711E",
         bordercolor: "#374151",
         black900: "#18232590",
-        cta: { DEFAULT: "#DB336C", hover: "#C22A5D", light: "#F8DFE2" },
+        cta: { DEFAULT: "#C9711E", hover: "#A85712", light: "#FDE8D3" },
+        /* The soft end of the orange. `cta` above is the same hue at a
+           weight that survives as text; `warm` is the pale fill used on the
+           status tags ("Limited", "Location"), where the art direction wants
+           the lighter orange behind dark type.
+           NB: named `warm`, not `accent` — `accent` is already taken further
+           down by the full scale, which would silently shadow this one. */
+        warm: {
+          /* Tag/badge fills. Always paired with `warm-ink` text, never white:
+             white on this sits near 2:1. */
+          DEFAULT: "#F9A158",
+          ink: "#5C3208",
+        },
+        /* Prices. Deliberately NOT in the orange family — the teal separates
+           the number you pay from the orange that means "act on this", and it
+           clears 5.2:1 on white, which the orange at text size did not. */
+        price: "#007A6D",
         primary: {
           DEFAULT: "#8CBAB5",
           light: "#E7FFFC",
@@ -95,17 +111,17 @@ tailwind.config = {
         accent: {
           error: "#D83434",
           green: "#209B34",
-          yellow: "#DB336C",
-          50: "#FDECF1",
-          100: "#F8DFE2",
-          200: "#F3C2CD",
-          300: "#EC9DB0",
-          400: "#E56A8C",
-          500: "#DF4E75",
-          600: "#DB336C",
-          700: "#C22A5D",
-          800: "#A3234D",
-          900: "#7D1A3B",
+          yellow: "#C9711E",
+          50: "#FEF4EA",
+          100: "#FDE8D3",
+          200: "#FAD0A9",
+          300: "#F9A158",
+          400: "#F08B33",
+          500: "#E2761B",
+          600: "#C9711E",
+          700: "#A85712",
+          800: "#8A470E",
+          900: "#5C3208",
         },
         green: {
           100: "#E2F7F2",
