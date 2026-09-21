@@ -112,7 +112,7 @@
               <div class="flex flex-col gap-2">
                 <!-- Category (small badge) -->
                 <!-- Status label (not the category) — swap the text per product: Limited, New, Best Seller… -->
-                  <span class="self-start inline-flex items-center -rotate-[2deg] bg-cta text-white text-[11px] font-semibold uppercase tracking-wide leading-none px-1.5 py-0.5 rounded-[4px]">Limited</span>
+                  <span class="self-start inline-flex items-center -rotate-[2deg] bg-warm text-warm-ink text-[11px] font-semibold uppercase tracking-wide leading-none px-1.5 py-0.5 rounded-[4px]">Limited</span>
 
                 <!-- Title line: name on the left, share on the right. The
                      rating and servings badges moved to their own row below,
@@ -131,13 +131,10 @@
                   </span>
                 </div>
 
-                <!-- Reviews / servings badges -->
+                <!-- Servings badge. The rating/reviews pill that used to lead
+                     this row was removed — the full rating summary still lives
+                     in the reviews section further down the page. -->
                 <div class="flex items-center gap-3 flex-wrap">
-                  <a href="#reviews" class="inline-flex items-center gap-1.5 bg-primary-light rounded-[4px] px-2.5 py-1 hover:bg-primary-200 transition-colors">
-                    <svg viewBox="0 0 24 24" class="w-4 h-4 text-cta fill-current"><path d="M12 2l2.9 6.26L21.6 9.27l-4.8 4.68 1.13 6.6L12 17.77l-5.93 3.12 1.13-6.6-4.8-4.68 6.7-1.01L12 2z"/></svg>
-                    <span class="text-primaryDark text-xs font-semibold">4.5</span>
-                    <span class="text-gray-700 text-xs underline">(128 reviews)</span>
-                  </a>
                   <span class="inline-flex items-center gap-1.5 bg-primary-light rounded-[4px] px-2.5 py-1">
                     <img src="images/icons/group.svg" alt="" class="w-4 h-4" />
                     <span class="text-primaryDark text-xs font-semibold">8–10</span>
@@ -154,7 +151,7 @@
               <div class="flex items-end gap-3 flex-wrap">
                 <!-- The two prices are their own tight group so the badge doesn't drift into them -->
                 <span class="flex items-end gap-1.5 flex-wrap">
-                  <span class="flex items-end gap-0.5 text-cta leading-none" dir="ltr">
+                  <span class="flex items-end gap-0.5 text-price leading-none" dir="ltr">
                     <span class="text-2xl font-semibold md:text-3xl">650</span>
                     <span class="text-lg font-normal">.00</span>
                     <span class="text-lg font-normal">EGP</span>
@@ -805,7 +802,7 @@
               </div>
               <div class="flex flex-col gap-2 pt-6">
                 <div class="flex items-end gap-2 flex-wrap">
-                  <span class="flex items-end gap-0.5 text-cta leading-none" dir="ltr">
+                  <span class="flex items-end gap-0.5 text-price leading-none" dir="ltr">
                     <span class="text-2xl font-semibold">${intp}</span>
                     <span class="text-lg font-normal">${dec}</span>
                     <span class="text-lg font-normal">EGP</span>

@@ -179,7 +179,7 @@
             </div>
             <div class="flex items-stretch gap-4 md:gap-8">
               <div class="shrink-0 self-stretch" data-catbanner="chocolates"></div>
-              <div class="carousel relative min-w-0 flex-1" data-loop data-align-arrows style="--carousel-gap: 16px">
+              <div class="carousel relative min-w-0 flex-1" data-loop data-autoplay data-align-arrows style="--carousel-gap: 16px">
                 <div class="carousel-track items-start" data-catrow="chocolates"></div>
                 <div data-fade="start" class="pointer-events-none absolute inset-y-0 start-0 z-[1] w-10 bg-gradient-to-r from-white to-transparent opacity-0 transition-opacity duration-200"></div>
                 <div data-fade="end" class="pointer-events-none absolute inset-y-0 end-0 z-[1] w-10 bg-gradient-to-l from-white to-transparent transition-opacity duration-200"></div>
@@ -217,7 +217,7 @@
             </div>
             <div class="flex items-stretch gap-4 md:gap-8">
               <div class="shrink-0 self-stretch" data-catbanner="icecream"></div>
-              <div class="carousel relative min-w-0 flex-1" data-loop data-align-arrows style="--carousel-gap: 16px">
+              <div class="carousel relative min-w-0 flex-1" data-loop data-autoplay data-align-arrows style="--carousel-gap: 16px">
                 <div class="carousel-track items-start" data-catrow="icecream"></div>
                 <div data-fade="start" class="pointer-events-none absolute inset-y-0 start-0 z-[1] w-10 bg-gradient-to-r from-white to-transparent opacity-0 transition-opacity duration-200"></div>
                 <div data-fade="end" class="pointer-events-none absolute inset-y-0 end-0 z-[1] w-10 bg-gradient-to-l from-white to-transparent transition-opacity duration-200"></div>
@@ -230,11 +230,11 @@
       </section>
 
       <!-- ============================ PROMO BANNERS (Figma 6520:56024) ============================
-           Two equal cards: Special Orders and Exception Cafe. Each is a solid
-           colour panel with one oversized circle bleeding out of it (clipped by
-           the card) and a cut-out photo sitting on top. The circle is a plain
-           div, not an SVG — it only ever shows one arc, and a border-radius
-           beats shipping two more assets. -->
+           Two equal cards: Special Orders and Exception Cafe. Both are the
+           same turquoise panel with one oversized circle in a deeper turquoise
+           bleeding out of it (clipped by the card) and a cut-out photo sitting
+           on top. The circle is a plain div, not an SVG — it only ever shows
+           one arc, and a border-radius beats shipping two more assets. -->
       <section class="bg-gray-200 pt-2 pb-4 md:pb-6">
         <div class="mx-auto max-w-[1392px] px-4">
           <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
@@ -571,7 +571,7 @@
             </div>
             <div class="flex flex-col gap-2 pt-6">
               <div class="flex items-end gap-2 flex-wrap">
-                <span class="flex items-end gap-0.5 text-cta leading-none" dir="ltr">
+                <span class="flex items-end gap-0.5 text-price leading-none" dir="ltr">
                   <span class="text-2xl font-semibold">${intp}</span>
                   <span class="text-lg font-normal">${dec}</span>
                   <span class="text-lg font-normal">EGP</span>

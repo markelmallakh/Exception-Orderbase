@@ -121,7 +121,9 @@
 
   /* Category navigation bar (Figma "Navigation 2", node 6038:15815).
      Icons are the 48px doodle-backed SVGs in images/icons/ (spaces → %20).
-     `big` = Figma renders these 5 labels at 14px/Medium vs 12px/SemiBold. */
+     `big` = Figma renders these 5 labels Medium vs SemiBold for the rest.
+     Label sizes run one step above Figma (15px/14px desktop, 11px phones) —
+     the rail reads too small at the Figma values on a real screen. */
   const CATEGORY_NAV = [
     { label: "OFFERS", icon: "Categories%20icons/offers.webp", url: "/shop/offers" },
     { label: "BOUGHT BEFORE", icon: "Categories%20icons/bought%20before.webp", url: "/shop/bought-before" },
@@ -413,7 +415,7 @@
                      <button type="button" data-open="search" aria-label="Search" class="grid place-items-center shrink-0 rounded-[4px] size-[34px] text-primaryDark border border-primaryDark shadow-custom-5 hover:bg-primaryDark/5 transition-colors"><img src="images/icons/search-icon.svg" alt="" width="18" height="18" /></button>
                      <div class="relative min-w-0" data-locmenu>
                        <button type="button" data-loc-toggle class="relative flex items-center gap-1.5 bg-[#E7FFFC]/80 rounded-[5px] px-2.5 h-[34px] text-primaryDark min-w-0">
-                         <span class="absolute -top-2 start-2 -rotate-[4deg] bg-cta text-white text-[11px] leading-none px-1.5 py-0.5 rounded-[4px]">Location</span>
+                         <span class="absolute -top-2 start-2 -rotate-[4deg] bg-warm text-warm-ink text-[11px] leading-none px-1.5 py-0.5 rounded-[4px]">Location</span>
                          <span class="shrink-0"><img src="images/icons/delivery.webp" alt="" class="w-6 h-6 object-contain" /></span>
                          <span class="text-xs whitespace-nowrap truncate"><span class="font-normal">Street 9</span> <span class="font-semibold" data-loc-place>| Maadi, Cairo</span></span>
                        </button>
@@ -514,9 +516,11 @@
       const isCurrent = !!c.url && c.url === currentPath;
       return `
         <a href="${pageHref(c.url)}" class="catnav-item relative flex flex-col md:flex-row items-center justify-center md:justify-start gap-1 md:gap-2 px-2 py-2 md:px-3 md:py-2 rounded-[12px] shrink-0 hover:bg-primary-50 transition-colors${isCurrent ? " is-current" : ""}"${isCurrent ? ' aria-current="page"' : ""}>
-          ${c.badge ? `<span class="catnav-badge">${esc(c.badge)}</span>` : ""}
           <img src="images/icons/${c.icon}" alt="" width="64" height="64" class="size-14 md:size-16 shrink-0" />
-          <span class="text-primaryDark whitespace-nowrap text-[10px] md:${c.big ? "text-[13px]" : "text-xs"} ${c.big ? "font-medium" : "font-semibold"}">${esc(c.label)}</span>
+          <span class="catnav-label">
+            ${c.badge ? `<span class="catnav-badge">${esc(c.badge)}</span>` : ""}
+            <span class="text-primaryDark whitespace-nowrap text-[11px] md:${c.big ? "text-[15px]" : "text-sm"} ${c.big ? "font-medium" : "font-semibold"}">${esc(c.label)}</span>
+          </span>
         </a>`;
     }).join("");
 
@@ -736,7 +740,7 @@
           <div class="flex-1 min-w-0">
             <p class="font-medium text-textSecondary text-sm">${esc(it.name)}</p>
             ${vtags(it.variants)}
-            <p class="mt-1 font-semibold text-cta text-sm">EGP ${it.price}</p>
+            <p class="mt-1 font-semibold text-price text-sm">EGP ${it.price}</p>
             <!-- Filled by the product page with its chosen add-ons; stays
                  empty (and collapsed) on every row that has none. -->
             <div data-cart-addons></div>
@@ -790,7 +794,7 @@
             </span>
           </span>
         </div>
-        <p class="mt-3 text-[11px] font-semibold text-cta leading-tight">EGP ${it.price}</p>
+        <p class="mt-3 text-[11px] font-semibold text-price leading-tight">EGP ${it.price}</p>
         <p class="text-[11px] font-medium text-textSecondary leading-tight line-clamp-1">${esc(it.name)}</p>
       </div>`,
       )
@@ -1028,6 +1032,20 @@
       <img src="images/icons/shopping-basket.svg" alt="" width="30" height="30" />
       <span class="absolute -top-[5px] -end-[10px] grid place-items-center bg-primaryDark border border-primary-200 text-white text-[16px] font-semibold leading-[1.4] rounded-full size-[22px]" data-cart-count>4</span>
     </button>
+
+    <!-- Customer report — file a complaint about an order. Rides the same
+         rail as the WhatsApp button, stacked directly above it, so the two
+         ways of reaching support sit together. Brand orange rather than
+         WhatsApp green: this one goes to Exception, not to a chat app.
+         Hugeicons message bubble with text lines (stroke/rounded, 1.5) —
+         inlined rather than <img> so the strokes take the button's white via
+         currentColor. Source asset kept at images/icons/message-lines.svg. -->
+    <a href="${pageHref("/contact-us")}" class="report-fab" aria-label="Report a problem with an order">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M14.1706 20.8905C18.3536 20.6125 21.6856 17.2332 21.9598 12.9909C22.0134 12.1607 22.0134 11.3009 21.9598 10.4707C21.6856 6.22838 18.3536 2.84913 14.1706 2.57107C12.7435 2.47621 11.2536 2.47641 9.8294 2.57107C5.64639 2.84913 2.31441 6.22838 2.04024 10.4707C1.98659 11.3009 1.98659 12.1607 2.04024 12.9909C2.1401 14.536 2.82343 15.9666 3.62791 17.1746C4.09501 18.0203 3.78674 19.0758 3.30021 19.9978C2.94941 20.6626 2.77401 20.995 2.91484 21.2351C3.05568 21.4752 3.37026 21.4829 3.99943 21.4982C5.24367 21.5285 6.08268 21.1757 6.74868 20.6846C7.1264 20.4061 7.31527 20.2668 7.44544 20.2508C7.5756 20.2348 7.83177 20.3403 8.34401 20.5513C8.8044 20.7409 9.33896 20.8579 9.8294 20.8905C11.2536 20.9852 12.7435 20.9854 14.1706 20.8905Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M8.5 14.5H15.5M8.5 9.5H12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
 
     <!-- Sticky WhatsApp. Number is Exception's own published one. Shares the
          floating cart's inset so the two fixed actions sit on one vertical
@@ -1562,16 +1580,21 @@
       }
     }
 
+    /* One advance step, shared by the Next button and by autoplay, so the two
+       can never drift apart in how they wrap or how far they travel. */
+    function goNext(smooth) {
+      const atEnd = track.scrollLeft >= maxScroll();
+      const left = loop && atEnd ? 0 : track.scrollLeft + slideStep();
+      if (smooth) track.scrollTo({ left, behavior: "smooth" });
+      else track.scrollLeft = left;
+    }
+
     if (prev)
       prev.addEventListener("click", () => {
         if (loop && track.scrollLeft <= 1) track.scrollLeft = maxScroll() + 2;
         else track.scrollLeft -= slideStep();
       });
-    if (next)
-      next.addEventListener("click", () => {
-        if (loop && track.scrollLeft >= maxScroll()) track.scrollLeft = 0;
-        else track.scrollLeft += slideStep();
-      });
+    if (next) next.addEventListener("click", () => goNext(false));
 
     if (dotsWrap) {
       const slides = track.querySelectorAll(".carousel-slide");
@@ -1597,12 +1620,55 @@
     // Re-align once product images settle, in case layout shifts on load.
     window.addEventListener("load", positionArrows);
 
+    /* ---- Autoplay -------------------------------------------------------
+       Motion that will not fight the person reading it. It stops whenever
+       advancing would be unwelcome or pointless:
+
+         - prefers-reduced-motion is set          (never starts at all)
+         - the pointer is over the carousel, or focus is inside it
+         - the row is scrolled off screen          (IntersectionObserver)
+         - the tab is in the background            (visibilitychange)
+         - the reader just touched it              (resumes after RESUME_MS)
+
+       A single interval ticks throughout and each tick asks whether it may
+       move, rather than being torn down and rebuilt on every state change —
+       that keeps the cadence steady instead of restarting the clock each
+       time the pointer crosses an edge. */
     if (root.hasAttribute("data-autoplay")) {
+      const STEP_MS = 4500;
+      const RESUME_MS = 8000; /* after a manual nudge, stay out of the way */
+      const calm = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+      let hovered = false;
+      let onScreen = true;
+      let quietUntil = 0;
+
+      const mayAdvance = () =>
+        !calm.matches &&
+        !hovered &&
+        onScreen &&
+        !document.hidden &&
+        Date.now() >= quietUntil &&
+        maxScroll() > 0 && /* nothing to scroll: leave it alone */
+        !root.contains(document.activeElement);
+
       setInterval(() => {
-        const max = track.scrollWidth - track.clientWidth - 1;
-        if (track.scrollLeft >= max) track.scrollLeft = 0;
-        else track.scrollLeft += slideStep();
-      }, 4500);
+        if (mayAdvance()) goNext(true);
+      }, STEP_MS);
+
+      const hold = () => (quietUntil = Date.now() + RESUME_MS);
+      root.addEventListener("pointerenter", () => (hovered = true));
+      root.addEventListener("pointerleave", () => (hovered = false));
+      ["pointerdown", "touchstart", "wheel", "keydown"].forEach((evt) =>
+        root.addEventListener(evt, hold, { passive: true }),
+      );
+
+      if (window.IntersectionObserver) {
+        new IntersectionObserver(
+          ([entry]) => (onScreen = entry.isIntersecting),
+          { threshold: 0.25 },
+        ).observe(root);
+      }
     }
   }
 
@@ -1880,7 +1946,7 @@
      saturated hues (green / coral / periwinkle). Kept saturated on purpose:
      the pale end of the brand palette (#B0DED9, #EED3B8, #E4BCB5) all but
      disappears against the white cart/checkout page. */
-  const FX_COLORS = ["#209B34", "#DB336C", "#8CBAB5"];
+  const FX_COLORS = ["#209B34", "#C9711E", "#8CBAB5"];
   const PROMO_ICON_CHECK =
     '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   const PROMO_ICON_X =
@@ -3410,6 +3476,16 @@
       </button>
       <div class="checkout-bar__actions" data-bar-actions></div>`;
     form.appendChild(bar); // inside the form, so the submit button still submits
+
+    /* Publish the bar's live height so the sticky support buttons can sit
+       clear of it. It is content-driven (the total wraps, and opening the
+       panel grows it), so a constant would be wrong in one state or the
+       other — same reason --catnav-h is measured rather than hard-coded. */
+    const publishBarHeight = () =>
+      document.documentElement.style.setProperty("--checkout-bar-h", bar.offsetHeight + "px");
+    publishBarHeight();
+    if (window.ResizeObserver) new ResizeObserver(publishBarHeight).observe(bar);
+    else window.addEventListener("resize", publishBarHeight);
 
     const panel = bar.querySelector("[data-bar-panel]");
     const actionSlot = bar.querySelector("[data-bar-actions]");
@@ -5039,8 +5115,8 @@
   const ORD_STATUS = {
     preparing: {
       label: "Preparing",
-      pill: "#db336c",
-      accent: "#db336c",
+      pill: "#C9711E",
+      accent: "#C9711E",
       ico: "images/icons/preparing.webp",
       when: "Estimated Arrived At",
       /* fraction of the ring the loader draws */
@@ -5073,8 +5149,8 @@
     },
     scheduled: {
       label: "Scheduled",
-      pill: "#db336c",
-      accent: "#db336c",
+      pill: "#C9711E",
+      accent: "#C9711E",
       ico: "images/icons/Schedule.webp",
       when: "Scheduled For",
       arc: 0.18,

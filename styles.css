@@ -679,10 +679,10 @@ html {
 :root[data-theme="dark"] .wysiwyg-blog p {
   color: var(--dk-muted) !important;
 }
-/* The pink eyebrow renders on a 20%-alpha wash of its own colour, which
+/* The eyebrow renders on a 20%-alpha wash of its own colour, which
    collapses to no contrast on dark. Lighten the type, not the wash. */
 :root[data-theme="dark"] .eyebrow {
-  color: #ff8fb0 !important;
+  color: #F9A158 !important;
 }
 
 /* The turquoise band is the one surface that stays light, so the sweeps
@@ -700,7 +700,7 @@ html {
 }
 :root[data-theme="dark"] .bg-primary-200 .hdr-utility__link--tel,
 :root[data-theme="dark"] .bg-primary-200 .text-cta {
-  color: #db336c !important;
+  color: #C9711E !important;
 }
 /* Dark- and pink-filled chips sitting INSIDE the turquoise band (the cart
    chip, the favourites count, the "Location" tag) keep white type — the
@@ -844,8 +844,8 @@ html {
   color: #6f7276 !important;
 }
 :root[data-theme="dark"] .group\/card .fav-btn.is-fav {
-  background: #db336c !important;
-  border-color: #db336c !important;
+  background: #C9711E !important;
+  border-color: #C9711E !important;
   color: #ffffff !important;
 }
 /* Quantity stepper that replaces the plus once an item is added. */
@@ -896,11 +896,11 @@ html {
   justify-content: center;
   padding: 2px 16px;
   border-radius: 40px;
-  background: #f8dfe2;
+  background: #FDE8D3;
   font-family: "DM Sans", sans-serif;
   font-size: clamp(15px, 1.4vw, 18px);
   line-height: 1.4;
-  color: #db336c;
+  color: #C9711E;
 }
 /* DM Sans Black on a hard -3px track: the one display setting on the
    site, and the reason this headline reads as a statement rather than
@@ -1175,7 +1175,7 @@ body.has-floating-cart .cafe-chips {
   font-size: clamp(13px, 1.2vw, 18px);
   font-weight: 500;
   line-height: 1.4;
-  color: #db336c;
+  color: #C9711E;
 }
 /* One column on phones: at that width the stagger only buys whitespace. */
 @media (max-width: 720px) {
@@ -1671,7 +1671,7 @@ select {
   height: 12px;
   border-radius: 9999px;
   background-color: rgba(255, 255, 255, 0.6);
-  box-shadow: 0 0 0 0 rgba(219, 51, 108, 0);
+  box-shadow: 0 0 0 0 rgba(201, 113, 30, 0);
   cursor: pointer;
   transition:
     background-color 0.25s ease,
@@ -1683,10 +1683,10 @@ select {
 /* Two layers: a tight ring to seat the dot, then a wide soft falloff —
    a single shadow reads as a hard halo rather than a glow. */
 .carousel-dot.is-active {
-  background-color: #db336c;
+  background-color: #C9711E;
   box-shadow:
-    0 0 0 3px rgba(219, 51, 108, 0.28),
-    0 0 14px 4px rgba(219, 51, 108, 0.5);
+    0 0 0 3px rgba(201, 113, 30, 0.28),
+    0 0 14px 4px rgba(201, 113, 30, 0.5);
 }
 [dir="rtl"] .carousel-btn svg {
   transform: scaleX(-1);
@@ -1847,13 +1847,14 @@ body.no-scroll {
 .hdr-utility__link {
   padding: 9px 0;
   font-size: 12px;
+  font-weight: 600;
   line-height: 1.4;
   color: #182325;
   white-space: nowrap;
   transition: color 0.2s ease;
 }
 .hdr-utility__link:hover {
-  color: #db336c;
+  color: #C9711E;
 }
 /* Hotline sits with the support links but stays the CTA pink and bold, so
    it still reads as the one number to call rather than a seventh page. */
@@ -1861,11 +1862,11 @@ body.no-scroll {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  color: #db336c;
+  color: #C9711E;
   font-weight: 700;
 }
 .hdr-utility__link--tel:hover {
-  color: #c22a5d;
+  color: #A85712;
 }
 .hdr-utility__link--tel img {
   display: block;
@@ -1951,21 +1952,43 @@ body.loc-gate [data-loc-toggle] {
   margin-bottom: 12px;
 }
 
-/* Sticky WhatsApp action, bottom-right on every page. Shares the floating
-   cart's container-aligned inset so the two line up vertically. */
-.wa-fab {
+/* The two sticky support actions — WhatsApp and Customer report — sit as a
+   ROW in the bottom corner rather than a stack, so neither climbs up the
+   page over content. Everything positional is driven by three variables so
+   the pair stay locked together: change the size or gap in one place and
+   both buttons and the row's overall width follow.
+
+   --fab-inset is the same inset ladder .floating-cart uses, so the fixed
+   actions stay aligned with the container instead of drifting apart. */
+:root {
+  --fab-inset: max(24px, calc(50vw - 696px));
+  --fab-size: 44px;
+  --fab-icon: 24px;
+  --fab-gap: 12px;
+}
+@media (min-width: 1024px) {
+  :root {
+    --fab-inset: max(60px, calc(50vw - 696px));
+  }
+}
+@media (max-width: 1023px) {
+  :root {
+    --fab-size: 40px;
+    --fab-icon: 22px;
+    --fab-gap: 10px;
+  }
+}
+
+.wa-fab,
+.report-fab {
   position: fixed;
-  /* same inset ladder as .floating-cart (see the note above it) so the two
-     fixed actions sit on one vertical line instead of drifting apart */
-  inset-inline-end: max(24px, calc(50vw - 696px));
   bottom: calc(20px + env(safe-area-inset-bottom, 0px));
   z-index: 75;
   display: grid;
   place-items: center;
-  width: 52px;
-  height: 52px;
+  width: var(--fab-size);
+  height: var(--fab-size);
   border-radius: 50%;
-  background: #25d366;
   color: #fff;
   box-shadow: 0 4px 14px rgba(24, 35, 37, 0.22);
   transition:
@@ -1974,49 +1997,59 @@ body.loc-gate [data-loc-toggle] {
     opacity 0.25s ease,
     visibility 0.25s ease;
 }
-/* Retract once the footer is on screen: the footer carries its own
-   WhatsApp link in the social row, so the floating one would sit on top of
-   the very thing it duplicates. */
-body.footer-visible .wa-fab {
+.wa-fab svg,
+.report-fab svg {
+  display: block;
+  width: var(--fab-icon);
+  height: var(--fab-icon);
+}
+.wa-fab:hover,
+.report-fab:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(24, 35, 37, 0.28);
+}
+
+/* WhatsApp holds the corner; the report button sits one slot inboard of it. */
+.wa-fab {
+  inset-inline-end: var(--fab-inset);
+  background: #25d366;
+}
+.report-fab {
+  inset-inline-end: calc(var(--fab-inset) + var(--fab-size) + var(--fab-gap));
+  background: #C9711E;
+}
+
+/* Retract once the footer is on screen: the footer carries both a WhatsApp
+   link in its social row and Contact Us in its columns, so by then the pair
+   sit on top of the very things they duplicate. */
+body.footer-visible .wa-fab,
+body.footer-visible .report-fab {
   opacity: 0;
   visibility: hidden;
   transform: translateY(14px) scale(0.9);
   pointer-events: none;
 }
-.wa-fab:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(24, 35, 37, 0.28);
-}
-.wa-fab svg {
-  display: block;
-  width: 28px;
-  height: 28px;
-}
+
 /* Checkout keeps a fixed order-summary bar along the bottom under 1024px —
-   lift clear of it rather than covering the total. */
+   lift the row clear of it rather than covering the total. The bar already
+   carries the safe-area inset in its own padding, so adding it again here
+   would double it; --checkout-bar-h is published by initCheckoutBar and
+   tracks the bar as it grows (wrapped total, panel open). The fallback
+   covers the moment before the first measurement lands. */
 @media (max-width: 1023px) {
-  .wa-fab {
-    width: 48px;
-    height: 48px;
-  }
-  .wa-fab svg {
-    width: 26px;
-    height: 26px;
-  }
-  body[data-page="checkout"] .wa-fab {
-    bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+  body[data-page="checkout"] .wa-fab,
+  body[data-page="checkout"] .report-fab {
+    bottom: calc(var(--checkout-bar-h, 126px) + 12px);
   }
 }
-@media (min-width: 1024px) {
-  .wa-fab {
-    inset-inline-end: max(60px, calc(50vw - 696px));
-  }
-}
+
 @media (prefers-reduced-motion: reduce) {
-  .wa-fab {
+  .wa-fab,
+  .report-fab {
     transition: none;
   }
-  .wa-fab:hover {
+  .wa-fab:hover,
+  .report-fab:hover {
     transform: none;
   }
 }
@@ -2063,9 +2096,9 @@ body.footer-visible .wa-fab {
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    rgba(219, 51, 108, 0.5) 0%,
-    rgba(219, 51, 108, 0.22) 45%,
-    rgba(219, 51, 108, 0) 72%
+    rgba(201, 113, 30, 0.5) 0%,
+    rgba(201, 113, 30, 0.22) 45%,
+    rgba(201, 113, 30, 0) 72%
   );
   transform: translate(-50%, -50%) scale(0);
   opacity: 0;
@@ -2211,12 +2244,12 @@ body[data-purchased="true"] .review-gate-hint {
   position: fixed;
   width: 20px;
   height: 20px;
-  background: #db336c;
+  background: #C9711E;
   border-radius: 50%;
   z-index: 200;
   pointer-events: none;
   transform: translate(-50%, -50%);
-  box-shadow: 0 4px 12px rgba(219, 51, 108, 0.5);
+  box-shadow: 0 4px 12px rgba(201, 113, 30, 0.5);
 }
 .cart-bump {
   animation: cart-bump 0.4s cubic-bezier(0.2, 0.8, 0.3, 1.4);
@@ -2439,7 +2472,7 @@ body[data-purchased="true"] .review-gate-hint {
    POINTS BADGE (.points-badge) — "Earn 350 Points" loyalty badge.
    Matched to Figma node 6162-30470: mint #E7FFFC, 2px radius, 3px gap,
    4px/2px padding, 18px icon, 12px SemiBold #182325 with the VALUE in
-   brand pink #DB336C. Reusable — pair it with any price.
+   brand pink #C9711E. Reusable — pair it with any price.
    ================================================================= */
 .points-badge {
   display: inline-flex;
@@ -2461,7 +2494,7 @@ body[data-purchased="true"] .review-gate-hint {
   object-fit: contain;
 }
 .points-badge__value {
-  color: #db336c; /* brand pink */
+  color: #C9711E; /* brand pink */
 }
 
 /* =================================================================
@@ -2504,23 +2537,31 @@ body[data-purchased="true"] .review-gate-hint {
 /* Callout sticker on a category tab (Make Your Cake → "TRY NOW"):
    a tiny light-pink tag perched on the top corner with a slight tilt,
    same visual family as the "Go To" tag on the location pill. */
+/* The label carries the badge, so the sticker sits over the WORDS rather
+   than over the icon — on the desktop row the item's own top-left corner is
+   above the artwork, which is not what the tag is labelling. */
+.catnav-label {
+  position: relative;
+}
 .catnav-badge {
   position: absolute;
-  top: -1px;
-  inset-inline-start: -2px;
+  /* flush with the label's leading edge and lifted clear of its cap height */
+  bottom: calc(100% + 3px);
+  inset-inline-start: 0;
   z-index: 1;
   padding: 2.5px 5px;
   border-radius: 4px;
-  background: #fbdbe7;
-  color: #db336c;
+  background: #FDE8D3;
+  color: #C9711E;
   font-size: 8px;
   font-weight: 700;
   line-height: 1;
   letter-spacing: 0.03em;
   white-space: nowrap;
   transform: rotate(-2deg);
+  transform-origin: left bottom;
   pointer-events: none;
-  box-shadow: 0 1px 3px rgba(219, 51, 108, 0.18);
+  box-shadow: 0 1px 3px rgba(201, 113, 30, 0.18);
 }
 /* the is-current label rule (.catnav-item.is-current span) would repaint
    the badge dark — keep the sticker pink on the active tab too */
@@ -2528,7 +2569,7 @@ body[data-purchased="true"] .review-gate-hint {
 .catnav-item.is-current span.catnav-badge {
   display: inline-block;
   width: auto;
-  color: #db336c;
+  color: #C9711E;
   font-weight: 700;
 }
 .catnav-item.is-current {
@@ -2640,7 +2681,7 @@ body[data-purchased="true"] .review-gate-hint {
   padding: 0;
   border: 0;
   background: none;
-  color: #db336c; /* Secondary/Pink */
+  color: #C9711E; /* Secondary/Pink */
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -2755,7 +2796,7 @@ body[data-purchased="true"] .review-gate-hint {
   width: 18px;
   height: 18px;
   margin-top: 1px;
-  color: #db336c;
+  color: #C9711E;
 }
 .ordernote__savedText {
   flex: 1;
@@ -2784,7 +2825,7 @@ body[data-purchased="true"] .review-gate-hint {
 }
 .ordernote__remove:hover {
   background: #f3f4f6;
-  color: #db336c;
+  color: #C9711E;
 }
 @media (prefers-reduced-motion: reduce) {
   .ordernote__panel,
@@ -3141,7 +3182,7 @@ body[data-purchased="true"] .review-gate-hint {
   white-space: nowrap;
 }
 .optrow__meta--prompt {
-  color: #db336c; /* Secondary/Pink — reads as the actionable one */
+  color: #C9711E; /* Secondary/Pink — reads as the actionable one */
   text-decoration: underline;
 }
 /* Mobile: a nowrap meta ("New Cairo, 5th Settlement") eats the row and
@@ -3405,7 +3446,7 @@ body[data-purchased="true"] .review-gate-hint {
   font-weight: 600;
   line-height: 1.3;
   white-space: nowrap;
-  color: #db336c; /* Secondary/Pink */
+  color: #C9711E; /* Secondary/Pink */
   text-decoration: underline;
   cursor: pointer;
 }
@@ -3642,13 +3683,13 @@ body.shot-white [data-shot-img] {
 .myc-opt__link {
   font-size: 12px;
   font-weight: 600;
-  color: #db336c;
+  color: #C9711E;
   text-decoration: underline;
   text-underline-offset: 2px;
   cursor: pointer;
 }
 .myc-opt__link:hover {
-  color: #c22a5d;
+  color: #A85712;
 }
 
 /* Chosen sugar-paste figures, pinned over the model box's top-left. */
@@ -4447,7 +4488,7 @@ body.shot-white [data-shot-img] {
   transition: color 0.2s ease;
 }
 .lang-switch:hover {
-  color: #db336c;
+  color: #C9711E;
 }
 .lang-switch.is-ar {
   font-family: "Noto Kufi Arabic", "Google Sans Flex", sans-serif;
@@ -4793,8 +4834,8 @@ blockquote {
   width: fit-content;
   padding: 2px 6px;
   border-radius: 4px;
-  background: rgba(219, 51, 108, 0.2); /* Secondary/Pink @ 20% */
-  color: #db336c; /* Secondary/Pink */
+  background: rgba(201, 113, 30, 0.2); /* Secondary/Pink @ 20% */
+  color: #C9711E; /* Secondary/Pink */
   font-size: 11px;
   font-weight: 700;
   line-height: 1.45;
@@ -4808,7 +4849,7 @@ blockquote {
    chip (same pairing as the About/Export hero pill) so the pink text
    keeps its contrast. */
 .eyebrow--dark {
-  background: #f8dfe2;
+  background: #FDE8D3;
 }
 
 /* =================================================================
@@ -4837,7 +4878,7 @@ blockquote {
   background: conic-gradient(
     from var(--illum-angle, 0deg),
     rgba(176, 222, 217, 0.9),
-    rgba(219, 51, 108, 0.5) 14%,
+    rgba(201, 113, 30, 0.5) 14%,
     rgba(255, 255, 255, 0.08) 32%,
     rgba(255, 255, 255, 0.08) 68%,
     rgba(176, 222, 217, 0.45) 86%,
@@ -4945,7 +4986,7 @@ blockquote {
   background: transparent;
   font-size: 15px;
   font-weight: 500;
-  color: #db336c; /* brand pink — the action accent */
+  color: #C9711E; /* brand pink — the action accent */
   cursor: pointer;
   transition:
     opacity 0.2s ease,
@@ -5452,7 +5493,7 @@ blockquote {
    FAV-BTN — the ONE favorite/wishlist toggle (product-card widget +
    single-product page). Surface matches the unselected chip/tab:
    white bg, light-grey (#DEE2E6) border, soft shadow. The heart is an
-   inline SVG (`.fav-heart`); on `.is-fav` it fills pink (#DB336C) and
+   inline SVG (`.fav-heart`); on `.is-fav` it fills pink (#C9711E) and
    pops. Size stays on the element (size-8 / w-10 md:w-11). Toggle via
    `data-fav` → initDelegation flips `.is-fav`.
    ================================================================= */
@@ -5475,7 +5516,7 @@ blockquote {
     box-shadow 0.2s ease;
 }
 .fav-btn:hover {
-  color: #db336c; /* cta pink */
+  color: #C9711E; /* cta pink */
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 .fav-btn svg {
@@ -5488,9 +5529,9 @@ blockquote {
   transition: fill 0.2s ease;
 }
 .fav-btn.is-fav {
-  background: #db336c; /* cta pink fill when selected */
+  background: #C9711E; /* cta pink fill when selected */
   color: #ffffff; /* heart (stroke+fill via currentColor) goes white */
-  border-color: #db336c;
+  border-color: #C9711E;
 }
 .fav-btn.is-fav .fav-heart {
   fill: currentColor;
@@ -6030,7 +6071,7 @@ input[type="checkbox"]:not(.wallet-toggle__input):checked::after {
    right edge.
    ================================================================= */
 .ord-status {
-  --ord-accent: #db336c;
+  --ord-accent: #C9711E;
   position: relative;
   display: flex;
   align-items: center;
@@ -6117,7 +6158,7 @@ a.ord-status__card:hover {
 .ord-status__points b {
   font-size: 12px;
   font-weight: 600;
-  color: #db336c;
+  color: #C9711E;
 }
 .ord-status__points span {
   font-size: 12px;
@@ -6484,7 +6525,7 @@ a.ord-status__card:hover {
   display: inline-block;
   padding: 7px 14px;
   border-radius: 8px;
-  background: #db336c;
+  background: #C9711E;
   color: #fff;
   font-size: 14px;
   font-weight: 700;
@@ -6880,7 +6921,7 @@ a.ord-status__card:hover {
 .tier-badge--platinum {
   --tb-from: #63b4a3;
   --tb-to: #2c8a72;
-  --tb-ico: #f8dfe2;
+  --tb-ico: #FDE8D3;
 }
 
 /* Side-by-side variant of .optrow-group — for short 2-option pickers
@@ -6952,7 +6993,7 @@ a.ord-status__card:hover {
   font-size: 15px;
   font-weight: 600;
   line-height: 1.2;
-  color: #db336c; /* cta */
+  color: #C9711E; /* cta */
 }
 .voucher__meta {
   font-size: 12px;
@@ -6965,8 +7006,8 @@ a.ord-status__card:hover {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  border: 1px solid #db336c;
-  color: #db336c;
+  border: 1px solid #C9711E;
+  color: #C9711E;
   background: transparent;
   cursor: pointer;
   transition:
@@ -6978,7 +7019,7 @@ a.ord-status__card:hover {
   height: 16px;
 }
 .voucher__action:hover {
-  background: #db336c;
+  background: #C9711E;
   color: #fff;
 }
 /* Old = spent OR expired. Both share this one flat-grey style; which
@@ -7411,7 +7452,7 @@ a.ord-status__card:hover {
   font-size: 12px;
   font-weight: 500;
   line-height: 1.3;
-  color: #db336c;
+  color: #C9711E;
 }
 .addon-cat__count {
   position: absolute;
@@ -7574,7 +7615,7 @@ a.ord-status__card:hover {
   font-size: 12px;
   font-weight: 500;
   line-height: 1.3;
-  color: #db336c;
+  color: #C9711E;
 }
 .addon-item__foot {
   margin-top: auto;
@@ -7790,7 +7831,7 @@ a.ord-status__card:hover {
   font-variant-numeric: tabular-nums;
 }
 .addon-note__count.is-full {
-  color: #db336c;
+  color: #C9711E;
 }
 
 /* PDP strip preview — the written message, back outside the popup. */
@@ -7819,7 +7860,7 @@ a.ord-status__card:hover {
 .addons-preview__edit {
   flex-shrink: 0;
   font-weight: 500;
-  color: #db336c;
+  color: #C9711E;
   text-decoration: underline;
 }
 
@@ -7899,7 +7940,7 @@ a.ord-status__card:hover {
 }
 .addon-card__price {
   top: 10px;
-  color: #db336c;
+  color: #C9711E;
 }
 .addon-card__price.is-free {
   color: #182325;
@@ -8090,7 +8131,7 @@ a.ord-status__card:hover {
   font-size: 13px;
   font-weight: 600;
   line-height: 1.3;
-  color: #db336c;
+  color: #C9711E;
 }
 /* Outlined, not the filled primary: Add to Cart above is the page's one loud
    button, and a second filled CTA would compete with it. */
@@ -8341,11 +8382,11 @@ a.ord-status__card:hover {
   align-items: center;
   padding: 2px 16px;
   border-radius: 40px;
-  background: #f8dfe2;
+  background: #FDE8D3;
   font-family: "DM Sans", sans-serif;
   font-size: clamp(14px, 1.4vw, 18px);
   line-height: 1.4;
-  color: #db336c;
+  color: #C9711E;
 }
 /* DM Sans Black on a hard -3px track — the same display setting the cafe
    hero uses, so the two feature pages speak with one voice. */
@@ -8791,7 +8832,7 @@ a.ord-status__card:hover {
   height: 14px;
   margin: 6px;
   border-radius: 50%;
-  background: #db336c;
+  background: #C9711E;
   border: 2.5px solid #ffffff;
   box-shadow: 0 1px 4px rgba(24, 35, 37, 0.35);
   transition:
@@ -8804,7 +8845,7 @@ a.ord-status__card:hover {
 .branch-pin.is-active .branch-pin__dot {
   background: #182325;
   transform: scale(1.35);
-  box-shadow: 0 0 0 6px rgba(219, 51, 108, 0.22);
+  box-shadow: 0 0 0 6px rgba(201, 113, 30, 0.22);
 }
 
 /* ---- Popup: strip Leaflet's own chrome so the branch card IS the popup,
@@ -9170,6 +9211,19 @@ a.ord-status__card:hover {
   background: #ffffff;
   box-shadow: inset 0 0 0 1px #e9ecef;
 }
+/* Apple Pay's mark is inline SVG rather than an image asset, so it misses
+   .optrow__icon--brand img's sizing rules and needs its own. Sized to the
+   padded box and letterboxed by preserveAspectRatio, the same "fit, never
+   overflow" behaviour object-fit: contain gives the image marks. */
+.optrow__icon--brand svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  color: #000000;
+}
+:root[data-theme="dark"] .optrow__icon--brand svg {
+  color: #000000;
+}
 .optrow__icon--brand img {
   max-width: 100%;
   max-height: 100%;
@@ -9360,12 +9414,14 @@ a.ord-status__card:hover {
   flex-shrink: 0;
 }
 
-/* --- Special Orders: pink card, turquoise arc rising from the bottom --- */
+/* --- Special Orders: turquoise card, deeper turquoise arc rising from the
+   bottom. Both cards now share one background; the arc is what separates
+   them, so it steps DOWN in tone rather than contrasting in hue. --- */
 .hbanner--orders {
-  background: #db336c;
+  background: #b0ded9;
 }
 .hbanner--orders .hbanner__blob {
-  background: #b0ded9;
+  background: #8cbab5;
   top: 121px;
   left: 38.6%;
 }
@@ -9375,21 +9431,25 @@ a.ord-status__card:hover {
   width: 403px;
   height: 285px;
 }
+/* Dark type now that the card is light — white would sit near 1.7:1 on the
+   turquoise. The paragraph stays full-strength rather than dropping to the
+   Cafe card's grey: it is the shorter of the two and reads as one block. */
 .hbanner--orders .hbanner__title,
 .hbanner--orders .hbanner__text {
-  color: #ffffff;
+  color: #182325;
 }
 .hbanner--orders .hbanner__cta {
-  background: #b0ded9;
+  background: #f3f5f7;
   color: #182325;
 }
 
-/* --- Exception Cafe: turquoise card, pink arc sweeping in from the right --- */
+/* --- Exception Cafe: same turquoise card, deeper turquoise arc sweeping in
+   from the right --- */
 .hbanner--cafe {
   background: #b0ded9;
 }
 .hbanner--cafe .hbanner__blob {
-  background: #db336c;
+  background: #8cbab5;
   top: -196px;
   left: 53%;
 }
@@ -9557,4 +9617,36 @@ a.ord-status__card:hover {
   border-color: #6a5a2c;
   background: #3a3320;
   color: #f4e3b4;
+}
+
+/* Payment step: the "we hold, we don't charge" promise. Deliberately a calm
+   teal note rather than a warning colour — it is reassurance, not a caveat,
+   so it should not read like an error sitting under the payment list. */
+.pay-hold-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 2px;
+  padding: 10px 12px;
+  border: 1px solid #b0ded9;
+  border-radius: 10px;
+  background: #f2fbfa;
+  color: #182325;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.pay-hold-note svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  margin-top: 1px;
+  color: #3f8880;
+}
+:root[data-theme="dark"] .pay-hold-note {
+  border-color: rgba(140, 186, 181, 0.35);
+  background: rgba(140, 186, 181, 0.12);
+  color: #e7fffc;
+}
+:root[data-theme="dark"] .pay-hold-note svg {
+  color: #8cbab5;
 }
