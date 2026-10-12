@@ -401,15 +401,19 @@
       <div class="hidden md:block">
         ${
           checkout
-            ? `<div class="relative z-40 bg-white shadow-header border-t-[4px] lg:!border-t-[10px] border-primaryDark py-[22px]">
+            ? `<div class="relative z-40 bg-white shadow-header border-t-[4px] lg:!border-t-[10px] border-primaryDark py-[14px]">
                  <div class="mx-auto flex max-w-[1392px] items-center justify-center relative px-4 2xl:px-0">
-                   <a href="index.html" aria-label="Exception home">${logoMark(true, 44)}</a>
+                   <a href="index.html" aria-label="Exception home">${logoMark(true, 38)}</a>
                    <div class="absolute end-4 2xl:end-0">${langSelector}</div>
                  </div>
                </div>`
             : `<div class="relative z-40 bg-primary-200">
                  ${utilityBar}
-                 <div class="mx-auto flex items-center justify-between gap-4 max-w-[1512px] px-6 lg:px-[60px] py-[20px]">
+                 <!-- py trimmed 20 -> 12 and the logo 52 -> 42: the row was
+                      92px of which only 34 carried a control, and the whole
+                      header stack (utility + this + the category rail) was
+                      eating 220px before any page content. -->
+                 <div class="mx-auto flex items-center justify-between gap-4 max-w-[1512px] px-6 lg:px-[60px] py-[12px]">
                    <!-- Left: search + Location picker -->
                    <div class="flex flex-1 items-center gap-2 min-w-0">
                      <button type="button" data-open="search" aria-label="Search" class="grid place-items-center shrink-0 rounded-[4px] size-[34px] text-primaryDark border border-primaryDark shadow-custom-5 hover:bg-primaryDark/5 transition-colors"><img src="images/icons/search-icon.svg" alt="" width="18" height="18" /></button>
@@ -442,7 +446,7 @@
                      </div>
                    </div>
                    <!-- Center: logo -->
-                   <a href="index.html" aria-label="Exception home" class="shrink-0">${logoMark(true, 52)}</a>
+                   <a href="index.html" aria-label="Exception home" class="shrink-0">${logoMark(true, 42)}</a>
                    <!-- Right: language · account + favourites/cart (search sits in the left group, the hotline on the utility bar) -->
                    <div class="flex flex-1 items-center justify-end gap-6 min-w-0">
                      <!-- Language · account · favourites: one row, even gaps,
@@ -515,8 +519,8 @@
     const catItems = CATEGORY_NAV.map((c) => {
       const isCurrent = !!c.url && c.url === currentPath;
       return `
-        <a href="${pageHref(c.url)}" class="catnav-item relative flex flex-col md:flex-row items-center justify-center md:justify-start gap-1 md:gap-2 px-2 py-2 md:px-3 md:py-2 rounded-[12px] shrink-0 hover:bg-primary-50 transition-colors${isCurrent ? " is-current" : ""}"${isCurrent ? ' aria-current="page"' : ""}>
-          <img src="images/icons/${c.icon}" alt="" width="64" height="64" class="size-14 md:size-16 shrink-0" />
+        <a href="${pageHref(c.url)}" class="catnav-item relative flex flex-col md:flex-row items-center justify-center md:justify-start gap-1 md:gap-2 px-2 py-1 md:px-3 md:py-1.5 rounded-[12px] shrink-0 hover:bg-primary-50 transition-colors${isCurrent ? " is-current" : ""}"${isCurrent ? ' aria-current="page"' : ""}>
+          <img src="images/icons/${c.icon}" alt="" width="64" height="64" class="size-12 md:size-[52px] shrink-0" />
           <span class="catnav-label">
             ${c.badge ? `<span class="catnav-badge">${esc(c.badge)}</span>` : ""}
             <span class="text-primaryDark whitespace-nowrap text-[11px] md:${c.big ? "text-[15px]" : "text-sm"} ${c.big ? "font-medium" : "font-semibold"}">${esc(c.label)}</span>
