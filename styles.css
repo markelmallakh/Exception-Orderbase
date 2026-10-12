@@ -9913,3 +9913,32 @@ a.ord-status__card:hover {
   background: var(--dk-surface);
   box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.5);
 }
+
+/* ============================================================
+   PDP THUMBNAILS — one line on a phone
+   Six 48px thumbs with 8px gaps need 328px; the column is 327, so the last
+   one wrapped onto a row of its own and left a ragged half-empty line under
+   the gallery. Below md they share the row instead of carrying a fixed
+   width, so the count can change without the layout breaking.
+   The .pdp-gallery prefix is deliberate: these have to outrank the w-12 and
+   shrink-0 utilities on the buttons, and Tailwind's runtime stylesheet is
+   injected after this file.
+   ============================================================ */
+@media (max-width: 767px) {
+  .pdp-thumbs {
+    flex-wrap: nowrap;
+    /* A product with more thumbs than will comfortably divide the row scrolls
+       rather than shrinking them into illegibility — see the min-width floor
+       below, which is what triggers it. */
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .pdp-thumbs::-webkit-scrollbar {
+    display: none;
+  }
+  .pdp-gallery .pdp-thumb {
+    width: auto;
+    min-width: 40px;
+    flex: 1 1 0;
+  }
+}
