@@ -2410,27 +2410,29 @@ body[data-purchased="true"] .review-gate-hint {
   border-color: #182325; /* seamless on the dark fill */
 }
 
-/* Product variation pills (Size / Weight) — outlined-selected variant of
-   the chip: UNSELECTED = grey fill + dark-grey text (no border/shadow),
-   SELECTED = white fill + black border + black text. Overrides .chip via
-   the extra class (and .is-active adds specificity over .chip.is-active). */
+/* Product variation pills (Size / Weight) — outlined on both states:
+   UNSELECTED = white fill + dark-grey outline, SELECTED = the brand
+   turquoise outline over the palest turquoise fill, so the chosen option
+   reads as chosen at a glance instead of as the only white one in a row of
+   grey. Overrides .chip via the extra class (and .is-active adds
+   specificity over .chip.is-active). */
 .chip.variation-pill {
-  background: #f3f4f6; /* grey fill */
-  border-color: transparent;
-  color: #6b7280; /* dark grey text */
+  background: #ffffff;
+  border-color: #a8abaf; /* dark grey outline */
+  color: #4b5563;
   box-shadow: none;
   transform: none;
 }
 .chip.variation-pill:hover:not(.is-active) {
-  background: #e9eaec;
-  color: #374151;
+  border-color: #6f7276;
+  color: #182325;
   box-shadow: none;
   transform: none;
 }
 .chip.variation-pill.is-active {
-  background: #ffffff;
-  border-color: #182325; /* black border */
-  color: #182325; /* black text */
+  background: #e7fffc; /* extra light turquoise */
+  border-color: #8cbab5; /* turquoise outline */
+  color: #182325;
   box-shadow: none;
 }
 
@@ -7394,29 +7396,44 @@ a.ord-status__card:hover {
 .addons__track {
   display: flex;
   gap: 8px;
-  padding: 2px 10px;
+  /* Top padding clears the count badge, which now hangs off the corner of a
+     much shorter card. */
+  padding: 8px 10px 2px;
   width: max-content;
 }
-/* Figma draws these 134px wide. Narrow columns (mobile, and the buy column
-   before it went full width) get 110 so a third card still lands; from 1024
-   up there is room for all four at the drawn size. */
+/* Laid out sideways: the icon spans both text rows on the left, with the
+   name over its price, left-aligned to each other. The stacked version was
+   92px tall for two short words — turning it on its side gives most of
+   that height back to the page, which is the whole point of this pass.
+   A two-row grid rather than flex so the icon can span them without the
+   markup growing a wrapper. */
 .addon-cat {
   position: relative;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-areas:
+    "ico name"
+    "ico price";
   align-items: center;
-  justify-content: center;
-  gap: 4px;
-  width: 110px;
-  height: 92px;
-  padding: 10px 8px;
+  justify-items: start;
+  column-gap: 8px;
+  padding: 8px 14px 8px 8px;
   border: 1px solid #dee2e6;
   border-radius: 12px;
   background: #ffffff;
-  text-align: center;
+  text-align: start;
   transition:
     border-color 0.2s ease,
     transform 0.2s ease;
+}
+.addon-cat__icon {
+  grid-area: ico;
+}
+.addon-cat__name {
+  grid-area: name;
+}
+.addon-cat__from {
+  grid-area: price;
 }
 .addon-cat:hover {
   transform: translateY(-2px);
@@ -7428,18 +7445,14 @@ a.ord-status__card:hover {
   border-color: #8cbab5;
 }
 .addon-cat__icon {
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   object-fit: contain;
 }
 @media (min-width: 1024px) {
-  .addon-cat {
-    width: 134px;
-    padding: 12px;
-  }
   .addon-cat__icon {
-    width: 44px;
-    height: 44px;
+    width: 42px;
+    height: 42px;
   }
 }
 .addon-cat__name {
@@ -7458,8 +7471,8 @@ a.ord-status__card:hover {
 }
 .addon-cat__count {
   position: absolute;
-  top: 3px;
-  inset-inline-end: 3px;
+  top: -6px;
+  inset-inline-end: -6px;
   display: grid;
   place-items: center;
   width: 16px;
@@ -8233,6 +8246,30 @@ a.ord-status__card:hover {
   position: relative;
   flex-shrink: 0;
 }
+/* Name and servings share the first line. Baseline-aligned so the badge
+   sits on the title's own line rather than floating against its cap
+   height, and allowed to wrap on a narrow column. */
+.pdp-titlemain {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 10px;
+}
+.serves-badge {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 100px;
+  background: #e7fffc;
+  /* Nudged to sit optically on the title's baseline: the pill's own text is
+     much smaller, so true baseline alignment rides too high. */
+  transform: translateY(-2px);
+}
+
 /* Favourite and share sit together beside the title. .fav-btn already wears
    the same 12px-radius white shell as .pdp-share; it only needs the matching
    box, since it used to be sized by utilities next to the Add-to-cart CTA. */

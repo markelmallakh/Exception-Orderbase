@@ -118,7 +118,17 @@
                      rating and servings badges moved to their own row below,
                      so the product name has the line to itself. -->
                 <div class="pdp-titlerow">
-                  <h1 class="text-lg font-semibold text-textSecondary md:text-xl lg:text-3xl">Chocolate Fudge Cake</h1>
+                  <div class="pdp-titlemain">
+                    <h1 class="text-xl font-semibold text-textSecondary md:text-2xl lg:text-[34px] lg:leading-[1.15]">Chocolate Fudge Cake</h1>
+                    <!-- Servings rides alongside the name rather than taking a
+                         row of its own: every line saved here is a line closer
+                         to having Add to Cart on screen without scrolling. -->
+                    <span class="serves-badge">
+                      <img src="images/icons/group.svg" alt="" class="w-4 h-4" />
+                      <span class="text-primaryDark text-xs font-semibold">8–10</span>
+                      <span class="text-gray-700 text-xs">people</span>
+                    </span>
+                  </div>
                   <div class="pdp-titleacts">
                     <button type="button" data-fav aria-label="Add to wishlist" class="fav-btn">
                       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path class="fav-heart" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78Z" stroke="currentColor" stroke-width="1.6"/></svg>
@@ -136,16 +146,6 @@
                   </div>
                 </div>
 
-                <!-- Servings badge. The rating/reviews pill that used to lead
-                     this row was removed — the full rating summary still lives
-                     in the reviews section further down the page. -->
-                <div class="flex items-center gap-3 flex-wrap">
-                  <span class="inline-flex items-center gap-1.5 bg-primary-light rounded-[4px] px-2.5 py-1">
-                    <img src="images/icons/group.svg" alt="" class="w-4 h-4" />
-                    <span class="text-primaryDark text-xs font-semibold">8–10</span>
-                    <span class="text-gray-700 text-xs">people</span>
-                  </span>
-                </div>
               </div>
 
             </div>
@@ -171,21 +171,21 @@
               </div>
 
               <!-- Variations -->
-              <div class="pdp-vars flex flex-col gap-3">
-                <div class="flex flex-col gap-2" data-variation-group>
-                  <label class="font-semibold text-textSecondary text-base capitalize">Size</label>
-                  <div class="flex flex-wrap gap-3">
-                    <button type="button" class="variation-pill is-active chip px-5 py-2.5 text-sm font-medium capitalize">Small (6")</button>
-                    <button type="button" class="variation-pill chip px-5 py-2.5 text-sm font-medium capitalize">Medium (8")</button>
-                    <button type="button" class="variation-pill chip px-5 py-2.5 text-sm font-medium capitalize">Large (10")</button>
+              <div class="pdp-vars flex flex-col gap-2.5">
+                <div class="flex flex-col gap-1.5" data-variation-group>
+                  <label class="font-semibold text-textSecondary text-sm capitalize">Size</label>
+                  <div class="flex flex-wrap gap-2">
+                    <button type="button" class="variation-pill is-active chip px-3.5 py-1.5 text-[13px] font-medium capitalize">Small (6")</button>
+                    <button type="button" class="variation-pill chip px-3.5 py-1.5 text-[13px] font-medium capitalize">Medium (8")</button>
+                    <button type="button" class="variation-pill chip px-3.5 py-1.5 text-[13px] font-medium capitalize">Large (10")</button>
                   </div>
                 </div>
-                <div class="flex flex-col gap-2" data-variation-group>
-                  <label class="font-semibold text-textSecondary text-base capitalize">Weight</label>
-                  <div class="flex flex-wrap gap-3">
-                    <button type="button" class="variation-pill is-active chip px-5 py-2.5 text-sm font-medium capitalize">1 kg</button>
-                    <button type="button" class="variation-pill chip px-5 py-2.5 text-sm font-medium capitalize">1.5 kg</button>
-                    <button type="button" class="variation-pill chip px-5 py-2.5 text-sm font-medium capitalize">2 kg</button>
+                <div class="flex flex-col gap-1.5" data-variation-group>
+                  <label class="font-semibold text-textSecondary text-sm capitalize">Weight</label>
+                  <div class="flex flex-wrap gap-2">
+                    <button type="button" class="variation-pill is-active chip px-3.5 py-1.5 text-[13px] font-medium capitalize">1 kg</button>
+                    <button type="button" class="variation-pill chip px-3.5 py-1.5 text-[13px] font-medium capitalize">1.5 kg</button>
+                    <button type="button" class="variation-pill chip px-3.5 py-1.5 text-[13px] font-medium capitalize">2 kg</button>
                   </div>
                 </div>
               </div>
@@ -227,7 +227,6 @@
                    the card designs alone. The chosen card and its message
                    are summarised in place, right where they were chosen. -->
               <div class="giftcard" id="pdp-giftcard" hidden>
-                <p class="giftcard__title">Add a Greeting Card</p>
                 <button type="button" class="giftcard__btn" data-open="addons" data-addon-cat="cards" data-giftcard-btn>
                   <img class="giftcard__icon" src="dummy-images/add-ons/greeting-card.webp" alt="" width="44" height="44" loading="lazy" decoding="async" />
                   <span class="giftcard__text">
