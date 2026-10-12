@@ -8233,6 +8233,19 @@ a.ord-status__card:hover {
   position: relative;
   flex-shrink: 0;
 }
+/* Favourite and share sit together beside the title. .fav-btn already wears
+   the same 12px-radius white shell as .pdp-share; it only needs the matching
+   box, since it used to be sized by utilities next to the Add-to-cart CTA. */
+.pdp-titleacts {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 8px;
+}
+.pdp-titleacts .fav-btn {
+  width: 36px;
+  height: 36px;
+}
 /* Same shell as .fav-btn so the two secondary actions on this page read as
    one family. */
 .pdp-share {
