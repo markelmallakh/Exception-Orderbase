@@ -7410,8 +7410,8 @@ a.ord-status__card:hover {
   width: 110px;
   height: 92px;
   padding: 10px 8px;
-  border: 1px solid #cccccc;
-  border-radius: 8px;
+  border: 1px solid #dee2e6;
+  border-radius: 12px;
   background: #ffffff;
   text-align: center;
   transition:
@@ -7448,11 +7448,13 @@ a.ord-status__card:hover {
   line-height: 1.3;
   color: #182325;
 }
+/* A price, so it takes the price token like every other figure on the
+   site — not the orange, which is reserved for "act on this". */
 .addon-cat__from {
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
   line-height: 1.3;
-  color: #C9711E;
+  color: #007a6d;
 }
 .addon-cat__count {
   position: absolute;
@@ -7474,48 +7476,56 @@ a.ord-status__card:hover {
 }
 
 /* ------------------------- POPUP ------------------------- */
+/* Shell matches .share-modal, the house dialog: 16px radius, the soft
+   brand-ink shadow, no outline. It arrived here as a flat bordered card
+   with a 2px drop shadow, which belongs to no part of this system. */
 .addons-modal {
   display: flex;
   width: 100%;
-  max-width: 790px;
+  max-width: 720px;
   max-height: 86vh;
   flex-direction: column;
-  gap: 24px;
-  padding: 24px 32px;
-  border: 1px solid #e5e5e5;
+  gap: 20px;
+  padding: 24px;
   border-radius: 16px;
   background: #ffffff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 30px rgba(24, 35, 37, 0.16);
 }
 .addons-modal__x {
   position: absolute;
-  top: 19px;
-  inset-inline-end: 18px;
+  top: -2px;
+  inset-inline-end: -2px;
   display: grid;
   place-items: center;
-  width: 34px;
-  height: 34px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  color: #182325;
+  color: #6f7276;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 .addons-modal__x:hover {
   background: rgba(24, 35, 37, 0.06);
+  color: #182325;
 }
 .addons-modal__head {
   position: relative;
   flex-shrink: 0;
 }
 .addons-modal__title {
-  font-size: clamp(22px, 3vw, 32px);
+  font-size: 20px;
   font-weight: 600;
-  line-height: 1.2;
-  color: #1a1a1a;
+  line-height: 1.3;
+  color: #182325;
 }
 .addons-modal__tabs {
   display: flex;
   align-items: stretch;
   overflow-x: auto;
   scrollbar-width: none;
+  border-bottom: 1px solid #dee2e6;
+}
+.addons-modal__tabs[hidden] {
+  display: none;
 }
 .addons-modal__tabs::-webkit-scrollbar {
   display: none;
@@ -7529,10 +7539,10 @@ a.ord-status__card:hover {
   gap: 4px;
   padding: 8px 16px;
   border-bottom: 2px solid transparent;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 500;
   line-height: 1.3;
-  color: #666666;
+  color: #6f7276;
   white-space: nowrap;
   transition:
     color 0.2s ease,
@@ -7592,10 +7602,14 @@ a.ord-status__card:hover {
   justify-content: flex-start;
   gap: 12px;
   padding: 12px;
-  border: 1px solid #cccccc;
-  border-radius: 10px;
+  border: 1px solid #dee2e6;
+  border-radius: 12px;
   background: #ffffff;
   text-align: center;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.addon-item:hover {
+  border-color: #8cbab5;
 }
 .addon-item.is-added {
   border-color: #8cbab5;
@@ -7608,14 +7622,17 @@ a.ord-status__card:hover {
 .addon-item__name {
   font-size: 14px;
   line-height: 1.4;
-  color: #1a1a1a;
+  color: #182325;
 }
+/* Prices are teal site-wide (token `price`, #007A6D): the orange means
+   "act on this", and these were left on it when the rebrand swapped the
+   pink mechanically. */
 .addon-item__price {
   margin-top: 2px;
-  font-size: 12px;
-  font-weight: 500;
+  font-size: 13px;
+  font-weight: 600;
   line-height: 1.3;
-  color: #C9711E;
+  color: #007a6d;
 }
 .addon-item__foot {
   margin-top: auto;
@@ -7630,29 +7647,36 @@ a.ord-status__card:hover {
   height: 34px;
   padding: 0 14px;
   border: 1px solid #182325;
-  border-radius: 4px;
-  font-size: 12px;
+  border-radius: 8px;
+  font-size: 13px;
   font-weight: 500;
   line-height: 1.3;
   color: #182325;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 .addon-add:hover {
-  background: rgba(24, 35, 37, 0.06);
+  background: #b0ded9;
+  border-color: #b0ded9;
+  color: #182325;
 }
+/* The confirm is .btn--primary in every other dialog on this site —
+   turquoise with dark ink, 12px radius. It was a #222 pill at 4px radius,
+   a colour and a corner that appear nowhere else in the system. */
 .addons-modal__cta {
-  align-self: center;
   flex-shrink: 0;
-  padding: 12px 32px;
-  border-radius: 4px;
-  background: #222222;
+  width: 100%;
+  padding: 14px 32px;
+  border-radius: 12px;
+  background: #b0ded9;
   font-size: 16px;
   font-weight: 600;
   line-height: 1.3;
-  color: #ffffff;
+  color: #182325;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 .addons-modal__cta:hover {
-  background: #182325;
+  background: #8cbab5;
+  color: #ffffff;
 }
 @media (max-width: 640px) {
   .addons-modal {
@@ -7768,14 +7792,14 @@ a.ord-status__card:hover {
   font-size: 12px;
   font-weight: 500;
   line-height: 1.3;
-  color: #4d4d4d;
+  color: #6f7276;
 }
 .addon-note__field {
   display: block;
   width: 100%;
   min-height: 62px;
   padding: 10px 12px;
-  border: 1px solid #cccccc;
+  border: 1px solid #a8abaf;
   border-radius: 8px;
   background: #ffffff;
   font-family: inherit;
@@ -7809,7 +7833,7 @@ a.ord-status__card:hover {
    typing them on a phone is the friction this removes. */
 .addon-note__preset {
   padding: 4px 10px;
-  border: 1px solid #cccccc;
+  border: 1px solid #dee2e6;
   border-radius: 100px;
   background: #ffffff;
   font-size: 12px;
@@ -7837,14 +7861,19 @@ a.ord-status__card:hover {
 /* PDP strip preview — the written message, back outside the popup. */
 .addons-preview {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 8px;
-  padding: 8px 10px;
-  border-radius: 8px;
-  background: #f4faf9;
-  font-size: 12px;
+  padding: 9px 12px;
+  border: 1px solid #d5ebe6;
+  border-radius: 10px;
+  background: #f2fbfa;
+  font-size: 12.5px;
   line-height: 1.4;
-  color: #4d4d4d;
+  color: #6f7276;
+}
+.addons-preview__mark {
+  flex-shrink: 0;
+  color: #8cbab5;
 }
 .addons-preview[hidden] {
   display: none;
@@ -7940,7 +7969,7 @@ a.ord-status__card:hover {
 }
 .addon-card__price {
   top: 10px;
-  color: #C9711E;
+  color: #007a6d;
 }
 .addon-card__price.is-free {
   color: #182325;
@@ -9649,4 +9678,135 @@ a.ord-status__card:hover {
 }
 :root[data-theme="dark"] .pay-hold-note svg {
   color: #8cbab5;
+}
+
+/* ============================================================
+   GREETING CARD BLOCK (.giftcard)
+   Split out of the Elegant Touches strip: a card is one per order, carries
+   a written message and is fulfilled differently from the physical extras,
+   so it is ordered on its own. One wide row rather than a tile, because it
+   is a single choice, not a category to browse — and because that is the
+   shape the saved message sits under.
+   ============================================================ */
+.giftcard {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.giftcard__title {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #182325;
+}
+.giftcard__btn {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid #dee2e6;
+  border-radius: 12px;
+  background: #ffffff;
+  text-align: start;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+.giftcard__btn:hover {
+  border-color: #8cbab5;
+  background: #f2fbfa;
+}
+/* Once a card is chosen the row carries the turquoise the rest of the
+   system uses for "selected", matching .addon-card[aria-pressed]. */
+.giftcard__btn.is-picked {
+  border-color: #8cbab5;
+  background: #e7fffc;
+}
+.giftcard__icon {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+.giftcard__text {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+}
+.giftcard__name {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #182325;
+}
+.giftcard__hint {
+  font-size: 12.5px;
+  line-height: 1.35;
+  color: #6f7276;
+}
+.giftcard__count {
+  display: grid;
+  min-width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  place-items: center;
+  padding: 0 6px;
+  border-radius: 100px;
+  background: #8cbab5;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  color: #ffffff;
+}
+.giftcard__count[hidden] {
+  display: none;
+}
+.giftcard__chev {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  color: #6f7276;
+}
+[dir="rtl"] .giftcard__chev {
+  transform: scaleX(-1);
+}
+:root[data-theme="dark"] .giftcard__btn {
+  border-color: var(--dk-border);
+  background: var(--dk-raised);
+}
+:root[data-theme="dark"] .giftcard__btn:hover,
+:root[data-theme="dark"] .giftcard__btn.is-picked {
+  border-color: #8cbab5;
+  background: var(--dk-surface);
+}
+:root[data-theme="dark"] .giftcard__name,
+:root[data-theme="dark"] .giftcard__title {
+  color: var(--dk-text);
+}
+:root[data-theme="dark"] .giftcard__hint {
+  color: var(--dk-muted);
+}
+
+/* Card tiles on a phone. This has to sit AFTER .addons-modal__list.is-cards
+   — same specificity, so the later rule wins, and placing it up in the
+   modal's own media block left the 200px minmax in charge and one
+   full-width card per screenful with six to get through. */
+@media (max-width: 640px) {
+  .addons-modal__list.is-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .addon-card__price,
+  .addon-card__name {
+    inset-inline-start: 6px;
+    max-width: calc(100% - 12px);
+    padding: 3px 8px;
+    font-size: 11px;
+  }
+  .addon-card__price {
+    top: 6px;
+  }
+  .addon-card__name {
+    bottom: 6px;
+  }
 }

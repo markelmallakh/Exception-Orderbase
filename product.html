@@ -211,8 +211,29 @@
                 <div class="addons__strip" data-addons-strip>
                   <div class="addons__track" data-addons-track></div>
                 </div>
+              </div>
+
+              <!-- ============ GREETING CARD (its own block) ============
+                   Split out of the Elegant Touches strip at the backend's
+                   request: a card is one-per-order, carries a written
+                   message and is fulfilled differently from the physical
+                   extras, so it is ordered as its own thing rather than as a
+                   fourth tile in that row. Opens the same popup, scoped to
+                   the card designs alone. The chosen card and its message
+                   are summarised in place, right where they were chosen. -->
+              <div class="giftcard" id="pdp-giftcard" hidden>
+                <p class="giftcard__title">Add a Greeting Card</p>
+                <button type="button" class="giftcard__btn" data-open="addons" data-addon-cat="cards" data-giftcard-btn>
+                  <img class="giftcard__icon" src="dummy-images/add-ons/greeting-card.webp" alt="" width="44" height="44" loading="lazy" decoding="async" />
+                  <span class="giftcard__text">
+                    <span class="giftcard__name" data-giftcard-name>Greeting Card</span>
+                    <span class="giftcard__hint" data-giftcard-hint>Pick a design and write your message</span>
+                  </span>
+                  <span class="giftcard__count" data-addon-count="cards" hidden>0</span>
+                  <svg class="giftcard__chev" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
                 <p class="addons-preview" data-addons-preview hidden>
-                  <span aria-hidden="true">&#9998;</span>
+                  <svg class="addons-preview__mark" viewBox="0 0 24 24" fill="none" width="14" height="14" aria-hidden="true"><path d="M4 20h4L19 9a2.1 2.1 0 0 0-3-3L5 17v3Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
                   <span class="addons-preview__text" data-addons-preview-text></span>
                   <button type="button" class="addons-preview__edit" data-open="addons" data-addon-cat="cards">Edit</button>
                 </p>
@@ -979,6 +1000,7 @@
         var strip = document.getElementById("pdp-addons");
         var track = strip && strip.querySelector("[data-addons-track]");
         var scroller = strip && strip.querySelector("[data-addons-strip]");
+        var gift = document.getElementById("pdp-giftcard");
         var modal = document.querySelector('[data-modal="addons"]');
         if (!strip || !track || !modal) return;
 
@@ -992,10 +1014,24 @@
            what the buyer already wrote. */
         var chosen = {};
         var cardMessage = "";
-        var active = CATS[0].id;
         /* The category whose items carry writing. Named rather than assumed
            by index so reordering CATS cannot silently move the feature. */
         var NOTE_CAT = "cards";
+        /* The greeting card is ordered on its own, so the strip and the
+           popup's tab row only ever show the physical extras. The popup is
+           opened in one of two scopes and never mixes them — a visitor who
+           came to write a card should not have to walk past balloons.
+           Declared before `active`, which reads it. */
+        var TOUCH_CATS = CATS.filter(function (c) {
+          return c.id !== NOTE_CAT;
+        });
+        var active = TOUCH_CATS.length ? TOUCH_CATS[0].id : CATS[0].id;
+        function scopeOf(id) {
+          return id === NOTE_CAT ? "card" : "touches";
+        }
+        function catsInScope() {
+          return scopeOf(active) === "card" ? CATS.filter(function (c) { return c.id === NOTE_CAT; }) : TOUCH_CATS;
+        }
         /* Ties this page to its row in the cart (see DEMO_CART_ITEMS[].key). */
         var PRODUCT_KEY = "chocolate-fudge-cake";
         var NOTE_MAX = 120;
@@ -1033,7 +1069,7 @@
         }
 
         /* ------------------------------ strip ------------------------------ */
-        track.innerHTML = CATS.map(function (c) {
+        track.innerHTML = TOUCH_CATS.map(function (c) {
           return (
             '<button type="button" class="addon-cat" data-open="addons" data-addon-cat="' + c.id + '">' +
             '<img class="addon-cat__icon" src="' + IMG + encodeURIComponent(c.icon) + '" alt="" width="44" height="44" loading="lazy" decoding="async" />' +
@@ -1044,13 +1080,19 @@
           );
         }).join("");
         strip.hidden = false;
+        if (gift) gift.hidden = false;
 
         /* Strip cards and popup tabs carry the same count, so they are painted
            together — two call sites would drift apart. */
         function paintCounts() {
           CATS.forEach(function (c) {
             var n = countIn(c.id);
-            var badge = track.querySelector('[data-addon-count="' + c.id + '"]');
+            /* The card's badge sits on the greeting-card button now, which is
+               outside the strip — so look in both places rather than assuming
+               every category still lives in the track. */
+            var badge =
+              track.querySelector('[data-addon-count="' + c.id + '"]') ||
+              (gift && gift.querySelector('[data-addon-count="' + c.id + '"]'));
             var card = track.querySelector('[data-addon-cat="' + c.id + '"]');
             if (badge) {
               badge.textContent = n;
@@ -1104,7 +1146,11 @@
         }
 
         function paintTabs() {
-          tabHost.innerHTML = CATS.map(function (c) {
+          var list = catsInScope();
+          /* A single-category scope has nothing to switch between, so the tab
+             row would just be a label repeating the title above it. */
+          tabHost.hidden = list.length < 2;
+          tabHost.innerHTML = list.map(function (c) {
             return (
               '<button type="button" class="addon-tab" role="tab" data-addon-tab="' + c.id + '" ' +
               'aria-selected="' + (c.id === active) + '">' +
@@ -1188,18 +1234,27 @@
 
         function show(id) {
           if (!cat(id)) return;
+          var hadScope = scopeOf(active);
           active = id;
+          /* Crossing between the card and the extras swaps which tabs exist,
+             so the row is rebuilt rather than just re-flagged. */
+          if (scopeOf(id) !== hadScope) paintTabs();
           [].forEach.call(tabHost.querySelectorAll("[data-addon-tab]"), function (t) {
             t.setAttribute("aria-selected", String(t.getAttribute("data-addon-tab") === id));
           });
+          modal.classList.toggle("is-cardscope", scopeOf(id) === "card");
           paintList();
           paintNote(false);
+          paintCounts();
         }
 
         /* ------------------------- card message ------------------------- */
         var noteHost = modal.querySelector("[data-addon-note]");
-        var preview = strip.querySelector("[data-addons-preview]");
-        var previewText = strip.querySelector("[data-addons-preview-text]");
+        /* The saved-message line moved into the greeting-card block with the
+           card itself; it is about the card, not about the extras. */
+        var previewHost = gift || strip;
+        var preview = previewHost.querySelector("[data-addons-preview]");
+        var previewText = previewHost.querySelector("[data-addons-preview-text]");
 
         function pickedCard() {
           var c = cat(NOTE_CAT);
@@ -1247,7 +1302,26 @@
 
         /* The preview is the only sight of the card once the popup closes, so
            it names the card whether or not a message has been written yet. */
+        /* The button restates what was chosen, so the block answers "have I
+           added a card?" without opening the popup. */
+        function paintGiftBtn() {
+          if (!gift) return;
+          var btn = gift.querySelector("[data-giftcard-btn]");
+          var nameEl = gift.querySelector("[data-giftcard-name]");
+          var hintEl = gift.querySelector("[data-giftcard-hint]");
+          if (!btn || !nameEl || !hintEl) return;
+          var card = pickedCard();
+          btn.classList.toggle("is-picked", !!card);
+          nameEl.textContent = card ? card.name : "Greeting Card";
+          hintEl.textContent = card
+            ? card.price
+              ? "+" + card.price + " EGP \u00B7 tap to change"
+              : "Free \u00B7 tap to change"
+            : "Pick a design and write your message";
+        }
+
         function paintPreview() {
+          paintGiftBtn();
           if (!preview) return;
           var card = pickedCard();
           if (!card) {
@@ -1303,10 +1377,14 @@
            data-open="addons", which scripts.js handles; this only has to pick
            the category before the popup paints. Bound on the whole block, not
            the track, so the Edit link outside the scroller is covered too. */
-        strip.addEventListener("click", function (e) {
+        function pickFromClick(e) {
           var card = e.target.closest("[data-addon-cat]");
           if (card) show(card.getAttribute("data-addon-cat"));
-        });
+        }
+        strip.addEventListener("click", pickFromClick);
+        /* The greeting-card button and its Edit link live outside the strip
+           now, so they need the same hook. */
+        if (gift) gift.addEventListener("click", pickFromClick);
 
         strip.addEventListener("click", function (e) {
           var arrow = e.target.closest("[data-addons-scroll]");
