@@ -230,7 +230,7 @@
                 <button type="button" class="giftcard__btn" data-open="addons" data-addon-cat="cards" data-giftcard-btn>
                   <img class="giftcard__icon" src="dummy-images/add-ons/greeting-card.webp" alt="" width="44" height="44" loading="lazy" decoding="async" />
                   <span class="giftcard__text">
-                    <span class="giftcard__name" data-giftcard-name>Greeting Card</span>
+                    <span class="giftcard__name" data-giftcard-name>Add Greeting Card</span>
                     <span class="giftcard__hint" data-giftcard-hint>Pick a design and write your message</span>
                   </span>
                   <span class="giftcard__count" data-addon-count="cards" hidden>0</span>
@@ -250,7 +250,7 @@
                      heights the CTA carries, so they line up without either
                      being nudged. The favourite moved up beside the share
                      button in the title row. -->
-                <div class="flex items-stretch gap-3">
+                <div class="pdp-buybar flex items-stretch gap-3" data-pdp-buybar>
                   <div data-stepper class="counter counter--lg shrink-0">
                     <button type="button" data-step="-1" class="counter__btn" aria-label="Decrease quantity"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
                     <span data-qty class="counter__qty">1</span>
@@ -1315,7 +1315,9 @@
           if (!btn || !nameEl || !hintEl) return;
           var card = pickedCard();
           btn.classList.toggle("is-picked", !!card);
-          nameEl.textContent = card ? card.name : "Greeting Card";
+          /* The title IS the state: "Add Greeting Card" until one is picked,
+             then the name of the card itself. */
+          nameEl.textContent = card ? card.name : "Add Greeting Card";
           hintEl.textContent = card
             ? card.price
               ? "+" + card.price + " EGP \u00B7 tap to change"

@@ -3451,6 +3451,40 @@
      resolves [data-summary-*] with querySelector, so a second copy would
      silently stop updating. At lg they move back to the sticky sidebar.
      --------------------------------------------------------------- */
+  /* ---------------------------------------------------------------
+     PDP buy bar — pins quantity + Add to Cart to the bottom under 1024px.
+
+     On a phone the buy column is long enough that the CTA landed somewhere
+     in the middle of the scroll and was easy to walk straight past. Pinned,
+     it is the one control always on screen, which is what it should be.
+
+     Same shape as the checkout bar below: fixed, rounded top, its own
+     shadow, safe-area inset in its padding. The height is published so the
+     page can reserve the space and the support buttons can sit clear of
+     it — measured rather than hard-coded, since the label wraps on the
+     narrowest phones.
+     --------------------------------------------------------------- */
+  function initPdpBuyBar(scope) {
+    const bar = (scope || document).querySelector("[data-pdp-buybar]");
+    if (!bar || bar.dataset.barReady) return;
+    bar.dataset.barReady = "1";
+
+    const publish = () => {
+      /* Zero while the bar is in normal flow (desktop), so the reserved
+         space and the lifted buttons both fall away with the same switch
+         the media query makes. */
+      const pinned = getComputedStyle(bar).position === "fixed";
+      document.documentElement.style.setProperty(
+        "--pdp-bar-h",
+        pinned ? bar.offsetHeight + "px" : "0px",
+      );
+    };
+    publish();
+    if (window.ResizeObserver) new ResizeObserver(publish).observe(bar);
+    window.addEventListener("resize", publish, { passive: true });
+    window.addEventListener("load", publish);
+  }
+
   function initCheckoutMobileBar(scope) {
     const summary = scope.querySelector("[data-order-summary]");
     const actions = scope.querySelector("[data-checkout-actions]");
@@ -5467,6 +5501,7 @@
     initDemoForms(scope);
     initCheckoutSteps(scope);
     initCheckoutMobileBar(scope);
+    initPdpBuyBar(scope);
     initCheckoutOptions(scope);
     initStock(scope);
     initOOSShipping(scope);

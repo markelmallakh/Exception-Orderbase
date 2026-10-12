@@ -7387,18 +7387,18 @@ a.ord-status__card:hover {
 .addons__strip {
   overflow-x: auto;
   scrollbar-width: none;
-  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 4%, #000 96%, transparent 100%);
-  mask-image: linear-gradient(90deg, transparent 0, #000 4%, #000 96%, transparent 100%);
 }
 .addons__strip::-webkit-scrollbar {
   display: none;
 }
+/* No inline padding: it inset the first tile from the column edge, so the
+   row no longer lined up with the greeting-card block beneath it. The
+   count badge sits inside the tile now rather than overhanging, so none is
+   needed to stop it being clipped either. */
 .addons__track {
   display: flex;
   gap: 8px;
-  /* Top padding clears the count badge, which now hangs off the corner of a
-     much shorter card. */
-  padding: 8px 10px 2px;
+  padding: 2px 0;
   width: max-content;
 }
 /* Laid out sideways: the icon spans both text rows on the left, with the
@@ -7417,7 +7417,7 @@ a.ord-status__card:hover {
   align-items: center;
   justify-items: start;
   column-gap: 8px;
-  padding: 8px 14px 8px 8px;
+  padding: 8px 26px 8px 8px;
   border: 1px solid #dee2e6;
   border-radius: 12px;
   background: #ffffff;
@@ -7471,8 +7471,8 @@ a.ord-status__card:hover {
 }
 .addon-cat__count {
   position: absolute;
-  top: -6px;
-  inset-inline-end: -6px;
+  top: 6px;
+  inset-inline-end: 6px;
   display: grid;
   place-items: center;
   width: 16px;
@@ -9859,4 +9859,57 @@ a.ord-status__card:hover {
   .addon-card__name {
     bottom: 6px;
   }
+}
+
+/* ============================================================
+   PDP BUY BAR (.pdp-buybar)
+   Quantity + Add to Cart. In the flow on desktop; pinned to the bottom of
+   the screen under 1024px, where the buy column is long enough that the
+   CTA otherwise sits somewhere mid-scroll and is easy to walk past.
+   Same shape as .checkout-bar so the two read as one pattern.
+   ============================================================ */
+@media (max-width: 1023px) {
+  .pdp-buybar {
+    position: fixed;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 70;
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px));
+    border-radius: 16px 16px 0 0;
+    background: #ffffff;
+    box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.14);
+  }
+  /* Tighter counter: on a phone the row is only ~343px wide, and every
+     pixel the stepper gives back is a pixel the CTA gets. 44px tall end
+     caps are still a comfortable touch target. */
+  .pdp-buybar .counter--lg {
+    --c-h: 44px;
+    --c-btn: 36px;
+    --c-radius: 10px;
+    --c-qty: 32px;
+    --c-icon: 16px;
+    --c-font: 0.9375rem;
+  }
+  .pdp-buybar .btn {
+    min-height: 44px;
+    height: 44px;
+  }
+  /* Reserve the bar's own height at the foot of the page so the last of
+     the content — and the footer — can still be scrolled clear of it.
+     --pdp-bar-h is published by initPdpBuyBar and is 0 once the bar is
+     back in normal flow, so this falls away with it. */
+  body[data-page="product"] {
+    padding-bottom: var(--pdp-bar-h, 76px);
+  }
+  /* Support buttons step above the bar rather than sitting on it. The bar
+     carries the safe-area inset in its own padding, so it is already in
+     the measured height and must not be added again here. */
+  body[data-page="product"] .wa-fab,
+  body[data-page="product"] .report-fab {
+    bottom: calc(var(--pdp-bar-h, 76px) + 12px);
+  }
+}
+:root[data-theme="dark"] .pdp-buybar {
+  background: var(--dk-surface);
+  box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.5);
 }
